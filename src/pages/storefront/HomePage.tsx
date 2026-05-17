@@ -112,19 +112,17 @@ const HomePage = () => {
           <section className="relative pt-0 pb-8 px-2">
             <div className="w-full">
               <div className="relative overflow-hidden border border-slate-100 rounded-2xl bg-slate-900 min-h-[500px] md:min-h-[600px] flex items-center w-full py-5">
-                {/* Video Background */}
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="absolute inset-0 w-full h-full object-cover opacity-40"
-                >
-                  <source 
-                    src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-a-circuit-board-1653-large.mp4" 
-                    type="video/mp4" 
-                  />
-                </video>
+                {/* YouTube Video Background */}
+                <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
+                  <iframe
+                    className="absolute top-1/2 left-1/2 w-[300%] h-[300%] -translate-x-1/2 -translate-y-1/2 opacity-50"
+                    src="https://www.youtube.com/embed/H41fuhz_gvw?autoplay=1&mute=1&loop=1&playlist=H41fuhz_gvw&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1"
+                    title="Hero Background Video"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
                 
                 {/* Overlay for better text contrast */}
                 <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 to-transparent" />
