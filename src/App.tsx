@@ -28,32 +28,20 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              {/* Public Storefront Routes */}
+              {/* Public Storefront */}
               <Route path="/" element={<HomePage />} />
               <Route path="/product/:id" element={<ProductDetailsPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
-              
-              {/* Admin Auth Route */}
+
+              {/* Admin Auth */}
               <Route path="/admin/login" element={<AdminLoginPage />} />
-              
+
               {/* Protected Admin Routes */}
               <Route path="/admin" element={<AdminDashboardPage />} />
-              <Route path="/admin/products" element={
-                <AdminLayout>
-                  <AdminProductsPage />
-                </AdminLayout>
-              } />
-              <Route path="/admin/inventory" element={
-                <AdminLayout>
-                  <AdminInventoryPage />
-                </AdminLayout>
-              } />
-              <Route path="/admin/orders" element={
-                <AdminLayout>
-                  <AdminOrdersPage />
-                </AdminLayout>
-              } />
-              
+              <Route path="/admin/products" element={<AdminProductsPage />} />
+              <Route path="/admin/inventory" element={<AdminInventoryPage />} />
+              <Route path="/admin/orders" element={<AdminOrdersPage />} />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

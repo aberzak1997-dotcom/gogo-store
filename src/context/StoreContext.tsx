@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Product, Order, CartItem } from "../types";
 import { MOCK_PRODUCTS, MOCK_ORDERS } from "../data/mockData";
-import { showSuccess } from "../utils/toast";
+import { showSuccess, showError } from "../utils/toast";
 
 interface StoreContextType {
   products: Product[];
@@ -16,6 +16,7 @@ interface StoreContextType {
   updateCartQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   createOrder: (customerName: string, email: string) => void;
+  updateOrderStatus: (orderId: string, status: "pending" | "shipped" | "cancelled") => void;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -36,6 +37,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return saved ? JSON.parse(saved) : [];
   });
 
+  // Persist to localStorage
   useEffect(() => {
     localStorage.setItem("store_products", JSON.stringify(products));
   }, [products]);
@@ -48,6 +50,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem("store_cart", JSON.stringify(cart));
   }, [cart]);
 
+  // ---------- Product helpers ----------
   const addProduct = (product: Product) => {
     setProducts([...products, product]);
     showSuccess("Product added successfully");
@@ -65,18 +68,23 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const updateStock = (productId: string, quantity: number) => {
     setProducts(products.map(p => p.id === productId ? { ...p, stockQuantity: quantity } : p));
+    showSuccess("Stock updated");
   };
 
+  // ---------- Cart helpers ----------
   const addToCart = (productId: string) => {
     const product = products.find(p => p.id === productId);
-    if (!product || product.stockQuantity <= 0) return;
+    if (!product || product.stockQuantity <= 0) {
+      showError("Cannot add out‑of‑stock item");
+      return;
+    }
 
     setCart(prev => {
       const existing = prev.find(item => item.productId === productId);
       if (existing) {
-        return prev.map(item => 
-          item.productId === productId 
-            ? { ...item, quantity: item.quantity + 1 } 
+        return prev.map(item =>
+          item.productId === productId
+            ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       }
@@ -99,6 +107,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const clearCart = () => setCart([]);
 
+  // ---------- Order helpers ----------
   const createOrder = (customerName: string, email: string) => {
     const orderItems = cart.map(item => {
       const product = products.find(p => p.id === item.productId)!;
@@ -110,7 +119,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       };
     });
 
-    const totalAmount = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const totalAmount = orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
     const newOrder: Order = {
       id: `ORD-${Math.floor(Math.random() * 10000)}`,
@@ -123,8 +132,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
 
     setOrders([newOrder, ...orders]);
-    
-    // Update stock
+
+    // Reduce stock
     cart.forEach(item => {
       const product = products.find(p => p.id === item.productId)!;
       updateStock(item.productId, product.stockQuantity - item.quantity);
@@ -134,12 +143,30 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     showSuccess("Order placed successfully!");
   };
 
+  const updateOrderStatus = (orderId: string, status: "pending" | "shipped" | "cancelled") => {
+    setOrders(orders.map(o => (o.id === orderId ? { ...o, status } : o)));
+    showSuccess(`Order ${orderId} status updated to ${status}`);
+  };
+
+  // ---------- Provider ----------
   return (
-    <StoreContext.Provider value={{
-      products, orders, cart,
-      addProduct, updateProduct, deleteProduct, updateStock,
-      addToCart, removeFromCart, updateCartQuantity, clearCart, createOrder
-    }}>
+    <StoreContext.Provider
+      value={{
+        products,
+        orders,
+        cart,
+        addProduct,
+        updateProduct,
+        deleteProduct,
+        updateStock,
+        addToCart,
+        removeFromCart,
+        updateCartQuantity,
+        clearCart,
+        createOrder,
+        updateOrderStatus
+      }}
+    >
       {children}
     </StoreContext.Provider>
   );
