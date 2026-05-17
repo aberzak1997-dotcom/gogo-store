@@ -107,7 +107,7 @@ const HomePage = () => {
       <main className="flex-grow">
         {/* Hero Section */}
         {!categoryParam && !searchParam && (
-          <section className="relative py-12 md:py-20">
+          <section className="relative py-[10px]">
             <div className="section-container">
               <div className="relative overflow-hidden rounded-[10px] border border-slate-800 bg-slate-50 min-h-[500px] md:min-h-[600px] flex items-center">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070')] bg-cover bg-center opacity-10" />
