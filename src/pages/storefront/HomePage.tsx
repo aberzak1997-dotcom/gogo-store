@@ -300,22 +300,22 @@ const HomePage = () => {
 
         {/* Reasons to Buy */}
         {!categoryParam && !searchParam && (
-          <section className="py-24 border-t border-slate-50">
+          <section className="py-24 bg-slate-50/50 border-y border-slate-100">
             <div className="section-container">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                  { icon: Truck, title: "Free Shipping", desc: "On orders over $50" },
-                  { icon: ShieldCheck, title: "Secure Payment", desc: "100% encrypted" },
-                  { icon: RotateCcw, title: "Easy Returns", desc: "30-day window" },
-                  { icon: Star, title: "Warranty", desc: "1-year included" },
+                  { icon: Truck, title: "Free Shipping", desc: "On orders over $50", color: "bg-blue-50 text-blue-600" },
+                  { icon: ShieldCheck, title: "Secure Payment", desc: "100% encrypted", color: "bg-green-50 text-green-600" },
+                  { icon: RotateCcw, title: "Easy Returns", desc: "30-day window", color: "bg-orange-50 text-orange-600" },
+                  { icon: Star, title: "Warranty", desc: "1-year included", color: "bg-purple-50 text-purple-600" },
                 ].map((item, i) => (
-                  <div key={i} className="flex flex-col items-start gap-4">
-                    <div className="text-primary">
-                      <item.icon size={20} />
+                  <div key={i} className="group bg-white p-8 rounded-3xl border border-slate-100 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1">
+                    <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110", item.color)}>
+                      <item.icon size={24} />
                     </div>
-                    <div className="space-y-1">
-                      <h4 className="font-semibold text-sm text-slate-900">{item.title}</h4>
-                      <p className="text-xs text-slate-500">{item.desc}</p>
+                    <div className="space-y-2">
+                      <h4 className="font-bold text-base text-slate-900">{item.title}</h4>
+                      <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
