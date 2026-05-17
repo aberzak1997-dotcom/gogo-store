@@ -3,10 +3,10 @@
 import React, { useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Header from "../../components/layout/Header";
+import Footer from "../../components/layout/Footer";
 import ProductCard from "../../components/storefront/ProductCard";
 import { useStore } from "../../context/StoreContext";
 import { Button } from "@/components/ui/button";
-import { MadeWithDyad } from "@/components/made-with-dyad";
 import { 
   Truck, 
   ShieldCheck, 
@@ -50,10 +50,10 @@ const HomePage = () => {
   const deals = filteredProducts.filter(p => p.compareAtPrice).slice(0, 4);
 
   const categories = [
-    { name: "Phones", icon: Smartphone, color: "bg-blue-50 text-blue-600", path: "/?category=Phone Accessories" },
-    { name: "Laptops", icon: Laptop, color: "bg-purple-50 text-purple-600", path: "/?category=Laptop Accessories" },
-    { name: "Gaming", icon: Gamepad2, color: "bg-red-50 text-red-600", path: "/?category=Gaming Accessories" },
-    { name: "Storage", icon: HardDrive, color: "bg-emerald-50 text-emerald-600", path: "/?category=Storage Devices" },
+    { name: "Phones", icon: Smartphone, color: "bg-blue-50 text-blue-600", path: "/products?category=Phone Accessories" },
+    { name: "Laptops", icon: Laptop, color: "bg-purple-50 text-purple-600", path: "/products?category=Laptop Accessories" },
+    { name: "Gaming", icon: Gamepad2, color: "bg-red-50 text-red-600", path: "/products?category=Gaming Accessories" },
+    { name: "Storage", icon: HardDrive, color: "bg-emerald-50 text-emerald-600", path: "/products?category=Storage Devices" },
   ];
 
   return (
@@ -79,12 +79,16 @@ const HomePage = () => {
                   Discover the latest in high-performance electronics. From professional workstations to immersive gaming gear, we've got your future covered.
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <Button size="lg" className="rounded-full px-8 h-14 text-lg shadow-lg shadow-primary/20">
-                    Shop Collection
-                  </Button>
-                  <Button size="lg" variant="outline" className="rounded-full px-8 h-14 text-lg text-white border-white/20 hover:bg-white/10">
-                    View Deals
-                  </Button>
+                  <Link to="/products">
+                    <Button size="lg" className="rounded-full px-8 h-14 text-lg shadow-lg shadow-primary/20">
+                      Shop Collection
+                    </Button>
+                  </Link>
+                  <Link to="/deals">
+                    <Button size="lg" variant="outline" className="rounded-full px-8 h-14 text-lg text-white border-white/20 hover:bg-white/10">
+                      View Deals
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -238,57 +242,7 @@ const HomePage = () => {
         )}
       </main>
 
-      <footer className="bg-white border-t pt-20 pb-10">
-        <div className="section-container">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-            <div className="space-y-6">
-              <Link to="/" className="flex items-center space-x-2">
-                <div className="bg-primary p-1.5 rounded-lg">
-                  <Smartphone className="h-5 w-5 text-white" />
-                </div>
-                <span className="font-bold text-xl tracking-tight text-slate-900">ElectroStore</span>
-              </Link>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Your premier destination for high-end electronics and accessories. Quality tech, delivered to your door.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-900 mb-6">Shop</h4>
-              <ul className="space-y-4 text-sm text-slate-500">
-                <li><Link to="/" className="hover:text-primary transition-colors">All Products</Link></li>
-                <li><Link to="/" className="hover:text-primary transition-colors">New Arrivals</Link></li>
-                <li><Link to="/" className="hover:text-primary transition-colors">Best Sellers</Link></li>
-                <li><Link to="/" className="hover:text-primary transition-colors">Deals</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-900 mb-6">Support</h4>
-              <ul className="space-y-4 text-sm text-slate-500">
-                <li><Link to="/" className="hover:text-primary transition-colors">Contact Us</Link></li>
-                <li><Link to="/" className="hover:text-primary transition-colors">Shipping Policy</Link></li>
-                <li><Link to="/" className="hover:text-primary transition-colors">Returns & Exchanges</Link></li>
-                <li><Link to="/" className="hover:text-primary transition-colors">FAQs</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-slate-900 mb-6">Newsletter</h4>
-              <p className="text-sm text-slate-500 mb-4">Subscribe for exclusive offers and tech news.</p>
-              <div className="flex gap-2">
-                <input className="flex h-10 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none focus:border-primary transition-colors" placeholder="Email address" />
-                <Button className="rounded-xl">Join</Button>
-              </div>
-            </div>
-          </div>
-          <div className="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-sm text-slate-500">© 2024 ElectroStore. All rights reserved.</p>
-            <div className="flex items-center gap-6">
-              <Link to="/" className="text-xs text-slate-400 hover:text-slate-600">Privacy Policy</Link>
-              <Link to="/" className="text-xs text-slate-400 hover:text-slate-600">Terms of Service</Link>
-              <MadeWithDyad />
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

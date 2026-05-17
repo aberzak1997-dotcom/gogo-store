@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, Search, Menu, LayoutDashboard, X, Smartphone, Laptop, Headphones, Watch } from "lucide-react";
+import { ShoppingCart, Search, Menu, LayoutDashboard, X, Smartphone, Laptop, Headphones, Watch, Zap, Star } from "lucide-react";
 import { useStore } from "../../context/StoreContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,17 +21,17 @@ const Header = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/?q=${encodeURIComponent(searchQuery.trim())}`);
+      navigate(`/products?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery("");
       setIsMobileMenuOpen(false);
     }
   };
 
   const categories = [
-    { name: "Phones", icon: Smartphone, path: "/?category=Phone Accessories" },
-    { name: "Laptops", icon: Laptop, path: "/?category=Laptop Accessories" },
-    { name: "Audio", icon: Headphones, path: "/?category=Audio" },
-    { name: "Gaming", icon: Watch, path: "/?category=Gaming Accessories" },
+    { name: "Products", icon: Smartphone, path: "/products" },
+    { name: "New", icon: Zap, path: "/new-arrivals" },
+    { name: "Best Sellers", icon: Star, path: "/best-sellers" },
+    { name: "Deals", icon: Watch, path: "/deals" },
   ];
 
   return (
