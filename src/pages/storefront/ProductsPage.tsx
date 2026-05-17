@@ -8,7 +8,7 @@ import ProductCard from "../../components/storefront/ProductCard";
 import { useStore } from "../../context/StoreContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Filter, Smartphone, Laptop, Headphones, Gamepad2, HardDrive, X } from "lucide-react";
+import { Search, Filter, Smartphone, Laptop, Headphones, Gamepad2, HardDrive, X, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ProductsPage = () => {
