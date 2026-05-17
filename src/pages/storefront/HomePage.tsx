@@ -170,12 +170,12 @@ const HomePage = () => {
           <section className="py-16">
             <div className="section-container grid md:grid-cols-2 gap-8">
               <div className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-900 text-white p-10 min-h-[360px] flex flex-col justify-end">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center opacity-20 transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center" />
                 <div className="relative z-10 space-y-[15px]">
                   <h3 className="text-3xl font-semibold tracking-tight">
                     Gaming Essentials
                   </h3>
-                  <p className="text-slate-400 max-w-xs text-sm">
+                  <p className="text-slate-100 max-w-xs text-sm drop-shadow-md">
                     Pro-grade gear for the ultimate performance.
                   </p>
                   <Link to="/products?category=Gaming Accessories">
@@ -189,12 +189,12 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-10 min-h-[360px] flex flex-col justify-end">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=2071')] bg-cover bg-center opacity-[0.05] transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=2071')] bg-cover bg-center" />
                 <div className="relative z-10 space-y-[15px]">
                   <h3 className="text-3xl font-semibold tracking-tight text-slate-900">
                     Work Setup
                   </h3>
-                  <p className="text-slate-500 max-w-xs text-sm">
+                  <p className="text-slate-800 max-w-xs text-sm drop-shadow-sm">
                     Minimal accessories for maximum productivity.
                   </p>
                   <Link to="/products?category=Laptop Accessories">
