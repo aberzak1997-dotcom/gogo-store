@@ -110,9 +110,9 @@ const HomePage = () => {
       <main className="flex-grow">
         {/* Hero Section */}
         {!categoryParam && !searchParam && (
-          <section className="relative pt-0 mb-[5px] px-2">
+          <section className="relative pt-0 mb-[5px] px-[2px]">
             <div className="w-full">
-              <div className="relative overflow-hidden border border-slate-100 rounded-2xl bg-slate-900 min-h-[500px] md:min-h-[600px] flex items-center w-full py-5">
+              <div className="relative overflow-hidden rounded-2xl bg-slate-900 min-h-[500px] md:min-h-[600px] flex items-center w-full py-5">
                 {/* YouTube Video Background */}
                 <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
                   <iframe
@@ -168,7 +168,7 @@ const HomePage = () => {
         {/* Promo Campaign Cards */}
         {!categoryParam && !searchParam && (
           <section className="py-0 mx-[5px]">
-            <div className="w-full grid md:grid-cols-2 gap-[5px]">
+            <div className="w-full grid md:grid-cols-2 gap-[5px] px-[2px]">
               <div className="group relative overflow-hidden border border-slate-100 bg-slate-900 text-white p-10 min-h-[360px] flex flex-col justify-end">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center scale-[1.02]" />
                 <div className="absolute inset-0 bg-black/40" />
