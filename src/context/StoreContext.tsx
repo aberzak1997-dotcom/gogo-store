@@ -15,7 +15,14 @@ interface StoreContextType {
   removeFromCart: (productId: string) => void;
   updateCartQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
-  createOrder: (customerName: string, email: string) => void;
+  createOrder: (orderInput: {
+    customerName: string;
+    email: string;
+    phone: string;
+    address: string;
+    city: string;
+    country: string;
+  }) => string | null; // returns order ID or null on failure
   updateOrderStatus: (orderId: string, status: "pending" | "shipped" | "cancelled") => void;
 }
 
@@ -49,6 +56,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem("store_cart", JSON.stringify(cart));
   }, [cart]);
 
+  // ---------- Product CRUD ----------
   const addProduct = (product: Product) => {
     setProducts([...products, product]);
     showSuccess("Product added successfully");
@@ -69,13 +77,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     showSuccess("Stock updated");
   };
 
+  // ---------- Cart ----------
   const addToCart = (productId: string, quantity: number = 1) => {
     const product = products.find(p => p.id === productId);
     if (!product || product.status !== "active") {
       showError("Product is currently unavailable");
       return;
     }
-
     if (product.stockQuantity <= 0) {
       showError("Item is out of stock");
       return;
@@ -92,12 +100,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
 
       showSuccess(existing ? "Cart updated" : "Added to cart");
-      
       if (existing) {
         return prev.map(item =>
-          item.productId === productId
-            ? { ...item, quantity: newQty }
-            : item
+          item.productId === productId ? { ...item, quantity: newQty } : item
         );
       }
       return [...prev, { productId, quantity }];
@@ -111,59 +116,100 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const updateCartQuantity = (productId: string, quantity: number) => {
     const product = products.find(p => p.id === productId);
-    
     if (quantity <= 0) {
       removeFromCart(productId);
       return;
     }
-
     if (product && quantity > product.stockQuantity) {
       showError(`Only ${product.stockQuantity} units available`);
       return;
     }
-
     setCart(cart.map(item => item.productId === productId ? { ...item, quantity } : item));
   };
 
   const clearCart = () => setCart([]);
 
-  const createOrder = (customerName: string, email: string) => {
+  // ---------- Order ----------
+  const createOrder = ({
+    customerName,
+    email,
+    phone,
+    address,
+    city,
+    country,
+  }: {
+    customerName: string;
+    email: string;
+    phone: string;
+    address: string;
+    city: string;
+    country: string;
+  }): string | null => {
+    // Validate cart not empty
+    if (cart.length === 0) {
+      showError("Your cart is empty");
+      return null;
+    }
+
+    // Validate each cart item against current stock & status
+    for (const item of cart) {
+      const product = products.find(p => p.id === item.productId);
+      if (!product) {
+        showError("A product in your cart no longer exists");
+        return null;
+      }
+      if (product.status !== "active") {
+        showError(`"${product.title}" is no longer available`);
+        return null;
+      }
+      if (product.stockQuantity < item.quantity) {
+        showError(`Insufficient stock for "${product.title}"`);
+        return null;
+      }
+    }
+
+    // Build order items
     const orderItems = cart.map(item => {
       const product = products.find(p => p.id === item.productId)!;
       return {
         productId: item.productId,
         title: product.title,
         quantity: item.quantity,
-        price: product.price
+        price: product.price,
       };
     });
 
-    const totalAmount = orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const subtotal = orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const shipping = subtotal > 100 ? 0 : 9.99; // simple rule
+    const tax = Math.round(subtotal * 0.07 * 100) / 100; // 7% tax
+    const totalAmount = subtotal + shipping + tax;
 
     const newOrder: Order = {
-      id: `ORD-${Math.floor(Math.random() * 10000)}`,
+      id: `ORD-${Math.floor(Math.random() * 1000000)}`,
       customerName,
       email,
       date: new Date().toISOString(),
       status: "pending",
       totalAmount,
-      items: orderItems
+      items: orderItems,
     };
 
+    // Reduce stock
+    const updatedProducts = products.map(p => {
+      const cartItem = cart.find(ci => ci.productId === p.id);
+      if (cartItem) {
+        return { ...p, stockQuantity: p.stockQuantity - cartItem.quantity };
+      }
+      return p;
+    });
+
+    // Persist
     setOrders([newOrder, ...orders]);
-
-    setProducts(prevProducts => 
-      prevProducts.map(p => {
-        const cartItem = cart.find(item => item.productId === p.id);
-        if (cartItem) {
-          return { ...p, stockQuantity: p.stockQuantity - cartItem.quantity };
-        }
-        return p;
-      })
-    );
-
+    setProducts(updatedProducts);
     clearCart();
-    showSuccess("Order placed successfully!");
+
+    showSuccess(`Order ${newOrder.id} placed successfully`);
+    return newOrder.id;
   };
 
   const updateOrderStatus = (orderId: string, status: "pending" | "shipped" | "cancelled") => {
@@ -186,7 +232,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         updateCartQuantity,
         clearCart,
         createOrder,
-        updateOrderStatus
+        updateOrderStatus,
       }}
     >
       {children}
