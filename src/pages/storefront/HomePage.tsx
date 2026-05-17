@@ -101,38 +101,37 @@ const HomePage = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white font-sans">
       <Header />
       
       <main className="flex-grow">
         {/* Hero Section */}
         {!categoryParam && !searchParam && (
-          <section className="relative py-[10px] px-[2px]">
+          <section className="relative py-4 px-2">
             <div className="w-full">
-              <div className="relative overflow-hidden border border-slate-800 rounded-[10px] bg-slate-50 min-h-[500px] md:min-h-[600px] flex items-center w-full">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070')] bg-cover bg-center opacity-10" />
-                <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/80 to-transparent" />
+              <div className="relative overflow-hidden border border-slate-100 rounded-2xl bg-slate-50/50 min-h-[500px] md:min-h-[600px] flex items-center w-full">
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070')] bg-cover bg-center opacity-[0.03]" />
                 
-                <div className="relative z-10 px-8 md:px-20 max-w-3xl space-y-8">
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-900 text-[10px] font-black uppercase tracking-widest shadow-sm">
-                    <Zap size={14} className="text-primary" /> Next-Gen Tech is Here
+                <div className="relative z-10 px-8 md:px-20 max-w-3xl space-y-6">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-100 text-slate-600 text-[11px] font-medium uppercase tracking-wider shadow-sm">
+                    <Zap size={12} className="text-primary" /> Next-Gen Tech
                   </div>
-                  <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-[0.9]">
-                    UPGRADE YOUR <br />
-                    <span className="text-primary">TECH SETUP</span>
+                  <h1 className="text-5xl md:text-7xl font-semibold text-slate-900 tracking-tight leading-[1.1]">
+                    Upgrade your <br />
+                    <span className="text-primary">tech setup.</span>
                   </h1>
-                  <p className="text-lg md:text-xl text-slate-500 leading-relaxed font-medium max-w-xl">
-                    Discover premium electronics, mobile accessories, and PC gear built for work, play, and everyday life.
+                  <p className="text-lg text-slate-500 leading-relaxed font-normal max-w-lg">
+                    Premium electronics and accessories designed for modern life. Minimal design, maximum performance.
                   </p>
-                  <div className="flex flex-wrap gap-4 pt-4">
+                  <div className="flex flex-wrap gap-4 pt-2">
                     <Link to="/products">
-                      <Button size="lg" className="rounded-full px-10 h-14 text-sm font-black uppercase tracking-widest shadow-xl shadow-primary/20">
-                        Shop Now
+                      <Button size="lg" className="rounded-xl px-8 h-12 text-sm font-medium shadow-sm">
+                        Shop Collection
                       </Button>
                     </Link>
                     <Link to="/deals">
-                      <Button size="lg" variant="outline" className="rounded-full px-10 h-14 text-sm font-black uppercase tracking-widest border-slate-200 bg-white hover:bg-slate-50">
-                        Explore Deals
+                      <Button size="lg" variant="outline" className="rounded-xl px-8 h-12 text-sm font-medium border-slate-200 bg-white">
+                        View Deals
                       </Button>
                     </Link>
                   </div>
@@ -144,25 +143,25 @@ const HomePage = () => {
 
         {/* Promo Campaign Cards */}
         {!categoryParam && !searchParam && (
-          <section className="pb-20">
-            <div className="section-container grid md:grid-cols-2 gap-[5px]">
-              <div className="group relative overflow-hidden rounded-[10px] border border-slate-800 bg-slate-900 text-white p-12 min-h-[400px] flex flex-col justify-center">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center opacity-30 transition-transform duration-700 group-hover:scale-110" />
-                <div className="relative z-10 space-y-6">
-                  <h3 className="text-4xl font-black tracking-tight">Gaming Essentials</h3>
-                  <p className="text-slate-400 max-w-xs font-medium">Level up your performance with our pro-grade gaming gear.</p>
+          <section className="py-12">
+            <div className="section-container grid md:grid-cols-2 gap-6">
+              <div className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-900 text-white p-10 min-h-[360px] flex flex-col justify-end">
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center opacity-20 transition-transform duration-700 group-hover:scale-105" />
+                <div className="relative z-10 space-y-4">
+                  <h3 className="text-3xl font-semibold tracking-tight">Gaming Essentials</h3>
+                  <p className="text-slate-400 max-w-xs text-sm">Pro-grade gear for the ultimate performance.</p>
                   <Link to="/products?category=Gaming Accessories">
-                    <Button variant="secondary" className="rounded-full px-8 font-black uppercase tracking-widest text-[10px]">Shop Gaming</Button>
+                    <Button variant="secondary" className="rounded-lg px-6 h-10 text-xs font-medium">Explore</Button>
                   </Link>
                 </div>
               </div>
-              <div className="group relative overflow-hidden rounded-[10px] border border-slate-800 bg-primary text-white p-12 min-h-[400px] flex flex-col justify-center">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=2071')] bg-cover bg-center opacity-20 transition-transform duration-700 group-hover:scale-110" />
-                <div className="relative z-10 space-y-6">
-                  <h3 className="text-4xl font-black tracking-tight">Work From Anywhere</h3>
-                  <p className="text-primary-foreground/80 max-w-xs font-medium">Premium accessories designed for maximum productivity and comfort.</p>
+              <div className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-10 min-h-[360px] flex flex-col justify-end">
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=2071')] bg-cover bg-center opacity-[0.05] transition-transform duration-700 group-hover:scale-105" />
+                <div className="relative z-10 space-y-4">
+                  <h3 className="text-3xl font-semibold tracking-tight text-slate-900">Work Setup</h3>
+                  <p className="text-slate-500 max-w-xs text-sm">Minimal accessories for maximum productivity.</p>
                   <Link to="/products?category=Laptop Accessories">
-                    <Button variant="secondary" className="rounded-full px-8 font-black uppercase tracking-widest text-[10px]">Shop Productivity</Button>
+                    <Button variant="outline" className="rounded-lg px-6 h-10 text-xs font-medium border-slate-200 bg-white">Explore</Button>
                   </Link>
                 </div>
               </div>
@@ -172,20 +171,23 @@ const HomePage = () => {
 
         {/* Popular Categories */}
         {!categoryParam && !searchParam && (
-          <section className="py-20 bg-slate-50/50">
+          <section className="py-20">
             <div className="section-container">
-              <div className="text-center mb-16 space-y-4">
-                <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Shop by Category</h2>
-                <p className="text-slate-500 font-medium">Find exactly what you're looking for</p>
+              <div className="flex items-end justify-between mb-12">
+                <div className="space-y-1">
+                  <h2 className="text-3xl font-semibold text-slate-900">Categories</h2>
+                  <p className="text-slate-500 text-sm">Find gear by category</p>
+                </div>
+                <Link to="/products" className="text-sm font-medium text-primary hover:underline">View all</Link>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-[5px]">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {categories.map((cat) => (
                   <Link key={cat.name} to={cat.path} className="group">
-                    <div className="bg-slate-100 p-8 rounded-[10px] border border-slate-800 flex flex-col items-center justify-center gap-6 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl group-hover:border-primary/20 h-full">
-                      <div className="w-24 h-24 rounded-[10px] border border-slate-800 bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 p-4 shadow-sm">
-                        <img src={cat.image} alt={cat.name} className="w-full h-full object-contain" />
+                    <div className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100 flex flex-col items-center justify-center gap-4 transition-all duration-300 hover:bg-white hover:shadow-sm hover:border-slate-200 h-full">
+                      <div className="w-16 h-16 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                        <img src={cat.image} alt={cat.name} className="w-full h-full object-contain grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
                       </div>
-                      <span className="font-black text-xs uppercase tracking-widest text-slate-900">{cat.name}</span>
+                      <span className="font-medium text-xs text-slate-600 group-hover:text-slate-900">{cat.name}</span>
                     </div>
                   </Link>
                 ))}
@@ -195,37 +197,33 @@ const HomePage = () => {
         )}
 
         {/* Featured Products */}
-        <section className="py-24">
+        <section className="py-20">
           <div className="section-container">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-              <div className="space-y-2">
-                <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">
-                  {categoryParam ? categoryParam : searchParam ? `Search: "${searchParam}"` : "Featured Products"}
+              <div className="space-y-1">
+                <h2 className="text-3xl font-semibold text-slate-900">
+                  {categoryParam ? categoryParam : searchParam ? `Search: "${searchParam}"` : "Featured"}
                 </h2>
-                <p className="text-slate-500 font-medium">
-                  {filteredProducts.length} products found
+                <p className="text-slate-500 text-sm">
+                  {filteredProducts.length} items available
                 </p>
               </div>
               {(categoryParam || searchParam) && (
                 <Link to="/">
-                  <Button variant="ghost" className="gap-2 font-black text-[10px] uppercase tracking-widest text-primary hover:bg-primary/5">
-                    Clear Filters <X size={14} />
+                  <Button variant="ghost" className="gap-2 text-xs font-medium text-slate-500">
+                    Clear filters <X size={14} />
                   </Button>
                 </Link>
               )}
             </div>
             
             {filteredProducts.length === 0 ? (
-              <div className="py-32 text-center bg-slate-50 rounded-[10px] border border-dashed border-slate-800">
-                <Smartphone className="mx-auto h-16 w-16 text-slate-200 mb-4" />
-                <h3 className="text-2xl font-black text-slate-900">No products found</h3>
-                <p className="text-slate-500 mt-2">Try adjusting your search or filters.</p>
-                <Link to="/">
-                  <Button className="mt-8 rounded-full px-8 font-black uppercase tracking-widest text-[10px]">Back to Home</Button>
-                </Link>
+              <div className="py-24 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                <h3 className="text-xl font-medium text-slate-900">No items found</h3>
+                <p className="text-slate-500 mt-1 text-sm">Try a different search term.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[5px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {featuredProducts.map(product => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -234,119 +232,27 @@ const HomePage = () => {
           </div>
         </section>
 
-        {/* Best Sellers Section */}
-        {!categoryParam && !searchParam && bestSellers.length > 0 && (
-          <section className="py-24 bg-slate-50/50">
-            <div className="section-container">
-              <div className="flex items-center justify-between mb-12">
-                <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Best Sellers</h2>
-                <Link to="/best-sellers">
-                  <Button variant="ghost" className="gap-2 font-black text-[10px] uppercase tracking-widest text-primary">View All <ArrowRight size={14} /></Button>
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[5px]">
-                {bestSellers.map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Deals Section */}
-        {!categoryParam && !searchParam && deals.length > 0 && (
-          <section className="py-24 bg-slate-900 text-white overflow-hidden">
-            <div className="section-container">
-              <div className="flex items-center justify-between mb-12">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary rounded-lg">
-                    <Zap size={20} fill="white" />
-                  </div>
-                  <h2 className="text-4xl font-black tracking-tight uppercase">Flash Deals</h2>
-                </div>
-                <Link to="/deals">
-                  <Button variant="ghost" className="gap-2 font-black text-[10px] uppercase tracking-widest text-white hover:bg-white/10">View All <ArrowRight size={14} /></Button>
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[5px]">
-                {deals.map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
         {/* Reasons to Buy */}
         {!categoryParam && !searchParam && (
-          <section className="py-24">
+          <section className="py-20 border-t border-slate-50">
             <div className="section-container">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
                 {[
                   { icon: Truck, title: "Free Shipping", desc: "On orders over $50" },
-                  { icon: ShieldCheck, title: "Secure Checkout", desc: "100% encrypted" },
+                  { icon: ShieldCheck, title: "Secure Payment", desc: "100% encrypted" },
                   { icon: RotateCcw, title: "Easy Returns", desc: "30-day window" },
                   { icon: Star, title: "Warranty", desc: "1-year included" },
-                  { icon: Headphones, title: "Fast Support", desc: "24/7 tech team" },
-                  { icon: Zap, title: "Exclusive Deals", desc: "Member rewards" },
                 ].map((item, i) => (
-                  <div key={i} className="flex flex-col items-center text-center gap-4">
-                    <div className="w-14 h-14 rounded-[10px] border border-slate-800 bg-slate-50 flex items-center justify-center text-primary">
-                      <item.icon size={24} />
+                  <div key={i} className="flex flex-col items-start gap-3">
+                    <div className="text-primary">
+                      <item.icon size={20} />
                     </div>
                     <div>
-                      <h4 className="font-black text-[10px] uppercase tracking-widest text-slate-900">{item.title}</h4>
-                      <p className="text-[10px] text-slate-400 font-bold mt-1">{item.desc}</p>
+                      <h4 className="font-semibold text-sm text-slate-900">{item.title}</h4>
+                      <p className="text-xs text-slate-500 mt-0.5">{item.desc}</p>
                     </div>
                   </div>
                 ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Quality Section */}
-        {!categoryParam && !searchParam && (
-          <section className="py-24 bg-slate-50/30">
-            <div className="section-container">
-              <div className="bg-white rounded-[10px] p-12 md:p-24 border border-slate-800 shadow-sm relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50 -skew-x-12 translate-x-1/4" />
-                <div className="relative z-10 grid md:grid-cols-2 gap-16 items-center">
-                  <div className="space-y-8">
-                    <h2 className="text-5xl font-black text-slate-900 tracking-tighter leading-[0.9]">
-                      BUILT FOR BETTER <br />
-                      <span className="text-primary">EVERYDAY TECH</span>
-                    </h2>
-                    <p className="text-lg text-slate-500 leading-relaxed font-medium">
-                      Carefully selected accessories designed for reliability, comfort, and performance. We believe in tech that enhances your life without complicating it.
-                    </p>
-                    <div className="grid grid-cols-2 gap-6">
-                      {[
-                        "Premium Materials",
-                        "Rigorous Testing",
-                        "Ergonomic Design",
-                        "Sustainable Choices"
-                      ].map((text, i) => (
-                        <div key={i} className="flex items-center gap-3">
-                          <CheckCircle2 size={18} className="text-primary" />
-                          <span className="text-sm font-bold text-slate-700">{text}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <Link to="/about">
-                      <Button className="rounded-full px-10 h-14 text-sm font-black uppercase tracking-widest shadow-xl shadow-primary/20">
-                        Our Story
-                      </Button>
-                    </Link>
-                  </div>
-                  <div className="hidden md:block">
-                    <img 
-                      src="https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=2070" 
-                      alt="Tech Quality" 
-                      className="rounded-[10px] border border-slate-800 shadow-2xl rotate-2"
-                    />
-                  </div>
-                </div>
               </div>
             </div>
           </section>
