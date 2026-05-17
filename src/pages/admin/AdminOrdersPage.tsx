@@ -41,8 +41,6 @@ const AdminOrdersPage = () => {
     result.sort((a, b) => {
       if (sortBy === "newest") return new Date(b.date).getTime() - new Date(a.date).getTime();
       if (sortBy === "oldest") return new Date(a.date).getTime() - new Date(b.date).getTime();
-      if (sortBy === "total-high") return b.totalAmount - a.totalAmount;
-      if (sortBy === "total-low") return a.totalAmount - b.totalAmount;
       return 0;
     });
 
@@ -108,8 +106,6 @@ const AdminOrdersPage = () => {
                 <SelectContent>
                   <SelectItem value="newest">Newest First</SelectItem>
                   <SelectItem value="oldest">Oldest First</SelectItem>
-                  <SelectItem value="total-high">Total High → Low</SelectItem>
-                  <SelectItem value="total-low">Total Low → High</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -126,14 +122,13 @@ const AdminOrdersPage = () => {
                 <TableHead>Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Total</TableHead>
-                <TableHead>Items</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredOrders.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-12 text-slate-500">
+                  <TableCell colSpan={6} className="text-center py-12 text-slate-500">
                     No orders match your criteria.
                   </TableCell>
                 </TableRow>
@@ -148,7 +143,6 @@ const AdminOrdersPage = () => {
                     <TableCell className="text-sm">{new Date(order.date).toLocaleDateString()}</TableCell>
                     <TableCell>{getStatusBadge(order.status)}</TableCell>
                     <TableCell className="font-bold">${order.totalAmount.toFixed(2)}</TableCell>
-                    <TableCell className="text-center">{order.items.length}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button
@@ -179,22 +173,33 @@ const AdminOrdersPage = () => {
                 Review items and update status if needed.
               </DialogDescription>
             </DialogHeader>
-            {detailOrder && (
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <p className="font-medium">Customer</p>
-                    <p>{detailOrder.customerName}</p>
-                    <p className="text-sm text-muted-foreground">{detailOrder.email}</p>
-                  </div>
-                  <div>
-                    <p className="font-medium">Date</p>
-                    <p>{new Date(detailOrder.date).toLocaleString()}</p>
-                  </div>
-                </div>
 
-                <div className="border rounded-lg p-4">
-                  <p className="font-medium mb-2">Items</p>
+            {detailOrder && (
+              <div className="space-y-6">
+                {/* Customer Information */}
+                <section className="border-b pb-4">
+                  <h3 className="text-lg font-semibold mb-2">Customer Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                    <p><span className="font-medium">Name:</span> {detailOrder.customerName}</p>
+                    <p><span className="font-medium">Email:</span> {detailOrder.email}</p>
+                    {detailOrder.phone && (
+                      <p><span className="font-medium">Phone:</span> {detailOrder.phone}</p>
+                    )}
+                    {detailOrder.address && (
+                      <p><span className="font-medium">Address:</span> {detailOrder.address}</p>
+                    )}
+                    {detailOrder.city && (
+                      <p><span className="font-medium">City:</span> {detailOrder.city}</p>
+                    )}
+                    {detailOrder.country && (
+                      <p><span className="font-medium">Country:</span> {detailOrder.country}</p>
+                    )}
+                  </div>
+                </section>
+
+                {/* Order Items */}
+                <section className="space-y-4">
+                  <h3 className="text-lg font-semibold mb-2">Items</h3>
                   <Table>
                     <TableHeader>
                       <TableRow className="bg-slate-50">
@@ -217,9 +222,10 @@ const AdminOrdersPage = () => {
                       ))}
                     </TableBody>
                   </Table>
-                </div>
+                </section>
 
-                <div className="flex items-center justify-between">
+                {/* Summary & Status */}
+                <div className="flex items-center justify-between pt-4">
                   <p className="text-xl font-bold">Total: ${detailOrder.totalAmount.toFixed(2)}</p>
                   <Select value={statusEdit} onValueChange={setStatusEdit}>
                     <SelectTrigger className="w-[150px]">
@@ -234,6 +240,7 @@ const AdminOrdersPage = () => {
                 </div>
               </div>
             )}
+
             <DialogFooter className="gap-2">
               <Button variant="outline" onClick={() => setDetailOrder(null)}>Close</Button>
               {detailOrder && (
