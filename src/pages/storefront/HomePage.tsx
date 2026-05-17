@@ -151,7 +151,7 @@ const HomePage = () => {
                   <h3 className="text-3xl font-semibold tracking-tight">Gaming Essentials</h3>
                   <p className="text-slate-400 max-w-xs text-sm">Pro-grade gear for the ultimate performance.</p>
                   <Link to="/products?category=Gaming Accessories">
-                    <Button variant="secondary" className="rounded-lg px-6 h-10 text-xs font-medium">Explore</Button>
+                    <Button variant="secondary" className="rounded-lg px-6 h-10 text-xs font-medium mt-[15px]">Explore</Button>
                   </Link>
                 </div>
               </div>
@@ -161,7 +161,7 @@ const HomePage = () => {
                   <h3 className="text-3xl font-semibold tracking-tight text-slate-900">Work Setup</h3>
                   <p className="text-slate-500 max-w-xs text-sm">Minimal accessories for maximum productivity.</p>
                   <Link to="/products?category=Laptop Accessories">
-                    <Button variant="outline" className="rounded-lg px-6 h-10 text-xs font-medium border-slate-200 bg-white">Explore</Button>
+                    <Button variant="outline" className="rounded-lg px-6 h-10 text-xs font-medium border-slate-200 bg-white mt-[15px]">Explore</Button>
                   </Link>
                 </div>
               </div>
