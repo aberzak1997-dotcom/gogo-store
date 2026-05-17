@@ -109,7 +109,7 @@ const HomePage = () => {
         {!categoryParam && !searchParam && (
           <section className="relative py-12 md:py-20">
             <div className="section-container">
-              <div className="relative overflow-hidden rounded-[3rem] bg-slate-50 min-h-[500px] md:min-h-[600px] flex items-center">
+              <div className="relative overflow-hidden rounded-[10px] border border-slate-800 bg-slate-50 min-h-[500px] md:min-h-[600px] flex items-center">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070')] bg-cover bg-center opacity-10" />
                 <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/80 to-transparent" />
                 
@@ -182,7 +182,7 @@ const HomePage = () => {
                 {categories.map((cat) => (
                   <Link key={cat.name} to={cat.path} className="group">
                     <div className="bg-slate-100 p-8 rounded-[10px] border border-slate-800 flex flex-col items-center justify-center gap-6 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl group-hover:border-primary/20 h-full">
-                      <div className="w-24 h-24 rounded-2xl bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 p-4 shadow-sm">
+                      <div className="w-24 h-24 rounded-[10px] border border-slate-800 bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 p-4 shadow-sm">
                         <img src={cat.image} alt={cat.name} className="w-full h-full object-contain" />
                       </div>
                       <span className="font-black text-xs uppercase tracking-widest text-slate-900">{cat.name}</span>
@@ -291,7 +291,7 @@ const HomePage = () => {
                   { icon: Zap, title: "Exclusive Deals", desc: "Member rewards" },
                 ].map((item, i) => (
                   <div key={i} className="flex flex-col items-center text-center gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center text-primary">
+                    <div className="w-14 h-14 rounded-[10px] border border-slate-800 bg-slate-50 flex items-center justify-center text-primary">
                       <item.icon size={24} />
                     </div>
                     <div>
