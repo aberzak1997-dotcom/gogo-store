@@ -316,7 +316,7 @@ const AdminOrdersPage = () => {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {detailOrder.items.map((item, i) => (
+                          {(detailOrder.items || []).map((item, i) => (
                             <TableRow key={i}>
                               <TableCell className="pl-6 font-bold text-slate-900">{item.title}</TableCell>
                               <TableCell className="text-center font-medium">{item.quantity}</TableCell>
@@ -334,7 +334,7 @@ const AdminOrdersPage = () => {
                       <Clock size={18} className="text-primary" /> Order Timeline
                     </h3>
                     <div className="space-y-6 pl-4 border-l-2 border-slate-100 ml-2">
-                      {detailOrder.timeline.map((event, i) => (
+                      {(detailOrder.timeline || []).map((event, i) => (
                         <div key={i} className="relative">
                           <div className="absolute -left-[25px] top-1 w-4 h-4 rounded-full bg-white border-2 border-primary" />
                           <div>
