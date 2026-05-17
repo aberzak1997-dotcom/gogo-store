@@ -18,7 +18,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(product, 1);
+    addToCart(product.id, 1);
     toast.success(`${product.title} added to cart`);
   };
 
@@ -34,7 +34,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       {/* Image Container */}
       <div className="relative aspect-square overflow-hidden bg-slate-50">
         <img
-          src={product.images[0]}
+          src={product.imageUrl}
           alt={product.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
@@ -46,9 +46,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
               -{discount}%
             </span>
           )}
-          {product.isNew && (
-            <span className="bg-primary text-white text-[10px] font-bold px-2 py-1 uppercase tracking-wider">
-              New
+          {product.stockQuantity === 0 && (
+            <span className="bg-slate-900 text-white text-[10px] font-bold px-2 py-1 uppercase tracking-wider">
+              Sold Out
             </span>
           )}
         </div>
@@ -60,6 +60,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             variant="secondary"
             className="rounded-full w-10 h-10 bg-white hover:bg-primary hover:text-white transition-colors"
             onClick={handleAddToCart}
+            disabled={product.stockQuantity === 0}
           >
             <ShoppingCart size={18} />
           </Button>
