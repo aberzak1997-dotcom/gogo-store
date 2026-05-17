@@ -7,103 +7,105 @@ import Footer from "../../components/layout/Footer";
 import ProductCard from "../../components/storefront/ProductCard";
 import { useStore } from "../../context/StoreContext";
 import { Button } from "@/components/ui/button";
-import { 
-  Truck, 
-  ShieldCheck, 
-  RotateCcw, 
-  Headphones, 
-  ArrowRight, 
-  Zap, 
-  Smartphone, 
-  Laptop, 
-  Gamepad2, 
-  HardDrive,
+import {
+  Truck,
+  ShieldCheck,
+  RotateCcw,
+  Zap,
+  X,
   Keyboard,
   MousePointer2,
+  Headphones,
   Video,
+  BatteryCharging,
+  HardDrive,
+  Gamepad2,
+  Laptop,
+  Smartphone,
   Star,
-  CheckCircle2,
-  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const HomePage = () => {
   const { products } = useStore();
   const [searchParams] = useSearchParams();
-  
+
   const categoryParam = searchParams.get("category");
   const searchParam = searchParams.get("q");
 
   const filteredProducts = useMemo(() => {
-    let result = products.filter(p => p.status === "active");
-    
+    let result = products.filter((p) => p.status === "active");
+
     if (categoryParam) {
-      result = result.filter(p => p.category === categoryParam);
+      result = result.filter((p) => p.category === categoryParam);
     }
-    
+
     if (searchParam) {
       const s = searchParam.toLowerCase();
-      result = result.filter(p => 
-        p.title.toLowerCase().includes(s) || 
-        p.brand.toLowerCase().includes(s) || 
-        p.description.toLowerCase().includes(s)
+      result = result.filter(
+        (p) =>
+          p.title.toLowerCase().includes(s) ||
+          p.brand.toLowerCase().includes(s) ||
+          p.description.toLowerCase().includes(s)
       );
     }
-    
+
     return result;
   }, [products, categoryParam, searchParam]);
 
   const featuredProducts = filteredProducts.slice(0, 8);
-  const bestSellers = [...filteredProducts].sort((a, b) => b.reviewCount - a.reviewCount).slice(0, 4);
-  const deals = filteredProducts.filter(p => p.compareAtPrice).slice(0, 4);
+  const bestSellers = [...filteredProducts]
+    .sort((a, b) => b.reviewCount - a.reviewCount)
+    .slice(0, 4);
+  const deals = filteredProducts.filter((p) => p.compareAtPrice).slice(0, 4);
 
   const categories = [
-    { 
-      name: "Keyboards", 
-      image: "https://www.pngall.com/wp-content/uploads/2/Keyboard-PNG-Free-Download.png", 
-      path: "/products?category=Gaming Accessories" 
+    {
+      name: "Keyboards",
+      icon: Keyboard,
+      path: "/products?category=Gaming Accessories",
     },
-    { 
-      name: "Mice", 
-      image: "https://www.pngall.com/wp-content/uploads/2016/03/Mouse-PNG-HD.png", 
-      path: "/products?category=PC Accessories" 
+    {
+      name: "Mice",
+      icon: MousePointer2,
+      path: "/products?category=PC Accessories",
     },
-    { 
-      name: "Headsets", 
-      image: "https://www.pngall.com/wp-content/uploads/2016/05/Headphone-PNG-Image.png", 
-      path: "/products?category=Audio" 
+    {
+      name: "Headsets",
+      icon: Headphones,
+      path: "/products?category=Audio",
     },
-    { 
-      name: "Webcams", 
-      image: "https://www.pngall.com/wp-content/uploads/2016/05/Webcam-PNG-Clipart.png", 
-      path: "/products?category=PC Accessories" 
+    {
+      name: "Webcams",
+      icon: Video,
+      path: "/products?category=PC Accessories",
     },
-    { 
-      name: "Chargers", 
-      image: "https://www.pngall.com/wp-content/uploads/2016/04/Charger-PNG-File.png", 
-      path: "/products?category=Chargers & Cables" 
+    {
+      name: "Chargers",
+      icon: BatteryCharging,
+      path: "/products?category=Chargers & Cables",
     },
-    { 
-      name: "Storage", 
-      image: "https://www.pngall.com/wp-content/uploads/2016/03/Hard-Drive-PNG-File.png", 
-      path: "/products?category=Storage Devices" 
+    {
+      name: "Storage",
+      icon: HardDrive,
+      path: "/products?category=Storage Devices",
     },
-    { 
-      name: "Gaming", 
-      image: "https://www.pngall.com/wp-content/uploads/2/Joystick-PNG-High-Quality-Image.png", 
-      path: "/products?category=Gaming Accessories" 
+    {
+      name: "Gaming",
+      icon: Gamepad2,
+      path: "/products?category=Gaming Accessories",
     },
-    { 
-      name: "Laptops", 
-      image: "https://www.pngall.com/wp-content/uploads/2016/03/Laptop-PNG-Image.png", 
-      path: "/products?category=Laptop Accessories" 
+    {
+      name: "Laptops",
+      icon: Laptop,
+      path: "/products?category=Laptop Accessories",
     },
   ];
 
   return (
     <div className="min-h-screen flex flex-col bg-white font-sans">
       <Header />
-      
+
       <main className="flex-grow">
         {/* Hero Section */}
         {!categoryParam && !searchParam && (
@@ -111,7 +113,7 @@ const HomePage = () => {
             <div className="w-full">
               <div className="relative overflow-hidden border border-slate-100 rounded-2xl bg-slate-50/50 min-h-[500px] md:min-h-[600px] flex items-center w-full py-5">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070')] bg-cover bg-center opacity-[0.03]" />
-                
+
                 <div className="relative z-10 px-8 md:px-20 max-w-3xl space-y-8">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-100 text-slate-600 text-[11px] font-medium uppercase tracking-wider shadow-sm">
                     <Zap size={12} className="text-primary" /> Next-Gen Tech
@@ -121,16 +123,24 @@ const HomePage = () => {
                     <span className="text-primary">tech setup.</span>
                   </h1>
                   <p className="text-lg text-slate-500 leading-relaxed font-normal max-w-lg">
-                    Premium electronics and accessories designed for modern life. Minimal design, maximum performance.
+                    Premium electronics and accessories designed for modern
+                    life. Minimal design, maximum performance.
                   </p>
                   <div className="flex flex-wrap gap-4 pt-2">
                     <Link to="/products">
-                      <Button size="lg" className="rounded-full px-8 h-12 text-sm font-medium shadow-sm bg-slate-950 hover:bg-slate-900 text-white border-none">
+                      <Button
+                        size="lg"
+                        className="rounded-full px-8 h-12 text-sm font-medium shadow-sm bg-slate-950 hover:bg-slate-900 text-white border-none"
+                      >
                         Shop Collection
                       </Button>
                     </Link>
                     <Link to="/deals">
-                      <Button size="lg" variant="outline" className="rounded-full px-8 h-12 text-sm font-medium border-slate-200 bg-white">
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        className="rounded-full px-8 h-12 text-sm font-medium border-slate-200 bg-white"
+                      >
                         View Deals
                       </Button>
                     </Link>
@@ -148,20 +158,38 @@ const HomePage = () => {
               <div className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-900 text-white p-10 min-h-[360px] flex flex-col justify-end">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center opacity-20 transition-transform duration-700 group-hover:scale-105" />
                 <div className="relative z-10 space-y-[15px]">
-                  <h3 className="text-3xl font-semibold tracking-tight">Gaming Essentials</h3>
-                  <p className="text-slate-400 max-w-xs text-sm">Pro-grade gear for the ultimate performance.</p>
+                  <h3 className="text-3xl font-semibold tracking-tight">
+                    Gaming Essentials
+                  </h3>
+                  <p className="text-slate-400 max-w-xs text-sm">
+                    Pro-grade gear for the ultimate performance.
+                  </p>
                   <Link to="/products?category=Gaming Accessories">
-                    <Button variant="secondary" className="rounded-full px-[29px] h-10 text-xs font-medium mt-[15px]">Explore</Button>
+                    <Button
+                      variant="secondary"
+                      className="rounded-full px-[29px] h-10 text-xs font-medium mt-[15px]"
+                    >
+                      Explore
+                    </Button>
                   </Link>
                 </div>
               </div>
               <div className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-10 min-h-[360px] flex flex-col justify-end">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=2071')] bg-cover bg-center opacity-[0.05] transition-transform duration-700 group-hover:scale-105" />
                 <div className="relative z-10 space-y-[15px]">
-                  <h3 className="text-3xl font-semibold tracking-tight text-slate-900">Work Setup</h3>
-                  <p className="text-slate-500 max-w-xs text-sm">Minimal accessories for maximum productivity.</p>
+                  <h3 className="text-3xl font-semibold tracking-tight text-slate-900">
+                    Work Setup
+                  </h3>
+                  <p className="text-slate-500 max-w-xs text-sm">
+                    Minimal accessories for maximum productivity.
+                  </p>
                   <Link to="/products?category=Laptop Accessories">
-                    <Button variant="outline" className="rounded-full px-[29px] h-10 text-xs font-medium border-slate-200 bg-white mt-[15px]">Explore</Button>
+                    <Button
+                      variant="outline"
+                      className="rounded-full px-[29px] h-10 text-xs font-medium border-slate-200 bg-white mt-[15px]"
+                    >
+                      Explore
+                    </Button>
                   </Link>
                 </div>
               </div>
@@ -175,22 +203,31 @@ const HomePage = () => {
             <div className="section-container">
               <div className="flex items-end justify-between mb-12">
                 <div className="space-y-1">
-                  <h2 className="text-3xl font-semibold text-slate-900">Categories</h2>
+                  <h2 className="text-3xl font-semibold text-slate-900">
+                    Categories
+                  </h2>
                   <p className="text-slate-500 text-sm">Find gear by category</p>
                 </div>
-                <Link to="/products" className="text-sm font-medium text-primary hover:underline">View all</Link>
+                <Link to="/products" className="text-sm font-medium text-primary hover:underline">
+                  View all
+                </Link>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                {categories.map((cat) => (
-                  <Link key={cat.name} to={cat.path} className="group">
-                    <div className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100 flex flex-col items-center justify-center gap-6 transition-all duration-300 hover:bg-white hover:shadow-sm hover:border-slate-200 h-full">
-                      <div className="w-16 h-16 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                        <img src={cat.image} alt={cat.name} className="w-full h-full object-contain grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                {categories.map((cat) => {
+                  const Icon = cat.icon;
+                  return (
+                    <Link key={cat.name} to={cat.path} className="group">
+                      <div className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100 flex flex-col items-center justify-center gap-6 transition-all duration-300 hover:bg-white hover:shadow-sm hover:border-slate-200 h-full">
+                        <div className="w-16 h-16 flex items-center justify-center">
+                          <Icon size={32} className="text-black" />
+                        </div>
+                        <span className="font-medium text-xs text-slate-600 group-hover:text-slate-900">
+                          {cat.name}
+                        </span>
                       </div>
-                      <span className="font-medium text-xs text-slate-600 group-hover:text-slate-900">{cat.name}</span>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </section>
@@ -202,7 +239,11 @@ const HomePage = () => {
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
               <div className="space-y-1">
                 <h2 className="text-3xl font-semibold text-slate-900">
-                  {categoryParam ? categoryParam : searchParam ? `Search: "${searchParam}"` : "Featured"}
+                  {categoryParam
+                    ? categoryParam
+                    : searchParam
+                    ? `Search: "${searchParam}"`
+                    : "Featured"}
                 </h2>
                 <p className="text-slate-500 text-sm">
                   {filteredProducts.length} items available
@@ -210,21 +251,28 @@ const HomePage = () => {
               </div>
               {(categoryParam || searchParam) && (
                 <Link to="/">
-                  <Button variant="ghost" className="gap-2 text-xs font-medium text-slate-500">
+                  <Button
+                    variant="ghost"
+                    className="gap-2 text-xs font-medium text-slate-500"
+                  >
                     Clear filters <X size={14} />
                   </Button>
                 </Link>
               )}
             </div>
-            
+
             {filteredProducts.length === 0 ? (
               <div className="py-24 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                <h3 className="text-xl font-medium text-slate-900">No items found</h3>
-                <p className="text-slate-500 mt-1 text-sm">Try a different search term.</p>
+                <h3 className="text-xl font-medium text-slate-900">
+                  No items found
+                </h3>
+                <p className="text-slate-500 mt-1 text-sm">
+                  Try a different search term.
+                </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {featuredProducts.map(product => (
+                {featuredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
