@@ -110,7 +110,7 @@ const HomePage = () => {
       <main className="flex-grow">
         {/* Hero Section */}
         {!categoryParam && !searchParam && (
-          <section className="relative pt-0 pb-8 px-2">
+          <section className="relative pt-0 mb-[5px] px-2">
             <div className="w-full">
               <div className="relative overflow-hidden border border-slate-100 rounded-2xl bg-slate-900 min-h-[500px] md:min-h-[600px] flex items-center w-full py-5">
                 {/* YouTube Video Background */}
@@ -170,7 +170,7 @@ const HomePage = () => {
           <section className="py-0 mx-[5px]">
             <div className="w-full grid md:grid-cols-2 gap-[5px]">
               <div className="group relative overflow-hidden border border-slate-100 bg-slate-900 text-white p-10 min-h-[360px] flex flex-col justify-end">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center" />
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center scale-[1.02]" />
                 <div className="absolute inset-0 bg-black/40" />
                 <div className="relative z-10 space-y-[15px]">
                   <h3 className="text-3xl font-semibold tracking-tight">
@@ -190,7 +190,7 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="group relative overflow-hidden border border-slate-100 p-10 min-h-[360px] flex flex-col justify-end">
-                <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7279320/pexels-photo-7279320.jpeg')] bg-cover bg-center" />
+                <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7279320/pexels-photo-7279320.jpeg')] bg-cover bg-center scale-[1.02]" />
                 <div className="relative z-10 space-y-[15px]">
                   <h3 className="text-3xl font-semibold tracking-tight text-white">
                     Work Setup
