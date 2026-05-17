@@ -36,8 +36,8 @@ const App = () => (
               {/* Admin Auth */}
               <Route path="/admin/login" element={<AdminLoginPage />} />
 
-              {/* Protected Admin Routes – wrapped in AdminLayout */}
-              <Route path="/admin" element={<AdminDashboardPage />} />
+              {/* Protected Admin Routes */}
+              <Route path="/admin" element={<AdminLayout><AdminDashboardPage /></AdminLayout>} />
               <Route path="/admin/products" element={<AdminLayout><AdminProductsPage /></AdminLayout>} />
               <Route path="/admin/inventory" element={<AdminLayout><AdminInventoryPage /></AdminLayout>} />
               <Route path="/admin/orders" element={<AdminLayout><AdminOrdersPage /></AdminLayout>} />

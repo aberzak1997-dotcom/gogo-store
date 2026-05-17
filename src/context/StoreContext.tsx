@@ -22,7 +22,7 @@ interface StoreContextType {
     address: string;
     city: string;
     country: string;
-  }) => string | null; // returns order ID or null on failure
+  }) => string | null;
   updateOrderStatus: (orderId: string, status: "pending" | "shipped" | "cancelled") => void;
 }
 
@@ -56,7 +56,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem("store_cart", JSON.stringify(cart));
   }, [cart]);
 
-  // ---------- Product CRUD ----------
   const addProduct = (product: Product) => {
     setProducts([...products, product]);
     showSuccess("Product added successfully");
@@ -77,7 +76,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     showSuccess("Stock updated");
   };
 
-  // ---------- Cart ----------
   const addToCart = (productId: string, quantity: number = 1) => {
     const product = products.find(p => p.id === productId);
     if (!product || product.status !== "active") {
@@ -129,7 +127,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const clearCart = () => setCart([]);
 
-  // ---------- Order ----------
   const createOrder = ({
     customerName,
     email,
@@ -145,30 +142,19 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     city: string;
     country: string;
   }): string | null => {
-    // Validate cart not empty
     if (cart.length === 0) {
       showError("Your cart is empty");
       return null;
     }
 
-    // Validate each cart item against current stock & status
     for (const item of cart) {
       const product = products.find(p => p.id === item.productId);
-      if (!product) {
-        showError("A product in your cart no longer exists");
-        return null;
-      }
-      if (product.status !== "active") {
-        showError(`"${product.title}" is no longer available`);
-        return null;
-      }
-      if (product.stockQuantity < item.quantity) {
-        showError(`Insufficient stock for "${product.title}"`);
+      if (!product || product.status !== "active" || product.stockQuantity < item.quantity) {
+        showError(`Issue with product: ${product?.title || "Unknown"}`);
         return null;
       }
     }
 
-    // Build order items
     const orderItems = cart.map(item => {
       const product = products.find(p => p.id === item.productId)!;
       return {
@@ -180,21 +166,24 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
 
     const subtotal = orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
-    const shipping = subtotal > 100 ? 0 : 9.99; // simple rule
-    const tax = Math.round(subtotal * 0.07 * 100) / 100; // 7% tax
+    const shipping = subtotal > 100 ? 0 : 9.99;
+    const tax = Math.round(subtotal * 0.07 * 100) / 100;
     const totalAmount = subtotal + shipping + tax;
 
     const newOrder: Order = {
       id: `ORD-${Math.floor(Math.random() * 1000000)}`,
       customerName,
       email,
+      phone,
+      address,
+      city,
+      country,
       date: new Date().toISOString(),
       status: "pending",
       totalAmount,
       items: orderItems,
     };
 
-    // Reduce stock
     const updatedProducts = products.map(p => {
       const cartItem = cart.find(ci => ci.productId === p.id);
       if (cartItem) {
@@ -203,7 +192,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return p;
     });
 
-    // Persist
     setOrders([newOrder, ...orders]);
     setProducts(updatedProducts);
     clearCart();

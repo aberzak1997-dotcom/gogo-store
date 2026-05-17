@@ -20,9 +20,11 @@ const Header = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would navigate to a search results page
-    // For now, we'll just clear it or you could implement a search filter on the home page
-    setSearchQuery("");
+    if (searchQuery.trim()) {
+      navigate(`/?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+      setIsMobileMenuOpen(false);
+    }
   };
 
   const categories = [

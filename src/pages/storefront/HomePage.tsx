@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useMemo } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import Header from "../../components/layout/Header";
 import ProductCard from "../../components/storefront/ProductCard";
 import { useStore } from "../../context/StoreContext";
@@ -22,17 +22,38 @@ import {
 
 const HomePage = () => {
   const { products } = useStore();
-  const activeProducts = products.filter(p => p.status === "active");
+  const [searchParams] = useSearchParams();
   
-  const featuredProducts = activeProducts.slice(0, 8);
-  const newArrivals = [...activeProducts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 4);
-  const deals = activeProducts.filter(p => p.compareAtPrice).slice(0, 4);
+  const categoryParam = searchParams.get("category");
+  const searchParam = searchParams.get("q");
+
+  const filteredProducts = useMemo(() => {
+    let result = products.filter(p => p.status === "active");
+    
+    if (categoryParam) {
+      result = result.filter(p => p.category === categoryParam);
+    }
+    
+    if (searchParam) {
+      const s = searchParam.toLowerCase();
+      result = result.filter(p => 
+        p.title.toLowerCase().includes(s) || 
+        p.brand.toLowerCase().includes(s) || 
+        p.description.toLowerCase().includes(s)
+      );
+    }
+    
+    return result;
+  }, [products, categoryParam, searchParam]);
+
+  const featuredProducts = filteredProducts.slice(0, 8);
+  const deals = filteredProducts.filter(p => p.compareAtPrice).slice(0, 4);
 
   const categories = [
-    { name: "Phones", icon: Smartphone, color: "bg-blue-50 text-blue-600" },
-    { name: "Laptops", icon: Laptop, color: "bg-purple-50 text-purple-600" },
-    { name: "Gaming", icon: Gamepad2, color: "bg-red-50 text-red-600" },
-    { name: "Storage", icon: HardDrive, color: "bg-emerald-50 text-emerald-600" },
+    { name: "Phones", icon: Smartphone, color: "bg-blue-50 text-blue-600", path: "/?category=Phone Accessories" },
+    { name: "Laptops", icon: Laptop, color: "bg-purple-50 text-purple-600", path: "/?category=Laptop Accessories" },
+    { name: "Gaming", icon: Gamepad2, color: "bg-red-50 text-red-600", path: "/?category=Gaming Accessories" },
+    { name: "Storage", icon: HardDrive, color: "bg-emerald-50 text-emerald-600", path: "/?category=Storage Devices" },
   ];
 
   return (
@@ -40,33 +61,35 @@ const HomePage = () => {
       <Header />
       
       <main className="flex-grow">
-        {/* Hero Section */}
-        <section className="relative overflow-hidden bg-slate-900 py-20 md:py-32">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070')] bg-cover bg-center opacity-20" />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent" />
-          
-          <div className="section-container relative z-10">
-            <div className="max-w-2xl space-y-8">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
-                <Zap size={14} /> Next-Gen Tech is Here
-              </div>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.1]">
-                Elevate Your <span className="text-primary">Digital</span> Experience
-              </h1>
-              <p className="text-lg md:text-xl text-slate-300 leading-relaxed">
-                Discover the latest in high-performance electronics. From professional workstations to immersive gaming gear, we've got your future covered.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="rounded-full px-8 h-14 text-lg shadow-lg shadow-primary/20">
-                  Shop Collection
-                </Button>
-                <Button size="lg" variant="outline" className="rounded-full px-8 h-14 text-lg text-white border-white/20 hover:bg-white/10">
-                  View Deals
-                </Button>
+        {/* Hero Section - Only show on main home page */}
+        {!categoryParam && !searchParam && (
+          <section className="relative overflow-hidden bg-slate-900 py-20 md:py-32">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070')] bg-cover bg-center opacity-20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent" />
+            
+            <div className="section-container relative z-10">
+              <div className="max-w-2xl space-y-8">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
+                  <Zap size={14} /> Next-Gen Tech is Here
+                </div>
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.1]">
+                  Elevate Your <span className="text-primary">Digital</span> Experience
+                </h1>
+                <p className="text-lg md:text-xl text-slate-300 leading-relaxed">
+                  Discover the latest in high-performance electronics. From professional workstations to immersive gaming gear, we've got your future covered.
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <Button size="lg" className="rounded-full px-8 h-14 text-lg shadow-lg shadow-primary/20">
+                    Shop Collection
+                  </Button>
+                  <Button size="lg" variant="outline" className="rounded-full px-8 h-14 text-lg text-white border-white/20 hover:bg-white/10">
+                    View Deals
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Trust Badges */}
         <section className="border-y bg-white py-8">
@@ -91,50 +114,71 @@ const HomePage = () => {
         </section>
 
         {/* Shop by Category */}
-        <section className="py-20">
-          <div className="section-container">
-            <div className="flex items-end justify-between mb-10">
-              <div>
-                <h2 className="text-3xl font-black text-slate-900 tracking-tight">Shop by Category</h2>
-                <p className="text-slate-500 mt-2">Find exactly what you're looking for</p>
+        {!categoryParam && !searchParam && (
+          <section className="py-20">
+            <div className="section-container">
+              <div className="flex items-end justify-between mb-10">
+                <div>
+                  <h2 className="text-3xl font-black text-slate-900 tracking-tight">Shop by Category</h2>
+                  <p className="text-slate-500 mt-2">Find exactly what you're looking for</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                {categories.map((cat) => (
+                  <Link key={cat.name} to={cat.path} className="group cursor-pointer">
+                    <div className={`aspect-[4/3] rounded-3xl ${cat.color} flex flex-col items-center justify-center gap-4 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl`}>
+                      <cat.icon size={48} strokeWidth={1.5} />
+                      <span className="font-bold text-lg">{cat.name}</span>
+                    </div>
+                  </Link>
+                ))}
               </div>
             </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-              {categories.map((cat) => (
-                <div key={cat.name} className="group cursor-pointer">
-                  <div className={`aspect-[4/3] rounded-3xl ${cat.color} flex flex-col items-center justify-center gap-4 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl`}>
-                    <cat.icon size={48} strokeWidth={1.5} />
-                    <span className="font-bold text-lg">{cat.name}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
 
-        {/* Featured Products */}
+        {/* Products Grid */}
         <section className="py-20 bg-white">
           <div className="section-container">
             <div className="flex items-end justify-between mb-10">
               <div>
-                <h2 className="text-3xl font-black text-slate-900 tracking-tight">Featured Products</h2>
-                <p className="text-slate-500 mt-2">Our hand-picked tech essentials</p>
+                <h2 className="text-3xl font-black text-slate-900 tracking-tight">
+                  {categoryParam ? categoryParam : searchParam ? `Search: "${searchParam}"` : "Featured Products"}
+                </h2>
+                <p className="text-slate-500 mt-2">
+                  {filteredProducts.length} products found
+                </p>
               </div>
-              <Button variant="ghost" className="gap-2 font-bold text-primary">
-                View All <ArrowRight size={18} />
-              </Button>
+              {(categoryParam || searchParam) && (
+                <Link to="/">
+                  <Button variant="ghost" className="gap-2 font-bold text-primary">
+                    Clear Filters
+                  </Button>
+                </Link>
+              )}
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {featuredProducts.map(product => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            {filteredProducts.length === 0 ? (
+              <div className="py-20 text-center bg-slate-50 rounded-[3rem] border border-dashed border-slate-200">
+                <Smartphone className="mx-auto h-16 w-16 text-slate-200 mb-4" />
+                <h3 className="text-2xl font-black text-slate-900">No products found</h3>
+                <p className="text-slate-500 mt-2">Try adjusting your search or filters.</p>
+                <Link to="/">
+                  <Button className="mt-8 rounded-2xl">Back to Home</Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {featuredProducts.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
         {/* Deals Section */}
-        {deals.length > 0 && (
+        {!categoryParam && !searchParam && deals.length > 0 && (
           <section className="py-20 bg-slate-900 text-white overflow-hidden">
             <div className="section-container">
               <div className="flex items-center gap-3 mb-10">
@@ -153,43 +197,45 @@ const HomePage = () => {
         )}
 
         {/* Why Buy From Us */}
-        <section className="py-20">
-          <div className="section-container">
-            <div className="bg-primary rounded-[3rem] p-12 md:p-20 text-white relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-1/2 h-full bg-white/5 -skew-x-12 translate-x-1/4" />
-              <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
-                <div className="space-y-6">
-                  <h2 className="text-4xl font-black tracking-tight">Why Choose ElectroStore?</h2>
-                  <p className="text-primary-foreground/80 text-lg">
-                    We're more than just a retailer. We're tech enthusiasts dedicated to bringing you the best gear with unmatched service.
-                  </p>
-                  <ul className="space-y-4">
-                    {[
-                      "Authorized dealer for all major brands",
-                      "Expert technical support for every purchase",
-                      "Exclusive extended warranty options",
-                      "Price match guarantee on all items"
-                    ].map((text, i) => (
-                      <li key={i} className="flex items-center gap-3">
-                        <div className="bg-white/20 p-1 rounded-full">
-                          <ShieldCheck size={16} />
-                        </div>
-                        <span className="font-medium">{text}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="hidden md:block">
-                  <img 
-                    src="https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=2070" 
-                    alt="Tech Setup" 
-                    className="rounded-3xl shadow-2xl rotate-3"
-                  />
+        {!categoryParam && !searchParam && (
+          <section className="py-20">
+            <div className="section-container">
+              <div className="bg-primary rounded-[3rem] p-12 md:p-20 text-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-1/2 h-full bg-white/5 -skew-x-12 translate-x-1/4" />
+                <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+                  <div className="space-y-6">
+                    <h2 className="text-4xl font-black tracking-tight">Why Choose ElectroStore?</h2>
+                    <p className="text-primary-foreground/80 text-lg">
+                      We're more than just a retailer. We're tech enthusiasts dedicated to bringing you the best gear with unmatched service.
+                    </p>
+                    <ul className="space-y-4">
+                      {[
+                        "Authorized dealer for all major brands",
+                        "Expert technical support for every purchase",
+                        "Exclusive extended warranty options",
+                        "Price match guarantee on all items"
+                      ].map((text, i) => (
+                        <li key={i} className="flex items-center gap-3">
+                          <div className="bg-white/20 p-1 rounded-full">
+                            <ShieldCheck size={16} />
+                          </div>
+                          <span className="font-medium">{text}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="hidden md:block">
+                    <img 
+                      src="https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=2070" 
+                      alt="Tech Setup" 
+                      className="rounded-3xl shadow-2xl rotate-3"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
 
       <footer className="bg-white border-t pt-20 pb-10">
