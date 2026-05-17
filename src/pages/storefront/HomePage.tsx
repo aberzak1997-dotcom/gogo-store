@@ -189,8 +189,8 @@ const HomePage = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-[5px]">
                 {categories.map((cat) => (
                   <Link key={cat.name} to={cat.path} className="group">
-                    <div className="bg-white p-8 rounded-[10px] border border-slate-800 flex flex-col items-center justify-center gap-6 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl group-hover:border-primary/20 h-full">
-                      <div className={cn("w-24 h-24 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 p-2", cat.color)}>
+                    <div className="bg-slate-100 p-8 rounded-[10px] border border-slate-800 flex flex-col items-center justify-center gap-6 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl group-hover:border-primary/20 h-full">
+                      <div className="w-24 h-24 rounded-2xl bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 p-4 shadow-sm">
                         <img src={cat.image} alt={cat.name} className="w-full h-full object-contain" />
                       </div>
                       <span className="font-black text-xs uppercase tracking-widest text-slate-900">{cat.name}</span>
