@@ -125,7 +125,7 @@ const HomePage = () => {
                   </p>
                   <div className="flex flex-wrap gap-4 pt-2">
                     <Link to="/products">
-                      <Button size="lg" className="rounded-full px-8 h-12 text-sm font-medium shadow-sm">
+                      <Button size="lg" className="rounded-full px-8 h-12 text-sm font-medium shadow-sm bg-slate-950 hover:bg-slate-900 text-white border-none">
                         Shop Collection
                       </Button>
                     </Link>
