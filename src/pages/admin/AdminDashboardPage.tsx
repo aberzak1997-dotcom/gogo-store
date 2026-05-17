@@ -1,99 +1,104 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import Header from "../../components/layout/Header";
+import AdminLayout from "../../components/admin/AdminLayout";
 import { useStore } from "../../context/StoreContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package, ShoppingBag, AlertTriangle, ArrowRight } from "lucide-react";
+import { 
+  Package, 
+  ShoppingBag, 
+  AlertTriangle, 
+  DollarSign, 
+  TrendingUp, 
+  Layers,
+  CheckCircle2,
+  FileEdit
+} from "lucide-react";
 
 const AdminDashboardPage = () => {
   const { products, orders } = useStore();
   
-  const lowStockCount = products.filter(p => p.stockQuantity > 0 && p.stockQuantity < 5).length;
-  const outOfStockCount = products.filter(p => p.stockQuantity === 0).length;
-  const totalRevenue = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+  // Calculations
+  const totalProducts = products.length;
+  const activeProducts = products.filter(p => p.status === "active").length;
+  const draftProducts = products.filter(p => p.status === "draft").length;
+  
+  const totalOrders = orders.length;
+  const shippedOrders = orders.filter(o => o.status === "shipped");
+  const totalRevenue = shippedOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+  const avgOrderValue = shippedOrders.length > 0 ? totalRevenue / shippedOrders.length : 0;
+  
+  const lowStockProducts = products.filter(p => p.stockQuantity > 0 && p.stockQuantity < 5);
+  const outOfStockProducts = products.filter(p => p.stockQuantity === 0);
+
+  // Category Summary
+  const categoryCounts = products.reduce((acc, p) => {
+    acc[p.category] = (acc[p.category] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
 
   const stats = [
-    { title: "Total Products", value: products.length, icon: Package, color: "text-blue-600", link: "/admin/products" },
-    { title: "Total Orders", value: orders.length, icon: ShoppingBag, color: "text-green-600", link: "/admin/orders" },
-    { title: "Low Stock", value: lowStockCount, icon: AlertTriangle, color: "text-amber-600", link: "/admin/inventory" },
-    { title: "Out of Stock", value: outOfStockCount, icon: AlertTriangle, color: "text-red-600", link: "/admin/inventory" },
+    { title: "Total Products", value: totalProducts, icon: Package, color: "text-blue-600", bg: "bg-blue-50" },
+    { title: "Active Products", value: activeProducts, icon: CheckCircle2, color: "text-green-600", bg: "bg-green-50" },
+    { title: "Draft Products", value: draftProducts, icon: FileEdit, color: "text-slate-600", bg: "bg-slate-50" },
+    { title: "Total Orders", value: totalOrders, icon: ShoppingBag, color: "text-purple-600", bg: "bg-purple-50" },
+    { title: "Total Revenue", value: `$${totalRevenue.toFixed(2)}`, icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-50" },
+    { title: "Avg Order Value", value: `$${avgOrderValue.toFixed(2)}`, icon: TrendingUp, color: "text-indigo-600", bg: "bg-indigo-50" },
+    { title: "Low Stock", value: lowStockProducts.length, icon: AlertTriangle, color: "text-amber-600", bg: "bg-amber-50" },
+    { title: "Out of Stock", value: outOfStockProducts.length, icon: AlertTriangle, color: "text-red-600", bg: "bg-red-50" },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50/50">
-      <Header />
-      <main className="flex-grow container py-8 px-4 md:px-6">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <div className="text-sm text-muted-foreground">
-            Total Revenue: <span className="font-bold text-foreground">${totalRevenue.toFixed(2)}</span>
-          </div>
+    <AdminLayout>
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900">Dashboard Overview</h1>
+          <p className="text-slate-500">Welcome back! Here's what's happening with your store today.</p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* KPI Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat, i) => (
-            <Link key={i} to={stat.link}>
-              <Card className="hover:shadow-md transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">{stat.title}</CardTitle>
+            <Card key={i} className="border-none shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-slate-500">{stat.title}</CardTitle>
+                <div className={`p-2 rounded-lg ${stat.bg}`}>
                   <stat.icon className={`h-4 w-4 ${stat.color}`} />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stat.value}</div>
-                </CardContent>
-              </Card>
-            </Link>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-slate-900">{stat.value}</div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Quick Links</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-              <Link to="/admin/products" className="flex items-center justify-between p-3 rounded-lg border hover:bg-slate-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <Package size={20} className="text-blue-600" />
-                  <span className="font-medium">Manage Products</span>
-                </div>
-                <ArrowRight size={16} />
-              </Link>
-              <Link to="/admin/inventory" className="flex items-center justify-between p-3 rounded-lg border hover:bg-slate-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <AlertTriangle size={20} className="text-amber-600" />
-                  <span className="font-medium">Inventory Control</span>
-                </div>
-                <ArrowRight size={16} />
-              </Link>
-              <Link to="/admin/orders" className="flex items-center justify-between p-3 rounded-lg border hover:bg-slate-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <ShoppingBag size={20} className="text-green-600" />
-                  <span className="font-medium">View Orders</span>
-                </div>
-                <ArrowRight size={16} />
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Recent Orders */}
+          <Card className="border-none shadow-sm">
             <CardHeader>
-              <CardTitle>Recent Orders</CardTitle>
+              <CardTitle className="text-lg font-bold flex items-center gap-2">
+                <ShoppingBag size={20} className="text-purple-600" />
+                Recent Orders
+              </CardTitle>
             </CardHeader>
             <CardContent>
               {orders.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">No orders yet.</p>
+                <p className="text-sm text-slate-500 text-center py-8">No orders yet.</p>
               ) : (
                 <div className="space-y-4">
                   {orders.slice(0, 5).map(order => (
-                    <div key={order.id} className="flex items-center justify-between text-sm border-b pb-2 last:border-0">
+                    <div key={order.id} className="flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors">
                       <div>
-                        <p className="font-medium">{order.customerName}</p>
-                        <p className="text-xs text-muted-foreground">{new Date(order.date).toLocaleDateString()}</p>
+                        <p className="font-semibold text-slate-900">{order.customerName}</p>
+                        <p className="text-xs text-slate-500">{new Date(order.date).toLocaleDateString()}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold">${order.totalAmount.toFixed(2)}</p>
-                        <p className="text-xs uppercase text-amber-600 font-semibold">{order.status}</p>
+                        <p className="font-bold text-slate-900">${order.totalAmount.toFixed(2)}</p>
+                        <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
+                          order.status === 'shipped' ? 'bg-green-100 text-green-700' : 
+                          order.status === 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
+                        }`}>
+                          {order.status}
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -101,9 +106,63 @@ const AdminDashboardPage = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Low Stock Preview */}
+          <Card className="border-none shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-lg font-bold flex items-center gap-2">
+                <AlertTriangle size={20} className="text-amber-600" />
+                Low Stock Alert
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {lowStockProducts.length === 0 ? (
+                <p className="text-sm text-slate-500 text-center py-8">All products are well stocked.</p>
+              ) : (
+                <div className="space-y-4">
+                  {lowStockProducts.slice(0, 5).map(product => (
+                    <div key={product.id} className="flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded bg-slate-100 overflow-hidden border border-slate-200">
+                          <img src={product.imageUrl} alt="" className="w-full h-full object-cover" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-slate-900 line-clamp-1">{product.title}</p>
+                          <p className="text-xs text-slate-500">{product.brand} • {product.sku}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-amber-600">{product.stockQuantity} left</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Category Summary */}
+          <Card className="border-none shadow-sm lg:col-span-2">
+            <CardHeader>
+              <CardTitle className="text-lg font-bold flex items-center gap-2">
+                <Layers size={20} className="text-blue-600" />
+                Category Distribution
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {Object.entries(categoryCounts).map(([category, count]) => (
+                  <div key={category} className="p-4 rounded-xl bg-slate-50 border border-slate-100 text-center">
+                    <p className="text-2xl font-bold text-slate-900">{count}</p>
+                    <p className="text-xs text-slate-500 font-medium mt-1">{category}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </main>
-    </div>
+      </div>
+    </AdminLayout>
   );
 };
 
