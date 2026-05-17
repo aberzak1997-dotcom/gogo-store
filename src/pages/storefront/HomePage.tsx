@@ -5,6 +5,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import ProductCard from "../../components/storefront/ProductCard";
+import BrandLogos from "../../components/storefront/BrandLogos";
 import { useStore } from "../../context/StoreContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -209,6 +210,9 @@ const HomePage = () => {
             </div>
           </section>
         )}
+
+        {/* Brand Logos Section */}
+        {!categoryParam && !searchParam && <BrandLogos />}
 
         {/* Popular Categories */}
         {!categoryParam && !searchParam && (
