@@ -58,14 +58,54 @@ const HomePage = () => {
   const deals = filteredProducts.filter(p => p.compareAtPrice).slice(0, 4);
 
   const categories = [
-    { name: "Keyboards", icon: Keyboard, color: "bg-blue-50 text-blue-600", path: "/products?category=Gaming Accessories" },
-    { name: "Mice", icon: MousePointer2, color: "bg-purple-50 text-purple-600", path: "/products?category=PC Accessories" },
-    { name: "Headsets", icon: Headphones, color: "bg-red-50 text-red-600", path: "/products?category=Audio" },
-    { name: "Webcams", icon: Video, color: "bg-emerald-50 text-emerald-600", path: "/products?category=PC Accessories" },
-    { name: "Chargers", icon: Zap, color: "bg-amber-50 text-amber-600", path: "/products?category=Chargers & Cables" },
-    { name: "Storage", icon: HardDrive, color: "bg-slate-50 text-slate-600", path: "/products?category=Storage Devices" },
-    { name: "Gaming", icon: Gamepad2, color: "bg-indigo-50 text-indigo-600", path: "/products?category=Gaming Accessories" },
-    { name: "Laptops", icon: Laptop, color: "bg-rose-50 text-rose-600", path: "/products?category=Laptop Accessories" },
+    { 
+      name: "Keyboards", 
+      image: "https://pngimg.com/uploads/keyboard/keyboard_PNG10185.png", 
+      color: "bg-blue-50", 
+      path: "/products?category=Gaming Accessories" 
+    },
+    { 
+      name: "Mice", 
+      image: "https://pngimg.com/uploads/computer_mouse/computer_mouse_PNG7696.png", 
+      color: "bg-purple-50", 
+      path: "/products?category=PC Accessories" 
+    },
+    { 
+      name: "Headsets", 
+      image: "https://pngimg.com/uploads/headphones/headphones_PNG7645.png", 
+      color: "bg-red-50", 
+      path: "/products?category=Audio" 
+    },
+    { 
+      name: "Webcams", 
+      image: "https://pngimg.com/uploads/webcam/webcam_PNG101.png", 
+      color: "bg-emerald-50", 
+      path: "/products?category=PC Accessories" 
+    },
+    { 
+      name: "Chargers", 
+      image: "https://pngimg.com/uploads/charger/charger_PNG45.png", 
+      color: "bg-amber-50", 
+      path: "/products?category=Chargers & Cables" 
+    },
+    { 
+      name: "Storage", 
+      image: "https://pngimg.com/uploads/hard_drive/hard_drive_PNG101.png", 
+      color: "bg-slate-50", 
+      path: "/products?category=Storage Devices" 
+    },
+    { 
+      name: "Gaming", 
+      image: "https://pngimg.com/uploads/joystick/joystick_PNG101.png", 
+      color: "bg-indigo-50", 
+      path: "/products?category=Gaming Accessories" 
+    },
+    { 
+      name: "Laptops", 
+      image: "https://pngimg.com/uploads/laptop/laptop_PNG101.png", 
+      color: "bg-rose-50", 
+      path: "/products?category=Laptop Accessories" 
+    },
   ];
 
   return (
@@ -113,8 +153,8 @@ const HomePage = () => {
         {/* Promo Campaign Cards */}
         {!categoryParam && !searchParam && (
           <section className="pb-20">
-            <div className="section-container grid md:grid-cols-2 gap-8">
-              <div className="group relative overflow-hidden rounded-[2.5rem] bg-slate-900 text-white p-12 min-h-[400px] flex flex-col justify-center">
+            <div className="section-container grid md:grid-cols-2 gap-[5px]">
+              <div className="group relative overflow-hidden rounded-[10px] border border-slate-800 bg-slate-900 text-white p-12 min-h-[400px] flex flex-col justify-center">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center opacity-30 transition-transform duration-700 group-hover:scale-110" />
                 <div className="relative z-10 space-y-6">
                   <h3 className="text-4xl font-black tracking-tight">Gaming Essentials</h3>
@@ -124,7 +164,7 @@ const HomePage = () => {
                   </Link>
                 </div>
               </div>
-              <div className="group relative overflow-hidden rounded-[2.5rem] bg-primary text-white p-12 min-h-[400px] flex flex-col justify-center">
+              <div className="group relative overflow-hidden rounded-[10px] border border-slate-800 bg-primary text-white p-12 min-h-[400px] flex flex-col justify-center">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=2071')] bg-cover bg-center opacity-20 transition-transform duration-700 group-hover:scale-110" />
                 <div className="relative z-10 space-y-6">
                   <h3 className="text-4xl font-black tracking-tight">Work From Anywhere</h3>
@@ -146,12 +186,12 @@ const HomePage = () => {
                 <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Shop by Category</h2>
                 <p className="text-slate-500 font-medium">Find exactly what you're looking for</p>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-[5px]">
                 {categories.map((cat) => (
                   <Link key={cat.name} to={cat.path} className="group">
-                    <div className="bg-white p-8 rounded-[2rem] border border-slate-100 flex flex-col items-center justify-center gap-6 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl group-hover:border-primary/20">
-                      <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110", cat.color)}>
-                        <cat.icon size={32} strokeWidth={1.5} />
+                    <div className="bg-white p-8 rounded-[10px] border border-slate-800 flex flex-col items-center justify-center gap-6 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl group-hover:border-primary/20 h-full">
+                      <div className={cn("w-24 h-24 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 p-2", cat.color)}>
+                        <img src={cat.image} alt={cat.name} className="w-full h-full object-contain" />
                       </div>
                       <span className="font-black text-xs uppercase tracking-widest text-slate-900">{cat.name}</span>
                     </div>
@@ -184,7 +224,7 @@ const HomePage = () => {
             </div>
             
             {filteredProducts.length === 0 ? (
-              <div className="py-32 text-center bg-slate-50 rounded-[3rem] border border-dashed border-slate-200">
+              <div className="py-32 text-center bg-slate-50 rounded-[10px] border border-dashed border-slate-800">
                 <Smartphone className="mx-auto h-16 w-16 text-slate-200 mb-4" />
                 <h3 className="text-2xl font-black text-slate-900">No products found</h3>
                 <p className="text-slate-500 mt-2">Try adjusting your search or filters.</p>
@@ -193,7 +233,7 @@ const HomePage = () => {
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[5px]">
                 {featuredProducts.map(product => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -212,7 +252,7 @@ const HomePage = () => {
                   <Button variant="ghost" className="gap-2 font-black text-[10px] uppercase tracking-widest text-primary">View All <ArrowRight size={14} /></Button>
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[5px]">
                 {bestSellers.map(product => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -236,7 +276,7 @@ const HomePage = () => {
                   <Button variant="ghost" className="gap-2 font-black text-[10px] uppercase tracking-widest text-white hover:bg-white/10">View All <ArrowRight size={14} /></Button>
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[5px]">
                 {deals.map(product => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -277,7 +317,7 @@ const HomePage = () => {
         {!categoryParam && !searchParam && (
           <section className="py-24 bg-slate-50/30">
             <div className="section-container">
-              <div className="bg-white rounded-[3rem] p-12 md:p-24 border border-slate-100 shadow-sm relative overflow-hidden">
+              <div className="bg-white rounded-[10px] p-12 md:p-24 border border-slate-800 shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50 -skew-x-12 translate-x-1/4" />
                 <div className="relative z-10 grid md:grid-cols-2 gap-16 items-center">
                   <div className="space-y-8">
@@ -311,7 +351,7 @@ const HomePage = () => {
                     <img 
                       src="https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=2070" 
                       alt="Tech Quality" 
-                      className="rounded-[2.5rem] shadow-2xl rotate-2"
+                      className="rounded-[10px] border border-slate-800 shadow-2xl rotate-2"
                     />
                   </div>
                 </div>

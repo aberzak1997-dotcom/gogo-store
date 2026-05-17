@@ -32,7 +32,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <Card className="group relative flex flex-col h-full overflow-hidden border-none bg-white hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 rounded-[10px]">
+    <Card className="group relative flex flex-col h-full overflow-hidden border border-slate-800 bg-white hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 rounded-[10px]">
       {/* Badges */}
       {getStockBadge()}
       {discount > 0 && (
