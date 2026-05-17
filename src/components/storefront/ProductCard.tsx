@@ -32,7 +32,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <Card className="group relative flex flex-col h-full overflow-hidden border-none bg-white hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 rounded-[2rem]">
+    <Card className="group relative flex flex-col h-full overflow-hidden border-none bg-white hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 rounded-[10px]">
       {/* Badges */}
       {getStockBadge()}
       {discount > 0 && (
@@ -42,7 +42,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       )}
 
       {/* Image Container */}
-      <Link to={`/product/${product.id}`} className="relative aspect-square overflow-hidden bg-slate-50/50 m-4 rounded-[1.5rem]">
+      <Link to={`/product/${product.id}`} className="relative aspect-square overflow-hidden bg-slate-50/50 m-4 rounded-[8px]">
         <img
           src={product.imageUrl}
           alt={product.title}
