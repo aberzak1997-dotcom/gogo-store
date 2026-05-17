@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Product, Order, CartItem } from "../types";
+import { Product, Order, CartItem, Customer, Discount, Review, ReturnRequest, MarketingCampaign, StoreSettings } from "../types";
 import { MOCK_PRODUCTS, MOCK_ORDERS } from "../data/mockData";
 import { showSuccess, showError } from "../utils/toast";
 
@@ -7,6 +7,12 @@ interface StoreContextType {
   products: Product[];
   orders: Order[];
   cart: CartItem[];
+  customers: Customer[];
+  discounts: Discount[];
+  reviews: Review[];
+  returns: ReturnRequest[];
+  campaigns: MarketingCampaign[];
+  settings: StoreSettings;
   addProduct: (product: Product) => void;
   updateProduct: (product: Product) => void;
   deleteProduct: (id: string) => void;
@@ -24,9 +30,19 @@ interface StoreContextType {
     country: string;
   }) => string | null;
   updateOrderStatus: (orderId: string, status: "pending" | "shipped" | "cancelled") => void;
+  updateSettings: (newSettings: StoreSettings) => void;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
+
+const DEFAULT_SETTINGS: StoreSettings = {
+  storeName: "ElectroStore",
+  contactEmail: "support@electrostore.com",
+  currency: "USD",
+  taxRate: 0.07,
+  freeShippingThreshold: 50,
+  maintenanceMode: false,
+};
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>(() => {
@@ -44,6 +60,36 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [customers, setCustomers] = useState<Customer[]>(() => {
+    const saved = localStorage.getItem("store_customers");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [discounts, setDiscounts] = useState<Discount[]>(() => {
+    const saved = localStorage.getItem("store_discounts");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [reviews, setReviews] = useState<Review[]>(() => {
+    const saved = localStorage.getItem("store_reviews");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [returns, setReturns] = useState<ReturnRequest[]>(() => {
+    const saved = localStorage.getItem("store_returns");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [campaigns, setCampaigns] = useState<MarketingCampaign[]>(() => {
+    const saved = localStorage.getItem("store_campaigns");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [settings, setSettings] = useState<StoreSettings>(() => {
+    const saved = localStorage.getItem("store_settings");
+    return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+  });
+
   useEffect(() => {
     localStorage.setItem("store_products", JSON.stringify(products));
   }, [products]);
@@ -55,6 +101,30 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     localStorage.setItem("store_cart", JSON.stringify(cart));
   }, [cart]);
+
+  useEffect(() => {
+    localStorage.setItem("store_customers", JSON.stringify(customers));
+  }, [customers]);
+
+  useEffect(() => {
+    localStorage.setItem("store_discounts", JSON.stringify(discounts));
+  }, [discounts]);
+
+  useEffect(() => {
+    localStorage.setItem("store_reviews", JSON.stringify(reviews));
+  }, [reviews]);
+
+  useEffect(() => {
+    localStorage.setItem("store_returns", JSON.stringify(returns));
+  }, [returns]);
+
+  useEffect(() => {
+    localStorage.setItem("store_campaigns", JSON.stringify(campaigns));
+  }, [campaigns]);
+
+  useEffect(() => {
+    localStorage.setItem("store_settings", JSON.stringify(settings));
+  }, [settings]);
 
   const addProduct = (product: Product) => {
     setProducts([...products, product]);
@@ -166,8 +236,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
 
     const subtotal = orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
-    const shipping = subtotal > 100 ? 0 : 9.99;
-    const tax = Math.round(subtotal * 0.07 * 100) / 100;
+    const shipping = subtotal > settings.freeShippingThreshold ? 0 : 9.99;
+    const tax = Math.round(subtotal * settings.taxRate * 100) / 100;
     const totalAmount = subtotal + shipping + tax;
 
     const newOrder: Order = {
@@ -192,6 +262,29 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return p;
     });
 
+    // Update or add customer
+    const existingCustomer = customers.find(c => c.email === email);
+    if (existingCustomer) {
+      setCustomers(customers.map(c => c.email === email ? {
+        ...c,
+        totalOrders: c.totalOrders + 1,
+        totalSpent: c.totalSpent + totalAmount,
+        lastOrderDate: newOrder.date
+      } : c));
+    } else {
+      const newCustomer: Customer = {
+        id: `CUST-${Math.floor(Math.random() * 1000000)}`,
+        name: customerName,
+        email,
+        phone,
+        totalOrders: 1,
+        totalSpent: totalAmount,
+        lastOrderDate: newOrder.date,
+        createdAt: new Date().toISOString()
+      };
+      setCustomers([...customers, newCustomer]);
+    }
+
     setOrders([newOrder, ...orders]);
     setProducts(updatedProducts);
     clearCart();
@@ -205,12 +298,23 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     showSuccess(`Order ${orderId} status updated to ${status}`);
   };
 
+  const updateSettings = (newSettings: StoreSettings) => {
+    setSettings(newSettings);
+    showSuccess("Store settings updated");
+  };
+
   return (
     <StoreContext.Provider
       value={{
         products,
         orders,
         cart,
+        customers,
+        discounts,
+        reviews,
+        returns,
+        campaigns,
+        settings,
         addProduct,
         updateProduct,
         deleteProduct,
@@ -221,6 +325,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         clearCart,
         createOrder,
         updateOrderStatus,
+        updateSettings,
       }}
     >
       {children}

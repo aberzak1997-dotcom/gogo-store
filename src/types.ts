@@ -46,3 +46,66 @@ export interface CartItem {
   productId: string;
   quantity: number;
 }
+
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  totalOrders: number;
+  totalSpent: number;
+  lastOrderDate?: string;
+  createdAt: string;
+}
+
+export interface Discount {
+  id: string;
+  code: string;
+  type: "percentage" | "fixed";
+  value: number;
+  minPurchase?: number;
+  startDate: string;
+  endDate?: string;
+  usageLimit?: number;
+  usageCount: number;
+  status: "active" | "expired" | "scheduled";
+}
+
+export interface Review {
+  id: string;
+  productId: string;
+  productTitle: string;
+  customerName: string;
+  rating: number;
+  comment: string;
+  status: "published" | "pending" | "hidden";
+  createdAt: string;
+}
+
+export interface ReturnRequest {
+  id: string;
+  orderId: string;
+  customerName: string;
+  reason: string;
+  status: "pending" | "approved" | "rejected" | "completed";
+  createdAt: string;
+}
+
+export interface MarketingCampaign {
+  id: string;
+  name: string;
+  type: "email" | "social" | "banner";
+  status: "active" | "paused" | "completed";
+  reach: number;
+  conversions: number;
+  startDate: string;
+}
+
+export interface StoreSettings {
+  storeName: string;
+  contactEmail: string;
+  currency: string;
+  taxRate: number;
+  freeShippingThreshold: number;
+  maintenanceMode: boolean;
+}

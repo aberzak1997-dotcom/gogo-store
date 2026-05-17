@@ -28,6 +28,13 @@ import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminProductsPage from "./pages/admin/AdminProductsPage";
 import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
 import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
+import AdminCustomersPage from "./pages/admin/AdminCustomersPage";
+import AdminDiscountsPage from "./pages/admin/AdminDiscountsPage";
+import AdminReviewsPage from "./pages/admin/AdminReviewsPage";
+import AdminReturnsPage from "./pages/admin/AdminReturnsPage";
+import AdminMarketingPage from "./pages/admin/AdminMarketingPage";
+import AdminAnalyticsPage from "./pages/admin/AdminAnalyticsPage";
+import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import NotFound from "./pages/NotFound";
 
@@ -68,6 +75,13 @@ const App = () => (
               <Route path="/admin/products" element={<AdminLayout><AdminProductsPage /></AdminLayout>} />
               <Route path="/admin/inventory" element={<AdminLayout><AdminInventoryPage /></AdminLayout>} />
               <Route path="/admin/orders" element={<AdminLayout><AdminOrdersPage /></AdminLayout>} />
+              <Route path="/admin/customers" element={<AdminLayout><AdminCustomersPage /></AdminLayout>} />
+              <Route path="/admin/discounts" element={<AdminLayout><AdminDiscountsPage /></AdminLayout>} />
+              <Route path="/admin/reviews" element={<AdminLayout><AdminReviewsPage /></AdminLayout>} />
+              <Route path="/admin/returns" element={<AdminLayout><AdminReturnsPage /></AdminLayout>} />
+              <Route path="/admin/marketing" element={<AdminLayout><AdminMarketingPage /></AdminLayout>} />
+              <Route path="/admin/analytics" element={<AdminLayout><AdminAnalyticsPage /></AdminLayout>} />
+              <Route path="/admin/settings" element={<AdminLayout><AdminSettingsPage /></AdminLayout>} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>
