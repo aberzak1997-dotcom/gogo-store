@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Product, Order, CartItem, Customer, Discount, Review, ReturnRequest, MarketingCampaign, StoreSettings } from "../types";
-import { MOCK_PRODUCTS, MOCK_ORDERS } from "../data/mockData";
+import { Product, Order, CartItem, Customer, Discount, Review, ReturnRequest, MarketingCampaign, StoreSettings, OrderTimelineEvent } from "../types";
+import { MOCK_PRODUCTS, MOCK_ORDERS, MOCK_RETURNS } from "../data/mockData";
 import { showSuccess, showError } from "../utils/toast";
 
 interface StoreContextType {
@@ -29,7 +29,12 @@ interface StoreContextType {
     city: string;
     country: string;
   }) => string | null;
-  updateOrderStatus: (orderId: string, status: "pending" | "shipped" | "cancelled") => void;
+  updateOrderStatus: (orderId: string, status: Order["status"], note?: string) => void;
+  updatePaymentStatus: (orderId: string, status: Order["paymentStatus"]) => void;
+  updateFulfillmentStatus: (orderId: string, status: Order["fulfillmentStatus"]) => void;
+  addOrderNote: (orderId: string, note: string, isInternal: boolean) => void;
+  createReturnRequest: (returnInput: Omit<ReturnRequest, "id" | "requestedAt" | "status">) => string;
+  updateReturnStatus: (returnId: string, status: ReturnRequest["status"]) => void;
   updateSettings: (newSettings: StoreSettings) => void;
 }
 
@@ -77,7 +82,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const [returns, setReturns] = useState<ReturnRequest[]>(() => {
     const saved = localStorage.getItem("store_returns");
-    return saved ? JSON.parse(saved) : [];
+    return saved ? JSON.parse(saved) : MOCK_RETURNS;
   });
 
   const [campaigns, setCampaigns] = useState<MarketingCampaign[]>(() => {
@@ -250,8 +255,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       country,
       date: new Date().toISOString(),
       status: "pending",
+      paymentStatus: "unpaid",
+      fulfillmentStatus: "unfulfilled",
       totalAmount,
       items: orderItems,
+      timeline: [
+        { status: "Order placed", date: new Date().toISOString() }
+      ]
     };
 
     const updatedProducts = products.map(p => {
@@ -293,9 +303,87 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return newOrder.id;
   };
 
-  const updateOrderStatus = (orderId: string, status: "pending" | "shipped" | "cancelled") => {
-    setOrders(orders.map(o => (o.id === orderId ? { ...o, status } : o)));
+  const updateOrderStatus = (orderId: string, status: Order["status"], note?: string) => {
+    setOrders(orders.map(o => {
+      if (o.id === orderId) {
+        const newEvent: OrderTimelineEvent = {
+          status: status.charAt(0).toUpperCase() + status.slice(1),
+          date: new Date().toISOString(),
+          note
+        };
+        return { ...o, status, timeline: [...o.timeline, newEvent] };
+      }
+      return o;
+    }));
     showSuccess(`Order ${orderId} status updated to ${status}`);
+  };
+
+  const updatePaymentStatus = (orderId: string, paymentStatus: Order["paymentStatus"]) => {
+    setOrders(orders.map(o => {
+      if (o.id === orderId) {
+        const newEvent: OrderTimelineEvent = {
+          status: `Payment status: ${paymentStatus}`,
+          date: new Date().toISOString()
+        };
+        return { ...o, paymentStatus, timeline: [...o.timeline, newEvent] };
+      }
+      return o;
+    }));
+    showSuccess(`Order ${orderId} payment status updated to ${paymentStatus}`);
+  };
+
+  const updateFulfillmentStatus = (orderId: string, fulfillmentStatus: Order["fulfillmentStatus"]) => {
+    setOrders(orders.map(o => {
+      if (o.id === orderId) {
+        const newEvent: OrderTimelineEvent = {
+          status: `Fulfillment status: ${fulfillmentStatus}`,
+          date: new Date().toISOString()
+        };
+        return { ...o, fulfillmentStatus, timeline: [...o.timeline, newEvent] };
+      }
+      return o;
+    }));
+    showSuccess(`Order ${orderId} fulfillment status updated to ${fulfillmentStatus}`);
+  };
+
+  const addOrderNote = (orderId: string, note: string, isInternal: boolean) => {
+    setOrders(orders.map(o => {
+      if (o.id === orderId) {
+        return isInternal ? { ...o, internalNotes: note } : { ...o, notes: note };
+      }
+      return o;
+    }));
+    showSuccess("Note saved");
+  };
+
+  const createReturnRequest = (returnInput: Omit<ReturnRequest, "id" | "requestedAt" | "status">): string => {
+    const newReturn: ReturnRequest = {
+      ...returnInput,
+      id: `RET-${Math.floor(Math.random() * 1000000)}`,
+      requestedAt: new Date().toISOString(),
+      status: "requested"
+    };
+    setReturns([newReturn, ...returns]);
+    showSuccess("Return request created");
+    return newReturn.id;
+  };
+
+  const updateReturnStatus = (returnId: string, status: ReturnRequest["status"]) => {
+    const returnReq = returns.find(r => r.id === returnId);
+    if (!returnReq) return;
+
+    setReturns(returns.map(r => r.id === returnId ? { ...r, status } : r));
+
+    if (status === "refunded") {
+      // Update related order
+      const order = orders.find(o => o.id === returnReq.orderId);
+      if (order) {
+        const isFullRefund = returnReq.refundAmount >= order.totalAmount;
+        updatePaymentStatus(order.id, isFullRefund ? "refunded" : "partially_refunded");
+        updateOrderStatus(order.id, "refunded", `Refund processed via return ${returnId}`);
+      }
+    }
+    showSuccess(`Return ${returnId} status updated to ${status}`);
   };
 
   const updateSettings = (newSettings: StoreSettings) => {
@@ -325,6 +413,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         clearCart,
         createOrder,
         updateOrderStatus,
+        updatePaymentStatus,
+        updateFulfillmentStatus,
+        addOrderNote,
+        createReturnRequest,
+        updateReturnStatus,
         updateSettings,
       }}
     >

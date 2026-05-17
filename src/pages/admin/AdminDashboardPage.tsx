@@ -15,21 +15,33 @@ import {
   FileEdit,
   ArrowUpRight,
   ArrowDownRight,
-  Users
+  Users,
+  RotateCcw
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const AdminDashboardPage = () => {
-  const { products, orders } = useStore();
+  const { products, orders, returns } = useStore();
   
   const totalProducts = products.length;
   const activeProducts = products.filter(p => p.status === "active").length;
-  const draftProducts = products.filter(p => p.status === "draft").length;
   
   const totalOrders = orders.length;
-  const shippedOrders = orders.filter(o => o.status === "shipped");
-  const totalRevenue = shippedOrders.reduce((sum, order) => sum + order.totalAmount, 0);
-  const avgOrderValue = shippedOrders.length > 0 ? totalRevenue / shippedOrders.length : 0;
+  
+  // Revenue logic: Only paid, shipped, or delivered orders count.
+  // Cancelled orders don't count.
+  // Refunded orders subtract from revenue.
+  const revenueOrders = orders.filter(o => 
+    (o.paymentStatus === "paid" || o.status === "shipped" || o.status === "delivered") && 
+    o.status !== "cancelled"
+  );
+  
+  const grossRevenue = revenueOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+  const totalRefunds = returns
+    .filter(r => r.status === "refunded")
+    .reduce((sum, r) => sum + r.refundAmount, 0);
+    
+  const netRevenue = grossRevenue - totalRefunds;
   
   const lowStockProducts = products.filter(p => p.stockQuantity > 0 && p.stockQuantity < 5);
   const outOfStockProducts = products.filter(p => p.stockQuantity === 0);
@@ -40,10 +52,10 @@ const AdminDashboardPage = () => {
   }, {} as Record<string, number>);
 
   const stats = [
-    { title: "Total Revenue", value: `$${totalRevenue.toFixed(2)}`, icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-50", trend: "+12.5%", trendUp: true },
+    { title: "Net Revenue", value: `$${netRevenue.toFixed(2)}`, icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-50", trend: "+12.5%", trendUp: true },
     { title: "Total Orders", value: totalOrders, icon: ShoppingBag, color: "text-blue-600", bg: "bg-blue-50", trend: "+8.2%", trendUp: true },
     { title: "Active Products", value: activeProducts, icon: CheckCircle2, color: "text-purple-600", bg: "bg-purple-50", trend: "+2", trendUp: true },
-    { title: "Low Stock Items", value: lowStockProducts.length, icon: AlertTriangle, color: "text-amber-600", bg: "bg-amber-50", trend: "-1", trendUp: false },
+    { title: "Pending Returns", value: returns.filter(r => r.status === "requested").length, icon: RotateCcw, color: "text-amber-600", bg: "bg-amber-50", trend: "0", trendUp: true },
   ];
 
   return (
@@ -121,7 +133,7 @@ const AdminDashboardPage = () => {
                       <p className="font-black text-slate-900">${order.totalAmount.toFixed(2)}</p>
                       <Badge className={cn(
                         "text-[10px] uppercase font-black px-3 py-1 rounded-full mt-1",
-                        order.status === 'shipped' ? 'bg-emerald-100 text-emerald-700' : 
+                        order.status === 'delivered' ? 'bg-emerald-100 text-emerald-700' : 
                         order.status === 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
                       )}>
                         {order.status}
@@ -134,7 +146,7 @@ const AdminDashboardPage = () => {
           </CardContent>
         </Card>
 
-        {/* Low Stock Alert */}
+        {/* Inventory Alerts */}
         <Card className="border-none shadow-sm rounded-[2.5rem] overflow-hidden">
           <CardHeader className="p-8 border-b border-slate-50">
             <CardTitle className="text-xl font-black flex items-center gap-3">
@@ -170,28 +182,6 @@ const AdminDashboardPage = () => {
                 ))}
               </div>
             )}
-          </CardContent>
-        </Card>
-
-        {/* Category Distribution */}
-        <Card className="lg:col-span-3 border-none shadow-sm rounded-[2.5rem] overflow-hidden">
-          <CardHeader className="p-8 border-b border-slate-50">
-            <CardTitle className="text-xl font-black flex items-center gap-3">
-              <div className="p-2 bg-purple-50 text-purple-600 rounded-xl">
-                <Layers size={20} />
-              </div>
-              Category Distribution
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
-              {Object.entries(categoryCounts).map(([category, count]) => (
-                <div key={category} className="p-6 rounded-[2rem] bg-slate-50 border border-slate-100 text-center hover:bg-white hover:shadow-md transition-all duration-300 group">
-                  <p className="text-3xl font-black text-slate-900 group-hover:text-primary transition-colors">{count}</p>
-                  <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-2">{category}</p>
-                </div>
-              ))}
-            </div>
           </CardContent>
         </Card>
       </div>

@@ -28,6 +28,12 @@ export interface OrderItem {
   price: number;
 }
 
+export interface OrderTimelineEvent {
+  status: string;
+  date: string;
+  note?: string;
+}
+
 export interface Order {
   id: string;
   customerName: string;
@@ -37,9 +43,14 @@ export interface Order {
   city?: string;
   country?: string;
   date: string;
-  status: "pending" | "shipped" | "cancelled";
+  status: "pending" | "paid" | "processing" | "packed" | "shipped" | "delivered" | "cancelled" | "refunded";
+  paymentStatus: "unpaid" | "paid" | "partially_refunded" | "refunded";
+  fulfillmentStatus: "unfulfilled" | "partially_fulfilled" | "fulfilled";
   totalAmount: number;
   items: OrderItem[];
+  timeline: OrderTimelineEvent[];
+  notes?: string;
+  internalNotes?: string;
 }
 
 export interface CartItem {
@@ -86,9 +97,12 @@ export interface ReturnRequest {
   id: string;
   orderId: string;
   customerName: string;
-  reason: string;
-  status: "pending" | "approved" | "rejected" | "completed";
-  createdAt: string;
+  email: string;
+  reason: "Defective item" | "Wrong product" | "Not compatible" | "Changed mind" | "Damaged during delivery" | "Other";
+  status: "requested" | "approved" | "rejected" | "received" | "refunded";
+  requestedAt: string;
+  refundAmount: number;
+  items: OrderItem[];
 }
 
 export interface MarketingCampaign {
