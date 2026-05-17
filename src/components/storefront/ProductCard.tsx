@@ -59,15 +59,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
             size="icon"
             variant="secondary"
             className="rounded-full w-10 h-10 bg-white hover:bg-primary hover:text-white transition-colors"
-            onClick={handleAddToCart}
-            disabled={product.stockQuantity === 0}
-          >
-            <ShoppingCart size={18} />
-          </Button>
-          <Button
-            size="icon"
-            variant="secondary"
-            className="rounded-full w-10 h-10 bg-white hover:bg-primary hover:text-white transition-colors"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              // View logic could go here
+            }}
           >
             <Eye size={18} />
           </Button>
@@ -101,7 +97,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </span>
         </div>
 
-        <div className="pt-2 mt-auto flex items-baseline gap-2">
+        <div className="pt-2 flex items-baseline gap-2">
           <span className="text-lg font-bold text-slate-900">
             ${product.price.toFixed(2)}
           </span>
@@ -110,6 +106,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
               ${product.compareAtPrice.toFixed(2)}
             </span>
           )}
+        </div>
+
+        <div className="mt-auto pt-4">
+          <Button
+            onClick={handleAddToCart}
+            disabled={product.stockQuantity === 0}
+            className="w-full bg-black hover:bg-slate-800 text-white rounded-none h-11 text-xs font-bold uppercase tracking-wider transition-colors"
+          >
+            <ShoppingCart size={16} className="mr-2" />
+            Add to Cart
+          </Button>
         </div>
       </div>
     </Link>
