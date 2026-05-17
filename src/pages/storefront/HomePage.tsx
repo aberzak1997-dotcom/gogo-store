@@ -125,12 +125,12 @@ const HomePage = () => {
                   </p>
                   <div className="flex flex-wrap gap-4 pt-2">
                     <Link to="/products">
-                      <Button size="lg" className="rounded-xl px-8 h-12 text-sm font-medium shadow-sm">
+                      <Button size="lg" className="rounded-full px-8 h-12 text-sm font-medium shadow-sm">
                         Shop Collection
                       </Button>
                     </Link>
                     <Link to="/deals">
-                      <Button size="lg" variant="outline" className="rounded-xl px-8 h-12 text-sm font-medium border-slate-200 bg-white">
+                      <Button size="lg" variant="outline" className="rounded-full px-8 h-12 text-sm font-medium border-slate-200 bg-white">
                         View Deals
                       </Button>
                     </Link>
