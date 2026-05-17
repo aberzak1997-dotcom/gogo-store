@@ -112,7 +112,7 @@ const HomePage = () => {
         {!categoryParam && !searchParam && (
           <section className="relative pt-0 mb-[5px] px-[5px]">
             <div className="w-full">
-              <div className="relative overflow-hidden rounded-2xl bg-slate-900 min-h-[500px] md:min-h-[600px] flex items-center w-full py-5">
+              <div className="relative overflow-hidden bg-slate-900 min-h-[500px] md:min-h-[600px] flex items-center w-full py-5">
                 {/* YouTube Video Background */}
                 <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
                   <iframe
