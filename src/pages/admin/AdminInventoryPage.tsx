@@ -6,143 +6,98 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { LayoutDashboard, Package, AlertTriangle, ArrowUpDown, Search, Filter, Plus, Minus, Save, LogOut, Store } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Eye, CheckCircle, XCircle, Search, Filter, ArrowUpDown, RefreshCw, Minus, Plus, Save } from "lucide-react";
 import AdminLayout from "../../components/admin/AdminLayout";
 
 const AdminInventoryPage = () => {
-  const { products, updateStock } = useStore();
+  const { products, updateProductStock } = useStore();
 
   // UI state
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
   const [stockFilter, setStockFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
+  const [stockEdits, setStockEdits] = useState<Record<string, number>>({});
 
-  // Helper for badge
-  const getStockBadge = (qty: number) => {
-    if (qty >= 5) return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">In Stock</Badge>;
-    if (qty > 0) return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">Low Stock ({qty})</Badge>;
-    return <Badge variant="destructive">Out of Stock</Badge>;
-  };
+  // Get unique categories
+  const categories = useMemo(() => {
+    const cats = new Set(products.map(p => p.category));
+    return Array.from(cats).sort();
+  }, [products]);
 
   // Filtering & sorting
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
+    // Search filter
     if (search) {
       const s = search.toLowerCase();
       result = result.filter(p =>
         p.title.toLowerCase().includes(s) ||
-        p.brand.toLowerCase().includes(s) ||
         p.sku.toLowerCase().includes(s) ||
-        p.category.toLowerCase().includes(s) ||
-        p.subcategory.toLowerCase().includes(s)
+        p.brand.toLowerCase().includes(s) ||
+        p.category.toLowerCase().includes(s)
       );
     }
 
+    // Category filter
     if (categoryFilter !== "all") {
       result = result.filter(p => p.category === categoryFilter);
     }
 
-    if (statusFilter !== "all") {
-      result = result.filter(p => p.status === statusFilter);
-    }
-
-    if (stockFilter !== "all") {
-      result = result.filter(p => {
-        if (stockFilter === "in") return p.stockQuantity >= 5;
-        if (stockFilter === "low") return p.stockQuantity > 0 && p.stockQuantity < 5;
-        if (stockFilter === "out") return p.stockQuantity === 0;
-        return true;
-      });
+    // Stock filter
+    if (stockFilter === "in-stock") {
+      result = result.filter(p => p.stockQuantity >= 5);
+    } else if (stockFilter === "low-stock") {
+      result = result.filter(p => p.stockQuantity > 0 && p.stockQuantity < 5);
+    } else if (stockFilter === "out-of-stock") {
+      result = result.filter(p => p.stockQuantity === 0);
     }
 
     // Sorting
     result.sort((a, b) => {
       if (sortBy === "newest") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      if (sortBy === "stock-low") return a.stockQuantity - b.stockQuantity;
+      if (sortBy === "oldest") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
       if (sortBy === "stock-high") return b.stockQuantity - a.stockQuantity;
-      if (sortBy === "title-az") return a.title.localeCompare(b.title);
+      if (sortBy === "stock-low") return a.stockQuantity - b.stockQuantity;
       return 0;
     });
 
     return result;
-  }, [products, search, categoryFilter, statusFilter, stockFilter, sortBy]);
+  }, [products, search, categoryFilter, stockFilter, sortBy]);
 
-  // Summary calculations
-  const totalProducts = products.length;
-  const totalStockUnits = products.reduce((sum, p) => sum + p.stockQuantity, 0);
-  const lowStockCount = products.filter(p => p.stockQuantity > 0 && p.stockQuantity < 5).length;
-  const outOfStockCount = products.filter(p => p.stockQuantity === 0).length;
-
-  // Local UI for stock editing
-  const [stockEdits, setStockEdits] = useState<Record<string, number>>({});
-
-  const handleStockChange = (id: string, value: number) => {
-    setStockEdits(prev => ({ ...prev, [id]: value }));
-  };
-
-  const applyStockUpdate = (id: string) => {
-    const newQty = stockEdits[id];
-    if (newQty !== undefined && newQty >= 0) {
-      updateStock(id, newQty);
-      // Clean up edit state
-      setStockEdits(prev => {
-        const copy = { ...prev };
-        delete copy[id];
-        return copy;
-      });
+  const getStockBadge = (qty: number) => {
+    if (qty === 0) {
+      return <Badge variant="destructive">Out of Stock</Badge>;
+    } else if (qty < 5) {
+      return <Badge variant="outline" className="text-amber-600 border-amber-300 bg-amber-50">Only {qty} left</Badge>;
+    } else {
+      return <Badge variant="secondary" className="bg-green-100 text-green-700">In Stock</Badge>;
     }
   };
 
-  const categories = [
-    "Phone Accessories", "Chargers & Cables", "Audio",
-    "Laptop Accessories", "PC Accessories", "Gaming Accessories", "Storage Devices"
-  ];
+  const handleStockChange = (productId: string, newStock: number) => {
+    setStockEdits(prev => ({ ...prev, [productId]: newStock }));
+  };
+
+  const applyStockUpdate = (productId: string) => {
+    const newStock = stockEdits[productId];
+    if (newStock !== undefined) {
+      updateProductStock(productId, newStock);
+    }
+  };
 
   return (
     <AdminLayout>
       <div className="space-y-8">
-        {/* Page Header */}
+        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <h1 className="text-3xl font-bold text-slate-900">Inventory Management</h1>
-          <Button variant="ghost" size="icon" onClick={() => setSearch("")}>
-            <RefreshCcw size={20} />
+          <Button variant="ghost" size="icon" onClick={() => { setSearch(""); setCategoryFilter("all"); setStockFilter("all"); setStockEdits({}); }}>
+            <RefreshCw size={20} />
           </Button>
-        </div>
-
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-4 bg-blue-50 rounded-xl border border-blue-100 flex items-center gap-3">
-            <Package className="text-blue-600 h-6 w-6" />
-            <div>
-              <p className="text-sm text-blue-700">Total Products</p>
-              <p className="text-xl font-bold text-blue-900">{totalProducts}</p>
-            </div>
-          </div>
-          <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center gap-3">
-            <Package className="text-emerald-600 h-6 w-6" />
-            <div>
-              <p className="text-sm text-emerald-700">Total Stock Units</p>
-              <p className="text-xl font-bold text-emerald-900">{totalStockUnits}</p>
-            </div>
-          </div>
-          <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 flex items-center gap-3">
-            <AlertTriangle className="text-amber-600 h-6 w-6" />
-            <div>
-              <p className="text-sm text-amber-700">Low‑Stock Products</p>
-              <p className="text-xl font-bold text-amber-900">{lowStockCount}</p>
-            </div>
-          </div>
-          <div className="p-4 bg-red-50 rounded-xl border border-red-100 flex items-center gap-3">
-            <AlertTriangle className="text-red-600 h-6 w-6" />
-            <div>
-              <p className="text-sm text-red-700">Out‑of‑Stock</p>
-              <p className="text-xl font-bold text-red-900">{outOfStockCount}</p>
-            </div>
-          </div>
         </div>
 
         {/* Search & Filters */}
@@ -151,7 +106,7 @@ const AdminInventoryPage = () => {
             <div className="relative flex-grow">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
               <Input
-                placeholder="Search by title, brand, SKU, category..."
+                placeholder="Search by product name, SKU, brand..."
                 className="pl-10"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
@@ -160,55 +115,45 @@ const AdminInventoryPage = () => {
             <div className="flex flex-wrap gap-2">
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                 <SelectTrigger className="w-[160px]">
-                  <Filter className="h-3 w-3 mr-2" />
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
-                  {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                </SelectContent>
-              </Select>
-
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[130px]">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="draft">Draft</SelectItem>
+                  {categories.map(cat => (
+                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
 
               <Select value={stockFilter} onValueChange={setStockFilter}>
-                <SelectTrigger className="w-[130px]">
+                <SelectTrigger className="w-[140px]">
                   <SelectValue placeholder="Stock" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Stock</SelectItem>
-                  <SelectItem value="in">In Stock</SelectItem>
-                  <SelectItem value="low">Low Stock</SelectItem>
-                  <SelectItem value="out">Out of Stock</SelectItem>
+                  <SelectItem value="in-stock">In Stock</SelectItem>
+                  <SelectItem value="low-stock">Low Stock</SelectItem>
+                  <SelectItem value="out-of-stock">Out of Stock</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[160px]">
+                <SelectTrigger className="w-[180px]">
                   <ArrowUpDown className="h-3 w-3 mr-2" />
                   <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="newest">Newest First</SelectItem>
-                  <SelectItem value="stock-low">Stock Low → High</SelectItem>
+                  <SelectItem value="oldest">Oldest First</SelectItem>
                   <SelectItem value="stock-high">Stock High → Low</SelectItem>
-                  <SelectItem value="title-az">Title A‑Z</SelectItem>
+                  <SelectItem value="stock-low">Stock Low → High</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
         </div>
 
-        {/* Inventory Table */}
+        {/* Products Table */}
         <div className="bg-white rounded-xl shadow-sm border overflow-x-auto">
           <Table>
             <TableHeader>
