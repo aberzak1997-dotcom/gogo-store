@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/layout/Header";
+import Footer from "../../components/layout/Footer";
 import { useStore } from "../../context/StoreContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,20 +48,21 @@ const CheckoutPage = () => {
 
   if (enrichedCart.length === 0 && !orderId) {
     return (
-      <div className="min-h-screen flex flex-col bg-slate-50">
+      <div className="min-h-screen flex flex-col bg-white">
         <Header />
-        <main className="flex-grow section-container py-20">
-          <Card className="max-w-xl mx-auto text-center p-12 rounded-[2.5rem] shadow-xl border-slate-100">
-            <div className="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8">
-              <AlertTriangle className="h-12 w-12 text-slate-300" />
+        <main className="flex-grow section-container py-24">
+          <div className="max-w-xl mx-auto text-center p-16 rounded-[3rem] bg-slate-50 border border-slate-100">
+            <div className="w-24 h-24 bg-white rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-sm">
+              <AlertTriangle className="h-12 w-12 text-slate-200" />
             </div>
-            <h2 className="text-3xl font-black mb-4 text-slate-900">Your Cart is Empty</h2>
-            <p className="text-slate-500 mb-10 text-lg">
+            <h2 className="text-3xl font-black mb-4 text-slate-900 uppercase tracking-tight">Your Cart is Empty</h2>
+            <p className="text-slate-500 mb-12 text-lg font-medium">
               You need to add some tech gear to your cart before you can checkout.
             </p>
-            <Button size="lg" className="rounded-2xl h-14 px-10 text-lg font-bold" onClick={() => navigate("/")}>Return to Store</Button>
-          </Card>
+            <Button size="lg" className="rounded-full h-16 px-12 text-sm font-black uppercase tracking-widest" onClick={() => navigate("/")}>Return to Store</Button>
+          </div>
         </main>
+        <Footer />
       </div>
     );
   }
@@ -101,143 +103,144 @@ const CheckoutPage = () => {
 
   if (orderId) {
     return (
-      <div className="min-h-screen flex flex-col bg-slate-50">
+      <div className="min-h-screen flex flex-col bg-white">
         <Header />
-        <main className="flex-grow section-container py-20">
-          <Card className="max-w-2xl mx-auto rounded-[3rem] shadow-2xl border-none overflow-hidden">
-            <div className="bg-emerald-500 p-12 text-center text-white">
-              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="h-12 w-12 text-white" />
+        <main className="flex-grow section-container py-24">
+          <div className="max-w-2xl mx-auto rounded-[3rem] shadow-2xl border border-slate-100 overflow-hidden bg-white">
+            <div className="bg-slate-900 p-16 text-center text-white">
+              <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-8">
+                <CheckCircle className="h-12 w-12 text-primary" />
               </div>
-              <h2 className="text-4xl font-black mb-2">Order Confirmed!</h2>
-              <p className="text-emerald-50/80 font-medium">Thank you for shopping with ElectroStore</p>
+              <h2 className="text-4xl font-black mb-4 uppercase tracking-tight">Order Confirmed!</h2>
+              <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Thank you for shopping with ElectroStore</p>
             </div>
-            <CardContent className="p-12 space-y-8">
-              <div className="grid grid-cols-2 gap-8">
-                <div className="space-y-1">
+            <div className="p-16 space-y-10">
+              <div className="grid grid-cols-2 gap-12">
+                <div className="space-y-2">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Order Number</p>
-                  <p className="text-lg font-black text-slate-900">{orderId}</p>
+                  <p className="text-xl font-black text-slate-900 tracking-tight">{orderId}</p>
                 </div>
-                <div className="text-right space-y-1">
+                <div className="text-right space-y-2">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Amount</p>
-                  <p className="text-lg font-black text-slate-900">${total.toFixed(2)}</p>
+                  <p className="text-xl font-black text-slate-900 tracking-tight">${total.toFixed(2)}</p>
                 </div>
               </div>
               
-              <Separator />
+              <Separator className="bg-slate-100" />
               
-              <div className="space-y-4">
-                <p className="text-slate-600 leading-relaxed text-center">
-                  We've sent a confirmation email to <span className="font-bold text-slate-900">{email}</span> with your order details and tracking information.
+              <div className="space-y-6">
+                <p className="text-slate-500 leading-relaxed text-center font-medium">
+                  We've sent a confirmation email to <span className="font-black text-slate-900">{email}</span> with your order details and tracking information.
                 </p>
-                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex items-center gap-4">
-                  <div className="p-3 bg-white rounded-xl shadow-sm text-primary">
-                    <Truck size={24} />
+                <div className="bg-slate-50 p-8 rounded-[2rem] border border-slate-100 flex items-center gap-6">
+                  <div className="p-4 bg-white rounded-2xl shadow-sm text-primary">
+                    <Truck size={28} />
                   </div>
                   <div>
-                    <p className="font-bold text-slate-900">Estimated Delivery</p>
-                    <p className="text-sm text-slate-500">3-5 Business Days</p>
+                    <p className="font-black text-slate-900 uppercase tracking-widest text-xs">Estimated Delivery</p>
+                    <p className="text-sm text-slate-500 font-bold">3-5 Business Days</p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button size="lg" className="flex-1 rounded-2xl h-14 font-black" onClick={() => navigate("/")}>Continue Shopping</Button>
-                <Button size="lg" variant="outline" className="flex-1 rounded-2xl h-14 font-black border-slate-200" onClick={() => navigate("/")}>View Order Status</Button>
+              <div className="flex flex-col sm:flex-row gap-4 pt-6">
+                <Button size="lg" className="flex-1 rounded-full h-16 text-sm font-black uppercase tracking-widest" onClick={() => navigate("/")}>Continue Shopping</Button>
+                <Button size="lg" variant="outline" className="flex-1 rounded-full h-16 text-sm font-black uppercase tracking-widest border-slate-200" onClick={() => navigate("/")}>View Status</Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </main>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50/30">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
-      <main className="flex-grow section-container py-12">
-        <div className="flex items-center justify-between mb-10">
-          <Link to="/" className="inline-flex items-center text-sm font-bold text-slate-500 hover:text-primary transition-colors group">
-            <ArrowLeft size={18} className="mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Store
+      <main className="flex-grow section-container py-16">
+        <div className="flex items-center justify-between mb-12">
+          <Link to="/" className="inline-flex items-center text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors group">
+            <ArrowLeft size={16} className="mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Store
           </Link>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Checkout</h1>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Checkout</h1>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-12">
+        <div className="grid lg:grid-cols-12 gap-16">
           {/* Checkout Form */}
-          <div className="lg:col-span-7 space-y-8">
-            <Card className="rounded-[2rem] border-slate-100 shadow-sm overflow-hidden">
-              <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-8">
-                <CardTitle className="flex items-center gap-3 text-xl font-black">
-                  <div className="p-2 bg-primary/10 rounded-xl text-primary">
+          <div className="lg:col-span-7 space-y-10">
+            <div className="rounded-[2.5rem] border border-slate-100 bg-white shadow-sm overflow-hidden">
+              <div className="bg-slate-50/50 border-b border-slate-100 p-10">
+                <h3 className="flex items-center gap-4 text-sm font-black uppercase tracking-widest text-slate-900">
+                  <div className="p-2 bg-white rounded-xl text-primary shadow-sm">
                     <Truck size={20} />
                   </div>
                   Shipping Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-8">
-                <form id="checkout-form" onSubmit={handlePlaceOrder} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="fullName" className="font-bold text-slate-700">Full Name</Label>
+                </h3>
+              </div>
+              <div className="p-10">
+                <form id="checkout-form" onSubmit={handlePlaceOrder} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-3 md:col-span-2">
+                    <Label htmlFor="fullName" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</Label>
                     <Input
                       id="fullName"
-                      className="h-12 rounded-xl border-slate-200 focus:ring-primary/20"
+                      className="h-14 rounded-2xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
                       value={fullName}
                       onChange={e => setFullName(e.target.value)}
                       placeholder="John Doe"
                       required
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="font-bold text-slate-700">Email Address</Label>
+                  <div className="space-y-3">
+                    <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</Label>
                     <Input
                       id="email"
                       type="email"
-                      className="h-12 rounded-xl border-slate-200 focus:ring-primary/20"
+                      className="h-14 rounded-2xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       placeholder="john@example.com"
                       required
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="font-bold text-slate-700">Phone Number</Label>
+                  <div className="space-y-3">
+                    <Label htmlFor="phone" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Phone Number</Label>
                     <Input
                       id="phone"
-                      className="h-12 rounded-xl border-slate-200 focus:ring-primary/20"
+                      className="h-14 rounded-2xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
                       value={phone}
                       onChange={e => setPhone(e.target.value)}
                       placeholder="+1 (555) 000-0000"
                       required
                     />
                   </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="address" className="font-bold text-slate-700">Street Address</Label>
+                  <div className="space-y-3 md:col-span-2">
+                    <Label htmlFor="address" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Street Address</Label>
                     <Input
                       id="address"
-                      className="h-12 rounded-xl border-slate-200 focus:ring-primary/20"
+                      className="h-14 rounded-2xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
                       value={address}
                       onChange={e => setAddress(e.target.value)}
                       placeholder="123 Tech Lane"
                       required
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="city" className="font-bold text-slate-700">City</Label>
+                  <div className="space-y-3">
+                    <Label htmlFor="city" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">City</Label>
                     <Input
                       id="city"
-                      className="h-12 rounded-xl border-slate-200 focus:ring-primary/20"
+                      className="h-14 rounded-2xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
                       value={city}
                       onChange={e => setCity(e.target.value)}
                       placeholder="San Francisco"
                       required
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="country" className="font-bold text-slate-700">Country</Label>
+                  <div className="space-y-3">
+                    <Label htmlFor="country" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Country</Label>
                     <Input
                       id="country"
-                      className="h-12 rounded-xl border-slate-200 focus:ring-primary/20"
+                      className="h-14 rounded-2xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
                       value={country}
                       onChange={e => setCountry(e.target.value)}
                       placeholder="United States"
@@ -245,50 +248,50 @@ const CheckoutPage = () => {
                     />
                   </div>
                 </form>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            <Card className="rounded-[2rem] border-slate-100 shadow-sm overflow-hidden">
-              <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-8">
-                <CardTitle className="flex items-center gap-3 text-xl font-black">
-                  <div className="p-2 bg-primary/10 rounded-xl text-primary">
+            <div className="rounded-[2.5rem] border border-slate-100 bg-white shadow-sm overflow-hidden">
+              <div className="bg-slate-50/50 border-b border-slate-100 p-10">
+                <h3 className="flex items-center gap-4 text-sm font-black uppercase tracking-widest text-slate-900">
+                  <div className="p-2 bg-white rounded-xl text-primary shadow-sm">
                     <CreditCard size={20} />
                   </div>
                   Payment Method
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-8">
-                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-white rounded-xl shadow-sm text-slate-400">
-                      <Lock size={24} />
+                </h3>
+              </div>
+              <div className="p-10">
+                <div className="bg-slate-50 p-8 rounded-[2rem] border border-slate-100 flex items-center justify-between">
+                  <div className="flex items-center gap-6">
+                    <div className="p-4 bg-white rounded-2xl shadow-sm text-slate-300">
+                      <Lock size={28} />
                     </div>
                     <div>
-                      <p className="font-bold text-slate-900">Secure Payment</p>
-                      <p className="text-sm text-slate-500">Payment will be processed securely</p>
+                      <p className="font-black text-slate-900 uppercase tracking-widest text-xs">Secure Payment</p>
+                      <p className="text-sm text-slate-500 font-bold">Payment will be processed securely</p>
                     </div>
                   </div>
-                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-transparent font-bold">ENCRYPTED</Badge>
+                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-transparent font-black text-[8px] uppercase tracking-widest px-3 py-1 rounded-full">ENCRYPTED</Badge>
                 </div>
-                <p className="mt-6 text-xs text-slate-400 text-center">
+                <p className="mt-8 text-[10px] text-slate-400 text-center font-bold uppercase tracking-widest">
                   By clicking "Place Order", you agree to our Terms of Service and Privacy Policy.
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
 
           {/* Order Summary */}
           <div className="lg:col-span-5">
-            <div className="sticky top-24 space-y-6">
-              <Card className="rounded-[2rem] border-slate-100 shadow-lg overflow-hidden">
-                <CardHeader className="p-8 border-b border-slate-100">
-                  <CardTitle className="text-xl font-black">Order Summary</CardTitle>
-                </CardHeader>
-                <CardContent className="p-8 space-y-6">
-                  <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="sticky top-32 space-y-8">
+              <div className="rounded-[2.5rem] border border-slate-100 bg-white shadow-2xl shadow-slate-200/50 overflow-hidden">
+                <div className="p-10 border-b border-slate-50">
+                  <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">Order Summary</h3>
+                </div>
+                <div className="p-10 space-y-8">
+                  <div className="space-y-6 max-h-[320px] overflow-y-auto pr-4 custom-scrollbar">
                     {enrichedCart.map(item => (
-                      <div key={item.productId} className="flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-xl bg-slate-50 border border-slate-100 p-2 flex-shrink-0">
+                      <div key={item.productId} className="flex items-center gap-6">
+                        <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-slate-50 p-3 flex-shrink-0">
                           <img
                             src={item.product.imageUrl}
                             alt={item.product.title}
@@ -296,49 +299,49 @@ const CheckoutPage = () => {
                           />
                         </div>
                         <div className="flex-grow min-w-0">
-                          <p className="font-bold text-slate-900 text-sm line-clamp-1">{item.product.title}</p>
-                          <p className="text-xs text-slate-500 font-medium">Qty: {item.quantity}</p>
+                          <p className="font-black text-slate-900 text-xs uppercase tracking-tight line-clamp-1">{item.product.title}</p>
+                          <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Qty: {item.quantity}</p>
                         </div>
-                        <p className="font-black text-slate-900 text-sm">
+                        <p className="font-black text-slate-900 text-sm tracking-tight">
                           ${(item.product.price * item.quantity).toFixed(2)}
                         </p>
                       </div>
                     ))}
                   </div>
 
-                  <Separator />
+                  <Separator className="bg-slate-50" />
 
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500 font-medium">Subtotal</span>
-                      <span className="font-bold text-slate-900">${subtotal.toFixed(2)}</span>
+                  <div className="space-y-4">
+                    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+                      <span className="text-slate-400">Subtotal</span>
+                      <span className="text-slate-900">${subtotal.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500 font-medium">Shipping</span>
-                      <span className={cn("font-bold", shipping === 0 ? "text-emerald-600" : "text-slate-900")}>
+                    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+                      <span className="text-slate-400">Shipping</span>
+                      <span className={cn("font-black", shipping === 0 ? "text-emerald-600" : "text-slate-900")}>
                         {shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
                       </span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500 font-medium">Estimated Tax (7%)</span>
-                      <span className="font-bold text-slate-900">${tax.toFixed(2)}</span>
+                    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+                      <span className="text-slate-400">Estimated Tax (7%)</span>
+                      <span className="text-slate-900">${tax.toFixed(2)}</span>
                     </div>
-                    <Separator className="my-4" />
+                    <Separator className="my-6 bg-slate-50" />
                     <div className="flex justify-between items-end">
-                      <span className="text-slate-900 font-black text-xl">Total</span>
-                      <span className="text-3xl font-black text-slate-900">${total.toFixed(2)}</span>
+                      <span className="text-slate-900 font-black text-lg uppercase tracking-tighter">Total</span>
+                      <span className="text-4xl font-black text-slate-900 tracking-tighter">${total.toFixed(2)}</span>
                     </div>
                   </div>
 
                   <Button
                     form="checkout-form"
                     type="submit"
-                    className="w-full h-16 text-lg font-black gap-3 rounded-2xl shadow-lg shadow-primary/20 mt-4"
+                    className="w-full h-16 text-sm font-black uppercase tracking-widest gap-3 rounded-full shadow-2xl shadow-primary/20 mt-6"
                     disabled={isPlacing}
                   >
                     {isPlacing ? (
                       <>
-                        <Loader2 className="h-6 w-6 animate-spin" />
+                        <Loader2 className="h-5 w-5 animate-spin" />
                         Processing...
                       </>
                     ) : (
@@ -347,23 +350,24 @@ const CheckoutPage = () => {
                       </>
                     )}
                   </Button>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white p-4 rounded-2xl border border-slate-100 flex flex-col items-center text-center gap-2">
-                  <ShieldCheck className="text-emerald-500" size={24} />
-                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">Secure Checkout</span>
+                <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 flex flex-col items-center text-center gap-3">
+                  <ShieldCheck className="text-emerald-500" size={28} />
+                  <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">Secure Checkout</span>
                 </div>
-                <div className="bg-white p-4 rounded-2xl border border-slate-100 flex flex-col items-center text-center gap-2">
-                  <RotateCcw className="text-blue-500" size={24} />
-                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">Easy Returns</span>
+                <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 flex flex-col items-center text-center gap-3">
+                  <RotateCcw className="text-blue-500" size={28} />
+                  <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">Easy Returns</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

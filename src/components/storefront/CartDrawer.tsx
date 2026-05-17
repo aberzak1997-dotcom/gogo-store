@@ -47,15 +47,15 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-md flex flex-col p-0 border-l-0 sm:border-l">
-        <SheetHeader className="p-6 border-b bg-white sticky top-0 z-10">
-          <SheetTitle className="flex items-center gap-3 text-2xl font-black">
-            <div className="p-2 bg-primary/10 rounded-xl text-primary">
+      <SheetContent className="w-full sm:max-w-md flex flex-col p-0 border-l border-slate-100">
+        <SheetHeader className="p-8 border-b border-slate-50 bg-white sticky top-0 z-10">
+          <SheetTitle className="flex items-center gap-4 text-2xl font-black uppercase tracking-tighter">
+            <div className="p-2 bg-slate-900 rounded-xl text-white">
               <ShoppingBag size={24} />
             </div>
             Your Cart
-            <Badge variant="secondary" className="ml-auto rounded-full px-3 py-1 font-bold">
-              {cart.reduce((sum, i) => sum + i.quantity, 0)} items
+            <Badge variant="secondary" className="ml-auto rounded-full px-3 py-1 font-black text-[10px] bg-slate-100 text-slate-900">
+              {cart.reduce((sum, i) => sum + i.quantity, 0)}
             </Badge>
           </SheetTitle>
         </SheetHeader>
@@ -63,21 +63,21 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
         <div className="flex-grow overflow-hidden bg-slate-50/30">
           {cartItems.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center p-12 text-center">
-              <div className="w-24 h-24 bg-white rounded-[2rem] shadow-sm flex items-center justify-center mb-6 border border-slate-100">
+              <div className="w-24 h-24 bg-white rounded-[2.5rem] shadow-sm flex items-center justify-center mb-8 border border-slate-100">
                 <ShoppingBag className="h-12 w-12 text-slate-200" />
               </div>
-              <h3 className="text-2xl font-black mb-3 text-slate-900">Your cart is empty</h3>
-              <p className="text-slate-500 mb-8 max-w-[200px] mx-auto">Looks like you haven't added any tech gear yet.</p>
+              <h3 className="text-2xl font-black mb-4 text-slate-900 uppercase tracking-tight">Your cart is empty</h3>
+              <p className="text-slate-500 mb-10 max-w-[240px] mx-auto font-medium">Looks like you haven't added any tech gear yet.</p>
               <SheetClose asChild>
-                <Button size="lg" className="rounded-2xl px-8 font-bold">Start Shopping</Button>
+                <Button size="lg" className="rounded-full px-10 font-black uppercase tracking-widest text-[10px] h-14">Start Shopping</Button>
               </SheetClose>
             </div>
           ) : (
-            <ScrollArea className="h-full p-6">
+            <ScrollArea className="h-full p-8">
               <div className="space-y-6">
                 {cartItems.map((item) => (
-                  <div key={item.productId} className="group flex gap-5 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
-                    <div className="w-24 h-24 rounded-xl bg-slate-50 overflow-hidden border border-slate-100 flex-shrink-0 p-2">
+                  <div key={item.productId} className="group flex gap-6 bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm transition-all hover:shadow-md">
+                    <div className="w-24 h-24 rounded-2xl bg-slate-50 overflow-hidden border border-slate-50 flex-shrink-0 p-3">
                       <img
                         src={item.product!.imageUrl}
                         alt={item.product!.title}
@@ -86,43 +86,43 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
                     </div>
                     <div className="flex-grow min-w-0 flex flex-col">
                       <div className="flex justify-between items-start mb-1">
-                        <h4 className="font-bold text-slate-900 line-clamp-1 group-hover:text-primary transition-colors">{item.product!.title}</h4>
+                        <h4 className="font-black text-slate-900 line-clamp-1 group-hover:text-primary transition-colors text-sm uppercase tracking-tight">{item.product!.title}</h4>
                         <button
                           onClick={() => removeFromCart(item.productId)}
-                          className="text-slate-300 hover:text-red-500 transition-colors p-1"
+                          className="text-slate-300 hover:text-rose-500 transition-colors p-1"
                         >
-                          <Trash2 size={18} />
+                          <Trash2 size={16} />
                         </button>
                       </div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">{item.product!.brand}</p>
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">{item.product!.brand}</p>
 
                       {item.product!.status !== "active" ? (
-                        <Badge variant="destructive" className="text-[10px] mb-3 w-fit">Unavailable</Badge>
+                        <Badge variant="destructive" className="text-[8px] font-black uppercase tracking-widest mb-4 w-fit rounded-full">Unavailable</Badge>
                       ) : item.product!.stockQuantity < item.quantity ? (
-                        <div className="flex items-center gap-1.5 text-amber-600 text-[10px] font-black mb-3 bg-amber-50 px-2 py-1 rounded-lg w-fit">
+                        <div className="flex items-center gap-1.5 text-amber-600 text-[8px] font-black mb-4 bg-amber-50 px-2 py-1 rounded-lg w-fit uppercase tracking-widest">
                           <AlertCircle size={12} />
                           ONLY {item.product!.stockQuantity} LEFT
                         </div>
                       ) : null}
 
                       <div className="mt-auto flex items-center justify-between">
-                        <div className="flex items-center border border-slate-100 rounded-xl bg-slate-50 p-0.5">
+                        <div className="flex items-center border border-slate-200 rounded-full bg-white p-0.5">
                           <button
-                            className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg transition-all disabled:opacity-30"
+                            className="p-1.5 hover:bg-slate-50 rounded-full transition-all disabled:opacity-30"
                             onClick={() => updateCartQuantity(item.productId, item.quantity - 1)}
                           >
-                            <Minus size={14} />
+                            <Minus size={12} />
                           </button>
-                          <span className="px-3 text-sm font-black w-8 text-center">{item.quantity}</span>
+                          <span className="px-3 text-xs font-black w-8 text-center">{item.quantity}</span>
                           <button
-                            className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg transition-all disabled:opacity-30"
+                            className="p-1.5 hover:bg-slate-50 rounded-full transition-all disabled:opacity-30"
                             onClick={() => updateCartQuantity(item.productId, item.quantity + 1)}
                             disabled={item.quantity >= item.product!.stockQuantity}
                           >
-                            <Plus size={14} />
+                            <Plus size={12} />
                           </button>
                         </div>
-                        <span className="font-black text-slate-900">
+                        <span className="font-black text-slate-900 text-sm">
                           ${(item.product!.price * item.quantity).toFixed(2)}
                         </span>
                       </div>
@@ -135,29 +135,29 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
         </div>
 
         {cartItems.length > 0 && (
-          <SheetFooter className="p-8 border-t bg-white flex-col sm:flex-col gap-6">
-            <div className="space-y-3 w-full">
-              <div className="flex justify-between text-sm">
-                <span className="text-slate-500 font-medium">Subtotal</span>
-                <span className="font-bold text-slate-900">${subtotal.toFixed(2)}</span>
+          <SheetFooter className="p-10 border-t border-slate-100 bg-white flex-col sm:flex-col gap-8">
+            <div className="space-y-4 w-full">
+              <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
+                <span className="text-slate-400">Subtotal</span>
+                <span className="text-slate-900">${subtotal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-slate-500 font-medium">Shipping</span>
-                <span className="text-emerald-600 font-bold">Calculated at checkout</span>
+              <div className="flex justify-between text-xs font-bold uppercase tracking-widest">
+                <span className="text-slate-400">Shipping</span>
+                <span className="text-emerald-600">FREE</span>
               </div>
               <Separator className="my-4" />
               <div className="flex justify-between items-end">
-                <span className="text-slate-900 font-black text-lg">Total</span>
+                <span className="text-slate-900 font-black text-lg uppercase tracking-tighter">Total</span>
                 <div className="text-right">
-                  <span className="block text-2xl font-black text-slate-900">${subtotal.toFixed(2)}</span>
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Including VAT</span>
+                  <span className="block text-3xl font-black text-slate-900 tracking-tighter">${subtotal.toFixed(2)}</span>
+                  <span className="text-[8px] text-slate-400 font-black uppercase tracking-[0.2em]">Including VAT</span>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-3 w-full">
+            <div className="space-y-4 w-full">
               <Button
-                className="w-full h-16 text-lg font-black gap-3 rounded-2xl shadow-lg shadow-primary/20"
+                className="w-full h-16 text-sm font-black uppercase tracking-widest gap-3 rounded-full shadow-2xl shadow-primary/20"
                 disabled={hasStockIssues}
                 onClick={handleCheckout}
               >
@@ -165,20 +165,20 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
               </Button>
               
               {hasStockIssues && (
-                <div className="flex items-center justify-center gap-2 text-red-500 text-xs font-bold bg-red-50 p-3 rounded-xl">
+                <div className="flex items-center justify-center gap-2 text-rose-600 text-[10px] font-black uppercase tracking-widest bg-rose-50 p-4 rounded-2xl">
                   <AlertCircle size={16} />
-                  Please resolve stock issues before checkout
+                  Please resolve stock issues
                 </div>
               )}
               
-              <div className="flex items-center justify-center gap-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                <div className="flex items-center gap-1">
+              <div className="flex items-center justify-center gap-6 text-[8px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                <div className="flex items-center gap-1.5">
                   <Zap size={12} className="text-amber-500" /> Secure
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <Zap size={12} className="text-amber-500" /> Fast
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <Zap size={12} className="text-amber-500" /> Trusted
                 </div>
               </div>

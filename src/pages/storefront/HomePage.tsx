@@ -17,7 +17,12 @@ import {
   Smartphone, 
   Laptop, 
   Gamepad2, 
-  HardDrive 
+  HardDrive,
+  Keyboard,
+  MousePointer2,
+  Video,
+  Star,
+  CheckCircle2
 } from "lucide-react";
 
 const HomePage = () => {
@@ -47,47 +52,83 @@ const HomePage = () => {
   }, [products, categoryParam, searchParam]);
 
   const featuredProducts = filteredProducts.slice(0, 8);
+  const bestSellers = [...filteredProducts].sort((a, b) => b.reviewCount - a.reviewCount).slice(0, 4);
   const deals = filteredProducts.filter(p => p.compareAtPrice).slice(0, 4);
 
   const categories = [
-    { name: "Phones", icon: Smartphone, color: "bg-blue-50 text-blue-600", path: "/products?category=Phone Accessories" },
-    { name: "Laptops", icon: Laptop, color: "bg-purple-50 text-purple-600", path: "/products?category=Laptop Accessories" },
-    { name: "Gaming", icon: Gamepad2, color: "bg-red-50 text-red-600", path: "/products?category=Gaming Accessories" },
-    { name: "Storage", icon: HardDrive, color: "bg-emerald-50 text-emerald-600", path: "/products?category=Storage Devices" },
+    { name: "Keyboards", icon: Keyboard, color: "bg-blue-50 text-blue-600", path: "/products?category=Gaming Accessories" },
+    { name: "Mice", icon: MousePointer2, color: "bg-purple-50 text-purple-600", path: "/products?category=PC Accessories" },
+    { name: "Headsets", icon: Headphones, color: "bg-red-50 text-red-600", path: "/products?category=Audio" },
+    { name: "Webcams", icon: Video, color: "bg-emerald-50 text-emerald-600", path: "/products?category=PC Accessories" },
+    { name: "Chargers", icon: Zap, color: "bg-amber-50 text-amber-600", path: "/products?category=Chargers & Cables" },
+    { name: "Storage", icon: HardDrive, color: "bg-slate-50 text-slate-600", path: "/products?category=Storage Devices" },
+    { name: "Gaming", icon: Gamepad2, color: "bg-indigo-50 text-indigo-600", path: "/products?category=Gaming Accessories" },
+    { name: "Laptops", icon: Laptop, color: "bg-rose-50 text-rose-600", path: "/products?category=Laptop Accessories" },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50/30">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       
       <main className="flex-grow">
-        {/* Hero Section - Only show on main home page */}
+        {/* Hero Section */}
         {!categoryParam && !searchParam && (
-          <section className="relative overflow-hidden bg-slate-900 py-20 md:py-32">
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070')] bg-cover bg-center opacity-20" />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent" />
-            
-            <div className="section-container relative z-10">
-              <div className="max-w-2xl space-y-8">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
-                  <Zap size={14} /> Next-Gen Tech is Here
+          <section className="relative py-12 md:py-20">
+            <div className="section-container">
+              <div className="relative overflow-hidden rounded-[3rem] bg-slate-50 min-h-[500px] md:min-h-[600px] flex items-center">
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070')] bg-cover bg-center opacity-10" />
+                <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/80 to-transparent" />
+                
+                <div className="relative z-10 px-8 md:px-20 max-w-3xl space-y-8">
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-900 text-[10px] font-black uppercase tracking-widest shadow-sm">
+                    <Zap size={14} className="text-primary" /> Next-Gen Tech is Here
+                  </div>
+                  <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-[0.9]">
+                    UPGRADE YOUR <br />
+                    <span className="text-primary">TECH SETUP</span>
+                  </h1>
+                  <p className="text-lg md:text-xl text-slate-500 leading-relaxed font-medium max-w-xl">
+                    Discover premium electronics, mobile accessories, and PC gear built for work, play, and everyday life.
+                  </p>
+                  <div className="flex flex-wrap gap-4 pt-4">
+                    <Link to="/products">
+                      <Button size="lg" className="rounded-full px-10 h-14 text-sm font-black uppercase tracking-widest shadow-xl shadow-primary/20">
+                        Shop Now
+                      </Button>
+                    </Link>
+                    <Link to="/deals">
+                      <Button size="lg" variant="outline" className="rounded-full px-10 h-14 text-sm font-black uppercase tracking-widest border-slate-200 bg-white hover:bg-slate-50">
+                        Explore Deals
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.1]">
-                  Elevate Your <span className="text-primary">Digital</span> Experience
-                </h1>
-                <p className="text-lg md:text-xl text-slate-300 leading-relaxed">
-                  Discover the latest in high-performance electronics. From professional workstations to immersive gaming gear, we've got your future covered.
-                </p>
-                <div className="flex flex-wrap gap-4">
-                  <Link to="/products">
-                    <Button size="lg" className="rounded-full px-8 h-14 text-lg shadow-lg shadow-primary/20">
-                      Shop Collection
-                    </Button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Promo Campaign Cards */}
+        {!categoryParam && !searchParam && (
+          <section className="pb-20">
+            <div className="section-container grid md:grid-cols-2 gap-8">
+              <div className="group relative overflow-hidden rounded-[2.5rem] bg-slate-900 text-white p-12 min-h-[400px] flex flex-col justify-center">
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center opacity-30 transition-transform duration-700 group-hover:scale-110" />
+                <div className="relative z-10 space-y-6">
+                  <h3 className="text-4xl font-black tracking-tight">Gaming Essentials</h3>
+                  <p className="text-slate-400 max-w-xs font-medium">Level up your performance with our pro-grade gaming gear.</p>
+                  <Link to="/products?category=Gaming Accessories">
+                    <Button variant="secondary" className="rounded-full px-8 font-black uppercase tracking-widest text-[10px]">Shop Gaming</Button>
                   </Link>
-                  <Link to="/deals">
-                    <Button size="lg" variant="outline" className="rounded-full px-8 h-14 text-lg text-white border-white/20 hover:bg-white/10">
-                      View Deals
-                    </Button>
+                </div>
+              </div>
+              <div className="group relative overflow-hidden rounded-[2.5rem] bg-primary text-white p-12 min-h-[400px] flex flex-col justify-center">
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=2071')] bg-cover bg-center opacity-20 transition-transform duration-700 group-hover:scale-110" />
+                <div className="relative z-10 space-y-6">
+                  <h3 className="text-4xl font-black tracking-tight">Work From Anywhere</h3>
+                  <p className="text-primary-foreground/80 max-w-xs font-medium">Premium accessories designed for maximum productivity and comfort.</p>
+                  <Link to="/products?category=Laptop Accessories">
+                    <Button variant="secondary" className="rounded-full px-8 font-black uppercase tracking-widest text-[10px]">Shop Productivity</Button>
                   </Link>
                 </div>
               </div>
@@ -95,44 +136,22 @@ const HomePage = () => {
           </section>
         )}
 
-        {/* Trust Badges */}
-        <section className="border-y bg-white py-8">
-          <div className="section-container grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { icon: Truck, title: "Free Shipping", desc: "On orders over $100" },
-              { icon: ShieldCheck, title: "Secure Payment", desc: "100% secure checkout" },
-              { icon: RotateCcw, title: "Easy Returns", desc: "30-day money back" },
-              { icon: Headphones, title: "24/7 Support", desc: "Dedicated tech team" },
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-4">
-                <div className="p-3 rounded-2xl bg-slate-50 text-primary">
-                  <item.icon size={24} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-slate-900">{item.title}</h4>
-                  <p className="text-xs text-slate-500">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Shop by Category */}
+        {/* Popular Categories */}
         {!categoryParam && !searchParam && (
-          <section className="py-20">
+          <section className="py-20 bg-slate-50/50">
             <div className="section-container">
-              <div className="flex items-end justify-between mb-10">
-                <div>
-                  <h2 className="text-3xl font-black text-slate-900 tracking-tight">Shop by Category</h2>
-                  <p className="text-slate-500 mt-2">Find exactly what you're looking for</p>
-                </div>
+              <div className="text-center mb-16 space-y-4">
+                <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Shop by Category</h2>
+                <p className="text-slate-500 font-medium">Find exactly what you're looking for</p>
               </div>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {categories.map((cat) => (
-                  <Link key={cat.name} to={cat.path} className="group cursor-pointer">
-                    <div className={`aspect-[4/3] rounded-3xl ${cat.color} flex flex-col items-center justify-center gap-4 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl`}>
-                      <cat.icon size={48} strokeWidth={1.5} />
-                      <span className="font-bold text-lg">{cat.name}</span>
+                  <Link key={cat.name} to={cat.path} className="group">
+                    <div className="bg-white p-8 rounded-[2rem] border border-slate-100 flex flex-col items-center justify-center gap-6 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl group-hover:border-primary/20">
+                      <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110", cat.color)}>
+                        <cat.icon size={32} strokeWidth={1.5} />
+                      </div>
+                      <span className="font-black text-xs uppercase tracking-widest text-slate-900">{cat.name}</span>
                     </div>
                   </Link>
                 ))}
@@ -141,34 +160,34 @@ const HomePage = () => {
           </section>
         )}
 
-        {/* Products Grid */}
-        <section className="py-20 bg-white">
+        {/* Featured Products */}
+        <section className="py-24">
           <div className="section-container">
-            <div className="flex items-end justify-between mb-10">
-              <div>
-                <h2 className="text-3xl font-black text-slate-900 tracking-tight">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+              <div className="space-y-2">
+                <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">
                   {categoryParam ? categoryParam : searchParam ? `Search: "${searchParam}"` : "Featured Products"}
                 </h2>
-                <p className="text-slate-500 mt-2">
+                <p className="text-slate-500 font-medium">
                   {filteredProducts.length} products found
                 </p>
               </div>
               {(categoryParam || searchParam) && (
                 <Link to="/">
-                  <Button variant="ghost" className="gap-2 font-bold text-primary">
-                    Clear Filters
+                  <Button variant="ghost" className="gap-2 font-black text-[10px] uppercase tracking-widest text-primary hover:bg-primary/5">
+                    Clear Filters <X size={14} />
                   </Button>
                 </Link>
               )}
             </div>
             
             {filteredProducts.length === 0 ? (
-              <div className="py-20 text-center bg-slate-50 rounded-[3rem] border border-dashed border-slate-200">
+              <div className="py-32 text-center bg-slate-50 rounded-[3rem] border border-dashed border-slate-200">
                 <Smartphone className="mx-auto h-16 w-16 text-slate-200 mb-4" />
                 <h3 className="text-2xl font-black text-slate-900">No products found</h3>
                 <p className="text-slate-500 mt-2">Try adjusting your search or filters.</p>
                 <Link to="/">
-                  <Button className="mt-8 rounded-2xl">Back to Home</Button>
+                  <Button className="mt-8 rounded-full px-8 font-black uppercase tracking-widest text-[10px]">Back to Home</Button>
                 </Link>
               </div>
             ) : (
@@ -181,15 +200,39 @@ const HomePage = () => {
           </div>
         </section>
 
+        {/* Best Sellers Section */}
+        {!categoryParam && !searchParam && bestSellers.length > 0 && (
+          <section className="py-24 bg-slate-50/50">
+            <div className="section-container">
+              <div className="flex items-center justify-between mb-12">
+                <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Best Sellers</h2>
+                <Link to="/best-sellers">
+                  <Button variant="ghost" className="gap-2 font-black text-[10px] uppercase tracking-widest text-primary">View All <ArrowRight size={14} /></Button>
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {bestSellers.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Deals Section */}
         {!categoryParam && !searchParam && deals.length > 0 && (
-          <section className="py-20 bg-slate-900 text-white overflow-hidden">
+          <section className="py-24 bg-slate-900 text-white overflow-hidden">
             <div className="section-container">
-              <div className="flex items-center gap-3 mb-10">
-                <div className="p-2 bg-red-500 rounded-lg animate-pulse">
-                  <Zap size={20} fill="white" />
+              <div className="flex items-center justify-between mb-12">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary rounded-lg">
+                    <Zap size={20} fill="white" />
+                  </div>
+                  <h2 className="text-4xl font-black tracking-tight uppercase">Flash Deals</h2>
                 </div>
-                <h2 className="text-3xl font-black tracking-tight">Flash Deals</h2>
+                <Link to="/deals">
+                  <Button variant="ghost" className="gap-2 font-black text-[10px] uppercase tracking-widest text-white hover:bg-white/10">View All <ArrowRight size={14} /></Button>
+                </Link>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {deals.map(product => (
@@ -200,39 +243,73 @@ const HomePage = () => {
           </section>
         )}
 
-        {/* Why Buy From Us */}
+        {/* Reasons to Buy */}
         {!categoryParam && !searchParam && (
-          <section className="py-20">
+          <section className="py-24">
             <div className="section-container">
-              <div className="bg-primary rounded-[3rem] p-12 md:p-20 text-white relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-1/2 h-full bg-white/5 -skew-x-12 translate-x-1/4" />
-                <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
-                  <div className="space-y-6">
-                    <h2 className="text-4xl font-black tracking-tight">Why Choose ElectroStore?</h2>
-                    <p className="text-primary-foreground/80 text-lg">
-                      We're more than just a retailer. We're tech enthusiasts dedicated to bringing you the best gear with unmatched service.
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+                {[
+                  { icon: Truck, title: "Free Shipping", desc: "On orders over $50" },
+                  { icon: ShieldCheck, title: "Secure Checkout", desc: "100% encrypted" },
+                  { icon: RotateCcw, title: "Easy Returns", desc: "30-day window" },
+                  { icon: Star, title: "Warranty", desc: "1-year included" },
+                  { icon: Headphones, title: "Fast Support", desc: "24/7 tech team" },
+                  { icon: Zap, title: "Exclusive Deals", desc: "Member rewards" },
+                ].map((item, i) => (
+                  <div key={i} className="flex flex-col items-center text-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center text-primary">
+                      <item.icon size={24} />
+                    </div>
+                    <div>
+                      <h4 className="font-black text-[10px] uppercase tracking-widest text-slate-900">{item.title}</h4>
+                      <p className="text-[10px] text-slate-400 font-bold mt-1">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Quality Section */}
+        {!categoryParam && !searchParam && (
+          <section className="py-24 bg-slate-50/30">
+            <div className="section-container">
+              <div className="bg-white rounded-[3rem] p-12 md:p-24 border border-slate-100 shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50 -skew-x-12 translate-x-1/4" />
+                <div className="relative z-10 grid md:grid-cols-2 gap-16 items-center">
+                  <div className="space-y-8">
+                    <h2 className="text-5xl font-black text-slate-900 tracking-tighter leading-[0.9]">
+                      BUILT FOR BETTER <br />
+                      <span className="text-primary">EVERYDAY TECH</span>
+                    </h2>
+                    <p className="text-lg text-slate-500 leading-relaxed font-medium">
+                      Carefully selected accessories designed for reliability, comfort, and performance. We believe in tech that enhances your life without complicating it.
                     </p>
-                    <ul className="space-y-4">
+                    <div className="grid grid-cols-2 gap-6">
                       {[
-                        "Authorized dealer for all major brands",
-                        "Expert technical support for every purchase",
-                        "Exclusive extended warranty options",
-                        "Price match guarantee on all items"
+                        "Premium Materials",
+                        "Rigorous Testing",
+                        "Ergonomic Design",
+                        "Sustainable Choices"
                       ].map((text, i) => (
-                        <li key={i} className="flex items-center gap-3">
-                          <div className="bg-white/20 p-1 rounded-full">
-                            <ShieldCheck size={16} />
-                          </div>
-                          <span className="font-medium">{text}</span>
-                        </li>
+                        <div key={i} className="flex items-center gap-3">
+                          <CheckCircle2 size={18} className="text-primary" />
+                          <span className="text-sm font-bold text-slate-700">{text}</span>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
+                    <Link to="/about">
+                      <Button className="rounded-full px-10 h-14 text-sm font-black uppercase tracking-widest shadow-xl shadow-primary/20">
+                        Our Story
+                      </Button>
+                    </Link>
                   </div>
                   <div className="hidden md:block">
                     <img 
                       src="https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=2070" 
-                      alt="Tech Setup" 
-                      className="rounded-3xl shadow-2xl rotate-3"
+                      alt="Tech Quality" 
+                      className="rounded-[2.5rem] shadow-2xl rotate-2"
                     />
                   </div>
                 </div>
