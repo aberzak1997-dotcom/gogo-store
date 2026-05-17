@@ -60,42 +60,42 @@ const HomePage = () => {
   const categories = [
     { 
       name: "Keyboards", 
-      image: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?q=80&w=500&auto=format&fit=crop", 
+      image: "https://pngimg.com/uploads/keyboard/keyboard_PNG10185.png", 
       path: "/products?category=Gaming Accessories" 
     },
     { 
       name: "Mice", 
-      image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?q=80&w=500&auto=format&fit=crop", 
+      image: "https://pngimg.com/uploads/computer_mouse/computer_mouse_PNG7696.png", 
       path: "/products?category=PC Accessories" 
     },
     { 
       name: "Headsets", 
-      image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&auto=format&fit=crop", 
+      image: "https://pngimg.com/uploads/headphones/headphones_PNG7645.png", 
       path: "/products?category=Audio" 
     },
     { 
       name: "Webcams", 
-      image: "https://images.unsplash.com/photo-1585338107529-13afc5f02586?q=80&w=500&auto=format&fit=crop", 
+      image: "https://pngimg.com/uploads/webcam/webcam_PNG101.png", 
       path: "/products?category=PC Accessories" 
     },
     { 
       name: "Chargers", 
-      image: "https://images.unsplash.com/photo-1619130772021-4b123b2fa806?q=80&w=500&auto=format&fit=crop", 
+      image: "https://pngimg.com/uploads/charger/charger_PNG45.png", 
       path: "/products?category=Chargers & Cables" 
     },
     { 
       name: "Storage", 
-      image: "https://images.unsplash.com/photo-1597872200370-499de46139f1?q=80&w=500&auto=format&fit=crop", 
+      image: "https://pngimg.com/uploads/hard_drive/hard_drive_PNG101.png", 
       path: "/products?category=Storage Devices" 
     },
     { 
       name: "Gaming", 
-      image: "https://images.unsplash.com/photo-1592155931584-901ac15763e3?q=80&w=500&auto=format&fit=crop", 
+      image: "https://pngimg.com/uploads/joystick/joystick_PNG101.png", 
       path: "/products?category=Gaming Accessories" 
     },
     { 
       name: "Laptops", 
-      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=500&auto=format&fit=crop", 
+      image: "https://pngimg.com/uploads/laptop/laptop_PNG101.png", 
       path: "/products?category=Laptop Accessories" 
     },
   ];
@@ -182,8 +182,8 @@ const HomePage = () => {
                 {categories.map((cat) => (
                   <Link key={cat.name} to={cat.path} className="group">
                     <div className="bg-slate-100 p-8 rounded-[10px] border border-slate-800 flex flex-col items-center justify-center gap-6 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl group-hover:border-primary/20 h-full">
-                      <div className="w-24 h-24 rounded-2xl bg-white overflow-hidden flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
-                        <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+                      <div className="w-24 h-24 rounded-2xl bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 p-4 shadow-sm">
+                        <img src={cat.image} alt={cat.name} className="w-full h-full object-contain" />
                       </div>
                       <span className="font-black text-xs uppercase tracking-widest text-slate-900">{cat.name}</span>
                     </div>
