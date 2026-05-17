@@ -9,8 +9,9 @@ import { LayoutDashboard, Lock } from "lucide-react";
 import { showError } from "../../utils/toast";
 
 const AdminLoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // Pre‑filled demo credentials
+  const [email, setEmail] = useState("admin@demo.com");
+  const [password, setPassword] = useState("admin123");
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,7 +59,7 @@ const AdminLoginPage = () => {
               <Input
                 id="password"
                 type="password"
-                placeholder="••••••••"
+                placeholder="admin123"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
