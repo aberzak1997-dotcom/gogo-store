@@ -109,7 +109,7 @@ const HomePage = () => {
         {!categoryParam && !searchParam && (
           <section className="relative py-8 px-2">
             <div className="w-full">
-              <div className="relative overflow-hidden border border-slate-100 rounded-2xl bg-slate-50/50 min-h-[500px] md:min-h-[600px] flex items-center w-full">
+              <div className="relative overflow-hidden border border-slate-100 rounded-2xl bg-slate-50/50 min-h-[500px] md:min-h-[600px] flex items-center w-full py-5">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070')] bg-cover bg-center opacity-[0.03]" />
                 
                 <div className="relative z-10 px-8 md:px-20 max-w-3xl space-y-8">
