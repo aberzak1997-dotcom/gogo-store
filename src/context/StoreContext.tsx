@@ -10,8 +10,8 @@ interface StoreContextType {
   addProduct: (product: Product) => void;
   updateProduct: (product: Product) => void;
   deleteProduct: (id: string) => void;
-  updateStock: (productId: string, quantity: number) => void;
-  addToCart: (productId: string) => void;
+  updateProductStock: (productId: string, quantity: number) => void;
+  addToCart: (productId: string, quantity?: number) => void;
   removeFromCart: (productId: string) => void;
   updateCartQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -37,7 +37,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return saved ? JSON.parse(saved) : [];
   });
 
-  // Persist to localStorage
   useEffect(() => {
     localStorage.setItem("store_products", JSON.stringify(products));
   }, [products]);
@@ -50,7 +49,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem("store_cart", JSON.stringify(cart));
   }, [cart]);
 
-  // ---------- Product helpers ----------
   const addProduct = (product: Product) => {
     setProducts([...products, product]);
     showSuccess("Product added successfully");
@@ -66,48 +64,69 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     showSuccess("Product deleted");
   };
 
-  const updateStock = (productId: string, quantity: number) => {
+  const updateProductStock = (productId: string, quantity: number) => {
     setProducts(products.map(p => p.id === productId ? { ...p, stockQuantity: quantity } : p));
     showSuccess("Stock updated");
   };
 
-  // ---------- Cart helpers ----------
-  const addToCart = (productId: string) => {
+  const addToCart = (productId: string, quantity: number = 1) => {
     const product = products.find(p => p.id === productId);
-    if (!product || product.stockQuantity <= 0) {
-      showError("Cannot add out‑of‑stock item");
+    if (!product || product.status !== "active") {
+      showError("Product is currently unavailable");
+      return;
+    }
+
+    if (product.stockQuantity <= 0) {
+      showError("Item is out of stock");
       return;
     }
 
     setCart(prev => {
       const existing = prev.find(item => item.productId === productId);
+      const currentQty = existing ? existing.quantity : 0;
+      const newQty = currentQty + quantity;
+
+      if (newQty > product.stockQuantity) {
+        showError(`Only ${product.stockQuantity} units available`);
+        return prev;
+      }
+
+      showSuccess(existing ? "Cart updated" : "Added to cart");
+      
       if (existing) {
         return prev.map(item =>
           item.productId === productId
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: newQty }
             : item
         );
       }
-      return [...prev, { productId, quantity: 1 }];
+      return [...prev, { productId, quantity }];
     });
-    showSuccess("Added to cart");
   };
 
   const removeFromCart = (productId: string) => {
     setCart(cart.filter(item => item.productId !== productId));
+    showSuccess("Item removed from cart");
   };
 
   const updateCartQuantity = (productId: string, quantity: number) => {
+    const product = products.find(p => p.id === productId);
+    
     if (quantity <= 0) {
       removeFromCart(productId);
       return;
     }
+
+    if (product && quantity > product.stockQuantity) {
+      showError(`Only ${product.stockQuantity} units available`);
+      return;
+    }
+
     setCart(cart.map(item => item.productId === productId ? { ...item, quantity } : item));
   };
 
   const clearCart = () => setCart([]);
 
-  // ---------- Order helpers ----------
   const createOrder = (customerName: string, email: string) => {
     const orderItems = cart.map(item => {
       const product = products.find(p => p.id === item.productId)!;
@@ -133,11 +152,15 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     setOrders([newOrder, ...orders]);
 
-    // Reduce stock
-    cart.forEach(item => {
-      const product = products.find(p => p.id === item.productId)!;
-      updateStock(item.productId, product.stockQuantity - item.quantity);
-    });
+    setProducts(prevProducts => 
+      prevProducts.map(p => {
+        const cartItem = cart.find(item => item.productId === p.id);
+        if (cartItem) {
+          return { ...p, stockQuantity: p.stockQuantity - cartItem.quantity };
+        }
+        return p;
+      })
+    );
 
     clearCart();
     showSuccess("Order placed successfully!");
@@ -148,7 +171,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     showSuccess(`Order ${orderId} status updated to ${status}`);
   };
 
-  // ---------- Provider ----------
   return (
     <StoreContext.Provider
       value={{
@@ -158,7 +180,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         addProduct,
         updateProduct,
         deleteProduct,
-        updateStock,
+        updateProductStock,
         addToCart,
         removeFromCart,
         updateCartQuantity,
