@@ -32,6 +32,10 @@ export interface Order {
   id: string;
   customerName: string;
   email: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  country?: string;
   date: string;
   status: "pending" | "shipped" | "cancelled";
   totalAmount: number;
