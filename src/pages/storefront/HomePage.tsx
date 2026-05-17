@@ -60,42 +60,42 @@ const HomePage = () => {
   const categories = [
     { 
       name: "Keyboards", 
-      image: "https://pngimg.com/uploads/keyboard/keyboard_PNG10185.png", 
+      image: "https://www.pngall.com/wp-content/uploads/2/Keyboard-PNG-Free-Download.png", 
       path: "/products?category=Gaming Accessories" 
     },
     { 
       name: "Mice", 
-      image: "https://pngimg.com/uploads/computer_mouse/computer_mouse_PNG7696.png", 
+      image: "https://www.pngall.com/wp-content/uploads/2016/03/Mouse-PNG-HD.png", 
       path: "/products?category=PC Accessories" 
     },
     { 
       name: "Headsets", 
-      image: "https://pngimg.com/uploads/headphones/headphones_PNG7645.png", 
+      image: "https://www.pngall.com/wp-content/uploads/2016/05/Headphone-PNG-Image.png", 
       path: "/products?category=Audio" 
     },
     { 
       name: "Webcams", 
-      image: "https://pngimg.com/uploads/webcam/webcam_PNG101.png", 
+      image: "https://www.pngall.com/wp-content/uploads/2016/05/Webcam-PNG-Clipart.png", 
       path: "/products?category=PC Accessories" 
     },
     { 
       name: "Chargers", 
-      image: "https://pngimg.com/uploads/charger/charger_PNG45.png", 
+      image: "https://www.pngall.com/wp-content/uploads/2016/04/Charger-PNG-File.png", 
       path: "/products?category=Chargers & Cables" 
     },
     { 
       name: "Storage", 
-      image: "https://pngimg.com/uploads/hard_drive/hard_drive_PNG101.png", 
+      image: "https://www.pngall.com/wp-content/uploads/2016/03/Hard-Drive-PNG-File.png", 
       path: "/products?category=Storage Devices" 
     },
     { 
       name: "Gaming", 
-      image: "https://pngimg.com/uploads/joystick/joystick_PNG101.png", 
+      image: "https://www.pngall.com/wp-content/uploads/2/Joystick-PNG-High-Quality-Image.png", 
       path: "/products?category=Gaming Accessories" 
     },
     { 
       name: "Laptops", 
-      image: "https://pngimg.com/uploads/laptop/laptop_PNG101.png", 
+      image: "https://www.pngall.com/wp-content/uploads/2016/03/Laptop-PNG-Image.png", 
       path: "/products?category=Laptop Accessories" 
     },
   ];
