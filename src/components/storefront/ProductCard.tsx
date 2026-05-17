@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { Star, ShoppingCart, Eye } from "lucide-react";
+import { Star, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore } from "../../context/StoreContext";
 import { Product } from "../../types";
@@ -62,7 +62,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              // View logic could go here
             }}
           >
             <Eye size={18} />
@@ -108,14 +107,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
           )}
         </div>
 
-        <div className="mt-auto pt-4">
+        <div className="mt-auto pt-4 flex justify-start">
           <Button
             onClick={handleAddToCart}
             disabled={product.stockQuantity === 0}
-            className="w-full bg-black hover:bg-slate-800 text-white rounded-none h-11 text-xs font-bold uppercase tracking-wider transition-colors"
+            className="bg-[#f2f2e6] hover:bg-black text-black hover:text-white rounded-full px-8 h-9 text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border-none shadow-none"
           >
-            <ShoppingCart size={16} className="mr-2" />
-            Add to Cart
+            Buy
           </Button>
         </div>
       </div>
