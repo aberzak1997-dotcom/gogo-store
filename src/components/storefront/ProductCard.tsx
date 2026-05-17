@@ -32,7 +32,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <Card className="group relative flex flex-col h-full overflow-hidden border border-slate-800 bg-white hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 rounded-[10px]">
+    <Card className="group relative flex flex-col h-full overflow-hidden border border-slate-200 bg-white hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 rounded-[5px]">
       {/* Badges */}
       {getStockBadge()}
       {discount > 0 && (
@@ -42,7 +42,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       )}
 
       {/* Image Container */}
-      <Link to={`/product/${product.id}`} className="relative aspect-square overflow-hidden bg-slate-50/50 m-4 rounded-[10px] border border-slate-800">
+      <Link to={`/product/${product.id}`} className="relative aspect-square overflow-hidden bg-slate-50/50">
         <img
           src={product.imageUrl}
           alt={product.title}
@@ -65,7 +65,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
       </Link>
 
-      <CardContent className="flex-grow px-6 pb-2">
+      <CardContent className="flex-grow p-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{product.brand}</span>
           <div className="flex items-center gap-1 text-amber-400">
@@ -92,9 +92,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
       </CardContent>
 
-      <CardFooter className="px-6 pb-6 pt-0">
+      <CardFooter className="p-4 pt-0">
         <Link to={`/product/${product.id}`} className="w-full">
-          <Button variant="ghost" size="sm" className="w-full rounded-xl text-slate-400 hover:text-primary hover:bg-primary/5 font-bold text-xs gap-2">
+          <Button variant="ghost" size="sm" className="w-full rounded-md text-slate-400 hover:text-primary hover:bg-primary/5 font-bold text-xs gap-2">
             View Details <Eye size={14} />
           </Button>
         </Link>
