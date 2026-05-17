@@ -178,8 +178,8 @@ const Header = () => {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="flex flex-col items-center gap-2"
                   >
-                    <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400">
-                      <cat.icon size={20} />
+                    <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-700">
+                      <cat.icon size={20} fill="currentColor" />
                     </div>
                     <span className="text-[8px] font-black uppercase text-center text-slate-500">{cat.name}</span>
                   </Link>
