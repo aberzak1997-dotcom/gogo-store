@@ -189,20 +189,19 @@ const HomePage = () => {
                   </Link>
                 </div>
               </div>
-              <div className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-10 min-h-[360px] flex flex-col justify-end">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=2070')] bg-cover bg-center" />
-                <div className="absolute inset-0 bg-white/60" />
+              <div className="group relative overflow-hidden rounded-2xl border border-slate-100 p-10 min-h-[360px] flex flex-col justify-end">
+                <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7279320/pexels-photo-7279320.jpeg')] bg-cover bg-center" />
                 <div className="relative z-10 space-y-[15px]">
-                  <h3 className="text-3xl font-semibold tracking-tight text-slate-900">
+                  <h3 className="text-3xl font-semibold tracking-tight text-white">
                     Work Setup
                   </h3>
-                  <p className="text-slate-800 max-w-xs text-sm drop-shadow-sm">
+                  <p className="text-white max-w-xs text-sm drop-shadow-sm">
                     Minimal accessories for maximum productivity.
                   </p>
                   <Link to="/products?category=Laptop Accessories">
                     <Button
                       variant="outline"
-                      className="rounded-full px-[29px] h-10 text-xs font-medium border-slate-200 bg-white mt-[15px]"
+                      className="rounded-full px-[29px] h-10 text-xs font-medium border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white/20 mt-[15px]"
                     >
                       Explore
                     </Button>
