@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, CheckCircle, AlertTriangle, ArrowLeft } from "lucide-react";
+import { Loader2, CheckCircle, AlertTriangle, ArrowLeft, ShieldCheck } from "lucide-react";
 import { showError } from "../../utils/toast";
 
 const CheckoutPage = () => {
@@ -43,6 +43,24 @@ const CheckoutPage = () => {
       })
       .filter(Boolean) as (CartItem & { product: Product })[];
   }, [cart, products]);
+
+  // Early empty‑cart state
+  if (enrichedCart.length === 0 && !orderId) {
+    return (
+      <div className="min-h-screen flex flex-col bg-slate-50">
+        <Header />
+        <main className="flex-grow container py-12 px-4 md:px-6">
+          <Card className="max-w-xl mx-auto text-center p-8">
+            <h2 className="text-2xl font-bold mb-4">Your Cart Is Empty</h2>
+            <p className="text-muted-foreground mb-6">
+              Add items to your cart before proceeding to checkout.
+            </p>
+            <Button onClick={() => navigate("/")}>Return to Store</Button>
+          </Card>
+        </main>
+      </div>
+    );
+  }
 
   const subtotal = enrichedCart.reduce(
     (sum, i) => sum + i.product.price * i.quantity,
@@ -99,8 +117,6 @@ const CheckoutPage = () => {
 
     if (newOrderId) {
       setOrderId(newOrderId);
-    } else {
-      // createOrder already showed an error toast
     }
     setIsPlacing(false);
   };
@@ -165,6 +181,7 @@ const CheckoutPage = () => {
                   placeholder="John Doe"
                   required
                 />
+                {!fullName && <p className="text-sm text-red-600 mt-1">Full name is required</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
@@ -176,6 +193,9 @@ const CheckoutPage = () => {
                   placeholder="john@example.com"
                   required
                 />
+                {email && !emailRegex.test(email) && (
+                  <p className="text-sm text-red-600 mt-1">Email is invalid</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone</Label>
@@ -186,6 +206,7 @@ const CheckoutPage = () => {
                   placeholder="+1 555 123 4567"
                   required
                 />
+                {!phone && <p className="text-sm text-red-600 mt-1">Phone is required</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="address">Address</Label>
@@ -196,6 +217,7 @@ const CheckoutPage = () => {
                   placeholder="123 Main St"
                   required
                 />
+                {!address && <p className="text-sm text-red-600 mt-1">Address is required</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="city">City</Label>
@@ -206,6 +228,7 @@ const CheckoutPage = () => {
                   placeholder="San Francisco"
                   required
                 />
+                {!city && <p className="text-sm text-red-600 mt-1">City is required</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="country">Country</Label>
@@ -216,7 +239,19 @@ const CheckoutPage = () => {
                   placeholder="USA"
                   required
                 />
+                {!country && <p className="text-sm text-red-600 mt-1">Country is required</p>}
               </div>
+            </div>
+
+            {/* Trust badge */}
+            <div className="bg-gray-50 p-6 rounded-xl border mt-8">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <ShieldCheck className="text-green-600" size={20} />
+                Secure Checkout
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Your payment information is encrypted and never stored on our servers.
+              </p>
             </div>
 
             <div className="flex items-center space-x-2 text-sm text-muted-foreground">

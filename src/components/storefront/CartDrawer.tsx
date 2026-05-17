@@ -1,10 +1,10 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetHeader, 
-  SheetTitle, 
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetFooter,
   SheetClose
 } from "@/components/ui/sheet";
@@ -33,7 +33,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
     return sum + (item.product!.price * item.quantity);
   }, 0);
 
-  const hasStockIssues = cartItems.some(item => 
+  const hasStockIssues = cartItems.some(item =>
     item.product!.stockQuantity < item.quantity || item.product!.status !== "active"
   );
 
@@ -70,16 +70,16 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
                 {cartItems.map((item) => (
                   <div key={item.productId} className="flex gap-4">
                     <div className="w-20 h-20 rounded-lg bg-slate-100 overflow-hidden border flex-shrink-0">
-                      <img 
-                        src={item.product!.imageUrl} 
-                        alt={item.product!.title} 
+                      <img
+                        src={item.product!.imageUrl}
+                        alt={item.product!.title}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="flex-grow min-w-0">
                       <div className="flex justify-between items-start mb-1">
                         <h4 className="font-medium text-sm line-clamp-1">{item.product!.title}</h4>
-                        <button 
+                        <button
                           onClick={() => removeFromCart(item.productId)}
                           className="text-slate-400 hover:text-red-500 transition-colors"
                         >
@@ -87,7 +87,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
                         </button>
                       </div>
                       <p className="text-xs text-slate-500 mb-2">{item.product!.brand}</p>
-                      
+
                       {item.product!.status !== "active" ? (
                         <Badge variant="destructive" className="text-[10px] mb-2">Unavailable</Badge>
                       ) : item.product!.stockQuantity < item.quantity ? (
@@ -99,14 +99,14 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
 
                       <div className="flex items-center justify-between">
                         <div className="flex items-center border rounded-md bg-white">
-                          <button 
+                          <button
                             className="p-1 hover:bg-slate-50 disabled:opacity-30"
                             onClick={() => updateCartQuantity(item.productId, item.quantity - 1)}
                           >
                             <Minus size={14} />
                           </button>
                           <span className="px-3 text-xs font-medium w-8 text-center">{item.quantity}</span>
-                          <button 
+                          <button
                             className="p-1 hover:bg-slate-50 disabled:opacity-30"
                             onClick={() => updateCartQuantity(item.productId, item.quantity + 1)}
                             disabled={item.quantity >= item.product!.stockQuantity}
@@ -143,15 +143,15 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
                 <span>${subtotal.toFixed(2)}</span>
               </div>
             </div>
-            
-            <Button 
-              className="w-full h-12 text-lg gap-2" 
+
+            <Button
+              className="w-full h-12 text-lg gap-2"
               disabled={hasStockIssues}
               onClick={handleCheckout}
             >
               Checkout <ArrowRight size={20} />
             </Button>
-            
+
             {hasStockIssues && (
               <p className="text-xs text-center text-red-500 font-medium">
                 Please resolve stock issues before checking out.
