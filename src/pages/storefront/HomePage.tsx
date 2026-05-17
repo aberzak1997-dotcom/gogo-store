@@ -235,7 +235,7 @@ const HomePage = () => {
                   const Icon = cat.icon;
                   return (
                     <Link key={cat.name} to={cat.path} className="group">
-                      <div className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100 flex flex-col items-center justify-center gap-6 transition-all duration-300 hover:bg-white hover:shadow-sm hover:border-slate-200 h-full">
+                      <div className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100/50 flex flex-col items-center justify-center gap-6 transition-all duration-300 hover:bg-white hover:shadow-sm hover:border-blue-200 h-full">
                         <div className="w-16 h-16 flex items-center justify-center">
                           <Icon size={32} className="text-black" />
                         </div>
