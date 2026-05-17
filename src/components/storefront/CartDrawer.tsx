@@ -1,5 +1,7 @@
+"use client";
+
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Sheet,
   SheetContent,
@@ -11,9 +13,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, AlertCircle } from "lucide-react";
+import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, AlertCircle, Zap } from "lucide-react";
 import { useStore } from "../../context/StoreContext";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface CartDrawerProps {
   open: boolean;
@@ -44,77 +47,82 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-md flex flex-col p-0">
-        <SheetHeader className="p-6 border-b">
-          <SheetTitle className="flex items-center gap-2">
-            <ShoppingBag className="h-5 w-5" />
-            Your Cart ({cart.reduce((sum, i) => sum + i.quantity, 0)})
+      <SheetContent className="w-full sm:max-w-md flex flex-col p-0 border-l-0 sm:border-l">
+        <SheetHeader className="p-6 border-b bg-white sticky top-0 z-10">
+          <SheetTitle className="flex items-center gap-3 text-2xl font-black">
+            <div className="p-2 bg-primary/10 rounded-xl text-primary">
+              <ShoppingBag size={24} />
+            </div>
+            Your Cart
+            <Badge variant="secondary" className="ml-auto rounded-full px-3 py-1 font-bold">
+              {cart.reduce((sum, i) => sum + i.quantity, 0)} items
+            </Badge>
           </SheetTitle>
         </SheetHeader>
 
-        <div className="flex-grow overflow-hidden">
+        <div className="flex-grow overflow-hidden bg-slate-50/30">
           {cartItems.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-                <ShoppingBag className="h-10 w-10 text-slate-400" />
+            <div className="h-full flex flex-col items-center justify-center p-12 text-center">
+              <div className="w-24 h-24 bg-white rounded-[2rem] shadow-sm flex items-center justify-center mb-6 border border-slate-100">
+                <ShoppingBag className="h-12 w-12 text-slate-200" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Your cart is empty</h3>
-              <p className="text-slate-500 mb-6">Looks like you haven't added any tech gear yet.</p>
+              <h3 className="text-2xl font-black mb-3 text-slate-900">Your cart is empty</h3>
+              <p className="text-slate-500 mb-8 max-w-[200px] mx-auto">Looks like you haven't added any tech gear yet.</p>
               <SheetClose asChild>
-                <Button variant="outline">Continue Shopping</Button>
+                <Button size="lg" className="rounded-2xl px-8 font-bold">Start Shopping</Button>
               </SheetClose>
             </div>
           ) : (
             <ScrollArea className="h-full p-6">
               <div className="space-y-6">
                 {cartItems.map((item) => (
-                  <div key={item.productId} className="flex gap-4">
-                    <div className="w-20 h-20 rounded-lg bg-slate-100 overflow-hidden border flex-shrink-0">
+                  <div key={item.productId} className="group flex gap-5 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+                    <div className="w-24 h-24 rounded-xl bg-slate-50 overflow-hidden border border-slate-100 flex-shrink-0 p-2">
                       <img
                         src={item.product!.imageUrl}
                         alt={item.product!.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain transition-transform group-hover:scale-110"
                       />
                     </div>
-                    <div className="flex-grow min-w-0">
+                    <div className="flex-grow min-w-0 flex flex-col">
                       <div className="flex justify-between items-start mb-1">
-                        <h4 className="font-medium text-sm line-clamp-1">{item.product!.title}</h4>
+                        <h4 className="font-bold text-slate-900 line-clamp-1 group-hover:text-primary transition-colors">{item.product!.title}</h4>
                         <button
                           onClick={() => removeFromCart(item.productId)}
-                          className="text-slate-400 hover:text-red-500 transition-colors"
+                          className="text-slate-300 hover:text-red-500 transition-colors p-1"
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={18} />
                         </button>
                       </div>
-                      <p className="text-xs text-slate-500 mb-2">{item.product!.brand}</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">{item.product!.brand}</p>
 
                       {item.product!.status !== "active" ? (
-                        <Badge variant="destructive" className="text-[10px] mb-2">Unavailable</Badge>
+                        <Badge variant="destructive" className="text-[10px] mb-3 w-fit">Unavailable</Badge>
                       ) : item.product!.stockQuantity < item.quantity ? (
-                        <div className="flex items-center gap-1 text-amber-600 text-[10px] font-medium mb-2">
+                        <div className="flex items-center gap-1.5 text-amber-600 text-[10px] font-black mb-3 bg-amber-50 px-2 py-1 rounded-lg w-fit">
                           <AlertCircle size={12} />
-                          Only {item.product!.stockQuantity} in stock
+                          ONLY {item.product!.stockQuantity} LEFT
                         </div>
                       ) : null}
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center border rounded-md bg-white">
+                      <div className="mt-auto flex items-center justify-between">
+                        <div className="flex items-center border border-slate-100 rounded-xl bg-slate-50 p-0.5">
                           <button
-                            className="p-1 hover:bg-slate-50 disabled:opacity-30"
+                            className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg transition-all disabled:opacity-30"
                             onClick={() => updateCartQuantity(item.productId, item.quantity - 1)}
                           >
                             <Minus size={14} />
                           </button>
-                          <span className="px-3 text-xs font-medium w-8 text-center">{item.quantity}</span>
+                          <span className="px-3 text-sm font-black w-8 text-center">{item.quantity}</span>
                           <button
-                            className="p-1 hover:bg-slate-50 disabled:opacity-30"
+                            className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg transition-all disabled:opacity-30"
                             onClick={() => updateCartQuantity(item.productId, item.quantity + 1)}
                             disabled={item.quantity >= item.product!.stockQuantity}
                           >
                             <Plus size={14} />
                           </button>
                         </div>
-                        <span className="font-bold text-sm">
+                        <span className="font-black text-slate-900">
                           ${(item.product!.price * item.quantity).toFixed(2)}
                         </span>
                       </div>
@@ -127,36 +135,54 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
         </div>
 
         {cartItems.length > 0 && (
-          <SheetFooter className="p-6 border-t bg-slate-50/50 flex-col sm:flex-col gap-4">
-            <div className="space-y-2 w-full">
+          <SheetFooter className="p-8 border-t bg-white flex-col sm:flex-col gap-6">
+            <div className="space-y-3 w-full">
               <div className="flex justify-between text-sm">
-                <span className="text-slate-500">Subtotal</span>
-                <span className="font-medium">${subtotal.toFixed(2)}</span>
+                <span className="text-slate-500 font-medium">Subtotal</span>
+                <span className="font-bold text-slate-900">${subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-slate-500">Shipping</span>
-                <span className="text-green-600 font-medium">Calculated at checkout</span>
+                <span className="text-slate-500 font-medium">Shipping</span>
+                <span className="text-emerald-600 font-bold">Calculated at checkout</span>
               </div>
-              <Separator className="my-2" />
-              <div className="flex justify-between text-lg font-bold">
-                <span>Total</span>
-                <span>${subtotal.toFixed(2)}</span>
+              <Separator className="my-4" />
+              <div className="flex justify-between items-end">
+                <span className="text-slate-900 font-black text-lg">Total</span>
+                <div className="text-right">
+                  <span className="block text-2xl font-black text-slate-900">${subtotal.toFixed(2)}</span>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Including VAT</span>
+                </div>
               </div>
             </div>
 
-            <Button
-              className="w-full h-12 text-lg gap-2"
-              disabled={hasStockIssues}
-              onClick={handleCheckout}
-            >
-              Checkout <ArrowRight size={20} />
-            </Button>
-
-            {hasStockIssues && (
-              <p className="text-xs text-center text-red-500 font-medium">
-                Please resolve stock issues before checking out.
-              </p>
-            )}
+            <div className="space-y-3 w-full">
+              <Button
+                className="w-full h-16 text-lg font-black gap-3 rounded-2xl shadow-lg shadow-primary/20"
+                disabled={hasStockIssues}
+                onClick={handleCheckout}
+              >
+                Checkout Now <ArrowRight size={20} />
+              </Button>
+              
+              {hasStockIssues && (
+                <div className="flex items-center justify-center gap-2 text-red-500 text-xs font-bold bg-red-50 p-3 rounded-xl">
+                  <AlertCircle size={16} />
+                  Please resolve stock issues before checkout
+                </div>
+              )}
+              
+              <div className="flex items-center justify-center gap-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <div className="flex items-center gap-1">
+                  <Zap size={12} className="text-amber-500" /> Secure
+                </div>
+                <div className="flex items-center gap-1">
+                  <Zap size={12} className="text-amber-500" /> Fast
+                </div>
+                <div className="flex items-center gap-1">
+                  <Zap size={12} className="text-amber-500" /> Trusted
+                </div>
+              </div>
+            </div>
           </SheetFooter>
         )}
       </SheetContent>
