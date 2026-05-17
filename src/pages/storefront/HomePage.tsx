@@ -109,18 +109,18 @@ const HomePage = () => {
         {!categoryParam && !searchParam && (
           <section className="relative py-4 px-2">
             <div className="w-full">
-              <div className="relative overflow-hidden border border-slate-100 rounded-2xl bg-slate-50/50 min-h-[500px] md:min-h-[600px] flex items-center w-full">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070')] bg-cover bg-center opacity-[0.03]" />
+              <div className="relative overflow-hidden border border-slate-100 rounded-2xl bg-black/50 mix-blend-multiply min-h-[500px] md:min-h-[600px] flex items-center w-full">
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070')] bg-cover bg-center opacity-[0.1]" />
                 
                 <div className="relative z-10 px-8 md:px-20 max-w-3xl space-y-6">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-100 text-slate-600 text-[11px] font-medium uppercase tracking-wider shadow-sm">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white text-[11px] font-medium uppercase tracking-wider shadow-sm backdrop-blur-sm">
                     <Zap size={12} className="text-primary" /> Next-Gen Tech
                   </div>
-                  <h1 className="text-5xl md:text-7xl font-semibold text-slate-900 tracking-tight leading-[1.1]">
+                  <h1 className="text-5xl md:text-7xl font-semibold text-white tracking-tight leading-[1.1]">
                     Upgrade your <br />
                     <span className="text-primary">tech setup.</span>
                   </h1>
-                  <p className="text-lg text-slate-500 leading-relaxed font-normal max-w-lg">
+                  <p className="text-lg text-slate-200 leading-relaxed font-normal max-w-lg">
                     Premium electronics and accessories designed for modern life. Minimal design, maximum performance.
                   </p>
                   <div className="flex flex-wrap gap-4 pt-2">
@@ -130,7 +130,7 @@ const HomePage = () => {
                       </Button>
                     </Link>
                     <Link to="/deals">
-                      <Button size="lg" variant="outline" className="rounded-xl px-8 h-12 text-sm font-medium border-slate-200 bg-white">
+                      <Button size="lg" variant="outline" className="rounded-xl px-8 h-12 text-sm font-medium border-white/20 bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm">
                         View Deals
                       </Button>
                     </Link>
