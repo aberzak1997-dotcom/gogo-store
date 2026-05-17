@@ -107,18 +107,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </span>
           )}
         </div>
-
-        <div className="mt-auto pt-4">
-          <Button
-            onClick={handleAddToCart}
-            disabled={product.stockQuantity === 0}
-            className="w-full bg-black hover:bg-slate-800 text-white rounded-none h-11 text-xs font-bold uppercase tracking-wider transition-colors"
-          >
-            <ShoppingCart size={16} className="mr-2" />
-            Add to Cart
-          </Button>
-        </div>
       </div>
+
+      {/* Full-width Button */}
+      <Button
+        onClick={handleAddToCart}
+        disabled={product.stockQuantity === 0}
+        className="w-full bg-black hover:bg-slate-800 text-white rounded-none h-12 text-xs font-bold uppercase tracking-wider transition-colors border-t border-slate-100"
+      >
+        <ShoppingCart size={16} className="mr-2" />
+        Add to Cart
+      </Button>
     </Link>
   );
 };
