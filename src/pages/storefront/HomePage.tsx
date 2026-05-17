@@ -124,7 +124,7 @@ const HomePage = () => {
                     allowFullScreen
                   ></iframe>
                 </div>
-                
+
                 {/* Overlay for better text contrast */}
                 <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 to-transparent" />
 
@@ -169,7 +169,7 @@ const HomePage = () => {
         {!categoryParam && !searchParam && (
           <section className="py-0 mx-[5px]">
             <div className="w-full grid md:grid-cols-2 gap-[5px]">
-              <div className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-900 text-white p-10 min-h-[360px] flex flex-col justify-end">
+              <div className="group relative overflow-hidden border border-slate-100 bg-slate-900 text-white p-10 min-h-[360px] flex flex-col justify-end">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center" />
                 <div className="absolute inset-0 bg-black/40" />
                 <div className="relative z-10 space-y-[15px]">
@@ -177,7 +177,7 @@ const HomePage = () => {
                     Gaming Essentials
                   </h3>
                   <p className="text-slate-100 max-w-xs text-sm drop-shadow-md">
-                    Pro-grade gear for the ultimate performance.
+                    Pro‑grade gear for the ultimate performance.
                   </p>
                   <Link to="/products?category=Gaming Accessories">
                     <Button
@@ -189,7 +189,7 @@ const HomePage = () => {
                   </Link>
                 </div>
               </div>
-              <div className="group relative overflow-hidden rounded-2xl border border-slate-100 p-10 min-h-[360px] flex flex-col justify-end">
+              <div className="group relative overflow-hidden border border-slate-100 p-10 min-h-[360px] flex flex-col justify-end">
                 <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7279320/pexels-photo-7279320.jpeg')] bg-cover bg-center" />
                 <div className="relative z-10 space-y-[15px]">
                   <h3 className="text-3xl font-semibold tracking-tight text-white">
