@@ -107,9 +107,9 @@ const HomePage = () => {
       <main className="flex-grow">
         {/* Hero Section */}
         {!categoryParam && !searchParam && (
-          <section className="relative py-[10px]">
-            <div className="section-container">
-              <div className="relative overflow-hidden rounded-[10px] border border-slate-800 bg-slate-50 min-h-[500px] md:min-h-[600px] flex items-center">
+          <section className="relative py-[10px] px-0">
+            <div className="w-full">
+              <div className="relative overflow-hidden border-y border-slate-800 bg-slate-50 min-h-[500px] md:min-h-[600px] flex items-center w-full">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070')] bg-cover bg-center opacity-10" />
                 <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/80 to-transparent" />
                 
