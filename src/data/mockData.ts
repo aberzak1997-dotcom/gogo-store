@@ -1,4 +1,4 @@
-import { Product, Order, ReturnRequest } from "../types";
+import { Product, ProductVariant, Collection } from "../types";
 
 export const MOCK_PRODUCTS: Product[] = [
   {
@@ -22,6 +22,28 @@ export const MOCK_PRODUCTS: Product[] = [
     warranty: "1 Year",
     condition: "new",
     createdAt: new Date().toISOString(),
+    variants: [
+      {
+        id: "1-1",
+        productId: "1",
+        optionName: "Color",
+        optionValue: "Black",
+        sku: "CHG-001-BK",
+        price: 39.99,
+        stockQuantity: 10,
+        imageUrl: "https://images.unsplash.com/photo-1619130966962-61f678244a57?w=800&q=80"
+      },
+      {
+        id: "1-2",
+        productId: "1",
+        optionName: "Color",
+        optionValue: "White",
+        sku: "CHG-001-WH",
+        price: 39.99,
+        stockQuantity: 5,
+        imageUrl: "https://images.unsplash.com/photo-1619130966962-61f678244a57?w=800&q=80"
+      }
+    ]
   },
   {
     id: "2",
@@ -43,6 +65,28 @@ export const MOCK_PRODUCTS: Product[] = [
     warranty: "1 Year",
     condition: "new",
     createdAt: new Date().toISOString(),
+    variants: [
+      {
+        id: "2-1",
+        productId: "2",
+        optionName: "Color",
+        optionValue: "Black",
+        sku: "CHG-002-BK",
+        price: 39.00,
+        stockQuantity: 5,
+        imageUrl: "https://images.unsplash.com/photo-1615526675159-e248c3021d3f?w=800&q=80"
+      },
+      {
+        id: "2-2",
+        productId: "2",
+        optionName: "Color",
+        optionValue: "White",
+        sku: "CHG-002-WH",
+        price: 39.00,
+        stockQuantity: 3,
+        imageUrl: "https://images.unsplash.com/photo-1615526675159-e248c3021d3f?w=800&q=80"
+      }
+    ]
   },
   {
     id: "3",
@@ -65,6 +109,28 @@ export const MOCK_PRODUCTS: Product[] = [
     warranty: "2 Years",
     condition: "new",
     createdAt: new Date().toISOString(),
+    variants: [
+      {
+        id: "3-1",
+        productId: "3",
+        optionName: "Color",
+        optionValue: "Black",
+        sku: "AUD-001-BK",
+        price: 129.99,
+        stockQuantity: 2,
+        imageUrl: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&q=80"
+      },
+      {
+        id: "3-2",
+        productId: "3",
+        optionName: "Color",
+        optionValue: "White",
+        sku: "AUD-001-WH",
+        price: 129.99,
+        stockQuantity: 1,
+        imageUrl: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&q=80"
+      }
+    ]
   },
   {
     id: "4",
@@ -86,6 +152,28 @@ export const MOCK_PRODUCTS: Product[] = [
     warranty: "1 Year",
     condition: "new",
     createdAt: new Date().toISOString(),
+    variants: [
+      {
+        id: "4-1",
+        productId: "4",
+        optionName: "Color",
+        optionValue: "Black",
+        sku: "AUD-002-BK",
+        price: 199.99,
+        stockQuantity: 8,
+        imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80"
+      },
+      {
+        id: "4-2",
+        productId: "4",
+        optionName: "Color",
+        optionValue: "White",
+        sku: "AUD-002-WH",
+        price: 199.99,
+        stockQuantity: 4,
+        imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80"
+      }
+    ]
   },
   {
     id: "5",
@@ -108,6 +196,28 @@ export const MOCK_PRODUCTS: Product[] = [
     warranty: "1 Year",
     condition: "new",
     createdAt: new Date().toISOString(),
+    variants: [
+      {
+        id: "5-1",
+        productId: "5",
+        optionName: "Switch Type",
+        optionValue: "Blue",
+        sku: "PC-001-BLUE",
+        price: 89.99,
+        stockQuantity: 10,
+        imageUrl: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=800&q=80"
+      },
+      {
+        id: "5-2",
+        productId: "5",
+        optionName: "Switch Type",
+        optionValue: "Red",
+        sku: "PC-001-RED",
+        price: 89.99,
+        stockQuantity: 10,
+        imageUrl: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=800&q=80"
+      }
+    ]
   },
   {
     id: "6",
@@ -129,7 +239,29 @@ export const MOCK_PRODUCTS: Product[] = [
     warranty: "1 Year",
     condition: "new",
     createdAt: new Date().toISOString(),
-  },
+    variants: [
+      {
+        id: "6-1",
+        productId: "6",
+        optionName: "Color",
+        optionValue: "Black",
+        sku: "PC-002-BK",
+        price: 49.99,
+        stockQuantity: 0,
+        imageUrl: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&q=80"
+      },
+      {
+        id: "6-2",
+        productId: "6",
+        optionName: "Color",
+        optionValue: "White",
+        sku: "PC-002-WH",
+        price: 49.99,
+        stockQuantity: 0,
+        imageUrl: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&q=80"
+      }
+    ]
+  }
 ];
 
 export const MOCK_ORDERS: Order[] = [
@@ -143,7 +275,7 @@ export const MOCK_ORDERS: Order[] = [
     fulfillmentStatus: "fulfilled",
     totalAmount: 129.99,
     items: [
-      { productId: "3", title: "Pro Wireless Earbuds", quantity: 1, price: 129.99 }
+      { productId: "3", variantId: "3-1", title: "Pro Wireless Earbuds", quantity: 1, price: 129.99 }
     ],
     timeline: [
       { status: "Order placed", date: new Date(Date.now() - 86400000 * 2).toISOString() },
@@ -162,7 +294,7 @@ export const MOCK_ORDERS: Order[] = [
     fulfillmentStatus: "unfulfilled",
     totalAmount: 39.99,
     items: [
-      { productId: "1", title: "USB-C 65W Fast Charger", quantity: 1, price: 39.99 }
+      { productId: "1", variantId: "1-1", title: "USB-C 65W Fast Charger", quantity: 1, price: 39.99 }
     ],
     timeline: [
       { status: "Order placed", date: new Date(Date.now() - 3600000 * 5).toISOString() },
@@ -182,7 +314,24 @@ export const MOCK_RETURNS: ReturnRequest[] = [
     requestedAt: new Date(Date.now() - 3600000 * 2).toISOString(),
     refundAmount: 129.99,
     items: [
-      { productId: "3", title: "Pro Wireless Earbuds", quantity: 1, price: 129.99 }
+      { productId: "3", variantId: "3-1", title: "Pro Wireless Earbuds", quantity: 1, price: 129.99 }
     ]
+  }
+];
+
+export const MOCK_COLLECTIONS: Collection[] = [
+  {
+    id: "COL-001",
+    name: "Gaming Essentials",
+    description: "Must-have gaming accessories for competitive play",
+    productIds: ["5", "6"],
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: "COL-002",
+    name: "Mobile Power",
+    description: "Charging solutions for mobile devices",
+    productIds: ["1", "2"],
+    createdAt: new Date().toISOString()
   }
 ];

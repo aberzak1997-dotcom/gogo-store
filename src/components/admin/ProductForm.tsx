@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Product } from "../../types";
+import { Product, ProductVariant } from "../../types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, X } from "lucide-react";
 import { showError } from "../../utils/toast";
+import VariantManager from "./VariantManager";
 
 interface ProductFormProps {
   product?: Product;
@@ -210,6 +211,34 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
           </Select>
         </div>
       </div>
+
+      {/* Variant Manager */}
+      {product && (
+        <VariantManager
+          product={product}
+          onVariantAdd={(variant) => {
+            const updatedProduct = {
+              ...product,
+              variants: [...(product.variants || []), variant]
+            };
+            onSubmit(updatedProduct);
+          }}
+          onVariantUpdate={(variant) => {
+            const updatedProduct = {
+              ...product,
+              variants: product.variants?.map(v => v.id === variant.id ? variant : v) || []
+            };
+            onSubmit(updatedProduct);
+          }}
+          onVariantDelete={(variantId) => {
+            const updatedProduct = {
+              ...product,
+              variants: product.variants?.filter(v => v.id !== variantId) || []
+            };
+            onSubmit(updatedProduct);
+          }}
+        />
+      )}
 
       <div className="space-y-4 border p-4 rounded-lg bg-slate-50">
         <Label className="text-base font-bold">Technical Specifications</Label>

@@ -19,19 +19,34 @@ export interface Product {
   warranty: string;
   condition: "new" | "refurbished" | "used";
   createdAt: string;
+  variants?: ProductVariant[];
+}
+
+export interface ProductVariant {
+  id: string;
+  productId: string;
+  optionName: string;
+  optionValue: string;
+  sku: string;
+  price: number;
+  stockQuantity: number;
+  imageUrl?: string;
+}
+
+export interface Collection {
+  id: string;
+  name: string;
+  description: string;
+  productIds: string[];
+  createdAt: string;
 }
 
 export interface OrderItem {
   productId: string;
+  variantId?: string;
   title: string;
   quantity: number;
   price: number;
-}
-
-export interface OrderTimelineEvent {
-  status: string;
-  date: string;
-  note?: string;
 }
 
 export interface Order {
@@ -53,8 +68,15 @@ export interface Order {
   internalNotes?: string;
 }
 
+export interface OrderTimelineEvent {
+  status: string;
+  date: string;
+  note?: string;
+}
+
 export interface CartItem {
   productId: string;
+  variantId?: string;
   quantity: number;
 }
 

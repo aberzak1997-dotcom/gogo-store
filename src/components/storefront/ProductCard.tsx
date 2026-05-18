@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Star, Eye, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useStore } from "../../context/StoreContext";
-import { Product } from "../../types";
+import { Product, ProductVariant } from "../../types";
 import { toast } from "sonner";
 
 interface ProductCardProps {
@@ -14,12 +15,17 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useStore();
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(product.id, 1);
-    toast.success(`${product.title} added to cart`);
+    
+    const variantToAdd = selectedVariant || null;
+    const quantity = 1;
+    
+    addToCart(product.id, quantity, variantToAdd?.id);
+    toast.success(`${product.title} ${variantToAdd ? `(${variantToAdd.optionValue})` : ''} added to cart`);
   };
 
   const discount = product.compareAtPrice
@@ -30,6 +36,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
     ? product.description.substring(0, 80) + "..."
     : product.description;
 
+  const currentPrice = selectedVariant ? selectedVariant.price : product.price;
+  const currentStock = selectedVariant ? selectedVariant.stockQuantity : product.stockQuantity;
+
   return (
     <Link
       to={`/product/${product.id}`}
@@ -38,7 +47,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       {/* Image Container */}
       <div className="relative aspect-square overflow-hidden bg-slate-50">
         <img
-          src={product.imageUrl}
+          src={selectedVariant?.imageUrl || product.imageUrl}
           alt={product.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
@@ -50,7 +59,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
               -{discount}%
             </span>
           )}
-          {product.stockQuantity === 0 && (
+          {currentStock === 0 && (
             <span className="bg-slate-900 text-white text-[10px] font-bold px-2 py-1 uppercase tracking-wider">
               Sold Out
             </span>
@@ -88,6 +97,30 @@ const ProductCard = ({ product }: ProductCardProps) => {
           {shortDescription}
         </p>
 
+        {/* Variant Selector */}
+        {product.variants && product.variants.length > 0 && (
+          <div className="space-y-2">
+            <Select 
+              value={selectedVariant?.id || ""} 
+              onValueChange={(value) => {
+                const variant = product.variants?.find(v => v.id === value);
+                setSelectedVariant(variant || null);
+              }}
+            >
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue placeholder="Select variant" />
+              </SelectTrigger>
+              <SelectContent>
+                {product.variants.map(variant => (
+                  <SelectItem key={variant.id} value={variant.id}>
+                    {variant.optionName}: {variant.optionValue} - ${variant.price.toFixed(2)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
         <div className="flex items-center gap-1">
           <div className="flex text-amber-400">
             {[...Array(5)].map((_, i) => (
@@ -106,7 +139,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
         <div className="pt-2 flex items-baseline gap-2">
           <span className="text-lg font-bold text-slate-900">
-            ${product.price.toFixed(2)}
+            ${currentPrice.toFixed(2)}
           </span>
           {product.compareAtPrice && (
             <span className="text-sm text-slate-400 line-through">
@@ -118,7 +151,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="mt-auto pt-4 flex justify-end">
           <Button
             onClick={handleAddToCart}
-            disabled={product.stockQuantity === 0}
+            disabled={currentStock === 0}
             className="group/btn bg-slate-100 hover:bg-black text-black hover:text-white rounded-full pl-6 pr-1.5 h-10 text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border border-slate-500/50 shadow-none flex items-center gap-3"
           >
             Add to Cart

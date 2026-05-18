@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Product, Order, CartItem, Customer, Discount, Review, ReturnRequest, MarketingCampaign, StoreSettings, OrderTimelineEvent } from "../types";
+import { Product, ProductVariant, Order, CartItem, Customer, Discount, Review, ReturnRequest, MarketingCampaign, StoreSettings, Collection } from "../types";
 import { MOCK_PRODUCTS, MOCK_ORDERS, MOCK_RETURNS } from "../data/mockData";
 import { showSuccess, showError } from "../utils/toast";
 
@@ -12,14 +12,19 @@ interface StoreContextType {
   reviews: Review[];
   returns: ReturnRequest[];
   campaigns: MarketingCampaign[];
+  collections: Collection[];
   settings: StoreSettings;
   addProduct: (product: Product) => void;
   updateProduct: (product: Product) => void;
   deleteProduct: (id: string) => void;
+  addVariant: (productId: string, variant: ProductVariant) => void;
+  updateVariant: (productId: string, variant: ProductVariant) => void;
+  deleteVariant: (productId: string, variantId: string) => void;
   updateProductStock: (productId: string, quantity: number) => void;
-  addToCart: (productId: string, quantity?: number) => void;
+  updateVariantStock: (productId: string, variantId: string, quantity: number) => void;
+  addToCart: (productId: string, quantity?: number, variantId?: string) => void;
   removeFromCart: (productId: string) => void;
-  updateCartQuantity: (productId: string, quantity: number) => void;
+  updateCartQuantity: (productId: string, quantity: number, variantId?: string) => void;
   clearCart: () => void;
   createOrder: (orderInput: {
     customerName: string;
@@ -36,6 +41,15 @@ interface StoreContextType {
   createReturnRequest: (returnInput: Omit<ReturnRequest, "id" | "requestedAt" | "status">) => string;
   updateReturnStatus: (returnId: string, status: ReturnRequest["status"]) => void;
   updateSettings: (newSettings: StoreSettings) => void;
+  addCollection: (collection: Collection) => void;
+  updateCollection: (collection: Collection) => void;
+  deleteCollection: (id: string) => void;
+  addProductToCollection: (collectionId: string, productId: string) => void;
+  removeProductFromCollection: (collectionId: string, productId: string) => void;
+  bulkUpdateProducts: (productIds: string[], updates: Partial<Product>) => void;
+  bulkDeleteProducts: (productIds: string[]) => void;
+  exportProductsToCSV: () => string;
+  importProductsFromCSV: (csvData: string) => { success: Product[]; errors: string[] };
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -90,6 +104,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [collections, setCollections] = useState<Collection[]>(() => {
+    const saved = localStorage.getItem("store_collections");
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [settings, setSettings] = useState<StoreSettings>(() => {
     const saved = localStorage.getItem("store_settings");
     return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
@@ -128,6 +147,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [campaigns]);
 
   useEffect(() => {
+    localStorage.setItem("store_collections", JSON.stringify(collections));
+  }, [collections]);
+
+  useEffect(() => {
     localStorage.setItem("store_settings", JSON.stringify(settings));
   }, [settings]);
 
@@ -143,7 +166,51 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const deleteProduct = (id: string) => {
     setProducts(products.filter(p => p.id !== id));
+    // Remove from collections
+    setCollections(collections.map(c => ({
+      ...c,
+      productIds: c.productIds.filter(productId => productId !== id)
+    })));
     showSuccess("Product deleted");
+  };
+
+  const addVariant = (productId: string, variant: ProductVariant) => {
+    setProducts(products.map(p => {
+      if (p.id === productId) {
+        return {
+          ...p,
+          variants: [...(p.variants || []), variant]
+        };
+      }
+      return p;
+    }));
+    showSuccess("Variant added successfully");
+  };
+
+  const updateVariant = (productId: string, variant: ProductVariant) => {
+    setProducts(products.map(p => {
+      if (p.id === productId) {
+        return {
+          ...p,
+          variants: p.variants?.map(v => v.id === variant.id ? variant : v) || []
+        };
+      }
+      return p;
+    }));
+    showSuccess("Variant updated successfully");
+  };
+
+  const deleteVariant = (productId: string, variantId: string) => {
+    setProducts(products.map(p => {
+      if (p.id === productId) {
+        return {
+          ...p,
+          variants: p.variants?.filter(v => v.id !== variantId) || []
+        };
+      }
+      return p;
+    }));
+    showSuccess("Variant deleted");
   };
 
   const updateProductStock = (productId: string, quantity: number) => {
@@ -151,53 +218,107 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     showSuccess("Stock updated");
   };
 
-  const addToCart = (productId: string, quantity: number = 1) => {
+  const updateVariantStock = (productId: string, variantId: string, quantity: number) => {
+    setProducts(products.map(p => {
+      if (p.id === productId) {
+        return {
+          ...p,
+          variants: p.variants?.map(v => v.id === variantId ? { ...v, stockQuantity: quantity } : v) || []
+        };
+      }
+      return p;
+    }));
+    showSuccess("Variant stock updated");
+  };
+
+  const addToCart = (productId: string, quantity: number = 1, variantId?: string) => {
     const product = products.find(p => p.id === productId);
     if (!product || product.status !== "active") {
       showError("Product is currently unavailable");
       return;
     }
-    if (product.stockQuantity <= 0) {
-      showError("Item is out of stock");
-      return;
+
+    // Check if variant exists and is in stock
+    if (variantId) {
+      const variant = product.variants?.find(v => v.id === variantId);
+      if (!variant) {
+        showError("Selected variant is not available");
+        return;
+      }
+      if (variant.stockQuantity <= 0) {
+        showError("Variant is out of stock");
+        return;
+      }
+      if (quantity > variant.stockQuantity) {
+        showError(`Only ${variant.stockQuantity} units available`);
+        return;
+      }
+    } else {
+      // Check main product stock
+      if (product.stockQuantity <= 0) {
+        showError("Item is out of stock");
+        return;
+      }
+      if (quantity > product.stockQuantity) {
+        showError(`Only ${product.stockQuantity} units available`);
+        return;
+      }
     }
 
     setCart(prev => {
-      const existing = prev.find(item => item.productId === productId);
+      const existing = prev.find(item => 
+        item.productId === productId && item.variantId === variantId
+      );
       const currentQty = existing ? existing.quantity : 0;
       const newQty = currentQty + quantity;
 
-      if (newQty > product.stockQuantity) {
-        showError(`Only ${product.stockQuantity} units available`);
-        return prev;
-      }
-
-      showSuccess(existing ? "Cart updated" : "Added to cart");
       if (existing) {
         return prev.map(item =>
-          item.productId === productId ? { ...item, quantity: newQty } : item
+          item.productId === productId && item.variantId === variantId 
+            ? { ...item, quantity: newQty } 
+            : item
         );
       }
-      return [...prev, { productId, quantity }];
+      return [...prev, { productId, variantId, quantity }];
     });
   };
 
-  const removeFromCart = (productId: string) => {
-    setCart(cart.filter(item => item.productId !== productId));
+  const removeFromCart = (productId: string, variantId?: string) => {
+    setCart(cart.filter(item => 
+      !(item.productId === productId && item.variantId === variantId)
+    ));
     showSuccess("Item removed from cart");
   };
 
-  const updateCartQuantity = (productId: string, quantity: number) => {
-    const product = products.find(p => p.id === productId);
+  const updateCartQuantity = (productId: string, quantity: number, variantId?: string) => {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      removeFromCart(productId, variantId);
       return;
     }
-    if (product && quantity > product.stockQuantity) {
-      showError(`Only ${product.stockQuantity} units available`);
-      return;
+
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    // Check variant stock if specified
+    if (variantId) {
+      const variant = product.variants?.find(v => v.id === variantId);
+      if (variant && quantity > variant.stockQuantity) {
+        showError(`Only ${variant.stockQuantity} units available`);
+        return;
+      }
+    } else {
+      // Check main product stock
+      if (quantity > product.stockQuantity) {
+        showError(`Only ${product.stockQuantity} units available`);
+        return;
+      }
     }
-    setCart(cart.map(item => item.productId === productId ? { ...item, quantity } : item));
+
+    setCart(cart.map(item => 
+      item.productId === productId && item.variantId === variantId 
+        ? { ...item, quantity } 
+        : item
+    ));
   };
 
   const clearCart = () => setCart([]);
@@ -222,21 +343,38 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return null;
     }
 
+    // Validate cart items
     for (const item of cart) {
       const product = products.find(p => p.id === item.productId);
-      if (!product || product.status !== "active" || product.stockQuantity < item.quantity) {
-        showError(`Issue with product: ${product?.title || "Unknown"}`);
+      if (!product || product.status !== "active") {
+        showError(`Product is unavailable: ${product?.title || "Unknown"}`);
         return null;
+      }
+
+      if (item.variantId) {
+        const variant = product.variants?.find(v => v.id === item.variantId);
+        if (!variant || variant.stockQuantity < item.quantity) {
+          showError(`Variant stock issue: ${variant?.optionValue || "Unknown"}`);
+          return null;
+        }
+      } else {
+        if (product.stockQuantity < item.quantity) {
+          showError(`Insufficient stock for: ${product.title}`);
+          return null;
+        }
       }
     }
 
     const orderItems = cart.map(item => {
       const product = products.find(p => p.id === item.productId)!;
+      const variant = item.variantId ? product.variants?.find(v => v.id === item.variantId) : null;
+      
       return {
         productId: item.productId,
-        title: product.title,
+        variantId: item.variantId,
+        title: variant ? `${product.title} - ${variant.optionValue}` : product.title,
         quantity: item.quantity,
-        price: product.price,
+        price: variant ? variant.price : product.price,
       };
     });
 
@@ -264,10 +402,23 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       ]
     };
 
+    // Update product stock
     const updatedProducts = products.map(p => {
       const cartItem = cart.find(ci => ci.productId === p.id);
       if (cartItem) {
-        return { ...p, stockQuantity: p.stockQuantity - cartItem.quantity };
+        if (cartItem.variantId) {
+          const variantIndex = p.variants?.findIndex(v => v.id === cartItem.variantId);
+          if (variantIndex !== undefined && p.variants) {
+            const updatedVariants = [...p.variants];
+            updatedVariants[variantIndex] = {
+              ...updatedVariants[variantIndex],
+              stockQuantity: updatedVariants[variantIndex].stockQuantity - cartItem.quantity
+            };
+            return { ...p, variants: updatedVariants };
+          }
+        } else {
+          return { ...p, stockQuantity: p.stockQuantity - cartItem.quantity };
+        }
       }
       return p;
     });
@@ -306,7 +457,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const updateOrderStatus = (orderId: string, status: Order["status"], note?: string) => {
     setOrders(orders.map(o => {
       if (o.id === orderId) {
-        const newEvent: OrderTimelineEvent = {
+        const newEvent = {
           status: status.charAt(0).toUpperCase() + status.slice(1),
           date: new Date().toISOString(),
           note
@@ -321,7 +472,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const updatePaymentStatus = (orderId: string, paymentStatus: Order["paymentStatus"]) => {
     setOrders(orders.map(o => {
       if (o.id === orderId) {
-        const newEvent: OrderTimelineEvent = {
+        const newEvent = {
           status: `Payment status: ${paymentStatus}`,
           date: new Date().toISOString()
         };
@@ -335,7 +486,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const updateFulfillmentStatus = (orderId: string, fulfillmentStatus: Order["fulfillmentStatus"]) => {
     setOrders(orders.map(o => {
       if (o.id === orderId) {
-        const newEvent: OrderTimelineEvent = {
+        const newEvent = {
           status: `Fulfillment status: ${fulfillmentStatus}`,
           date: new Date().toISOString()
         };
@@ -375,7 +526,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setReturns(returns.map(r => r.id === returnId ? { ...r, status } : r));
 
     if (status === "refunded") {
-      // Update related order
       const order = orders.find(o => o.id === returnReq.orderId);
       if (order) {
         const isFullRefund = returnReq.refundAmount >= order.totalAmount;
@@ -391,6 +541,161 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     showSuccess("Store settings updated");
   };
 
+  const addCollection = (collection: Collection) => {
+    setCollections([...collections, collection]);
+    showSuccess("Collection created");
+  };
+
+  const updateCollection = (updatedCollection: Collection) => {
+    setCollections(collections.map(c => c.id === updatedCollection.id ? updatedCollection : c));
+    showSuccess("Collection updated");
+  };
+
+  const deleteCollection = (id: string) => {
+    setCollections(collections.filter(c => c.id !== id));
+    showSuccess("Collection deleted");
+  };
+
+  const addProductToCollection = (collectionId: string, productId: string) => {
+    setCollections(collections.map(c => {
+      if (c.id === collectionId) {
+        return {
+          ...c,
+          productIds: [...c.productIds, productId]
+        };
+      }
+      return c;
+    }));
+    showSuccess("Product added to collection");
+  };
+
+  const removeProductFromCollection = (collectionId: string, productId: string) => {
+    setCollections(collections.map(c => {
+      if (c.id === collectionId) {
+        return {
+          ...c,
+          productIds: c.productIds.filter(id => id !== productId)
+        };
+      }
+      return c;
+    }));
+    showSuccess("Product removed from collection");
+  };
+
+  const bulkUpdateProducts = (productIds: string[], updates: Partial<Product>) => {
+    setProducts(products.map(p => {
+      if (productIds.includes(p.id)) {
+        return { ...p, ...updates };
+      }
+      return p;
+    }));
+    showSuccess(`${productIds.length} products updated`);
+  };
+
+  const bulkDeleteProducts = (productIds: string[]) => {
+    setProducts(products.filter(p => !productIds.includes(p.id)));
+    // Remove from collections
+    setCollections(collections.map(c => ({
+      ...c,
+      productIds: c.productIds.filter(productId => !productIds.includes(productId))
+    })));
+    showSuccess(`${productIds.length} products deleted`);
+  };
+
+  const exportProductsToCSV = (): string => {
+    const headers = [
+      "ID", "Title", "Description", "SKU", "Brand", "Category", "Subcategory",
+      "Price", "Compare At Price", "Stock", "Status", "Rating", "Review Count",
+      "Warranty", "Condition", "Image URL", "Compatibility", "Specs"
+    ];
+
+    const rows = products.map(p => [
+      p.id,
+      p.title,
+      p.description,
+      p.sku,
+      p.brand,
+      p.category,
+      p.subcategory,
+      p.price,
+      p.compareAtPrice || "",
+      p.stockQuantity,
+      p.status,
+      p.rating,
+      p.reviewCount,
+      p.warranty,
+      p.condition,
+      p.imageUrl,
+      p.compatibility.join(";"),
+      Object.entries(p.specs).map(([k, v]) => `${k}:${v}`).join(";")
+    ]);
+
+    return [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(",")).join("\n");
+  };
+
+  const importProductsFromCSV = (csvData: string) => {
+    const lines = csvData.trim().split("\n");
+    const headers = lines[0].split(",").map(h => h.replace(/"/g, ""));
+    
+    const success: Product[] = [];
+    const errors: string[] = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      const values = lines[i].split(",").map(v => v.replace(/"/g, ""));
+      
+      try {
+        const product: Product = {
+          id: `PROD-${Math.floor(Math.random() * 1000000)}`,
+          title: values[1] || "",
+          description: values[2] || "",
+          sku: values[3] || "",
+          brand: values[4] || "",
+          category: values[5] || "",
+          subcategory: values[6] || "",
+          price: parseFloat(values[7]) || 0,
+          compareAtPrice: values[8] ? parseFloat(values[8]) : undefined,
+          stockQuantity: parseInt(values[9]) || 0,
+          imageUrl: values[15] || "",
+          galleryImages: [],
+          rating: parseFloat(values[11]) || 0,
+          reviewCount: parseInt(values[12]) || 0,
+          status: (values[10] as "active" | "draft") || "draft",
+          compatibility: values[16]?.split(";") || [],
+          specs: values[17]?.split(";").reduce((acc, spec) => {
+            const [key, value] = spec.split(":");
+            if (key && value) acc[key] = value;
+            return acc;
+          }, {} as Record<string, string>),
+          warranty: values[13] || "1 Year",
+          condition: (values[14] as "new" | "refurbished" | "used") || "new",
+          createdAt: new Date().toISOString(),
+          variants: []
+        };
+
+        if (!product.title || !product.sku) {
+          errors.push(`Row ${i + 1}: Missing required fields (title or SKU)`);
+          continue;
+        }
+
+        if (products.some(p => p.sku === product.sku)) {
+          errors.push(`Row ${i + 1}: SKU already exists`);
+          continue;
+        }
+
+        success.push(product);
+      } catch (error) {
+        errors.push(`Row ${i + 1}: Invalid data format`);
+      }
+    }
+
+    if (success.length > 0) {
+      setProducts([...products, ...success]);
+      showSuccess(`Successfully imported ${success.length} products`);
+    }
+
+    return { success, errors };
+  };
+
   return (
     <StoreContext.Provider
       value={{
@@ -402,11 +707,16 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         reviews,
         returns,
         campaigns,
+        collections,
         settings,
         addProduct,
         updateProduct,
         deleteProduct,
+        addVariant,
+        updateVariant,
+        deleteVariant,
         updateProductStock,
+        updateVariantStock,
         addToCart,
         removeFromCart,
         updateCartQuantity,
@@ -419,6 +729,15 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         createReturnRequest,
         updateReturnStatus,
         updateSettings,
+        addCollection,
+        updateCollection,
+        deleteCollection,
+        addProductToCollection,
+        removeProductFromCollection,
+        bulkUpdateProducts,
+        bulkDeleteProducts,
+        exportProductsToCSV,
+        importProductsFromCSV,
       }}
     >
       {children}
