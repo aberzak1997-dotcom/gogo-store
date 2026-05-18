@@ -11,7 +11,7 @@ interface FeaturedProductCardProps {
 const FeaturedProductCard = ({ product }: FeaturedProductCardProps) => {
   return (
     <Link to={`/product/${product.id}`} className="group block h-full">
-      <div className="bg-[#F0F2F8] rounded-[2.5rem] p-8 flex flex-col h-full transition-all duration-500 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1">
+      <div className="bg-[#F7FAFF] rounded-[2.5rem] p-8 flex flex-col h-full transition-all duration-500 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1">
         {/* Image Container */}
         <div className="flex-grow flex items-center justify-center mb-8 min-h-[240px]">
           <img
