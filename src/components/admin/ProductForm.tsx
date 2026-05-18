@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Trash2, X } from "lucide-react";
+import { Plus, Trash2, X, Upload } from "lucide-react";
 import { showError } from "../../utils/toast";
 import VariantManager from "./VariantManager";
 
@@ -52,6 +52,17 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
 
   const handleSelectChange = (name: string, value: string) => {
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, imageUrl: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const addSpec = () => {
@@ -195,8 +206,35 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="imageUrl">Main Image URL</Label>
-          <Input id="imageUrl" name="imageUrl" value={formData.imageUrl} onChange={handleChange} placeholder="https://..." />
+          <Label htmlFor="imageUrl">Main Image</Label>
+          <div className="flex gap-2">
+            <Input 
+              id="imageUrl" 
+              name="imageUrl" 
+              value={formData.imageUrl} 
+              onChange={handleChange} 
+              placeholder="https://..." 
+              className="flex-grow"
+            />
+            <div className="relative">
+              <Input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                id="image-upload"
+                onChange={handleImageUpload}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => document.getElementById('image-upload')?.click()}
+                title="Upload Image"
+              >
+                <Upload size={18} />
+              </Button>
+            </div>
+          </div>
         </div>
         <div className="space-y-2">
           <Label htmlFor="status">Status</Label>
