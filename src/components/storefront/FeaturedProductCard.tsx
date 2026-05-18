@@ -17,7 +17,7 @@ const FeaturedProductCard = ({ product }: FeaturedProductCardProps) => {
           <img
             src={product.imageUrl}
             alt={product.title}
-            className="max-w-full max-h-[220px] object-contain transition-transform duration-500 group-hover:scale-110"
+            className="max-w-full max-h-[220px] object-contain transition-transform duration-500 group-hover:scale-110 mix-blend-multiply"
           />
         </div>
 
