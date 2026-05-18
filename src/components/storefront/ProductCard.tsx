@@ -22,12 +22,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
     toast.success(`${product.title} added to cart`);
   };
 
-  const discount = product.compareAtPrice 
+  const discount = product.compareAtPrice
     ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
     : 0;
 
+  const shortDescription = product.description.length > 80
+    ? product.description.substring(0, 80) + "..."
+    : product.description;
+
   return (
-    <Link 
+    <Link
       to={`/product/${product.id}`}
       className="group relative bg-white border border-slate-100 flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:z-10"
     >
@@ -38,7 +42,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           alt={product.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        
+
         {/* Badges */}
         <div className="absolute top-4 left-4 flex flex-col gap-2">
           {discount > 0 && (
@@ -79,6 +83,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
             {product.title}
           </h3>
         </div>
+
+        <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
+          {shortDescription}
+        </p>
 
         <div className="flex items-center gap-1">
           <div className="flex text-amber-400">
