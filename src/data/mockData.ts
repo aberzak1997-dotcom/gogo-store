@@ -1,4 +1,4 @@
-import { Product, ProductVariant, Collection } from "../types";
+import { Product, ProductVariant, Collection, Order, ReturnRequest, Customer, Review } from "../types";
 
 export const MOCK_PRODUCTS: Product[] = [
   {
@@ -333,5 +333,86 @@ export const MOCK_COLLECTIONS: Collection[] = [
     description: "Charging solutions for mobile devices",
     productIds: ["1", "2"],
     createdAt: new Date().toISOString()
+  }
+];
+
+export const MOCK_CUSTOMERS: Customer[] = [
+  {
+    id: "CUST-001",
+    name: "John Doe",
+    email: "john@example.com",
+    phone: "+1 (555) 123-4567",
+    location: "New York, USA",
+    totalOrders: 5,
+    totalSpent: 450.50,
+    lastOrderDate: new Date(Date.now() - 86400000 * 2).toISOString(),
+    status: "VIP",
+    notes: "Prefers express shipping.",
+    tags: ["Tech Enthusiast", "Early Adopter"],
+    createdAt: new Date(Date.now() - 86400000 * 30).toISOString()
+  },
+  {
+    id: "CUST-002",
+    name: "Jane Smith",
+    email: "jane@example.com",
+    phone: "+1 (555) 987-6543",
+    location: "London, UK",
+    totalOrders: 2,
+    totalSpent: 89.98,
+    lastOrderDate: new Date(Date.now() - 3600000 * 5).toISOString(),
+    status: "returning",
+    createdAt: new Date(Date.now() - 86400000 * 15).toISOString()
+  },
+  {
+    id: "CUST-003",
+    name: "Alice Johnson",
+    email: "alice@example.com",
+    totalOrders: 1,
+    totalSpent: 129.99,
+    lastOrderDate: new Date(Date.now() - 86400000 * 10).toISOString(),
+    status: "active",
+    createdAt: new Date(Date.now() - 86400000 * 10).toISOString()
+  },
+  {
+    id: "CUST-004",
+    name: "Bob Wilson",
+    email: "bob@example.com",
+    totalOrders: 0,
+    totalSpent: 0,
+    status: "active",
+    createdAt: new Date(Date.now() - 3600000 * 2).toISOString()
+  }
+];
+
+export const MOCK_REVIEWS: Review[] = [
+  {
+    id: "REV-001",
+    productId: "3",
+    productTitle: "Pro Wireless Earbuds",
+    customerName: "John Doe",
+    rating: 5,
+    comment: "Amazing sound quality and noise cancellation. Highly recommend!",
+    status: "approved",
+    createdAt: new Date(Date.now() - 86400000 * 5).toISOString()
+  },
+  {
+    id: "REV-002",
+    productId: "1",
+    productTitle: "USB-C 65W Fast Charger",
+    customerName: "Jane Smith",
+    rating: 4,
+    comment: "Great charger, but gets a bit warm during use.",
+    status: "approved",
+    createdAt: new Date(Date.now() - 86400000 * 3).toISOString()
+  },
+  {
+    id: "REV-003",
+    productId: "5",
+    productTitle: "Mechanical Gaming Keyboard",
+    customerName: "Alice Johnson",
+    rating: 5,
+    comment: "The tactile feel is perfect for gaming. Love the RGB!",
+    status: "pending",
+    createdAt: new Date(Date.now() - 3600000 * 12).toISOString()
   }
 ];
