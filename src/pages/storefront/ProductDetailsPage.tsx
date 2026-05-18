@@ -57,10 +57,10 @@ const ProductDetailsPage = () => {
             <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
               <Info className="h-10 w-10 text-slate-300" />
             </div>
-            <h2 className="text-3xl font-black mb-4 text-slate-900 uppercase tracking-tight">Product Not Found</h2>
-            <p className="text-slate-500 mb-8 font-medium">The product you're looking for might have been removed or is temporarily unavailable.</p>
+            <h2 className="text-3xl font-semibold mb-4 text-slate-900 tracking-tight">Product Not Found</h2>
+            <p className="text-slate-500 mb-8 text-sm">The product you're looking for might have been removed or is temporarily unavailable.</p>
             <Link to="/">
-              <Button size="lg" className="w-full rounded-full h-14 text-sm font-black uppercase tracking-widest">Back to Store</Button>
+              <Button size="lg" className="w-full rounded-full h-12 text-sm font-medium">Back to Store</Button>
             </Link>
           </div>
         </div>
@@ -81,8 +81,8 @@ const ProductDetailsPage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
-      <main className="flex-grow section-container py-12">
-        <Link to="/products" className="inline-flex items-center text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary mb-12 transition-colors group">
+      <main className="flex-grow section-container py-12 px-6">
+        <Link to="/products" className="inline-flex items-center text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-primary mb-12 transition-colors group">
           <ChevronLeft size={16} className="mr-1 group-hover:-translate-x-1 transition-transform" /> Back to products
         </Link>
 
@@ -96,7 +96,7 @@ const ProductDetailsPage = () => {
                 className="w-full h-full object-contain p-16 transition-transform duration-700 group-hover:scale-110" 
               />
               {discount > 0 && (
-                <Badge className="absolute top-8 left-8 bg-primary text-white px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-full">
+                <Badge className="absolute top-8 left-8 bg-primary text-white px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full">
                   SAVE {discount}%
                 </Badge>
               )}
@@ -130,7 +130,7 @@ const ProductDetailsPage = () => {
           <div className="flex flex-col">
             <div className="mb-10">
               <div className="flex items-center justify-between mb-6">
-                <Badge variant="secondary" className="bg-slate-100 text-slate-900 border-transparent px-4 py-1.5 font-black uppercase tracking-[0.2em] text-[10px] rounded-full">
+                <Badge variant="secondary" className="bg-slate-100 text-slate-900 border-transparent px-4 py-1.5 font-bold uppercase tracking-[0.2em] text-[10px] rounded-full">
                   {product.brand}
                 </Badge>
                 <div className="flex gap-2">
@@ -143,7 +143,7 @@ const ProductDetailsPage = () => {
                 </div>
               </div>
               
-              <h1 className="text-5xl md:text-6xl font-black mb-8 text-slate-900 tracking-tighter leading-[0.9] uppercase">
+              <h1 className="text-3xl md:text-4xl font-semibold mb-6 text-slate-900 tracking-tight">
                 {product.title}
               </h1>
               
@@ -154,25 +154,25 @@ const ProductDetailsPage = () => {
                       <Star key={i} size={16} fill={i < Math.floor(product.rating) ? "currentColor" : "none"} className={i < Math.floor(product.rating) ? "" : "text-slate-200"} />
                     ))}
                   </div>
-                  <span className="text-sm font-black text-slate-900 ml-1">{product.rating}</span>
-                  <span className="text-xs text-slate-400 font-bold ml-1">({product.reviewCount} reviews)</span>
+                  <span className="text-sm font-semibold text-slate-900 ml-1">{product.rating}</span>
+                  <span className="text-xs text-slate-400 font-medium ml-1">({product.reviewCount} reviews)</span>
                 </div>
                 <Separator orientation="vertical" className="h-6 hidden sm:block" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">SKU: <span className="text-slate-900">{product.sku}</span></span>
-                <Badge variant="outline" className="rounded-full border-slate-200 text-slate-500 font-black uppercase text-[10px] tracking-widest">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">SKU: <span className="text-slate-900">{product.sku}</span></span>
+                <Badge variant="outline" className="rounded-full border-slate-200 text-slate-500 font-bold uppercase text-[10px] tracking-widest">
                   {product.condition}
                 </Badge>
               </div>
 
               <div className="flex items-baseline gap-4 mb-12">
-                <span className="text-6xl font-black text-slate-900 tracking-tighter">${product.price.toFixed(2)}</span>
+                <span className="text-3xl font-semibold text-slate-900 tracking-tight">${product.price.toFixed(2)}</span>
                 {product.compareAtPrice && (
-                  <span className="text-3xl text-slate-200 line-through font-black tracking-tighter">${product.compareAtPrice.toFixed(2)}</span>
+                  <span className="text-xl text-slate-300 line-through font-medium tracking-tight">${product.compareAtPrice.toFixed(2)}</span>
                 )}
               </div>
 
               <div className="space-y-8 mb-12">
-                <p className="text-slate-500 text-lg leading-relaxed font-medium">
+                <p className="text-slate-500 text-sm leading-relaxed">
                   {product.description}
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -188,19 +188,19 @@ const ProductDetailsPage = () => {
             <div className="mt-auto space-y-8">
               <div className="p-10 bg-slate-50 rounded-[3rem] border border-slate-100 space-y-10">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Availability</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Availability</span>
                   {product.stockQuantity >= 5 ? (
-                    <div className="flex items-center gap-2 text-emerald-600 font-black text-xs uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-emerald-600 font-bold text-xs uppercase tracking-widest">
                       <CheckCircle2 size={18} />
                       <span>In Stock</span>
                     </div>
                   ) : product.stockQuantity > 0 ? (
-                    <div className="flex items-center gap-2 text-amber-600 font-black text-xs uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-amber-600 font-bold text-xs uppercase tracking-widest">
                       <AlertTriangle size={18} />
                       <span>Only {product.stockQuantity} left</span>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2 text-rose-600 font-black text-xs uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-widest">
                       <AlertTriangle size={18} />
                       <span>Out of Stock</span>
                     </div>
@@ -216,7 +216,7 @@ const ProductDetailsPage = () => {
                     >
                       <Minus size={20} />
                     </button>
-                    <span className="px-6 text-xl font-black w-16 text-center">{quantity}</span>
+                    <span className="px-6 text-xl font-semibold w-16 text-center">{quantity}</span>
                     <button 
                       className="p-3 hover:bg-slate-50 rounded-full transition-all disabled:opacity-30"
                       onClick={() => handleQuantityChange(quantity + 1)}
@@ -228,7 +228,7 @@ const ProductDetailsPage = () => {
                   
                   <Button 
                     size="lg" 
-                    className="w-full h-16 text-sm font-black uppercase tracking-widest gap-3 rounded-full shadow-2xl shadow-primary/20"
+                    className="w-full h-16 text-sm font-bold uppercase tracking-widest gap-3 rounded-full shadow-2xl shadow-primary/20"
                     disabled={product.stockQuantity === 0}
                     onClick={() => addToCart(product.id, quantity)}
                   >
@@ -239,7 +239,7 @@ const ProductDetailsPage = () => {
                 <Button 
                   variant="secondary" 
                   size="lg" 
-                  className="w-full h-16 text-sm font-black uppercase tracking-widest gap-3 rounded-full bg-slate-900 text-white hover:bg-slate-800"
+                  className="w-full h-16 text-sm font-bold uppercase tracking-widest gap-3 rounded-full bg-slate-900 text-white hover:bg-slate-800"
                   disabled={product.stockQuantity === 0}
                   onClick={() => {
                     addToCart(product.id, quantity);
@@ -260,7 +260,7 @@ const ProductDetailsPage = () => {
                     <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center", item.bg, item.color)}>
                       <item.icon size={24} />
                     </div>
-                    <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">{item.label}</span>
+                    <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-slate-400">{item.label}</span>
                   </div>
                 ))}
               </div>
@@ -271,7 +271,7 @@ const ProductDetailsPage = () => {
         {/* Technical Specs */}
         <div className="grid lg:grid-cols-3 gap-20 mb-24">
           <div className="lg:col-span-2">
-            <h2 className="text-3xl font-black mb-10 flex items-center gap-4 text-slate-900 uppercase tracking-tight">
+            <h2 className="text-3xl font-semibold mb-10 flex items-center gap-4 text-slate-900 tracking-tight">
               <div className="p-2 bg-primary/10 rounded-xl text-primary">
                 <Info size={24} />
               </div>
@@ -282,7 +282,7 @@ const ProductDetailsPage = () => {
                 <tbody>
                   {Object.entries(product.specs).map(([key, value], i) => (
                     <tr key={key} className={cn(i % 2 === 0 ? 'bg-slate-50/30' : 'bg-white')}>
-                      <td className="px-10 py-6 font-black text-slate-900 w-1/3 border-r border-slate-100 text-xs uppercase tracking-widest">{key}</td>
+                      <td className="px-10 py-6 font-bold text-slate-900 w-1/3 border-r border-slate-100 text-xs uppercase tracking-widest">{key}</td>
                       <td className="px-10 py-6 text-slate-500 font-medium">{value}</td>
                     </tr>
                   ))}
@@ -298,14 +298,14 @@ const ProductDetailsPage = () => {
           
           <div className="space-y-8">
             <div className="bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100">
-              <h3 className="font-black text-sm uppercase tracking-widest mb-4 text-slate-900">Shipping Info</h3>
+              <h3 className="font-bold text-sm uppercase tracking-widest mb-4 text-slate-900">Shipping Info</h3>
               <p className="text-slate-500 leading-relaxed font-medium text-sm">
                 Standard shipping takes 3-5 business days. Express shipping available at checkout. 
                 All orders are tracked and insured for your peace of mind.
               </p>
             </div>
             <div className="bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100">
-              <h3 className="font-black text-sm uppercase tracking-widest mb-4 text-slate-900">Warranty Note</h3>
+              <h3 className="font-bold text-sm uppercase tracking-widest mb-4 text-slate-900">Warranty Note</h3>
               <p className="text-slate-500 leading-relaxed font-medium text-sm">
                 This product includes a {product.warranty} manufacturer warranty covering defects in materials and workmanship. Extended protection plans available.
               </p>
@@ -317,9 +317,9 @@ const ProductDetailsPage = () => {
         {relatedProducts.length > 0 && (
           <section className="pt-24 border-t border-slate-100">
             <div className="flex items-center justify-between mb-12">
-              <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Related Products</h2>
+              <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">Related Products</h2>
               <Link to={`/products?category=${product.category}`}>
-                <Button variant="ghost" className="font-black text-[10px] uppercase tracking-widest text-primary">View Category</Button>
+                <Button variant="ghost" className="font-bold text-[10px] uppercase tracking-widest text-primary">View Category</Button>
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">

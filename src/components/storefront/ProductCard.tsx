@@ -107,7 +107,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 setSelectedVariant(variant || null);
               }}
             >
-              <SelectTrigger className="h-8 text-xs">
+              <SelectTrigger className="h-9 text-sm">
                 <SelectValue placeholder="Select variant" />
               </SelectTrigger>
               <SelectContent>
