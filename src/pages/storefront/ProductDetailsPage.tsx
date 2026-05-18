@@ -186,79 +186,79 @@ const ProductDetailsPage = () => {
             </div>
 
             <div className="mt-auto space-y-8">
-              <div className="p-7 bg-slate-50 rounded-[2rem] border border-slate-100 space-y-7">
+              <div className="p-8 bg-white rounded-[2rem] border border-slate-100 space-y-8">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Availability</span>
                   {product.stockQuantity >= 5 ? (
-                    <div className="flex items-center gap-2 text-emerald-600 font-bold text-xs uppercase tracking-widest">
-                      <CheckCircle2 size={18} />
+                    <div className="flex items-center gap-2 text-emerald-600 font-bold text-[10px] uppercase tracking-widest">
+                      <CheckCircle2 size={14} />
                       <span>In Stock</span>
                     </div>
                   ) : product.stockQuantity > 0 ? (
-                    <div className="flex items-center gap-2 text-amber-600 font-bold text-xs uppercase tracking-widest">
-                      <AlertTriangle size={18} />
+                    <div className="flex items-center gap-2 text-amber-600 font-bold text-[10px] uppercase tracking-widest">
+                      <AlertTriangle size={14} />
                       <span>Only {product.stockQuantity} left</span>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-widest">
-                      <AlertTriangle size={18} />
+                    <div className="flex items-center gap-2 text-rose-600 font-bold text-[10px] uppercase tracking-widest">
+                      <AlertTriangle size={14} />
                       <span>Out of Stock</span>
                     </div>
                   )}
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <div className="flex items-center border border-slate-200 rounded-full bg-white p-1 w-full sm:w-auto">
+                  <div className="flex items-center border border-slate-100 rounded-full bg-slate-50/50 p-1 w-full sm:w-auto">
                     <button 
-                      className="p-2 hover:bg-slate-50 rounded-full transition-all disabled:opacity-30"
+                      className="p-2 hover:bg-white hover:shadow-sm rounded-full transition-all disabled:opacity-30"
                       onClick={() => handleQuantityChange(quantity - 1)}
                       disabled={quantity <= 1}
                     >
-                      <Minus size={18} />
+                      <Minus size={16} />
                     </button>
-                    <span className="px-4 text-lg font-semibold w-12 text-center">{quantity}</span>
+                    <span className="px-4 text-sm font-semibold w-10 text-center">{quantity}</span>
                     <button 
-                      className="p-2 hover:bg-slate-50 rounded-full transition-all disabled:opacity-30"
+                      className="p-2 hover:bg-white hover:shadow-sm rounded-full transition-all disabled:opacity-30"
                       onClick={() => handleQuantityChange(quantity + 1)}
                       disabled={quantity >= product.stockQuantity}
                     >
-                      <Plus size={18} />
+                      <Plus size={16} />
                     </button>
                   </div>
                   
                   <Button 
+                    variant="outline"
                     size="lg" 
-                    className="w-full h-11 text-xs font-bold uppercase tracking-widest gap-3 rounded-full shadow-xl shadow-primary/10"
+                    className="w-full h-11 text-[10px] font-bold uppercase tracking-widest gap-3 rounded-full border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition-all"
                     disabled={product.stockQuantity === 0}
                     onClick={() => addToCart(product.id, quantity)}
                   >
-                    <ShoppingCart size={18} /> Add to Cart
+                    <ShoppingCart size={16} /> Add to Cart
                   </Button>
                 </div>
 
                 <Button 
-                  variant="secondary" 
                   size="lg" 
-                  className="w-full h-11 text-xs font-bold uppercase tracking-widest gap-3 rounded-full bg-slate-900 text-white hover:bg-slate-800"
+                  className="w-full h-11 text-[10px] font-bold uppercase tracking-widest gap-3 rounded-full bg-slate-900 text-white hover:bg-slate-800 shadow-none"
                   disabled={product.stockQuantity === 0}
                   onClick={() => {
                     addToCart(product.id, quantity);
                     navigate("/checkout");
                   }}
                 >
-                  <Zap size={18} /> Buy Now
+                  <Zap size={16} /> Buy Now
                 </Button>
               </div>
 
               <div className="grid grid-cols-3 gap-4">
                 {[
-                  { icon: Truck, label: "Free Shipping", color: "text-blue-600", bg: "bg-blue-50" },
-                  { icon: ShieldCheck, label: product.warranty, color: "text-emerald-600", bg: "bg-emerald-50" },
-                  { icon: RotateCcw, label: "30-Day Returns", color: "text-purple-600", bg: "bg-purple-50" },
+                  { icon: Truck, label: "Free Shipping", color: "text-slate-600", bg: "bg-slate-50" },
+                  { icon: ShieldCheck, label: product.warranty, color: "text-slate-600", bg: "bg-slate-50" },
+                  { icon: RotateCcw, label: "30-Day Returns", color: "text-slate-600", bg: "bg-slate-50" },
                 ].map((item, i) => (
                   <div key={i} className="flex flex-col items-center text-center gap-3 p-6 rounded-[2rem] bg-white border border-slate-100">
-                    <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center", item.bg, item.color)}>
-                      <item.icon size={24} />
+                    <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", item.bg, item.color)}>
+                      <item.icon size={20} />
                     </div>
                     <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-slate-400">{item.label}</span>
                   </div>
