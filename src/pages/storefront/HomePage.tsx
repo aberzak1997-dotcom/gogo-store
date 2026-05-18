@@ -100,7 +100,7 @@ const HomePage = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-white font-sans">
+    <div className="min-h-screen flex flex-col bg-[#F7FAFF] font-sans">
       <Header />
 
       <main className="flex-grow">
