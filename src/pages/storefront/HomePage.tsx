@@ -55,48 +55,155 @@ const HomePage = () => {
   }, [products, categoryParam, searchParam]);
 
   const featuredProducts = filteredProducts.slice(0, 9);
+  const bestSellers = [...filteredProducts]
+    .sort((a, b) => b.reviewCount - a.reviewCount)
+    .slice(0, 4);
+  const deals = filteredProducts.filter((p) => p.compareAtPrice).slice(0, 4);
 
   const categories = [
-    { name: "Keyboards", icon: Keyboard, path: "/products?category=Gaming Accessories" },
-    { name: "Mice", icon: MousePointer2, path: "/products?category=PC Accessories" },
-    { name: "Headsets", icon: Headphones, path: "/products?category=Audio" },
-    { name: "Webcams", icon: Video, path: "/products?category=PC Accessories" },
-    { name: "Chargers", icon: BatteryCharging, path: "/products?category=Chargers & Cables" },
-    { name: "Storage", icon: HardDrive, path: "/products?category=Storage Devices" },
-    { name: "Gaming", icon: Gamepad2, path: "/products?category=Gaming Accessories" },
-    { name: "Laptops", icon: Laptop, path: "/products?category=Laptop Accessories" },
+    {
+      name: "Keyboards",
+      icon: Keyboard,
+      path: "/products?category=Gaming Accessories",
+    },
+    {
+      name: "Mice",
+      icon: MousePointer2,
+      path: "/products?category=PC Accessories",
+    },
+    {
+      name: "Headsets",
+      icon: Headphones,
+      path: "/products?category=Audio",
+    },
+    {
+      name: "Webcams",
+      icon: Video,
+      path: "/products?category=PC Accessories",
+    },
+    {
+      name: "Chargers",
+      icon: BatteryCharging,
+      path: "/products?category=Chargers & Cables",
+    },
+    {
+      name: "Storage",
+      icon: HardDrive,
+      path: "/products?category=Storage Devices",
+    },
+    {
+      name: "Gaming",
+      icon: Gamepad2,
+      path: "/products?category=Gaming Accessories",
+    },
+    {
+      name: "Laptops",
+      icon: Laptop,
+      path: "/products?category=Laptop Accessories",
+    },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-white font-sans">
       <Header />
 
       <main className="flex-grow">
         {/* Hero Section */}
         {!categoryParam && !searchParam && (
-          <section className="relative px-4 py-16 md:py-32 border-b border-hairline bg-surface">
-            <div className="section-container max-w-4xl">
-              <div className="space-y-8">
-                <div className="text-mono text-accent">
-                  Next-Gen Tech Essentials
+          <section className="relative pt-0 mb-[5px] px-[5px]">
+            <div className="w-full">
+              <div className="relative overflow-hidden bg-slate-900 min-h-[500px] md:min-h-[600px] flex items-center w-full py-5">
+                {/* YouTube Video Background */}
+                <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
+                  <iframe
+                    className="absolute top-1/2 left-1/2 w-[300%] h-[300%] -translate-x-1/2 -translate-y-1/2 opacity-50"
+                    src="https://www.youtube.com/embed/H41fuhz_gvw?autoplay=1&mute=1&loop=1&playlist=H41fuhz_gvw&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1"
+                    title="Hero Background Video"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
                 </div>
-                <h1 className="text-hero text-ink">
-                  Upgrade your <br />
-                  <span className="text-accent">tech setup.</span>
-                </h1>
-                <p className="text-body text-ink-500 max-w-lg">
-                  Premium electronics and accessories designed for modern
-                  life. Minimal design, maximum performance. Engineered for calm.
-                </p>
-                <div className="flex flex-wrap gap-3 pt-4">
-                  <Link to="/products">
-                    <Button variant="primary" size="lg">
-                      Shop Collection
+
+                {/* Overlay for better text contrast */}
+                <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 to-transparent" />
+
+                <div className="relative z-10 px-8 md:px-20 max-w-3xl space-y-8">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] font-medium uppercase tracking-wider shadow-sm">
+                    <Zap size={12} className="text-primary" /> Next-Gen Tech
+                  </div>
+                  <h1 className="text-5xl md:text-7xl font-semibold text-white tracking-tight leading-[1.1]">
+                    Upgrade your <br />
+                    <span className="text-primary">tech setup.</span>
+                  </h1>
+                  <p className="text-lg text-slate-300 leading-relaxed font-normal max-w-lg">
+                    Premium electronics and accessories designed for modern
+                    life. Minimal design, maximum performance.
+                  </p>
+                  <div className="flex flex-wrap gap-4 pt-2">
+                    <Link to="/products">
+                      <Button
+                        size="lg"
+                        className="rounded-full px-8 h-12 text-sm font-medium shadow-sm bg-primary hover:bg-primary/90 text-white border-none"
+                      >
+                        Shop Collection
+                      </Button>
+                    </Link>
+                    <Link to="/deals">
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        className="rounded-full px-8 h-12 text-sm font-medium border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white/20"
+                      >
+                        View Deals
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Promo Campaign Cards */}
+        {!categoryParam && !searchParam && (
+          <section className="py-0 mx-[5px]">
+            <div className="w-full grid md:grid-cols-2 gap-[5px]">
+              <div className="group relative overflow-hidden border border-slate-100 bg-slate-900 text-white p-10 min-h-[360px] flex flex-col justify-end">
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center scale-[1.02]" />
+                <div className="absolute inset-0 bg-black/40" />
+                <div className="relative z-10 space-y-[15px]">
+                  <h3 className="text-3xl font-semibold tracking-tight">
+                    Gaming Essentials
+                  </h3>
+                  <p className="text-slate-100 max-w-xs text-sm drop-shadow-md">
+                    Pro‑grade gear for the ultimate performance.
+                  </p>
+                  <Link to="/products?category=Gaming Accessories">
+                    <Button
+                      variant="secondary"
+                      className="rounded-full px-[29px] h-10 text-xs font-medium mt-[15px]"
+                    >
+                      Explore
                     </Button>
                   </Link>
-                  <Link to="/deals">
-                    <Button variant="secondary" size="lg">
-                      View Deals
+                </div>
+              </div>
+              <div className="group relative overflow-hidden border border-slate-100 p-10 min-h-[360px] flex flex-col justify-end">
+                <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7279320/pexels-photo-7279320.jpeg')] bg-cover bg-center scale-[1.02]" />
+                <div className="relative z-10 space-y-[15px]">
+                  <h3 className="text-3xl font-semibold tracking-tight text-white">
+                    Work Setup
+                  </h3>
+                  <p className="text-white max-w-xs text-sm drop-shadow-sm">
+                    Minimal accessories for maximum productivity.
+                  </p>
+                  <Link to="/products?category=Laptop Accessories">
+                    <Button
+                      variant="outline"
+                      className="rounded-full px-[29px] h-10 text-xs font-medium border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white/20 mt-[15px]"
+                    >
+                      Explore
                     </Button>
                   </Link>
                 </div>
@@ -110,27 +217,29 @@ const HomePage = () => {
 
         {/* Popular Categories */}
         {!categoryParam && !searchParam && (
-          <section className="py-24 border-b border-hairline">
+          <section className="py-24">
             <div className="section-container">
               <div className="flex items-end justify-between mb-12">
                 <div className="space-y-1">
-                  <h2 className="text-h2 text-ink">Categories</h2>
-                  <p className="text-body text-ink-400">Find gear by category</p>
+                  <h2 className="text-3xl font-semibold text-slate-900">
+                    Categories
+                  </h2>
+                  <p className="text-slate-500 text-sm">Find gear by category</p>
                 </div>
-                <Link to="/products">
-                  <Button variant="ghost">View all</Button>
+                <Link to="/products" className="text-sm font-medium text-primary hover:underline">
+                  View all
                 </Link>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                 {categories.map((cat) => {
                   const Icon = cat.icon;
                   return (
                     <Link key={cat.name} to={cat.path} className="group">
-                      <div className="card-orbit flex flex-col items-center justify-center gap-4 h-full text-center">
-                        <div className="w-12 h-12 flex items-center justify-center text-ink-500 group-hover:text-accent transition-colors">
-                          <Icon size={24} />
+                      <div className="bg-[#0C0587]/5 p-6 rounded-2xl border border-[#0C0587]/10 flex flex-col items-center justify-center gap-6 transition-all duration-300 hover:bg-white hover:shadow-sm hover:border-[#0C0587]/20 h-full">
+                        <div className="w-16 h-16 flex items-center justify-center">
+                          <Icon size={32} className="text-black" />
                         </div>
-                        <span className="text-ui text-ink-700 group-hover:text-ink">
+                        <span className="font-medium text-xs text-slate-600 group-hover:text-slate-900">
                           {cat.name}
                         </span>
                       </div>
@@ -147,16 +256,23 @@ const HomePage = () => {
           <div className="section-container">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
               <div className="space-y-1">
-                <h2 className="text-h2 text-ink">
-                  {categoryParam ? categoryParam : searchParam ? `Search: "${searchParam}"` : "Featured"}
+                <h2 className="text-3xl font-semibold text-slate-900">
+                  {categoryParam
+                    ? categoryParam
+                    : searchParam
+                    ? `Search: "${searchParam}"`
+                    : "Featured"}
                 </h2>
-                <p className="text-body text-ink-400">
+                <p className="text-slate-500 text-sm">
                   {filteredProducts.length} items available
                 </p>
               </div>
               {(categoryParam || searchParam) && (
                 <Link to="/">
-                  <Button variant="ghost" size="sm" className="gap-2">
+                  <Button
+                    variant="ghost"
+                    className="gap-2 text-xs font-medium text-slate-500"
+                  >
                     Clear filters <X size={14} />
                   </Button>
                 </Link>
@@ -164,12 +280,16 @@ const HomePage = () => {
             </div>
 
             {filteredProducts.length === 0 ? (
-              <div className="py-24 text-center bg-surface rounded-lg border border-dashed border-hairline">
-                <h3 className="text-h2 text-ink">No items found</h3>
-                <p className="text-body text-ink-400 mt-1">Try a different search term.</p>
+              <div className="py-24 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                <h3 className="text-xl font-medium text-slate-900">
+                  No items found
+                </h3>
+                <p className="text-slate-500 mt-1 text-sm">
+                  Try a different search term.
+                </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0">
                 {featuredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -180,22 +300,22 @@ const HomePage = () => {
 
         {/* Reasons to Buy */}
         {!categoryParam && !searchParam && (
-          <section className="py-24 bg-surface border-y border-hairline">
+          <section className="py-24 bg-slate-50/50 border-y border-slate-100">
             <div className="section-container">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                  { icon: Truck, title: "Free Shipping", desc: "On orders over $50" },
-                  { icon: ShieldCheck, title: "Secure Payment", desc: "100% encrypted" },
-                  { icon: RotateCcw, title: "Easy Returns", desc: "30-day window" },
-                  { icon: Star, title: "Warranty", desc: "1-year included" },
+                  { icon: Truck, title: "Free Shipping", desc: "On orders over $50", color: "bg-[#0C0587]/5 text-[#0C0587]" },
+                  { icon: ShieldCheck, title: "Secure Payment", desc: "100% encrypted", color: "bg-green-50 text-green-600" },
+                  { icon: RotateCcw, title: "Easy Returns", desc: "30-day window", color: "bg-orange-50 text-orange-600" },
+                  { icon: Star, title: "Warranty", desc: "1-year included", color: "bg-purple-50 text-purple-600" },
                 ].map((item, i) => (
-                  <div key={i} className="space-y-4">
-                    <div className="w-10 h-10 rounded-md bg-background flex items-center justify-center text-accent">
-                      <item.icon size={20} />
+                  <div key={i} className="group bg-white p-8 rounded-3xl border border-slate-100 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1">
+                    <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110", item.color)}>
+                      <item.icon size={24} />
                     </div>
-                    <div className="space-y-1">
-                      <h4 className="text-ui text-ink font-bold">{item.title}</h4>
-                      <p className="text-body text-ink-500 text-sm">{item.desc}</p>
+                    <div className="space-y-2">
+                      <h4 className="font-bold text-base text-slate-900">{item.title}</h4>
+                      <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
