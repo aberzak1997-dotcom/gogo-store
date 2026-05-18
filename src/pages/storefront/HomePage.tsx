@@ -54,7 +54,7 @@ const HomePage = () => {
     return result;
   }, [products, categoryParam, searchParam]);
 
-  const featuredProducts = filteredProducts.slice(0, 8);
+  const featuredProducts = filteredProducts.slice(0, 9); // Increased to 9 to fill 3x3 grid
   const bestSellers = [...filteredProducts]
     .sort((a, b) => b.reviewCount - a.reviewCount)
     .slice(0, 4);
@@ -289,7 +289,7 @@ const HomePage = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0">
                 {featuredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
