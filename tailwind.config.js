@@ -17,45 +17,48 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+        display: ["Inter", "sans-serif"], // Using Inter as base for Display
+        mono: ["JetBrains Mono", "monospace"],
+      },
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        border: "rgba(14, 17, 22, 0.06)",
+        input: "rgba(14, 17, 22, 0.08)",
+        ring: "#5e6ad2",
+        background: "#f5f6f8",
+        foreground: "#0e1116",
         primary: {
-          DEFAULT: "#0C0587",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "#0e1116",
+          foreground: "#ffffff",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "#5a6273",
+          foreground: "#ffffff",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "#5e6ad2",
+          foreground: "#ffffff",
         },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
+        surface: "#ffffff",
+        hairline: "rgba(14, 17, 22, 0.06)",
+        ink: {
+          DEFAULT: "#0e1116",
+          700: "#3a4150",
+          500: "#5a6273",
+          400: "#7a818f",
+          200: "#e6e8ec",
+        }
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        sm: "5px",
+        md: "8px",
+        lg: "10px",
+        pill: "9999px",
+      },
+      boxShadow: {
+        card: "rgba(14,17,22,0.06) 0 0 0 1px, rgba(14,17,22,0.03) 0 1px 2px",
+        button: "rgba(94,106,210,0.18) 0 1px 0 inset",
       },
       keyframes: {
         "accordion-down": {
