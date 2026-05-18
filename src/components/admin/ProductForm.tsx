@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Trash2, X, Upload } from "lucide-react";
+import { Plus, Trash2, X } from "lucide-react";
 import { showError } from "../../utils/toast";
 
 interface ProductFormProps {
@@ -47,17 +47,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
       ...prev,
       [name]: type === "number" ? parseFloat(value) || 0 : value
     }));
-  };
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, imageUrl: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   const handleSelectChange = (name: string, value: string) => {
@@ -206,27 +195,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="imageUrl">Main Image URL</Label>
-          <div className="flex gap-2">
-            <Input id="imageUrl" name="imageUrl" value={formData.imageUrl} onChange={handleChange} placeholder="https://..." />
-            <div className="relative">
-              <Input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                id="imageUpload"
-                onChange={handleFileUpload}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={() => document.getElementById('imageUpload')?.click()}
-                title="Upload from computer"
-              >
-                <Upload size={16} />
-              </Button>
-            </div>
-          </div>
+          <Input id="imageUrl" name="imageUrl" value={formData.imageUrl} onChange={handleChange} placeholder="https://..." />
         </div>
         <div className="space-y-2">
           <Label htmlFor="status">Status</Label>

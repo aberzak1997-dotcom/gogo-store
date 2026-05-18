@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { Product } from "../../types";
+import { Product } from "../../context/StoreContext";
 
 interface FeaturedProductCardProps {
   product: Product;
@@ -11,11 +11,11 @@ interface FeaturedProductCardProps {
 const FeaturedProductCard = ({ product }: FeaturedProductCardProps) => {
   return (
     <Link to={`/product/${product.id}`} className="group block h-full">
-      <div className="bg-[#F7FAFF] rounded-[2.5rem] p-8 flex flex-col h-full transition-all duration-500 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1">
+      <div className="bg-[#F0F2F8] rounded-[2.5rem] p-8 flex flex-col h-full transition-all duration-500 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1">
         {/* Image Container */}
         <div className="flex-grow flex items-center justify-center mb-8 min-h-[240px]">
           <img
-            src={product.imageUrl}
+            src={product.images[0]}
             alt={product.title}
             className="max-w-full max-h-[220px] object-contain transition-transform duration-500 group-hover:scale-110"
           />
