@@ -35,57 +35,83 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
     specs: {},
     warranty: "1 Year",
     condition: "new",
-    ...product
+    ...product,
   });
 
   const [newSpec, setNewSpec] = useState({ key: "", value: "" });
   const [newTag, setNewTag] = useState("");
 
+  // ---------------------------------------------------------------------------
+  // Handlers
+  // ---------------------------------------------------------------------------
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === "number" ? parseFloat(value) || 0 : value
+      [name]: type === "number" ? parseFloat(value) || 0 : value,
     }));
   };
 
   const handleSelectChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // New: handle file upload for the main image
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Basic validation (optional)
+    if (!file.type.startsWith("image/")) {
+      showError("Please select a valid image file.");
+      return;
+    }
+
+    // Create a temporary URL for preview / storage
+    const previewUrl = URL.createObjectURL(file);
+    setFormData((prev) => ({
+      ...prev,
+      imageUrl: previewUrl,
+    }));
   };
 
   const addSpec = () => {
     if (!newSpec.key || !newSpec.value) return;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      specs: { ...prev.specs, [newSpec.key]: newSpec.value }
+      specs: { ...(prev.specs || {}), [newSpec.key]: newSpec.value },
     }));
     setNewSpec({ key: "", value: "" });
   };
 
   const removeSpec = (key: string) => {
-    const newSpecs = { ...formData.specs };
+    const newSpecs = { ...(formData.specs || {}) };
     delete newSpecs[key];
-    setFormData(prev => ({ ...prev, specs: newSpecs }));
+    setFormData((prev) => ({ ...prev, specs: newSpecs }));
   };
 
   const addTag = () => {
     if (!newTag || formData.compatibility?.includes(newTag)) return;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      compatibility: [...(prev.compatibility || []), newTag]
+      compatibility: [...(prev.compatibility || []), newTag],
     }));
     setNewTag("");
   };
 
   const removeTag = (tag: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      compatibility: prev.compatibility?.filter(t => t !== tag)
+      compatibility: prev.compatibility?.filter((t) => t !== tag),
     }));
   };
 
+  // ---------------------------------------------------------------------------
+  // Validation
+  // ---------------------------------------------------------------------------
   const validate = () => {
     if (!formData.title) return "Title is required";
+    if (!formData.description<dyad-write path="src/components/admin/ProductForm.tsx" description="Continue completing the ProductForm component after the validation function.">
     if (!formData.description) return "Description is required";
     if (!formData.sku) return "SKU is required";
     if (!product && existingSkus.includes(formData.sku!)) return "SKU must be unique";
@@ -99,7 +125,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
     if ((formData.stockQuantity || 0) < 0) return "Stock cannot be negative";
     if (!formData.warranty) return "Warranty is required";
     if ((formData.rating || 0) < 0 || (formData.rating || 0) > 5) return "Rating must be between 0 and 5";
-    
+
     return null;
   };
 
@@ -115,7 +141,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
       ...(formData as Product),
       id: product?.id || Math.random().toString(36).substr(2, 9),
       imageUrl: formData.imageUrl || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
-      createdAt: product?.createdAt || new Date().toISOString()
+      createdAt: product?.createdAt || new Date().toISOString(),
     };
 
     onSubmit(finalData);
@@ -198,16 +224,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
           <Input id="imageUrl" name="imageUrl" value={formData.imageUrl} onChange={handleChange} placeholder="https://..." />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="status">Status</Label>
-          <Select value={formData.status} onValueChange={(v) => handleSelectChange("status", v)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="draft">Draft</SelectItem>
-            </SelectContent>
-          </Select>
+          <Label htmlFor="imageUpload">Upload Image</Label>
+          <Input
+            id="imageUpload"
+            type="file"
+            accept="image/*"
+            onChange={handleFileUpload}
+            className="block w-full text-sm text-slate-500 text-sm h-10 border border-slate-200 rounded-lg focus:border-primary focus:outline-none"
+          />
         </div>
       </div>
 
