@@ -186,7 +186,7 @@ const ProductDetailsPage = () => {
             </div>
 
             <div className="mt-auto space-y-8">
-              <div className="p-10 bg-slate-50 rounded-[3rem] border border-slate-100 space-y-10">
+              <div className="p-7 bg-slate-50 rounded-[2rem] border border-slate-100 space-y-7">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Availability</span>
                   {product.stockQuantity >= 5 ? (
@@ -210,43 +210,43 @@ const ProductDetailsPage = () => {
                 <div className="flex flex-col sm:flex-row items-center gap-4">
                   <div className="flex items-center border border-slate-200 rounded-full bg-white p-1 w-full sm:w-auto">
                     <button 
-                      className="p-3 hover:bg-slate-50 rounded-full transition-all disabled:opacity-30"
+                      className="p-2 hover:bg-slate-50 rounded-full transition-all disabled:opacity-30"
                       onClick={() => handleQuantityChange(quantity - 1)}
                       disabled={quantity <= 1}
                     >
-                      <Minus size={20} />
+                      <Minus size={18} />
                     </button>
-                    <span className="px-6 text-xl font-semibold w-16 text-center">{quantity}</span>
+                    <span className="px-4 text-lg font-semibold w-12 text-center">{quantity}</span>
                     <button 
-                      className="p-3 hover:bg-slate-50 rounded-full transition-all disabled:opacity-30"
+                      className="p-2 hover:bg-slate-50 rounded-full transition-all disabled:opacity-30"
                       onClick={() => handleQuantityChange(quantity + 1)}
                       disabled={quantity >= product.stockQuantity}
                     >
-                      <Plus size={20} />
+                      <Plus size={18} />
                     </button>
                   </div>
                   
                   <Button 
                     size="lg" 
-                    className="w-full h-16 text-sm font-bold uppercase tracking-widest gap-3 rounded-full shadow-2xl shadow-primary/20"
+                    className="w-full h-11 text-xs font-bold uppercase tracking-widest gap-3 rounded-full shadow-xl shadow-primary/10"
                     disabled={product.stockQuantity === 0}
                     onClick={() => addToCart(product.id, quantity)}
                   >
-                    <ShoppingCart size={20} /> Add to Cart
+                    <ShoppingCart size={18} /> Add to Cart
                   </Button>
                 </div>
 
                 <Button 
                   variant="secondary" 
                   size="lg" 
-                  className="w-full h-16 text-sm font-bold uppercase tracking-widest gap-3 rounded-full bg-slate-900 text-white hover:bg-slate-800"
+                  className="w-full h-11 text-xs font-bold uppercase tracking-widest gap-3 rounded-full bg-slate-900 text-white hover:bg-slate-800"
                   disabled={product.stockQuantity === 0}
                   onClick={() => {
                     addToCart(product.id, quantity);
                     navigate("/checkout");
                   }}
                 >
-                  <Zap size={20} /> Buy Now
+                  <Zap size={18} /> Buy Now
                 </Button>
               </div>
 
