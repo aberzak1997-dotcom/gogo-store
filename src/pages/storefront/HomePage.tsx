@@ -287,7 +287,7 @@ const HomePage = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[10px]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {featuredProducts.map((product) => (
                   <FeaturedProductCard key={product.id} product={product} />
                 ))}
