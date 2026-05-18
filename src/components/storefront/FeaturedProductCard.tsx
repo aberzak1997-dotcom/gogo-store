@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { Product } from "../../context/StoreContext";
+import { Product } from "../../types";
 
 interface FeaturedProductCardProps {
   product: Product;
@@ -15,7 +15,7 @@ const FeaturedProductCard = ({ product }: FeaturedProductCardProps) => {
         {/* Image Container */}
         <div className="flex-grow flex items-center justify-center mb-8 min-h-[240px]">
           <img
-            src={product.images[0]}
+            src={product.imageUrl}
             alt={product.title}
             className="max-w-full max-h-[220px] object-contain transition-transform duration-500 group-hover:scale-110"
           />
