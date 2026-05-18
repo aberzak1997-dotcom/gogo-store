@@ -16,7 +16,6 @@ import {
   Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCart } from "../../context/CartContext";
 import { useStore } from "../../context/StoreContext";
 import {
   DropdownMenu,
@@ -32,8 +31,10 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { cartCount } = useCart();
+  const { cart } = useStore();
   const navigate = useNavigate();
+
+  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -154,7 +155,7 @@ const Header = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Link to="/cart">
+            <Link to="/checkout">
               <Button variant="ghost" size="icon" className="relative rounded-full hover:bg-slate-50 text-slate-600">
                 <ShoppingCart size={22} />
                 {cartCount > 0 && (
