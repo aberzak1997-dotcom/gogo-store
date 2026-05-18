@@ -54,7 +54,7 @@ const HomePage = () => {
     return result;
   }, [products, categoryParam, searchParam]);
 
-  const featuredProducts = filteredProducts.slice(0, 9); // Increased to 9 to fill 3x3 grid
+  const featuredProducts = filteredProducts.slice(0, 9);
   const bestSellers = [...filteredProducts]
     .sort((a, b) => b.reviewCount - a.reviewCount)
     .slice(0, 4);
@@ -235,7 +235,7 @@ const HomePage = () => {
                   const Icon = cat.icon;
                   return (
                     <Link key={cat.name} to={cat.path} className="group">
-                      <div className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100/50 flex flex-col items-center justify-center gap-6 transition-all duration-300 hover:bg-white hover:shadow-sm hover:border-blue-200 h-full">
+                      <div className="bg-[#0C0587]/5 p-6 rounded-2xl border border-[#0C0587]/10 flex flex-col items-center justify-center gap-6 transition-all duration-300 hover:bg-white hover:shadow-sm hover:border-[#0C0587]/20 h-full">
                         <div className="w-16 h-16 flex items-center justify-center">
                           <Icon size={32} className="text-black" />
                         </div>
@@ -304,7 +304,7 @@ const HomePage = () => {
             <div className="section-container">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                  { icon: Truck, title: "Free Shipping", desc: "On orders over $50", color: "bg-blue-50 text-blue-600" },
+                  { icon: Truck, title: "Free Shipping", desc: "On orders over $50", color: "bg-[#0C0587]/5 text-[#0C0587]" },
                   { icon: ShieldCheck, title: "Secure Payment", desc: "100% encrypted", color: "bg-green-50 text-green-600" },
                   { icon: RotateCcw, title: "Easy Returns", desc: "30-day window", color: "bg-orange-50 text-orange-600" },
                   { icon: Star, title: "Warranty", desc: "1-year included", color: "bg-purple-50 text-purple-600" },
