@@ -22,7 +22,7 @@ import {
   ArrowUpDown, 
   MoreHorizontal,
   Package,
-  Collection,
+  Library,
   Download,
   Upload
 } from "lucide-react";
@@ -207,7 +207,7 @@ const AdminProductsPage = () => {
           onClick={() => setView("collections")}
           className="gap-2"
         >
-          <Collection size={16} /> Collections
+          <Library size={16} /> Collections
         </Button>
       </div>
 
