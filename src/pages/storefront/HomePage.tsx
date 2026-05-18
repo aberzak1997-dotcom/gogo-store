@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
-import FeaturedProductCard from "../../components/storefront/FeaturedProductCard";
+import ProductCard from "../../components/storefront/ProductCard";
 import BrandLogos from "../../components/storefront/BrandLogos";
 import { useStore } from "../../context/StoreContext";
 import { Button } from "@/components/ui/button";
@@ -55,6 +55,10 @@ const HomePage = () => {
   }, [products, categoryParam, searchParam]);
 
   const featuredProducts = filteredProducts.slice(0, 8);
+  const bestSellers = [...filteredProducts]
+    .sort((a, b) => b.reviewCount - a.reviewCount)
+    .slice(0, 4);
+  const deals = filteredProducts.filter((p) => p.compareAtPrice).slice(0, 4);
 
   const categories = [
     {
@@ -250,31 +254,29 @@ const HomePage = () => {
         {/* Featured Products */}
         <section className="py-24">
           <div className="section-container">
-            <div className="flex items-center justify-between mb-12">
-              <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
-                {categoryParam
-                  ? categoryParam
-                  : searchParam
-                  ? `Search: "${searchParam}"`
-                  : "Featured Products"}
-              </h2>
-              <div className="flex items-center gap-4">
-                {(categoryParam || searchParam) && (
-                  <Link to="/">
-                    <Button
-                      variant="ghost"
-                      className="gap-2 text-xs font-medium text-slate-500"
-                    >
-                      Clear filters <X size={14} />
-                    </Button>
-                  </Link>
-                )}
-                <Link to="/products">
-                  <Button className="bg-[#4F75FF] hover:bg-[#3D5CFF] text-white rounded-xl px-6 py-6 text-sm font-semibold">
-                    See All Products
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+              <div className="space-y-1">
+                <h2 className="text-3xl font-semibold text-slate-900">
+                  {categoryParam
+                    ? categoryParam
+                    : searchParam
+                    ? `Search: "${searchParam}"`
+                    : "Featured"}
+                </h2>
+                <p className="text-slate-500 text-sm">
+                  {filteredProducts.length} items available
+                </p>
+              </div>
+              {(categoryParam || searchParam) && (
+                <Link to="/">
+                  <Button
+                    variant="ghost"
+                    className="gap-2 text-xs font-medium text-slate-500"
+                  >
+                    Clear filters <X size={14} />
                   </Button>
                 </Link>
-              </div>
+              )}
             </div>
 
             {filteredProducts.length === 0 ? (
@@ -287,9 +289,9 @@ const HomePage = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0">
                 {featuredProducts.map((product) => (
-                  <FeaturedProductCard key={product.id} product={product} />
+                  <ProductCard key={product.id} product={product} />
                 ))}
               </div>
             )}
