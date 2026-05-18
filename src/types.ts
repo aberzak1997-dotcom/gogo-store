@@ -1,30 +1,33 @@
-export interface Order {
+export interface Customer {
   id: string;
-  customerName: string;
+  name: string;
   email: string;
   phone?: string;
-  address?: string;
-  city?: string;
-  country?: string;
-  date: string;
-  status: "pending" | "processing" | "packed" | "shipped" | "delivered" | "cancelled" | "refunded";
-  paymentStatus: "unpaid" | "paid" | "refunded" | "partially_refunded";
-  fulfillmentStatus: "unfulfilled" | "fulfilled" | "refunded";
-  totalAmount: number;
-  items: OrderItem[];
-  timeline: { status: string; date: string; note?: string }[];
-  internalNotes?: string;
+  location?: string;
+  totalOrders: number;
+  totalSpent: number;
+  lastOrderDate?: string;
+  status: 'active' | 'returning' | 'VIP' | 'blocked';
   notes?: string;
+  tags?: string[];
+  createdAt: string;
 }
 
-export interface ReturnRequest {
+
+export interface Review {
   id: string;
-  orderId: string;
+  productId: string;
+  productTitle: string;
   customerName: string;
-  email: string;
-  reason: string;
-  status: "requested" | "approved" | "rejected" | "refunded" | "received";
-  requestedAt: string;
-  refundAmount: number;
-  items: OrderItem[];
+  rating: number;
+  comment: string;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: string;
+}
+
+// Add customer status logic
+export function calculateCustomerStatus(customer: Customer): 'active' | 'returning' | 'VIP' | 'blocked' {
+  if (customer.totalOrders >= 3) return 'VIP';
+  if (customer.totalOrders > 1) return 'returning';
+  return 'active';
 }

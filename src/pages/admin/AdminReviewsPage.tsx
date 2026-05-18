@@ -1,72 +1,37 @@
-import { Select, SelectItem } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+"use client";
 
-...
+import React from "react";
+import { useStore } from "../../context/StoreContext";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Star, MessageSquare } from "lucide-react";
 
-// Rating filter
-<label className="block text-xs font-medium text-slate-900 mb-1">Rating</label>
-<Select value={ratingFilter} onValueChange={handleRatingChange} className="block w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary">
-  <SelectItem value={0}>All Ratings</SelectItem>
-  <SelectItem value={1}>1 Star</SelectItem>
-  <SelectItem value={2}>2 Stars</SelectItem>
-  <SelectItem value={2.5}>2.5 Stars</SelectItem>
-  <SelectItem value={3}>3 Stars</SelectItem>
-  <SelectItem value={4}>4 Stars</SelectItem>
-  <SelectItem value={5}>5 Stars</SelectItem>
-</Select>
+const AdminReviewsPage = () => {
+  const { reviews } = useStore();
 
-// Status filter
-<label className="block text-xs font-medium text-slate-900 mb-1">Status</label>
-<Select value={statusFilter} onValueChange={handleStatusChange} className="block w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm focus:outline-none focus<dyad-write path="src/pages/admin/AdminReviewsPage.tsx" description="Finish Select implementation and fix status comparison.">
-import { Select, SelectItem } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-4xl font-black text-slate-900 tracking-tight">Reviews</h1>
+        <p className="text-slate-500 mt-2 font-medium">Monitor and respond to customer feedback on your products.</p>
+      </div>
 
-...
-
-// Rating filter
-<label className="block text-xs font-medium text-slate-900 mb-1">Rating</label>
-<Select value={ratingFilter} onValueChange={handleRatingChange} className="block w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary">
-  <SelectItem value={0}>All Ratings</SelectItem>
-  <SelectItem value={1}>1 Star</SelectItem>
-  <SelectItem value={2}>2 Stars</SelectItem>
-  <SelectItem value={2.5}>2.5 Stars</SelectItem>
-  <SelectItem value={3}>3 Stars</SelectItem>
-  <SelectItem value={4}>4 Stars</SelectItem>
-  <SelectItem value={5}>5 Stars</SelectItem>
-</Select>
-
-// Status filter
-<label className="block text-xs font-medium text-slate-900 mb-1">Status</label>
-<Select value={statusFilter} onValueChange={handleStatusChange} className="block w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary">
-  <SelectItem value="all">All Statuses</SelectItem>
-  <SelectItem value="pending">Pending</SelectItem>
-  <SelectItem value="processing">Processing</SelectItem>
-  <SelectItem value="shipped">Shipped</SelectItem>
-  <SelectItem value="delivered">Delivered</SelectItem>
-  <SelectItem value="cancelled">Cancelled</SelectItem>
-  <SelectItem value="refunded">Refunded</SelectItem>
-  <SelectItem value="approved">Approved</SelectItem>
-  <SelectItem value="rejected">Rejected</SelectItem>
-</Select>
-
-...
-
-// Badge with class merging
-<span className="text-sm font-medium text-slate-900">{review.rating}</span>
-<Badge className={cn(
-  "text-[10px] uppercase font-black px-2 py-0.5 rounded",
-  review.status === "approved" ? "bg-emerald-100 text-emerald-700" :
-  review.status === "rejected" ? "bg-red-100 text-red-700" :
-  "bg-amber-100 text-amber-700"
-)}>{review.status}</Badge>
-...
-
-// Method handleStatusChange to accept any string, filter accordingly
-const handleStatusChange = (value: string) => {
-  if (value === "all") setStatusFilter("all");
-  else setStatusFilter(value as "pending" | "processing" | "shipped" | "delivered" | "cancelled" | "refunded" | "approved" | "rejected");
+      {reviews.length === 0 ? (
+        <Card className="border-none shadow-sm rounded-[2.5rem] overflow-hidden">
+          <CardContent className="p-20 text-center">
+            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-200">
+              <Star size={40} />
+            </div>
+            <h3 className="text-2xl font-black text-slate-900">No reviews yet</h3>
+            <p className="text-slate-500 mt-2">Customer reviews will appear here once they start sharing feedback.</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4">
+          {/* Review list would go here */}
+        </div>
+      )}
+    </div>
+  );
 };
+
+export default AdminReviewsPage;

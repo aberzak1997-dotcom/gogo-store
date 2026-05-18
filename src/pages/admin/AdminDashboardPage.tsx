@@ -4,25 +4,24 @@ import React from "react";
 import { useStore } from "../../context/StoreContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Package,
-  ShoppingBag,
-  AlertTriangle,
-  DollarSign,
-  TrendingUp,
+import { 
+  Package, 
+  ShoppingBag, 
+  AlertTriangle, 
+  DollarSign, 
+  TrendingUp, 
   Layers,
   CheckCircle2,
   FileEdit,
   ArrowUpRight,
   ArrowDownRight,
   Users,
-  RotateCcw,
-  Star
+  RotateCcw
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const AdminDashboardPage = () => {
-  const { products, orders, returns, customers, reviews } = useStore();
+  const { products, orders, returns } = useStore();
   
   const totalProducts = products.length;
   const activeProducts = products.filter(p => p.status === "active").length;
@@ -97,162 +96,9 @@ const AdminDashboardPage = () => {
         ))}
       </div>
 
-      {/* Customer Insights */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="border-none shadow-sm rounded-[2rem] overflow-hidden group hover:shadow-xl transition-all duration-300">
-                <CardHeader className="flex flex-row items-center justify-between pb-2 p-8">
-                  <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400">Total Customers</CardTitle>
-                  <div className="p-3 rounded-2xl transition-transform group-hover:scale-110 bg-indigo-50 text-indigo-600">
-                    <Users size={20} />
-                  </div>
-                </CardHeader>
-                <CardContent className="px-8 pb-8">
-                  <div className="text-3xl font-black text-slate-900 mb-2">{customers.length}</div>
-                  <div className="flex items-center gap-1 text-xs font-bold text-emerald-600">
-                    {customers.length > 0 ? `${(customers.filter(c => c.status !== 'blocked').length / Math.max(customers.length, 1) * 100).toFixed(0)}% active` : 'No customers'}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="border-none shadow-sm rounded-[2rem] overflow-hidden group hover:shadow-xl transition-all duration-300">
-                <CardHeader className="flex flex-row items-center justify-between pb-2 p-8">
-                  <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400">Returning Customers</CardTitle>
-                  <div className="p-3 rounded-2xl transition-transform group-hover:scale-110 bg-cyan-50 text-cyan-600">
-                    <TrendingUp size={20} />
-                  </div>
-                </CardHeader>
-                <CardContent className="px-8 pb-8">
-                  <div className="text-3xl font-black text-slate-900 mb-2">{customers.filter(c => c.status === 'returning' || c.status === 'VIP').length}</div>
-                  <div className="flex items-center gap-1 text-xs font-bold text-emerald-600">
-                    {customers.length > 0 ? `${((customers.filter(c => c.status === 'returning' || c.status === 'VIP').length / Math.max(customers.length, 1)) * 100).toFixed(0)}% of customers` : 'Rate'}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="border-none shadow-sm rounded-[2rem] overflow-hidden group hover:shadow-xl transition-all duration-300">
-                <CardHeader className="flex flex-row items-center justify-between pb-2 p-8">
-                  <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400">VIP Customers</CardTitle>
-                  <div className="p-3 rounded-2xl transition-transform group-hover:scale-110 bg-amber-50 text-amber-600">
-                    <Users size={20} />
-                  </div>
-                </CardHeader>
-                <CardContent className="px-8 pb-8">
-                  <div className="text-3xl font-black text-slate-900 mb-2">{customers.filter(c => c.status === 'VIP').length}</div>
-                  <div className="flex items-center gap-1 text-xs font-bold text-amber-600">
-                    Premium members
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="border-none shadow-sm rounded-[2rem] overflow-hidden group hover:shadow-xl transition-all duration-300">
-                <CardHeader className="flex flex-row items-center justify-between pb-2 p-8">
-                  <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400">Avg Customer Value</CardTitle>
-                  <div className="p-3 rounded-2xl transition-transform group-hover:scale-110 bg-rose-50 text-rose-600">
-                    <DollarSign size={20} />
-                  </div>
-                </CardHeader>
-                <CardContent className="px-8 pb-8">
-                  <div className="text-3xl font-black text-slate-900 mb-2">${customers.length > 0 ? (customers.reduce((sum, c) => sum + c.totalSpent, 0) / customers.length).toFixed(2) : '0.00'}</div>
-                  <div className="flex items-center gap-1 text-xs font-bold text-slate-400">
-                    Per customer lifetime value
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-      
-            {/* Top Customers & Most Reviewed Products */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <Card className="border-none shadow-sm rounded-[2.5rem] overflow-hidden">
-                <CardHeader className="p-8 border-b border-slate-50">
-                  <CardTitle className="text-xl font-black flex items-center gap-3">
-                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
-                      <Users size={20} />
-                    </div>
-                    Top Customers
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  {customers.length === 0 ? (
-                    <div className="py-20 text-center">
-                      <Users className="mx-auto h-12 w-12 text-slate-200 mb-4" />
-                      <p className="text-slate-400 font-medium">No customers yet.</p>
-                    </div>
-                  ) : (
-                    <div className="divide-y divide-slate-50">
-                      {[...customers].sort((a, b) => b.totalSpent - a.totalSpent).slice(0, 5).map(customer => (
-                        <div key={customer.id} className="flex items-center justify-between p-6 hover:bg-slate-50/50 transition-colors">
-                          <div className="flex items-center gap-4 min-w-0">
-                            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm flex-shrink-0">
-                              {customer.name.charAt(0)}
-                            </div>
-                            <div className="min-w-0">
-                              <p className="font-bold text-slate-900 truncate">{customer.name}</p>
-                              <p className="text-xs text-slate-400 truncate">{customer.email}</p>
-                            </div>
-                          </div>
-                          <div className="text-right flex-shrink-0">
-                            <p className="font-bold text-slate-900">${customer.totalSpent.toFixed(2)}</p>
-                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{customer.totalOrders} orders</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-              <Card className="border-none shadow-sm rounded-[2.5rem] overflow-hidden">
-                <CardHeader className="p-8 border-b border-slate-50">
-                  <CardTitle className="text-xl font-black flex items-center gap-3">
-                    <div className="p-2 bg-amber-50 text-amber-600 rounded-xl">
-                      <Star size={20} />
-                    </div>
-                    Most Reviewed Products
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  {reviews.length === 0 ? (
-                    <div className="py-20 text-center">
-                      <Star className="mx-auto h-12 w-12 text-slate-200 mb-4" />
-                      <p className="text-slate-400 font-medium">No reviews yet.</p>
-                    </div>
-                  ) : (
-                    <div className="divide-y divide-slate-50">
-                      {Object.entries(
-                        reviews.reduce((acc, rev) => {
-                          acc[rev.productId] = (acc[rev.productId] || 0) + 1;
-                          return acc;
-                        }, {} as Record<string, number>)
-                      ).sort(([, a], [, b]) => b - a).slice(0, 5).map(([productId, count]) => {
-                        const product = products.find(p => p.id === productId);
-                        return (
-                          <div key={productId} className="flex items-center justify-between p-6 hover:bg-slate-50/50 transition-colors">
-                            <div className="flex items-center gap-4 min-w-0">
-                              {product ? (
-                                <div className="w-10 h-10 rounded-2xl bg-slate-50 overflow-hidden flex-shrink-0">
-                                  <img src={product.imageUrl} alt="" className="w-full h-full object-contain" />
-                                </div>
-                              ) : (
-                                <div className="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center flex-shrink-0">
-                                  <Star size={16} className="text-slate-400" />
-                                </div>
-                              )}
-                              <div className="min-w-0">
-                                <p className="font-bold text-slate-900 truncate">{product?.title || 'Unknown Product'}</p>
-                              </div>
-                            </div>
-                            <div className="text-right flex-shrink-0">
-                              <p className="font-bold text-slate-900">{count}</p>
-                              <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{count === 1 ? 'review' : 'reviews'}</p>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-      
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Recent Orders */}
-              <Card className="lg:col-span-2 border-none shadow-sm rounded-[2.5rem] overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Recent Orders */}
+        <Card className="lg:col-span-2 border-none shadow-sm rounded-[2.5rem] overflow-hidden">
           <CardHeader className="p-8 border-b border-slate-50">
             <div className="flex items-center justify-between">
               <CardTitle className="text-xl font-black flex items-center gap-3">

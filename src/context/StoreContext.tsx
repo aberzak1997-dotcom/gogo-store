@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Product, ProductVariant, Order, CartItem, Customer, Discount, Review, ReturnRequest, MarketingCampaign, StoreSettings, Collection, calculateCustomerStatus } from "../types";
-import { MOCK_PRODUCTS, MOCK_ORDERS, MOCK_RETURNS, MOCK_CUSTOMERS, MOCK_REVIEWS, MOCK_COLLECTIONS } from "../data/mockData";
+import { Product, ProductVariant, Order, CartItem, Customer, Discount, Review, ReturnRequest, MarketingCampaign, StoreSettings, Collection } from "../types";
+import { MOCK_PRODUCTS, MOCK_ORDERS, MOCK_RETURNS } from "../data/mockData";
 import { showSuccess, showError } from "../utils/toast";
 
 interface StoreContextType {
@@ -23,7 +23,7 @@ interface StoreContextType {
   updateProductStock: (productId: string, quantity: number) => void;
   updateVariantStock: (productId: string, variantId: string, quantity: number) => void;
   addToCart: (productId: string, quantity?: number, variantId?: string) => void;
-  removeFromCart: (productId: string, variantId?: string) => void;
+  removeFromCart: (productId: string) => void;
   updateCartQuantity: (productId: string, quantity: number, variantId?: string) => void;
   clearCart: () => void;
   createOrder: (orderInput: {
@@ -50,11 +50,6 @@ interface StoreContextType {
   bulkDeleteProducts: (productIds: string[]) => void;
   exportProductsToCSV: () => string;
   importProductsFromCSV: (csvData: string) => { success: Product[]; errors: string[] };
-  // Customer & Review Management
-  updateCustomer: (customer: Customer) => void;
-  addCustomerNote: (customerId: string, note: string) => void;
-  updateReviewStatus: (reviewId: string, status: Review["status"]) => void;
-  deleteReview: (reviewId: string) => void;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -86,7 +81,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const [customers, setCustomers] = useState<Customer[]>(() => {
     const saved = localStorage.getItem("store_customers");
-    return saved ? JSON.parse(saved) : MOCK_CUSTOMERS;
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [discounts, setDiscounts] = useState<Discount[]>(() => {
@@ -96,7 +91,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const [reviews, setReviews] = useState<Review[]>(() => {
     const saved = localStorage.getItem("store_reviews");
-    return saved ? JSON.parse(saved) : MOCK_REVIEWS;
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [returns, setReturns] = useState<ReturnRequest[]>(() => {
@@ -111,7 +106,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const [collections, setCollections] = useState<Collection[]>(() => {
     const saved = localStorage.getItem("store_collections");
-    return saved ? JSON.parse(saved) : MOCK_COLLECTIONS;
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [settings, setSettings] = useState<StoreSettings>(() => {
@@ -431,21 +426,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Update or add customer
     const existingCustomer = customers.find(c => c.email === email);
     if (existingCustomer) {
-      setCustomers(customers.map(c => {
-        if (c.email === email) {
-          const updatedCustomer = {
-            ...c,
-            totalOrders: c.totalOrders + 1,
-            totalSpent: c.totalSpent + totalAmount,
-            lastOrderDate: newOrder.date
-          };
-          return {
-            ...updatedCustomer,
-            status: calculateCustomerStatus(updatedCustomer)
-          };
-        }
-        return c;
-      }));
+      setCustomers(customers.map(c => c.email === email ? {
+        ...c,
+        totalOrders: c.totalOrders + 1,
+        totalSpent: c.totalSpent + totalAmount,
+        lastOrderDate: newOrder.date
+      } : c));
     } else {
       const newCustomer: Customer = {
         id: `CUST-${Math.floor(Math.random() * 1000000)}`,
@@ -455,8 +441,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         totalOrders: 1,
         totalSpent: totalAmount,
         lastOrderDate: newOrder.date,
-        createdAt: new Date().toISOString(),
-        status: "active"
+        createdAt: new Date().toISOString()
       };
       setCustomers([...customers, newCustomer]);
     }
@@ -711,26 +696,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return { success, errors };
   };
 
-  const updateCustomer = (updatedCustomer: Customer) => {
-    setCustomers(customers.map(c => c.id === updatedCustomer.id ? updatedCustomer : c));
-    showSuccess("Customer updated");
-  };
-
-  const addCustomerNote = (customerId: string, note: string) => {
-    setCustomers(customers.map(c => c.id === customerId ? { ...c, notes: note } : c));
-    showSuccess("Note added");
-  };
-
-  const updateReviewStatus = (reviewId: string, status: Review["status"]) => {
-    setReviews(reviews.map(r => r.id === reviewId ? { ...r, status } : r));
-    showSuccess(`Review ${status}`);
-  };
-
-  const deleteReview = (reviewId: string) => {
-    setReviews(reviews.filter(r => r.id !== reviewId));
-    showSuccess("Review deleted");
-  };
-
   return (
     <StoreContext.Provider
       value={{
@@ -773,10 +738,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         bulkDeleteProducts,
         exportProductsToCSV,
         importProductsFromCSV,
-        updateCustomer,
-        addCustomerNote,
-        updateReviewStatus,
-        deleteReview,
       }}
     >
       {children}
