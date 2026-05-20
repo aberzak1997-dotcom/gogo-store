@@ -10,13 +10,12 @@ import {
   AlertTriangle, 
   DollarSign, 
   TrendingUp, 
-  Layers,
   CheckCircle2,
-  FileEdit,
   ArrowUpRight,
   ArrowDownRight,
-  Users,
-  RotateCcw
+  RotateCcw,
+  Zap,
+  ArrowRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -28,9 +27,6 @@ const AdminDashboardPage = () => {
   
   const totalOrders = orders.length;
   
-  // Revenue logic: Only paid, shipped, or delivered orders count.
-  // Cancelled orders don't count.
-  // Refunded orders subtract from revenue.
   const revenueOrders = orders.filter(o => 
     (o.paymentStatus === "paid" || o.status === "shipped" || o.status === "delivered") && 
     o.status !== "cancelled"
@@ -46,95 +42,91 @@ const AdminDashboardPage = () => {
   const lowStockProducts = products.filter(p => p.stockQuantity > 0 && p.stockQuantity < 5);
   const outOfStockProducts = products.filter(p => p.stockQuantity === 0);
 
-  const categoryCounts = products.reduce((acc, p) => {
-    acc[p.category] = (acc[p.category] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
   const stats = [
-    { title: "Net Revenue", value: `$${netRevenue.toFixed(2)}`, icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-50", trend: "+12.5%", trendUp: true },
-    { title: "Total Orders", value: totalOrders, icon: ShoppingBag, color: "text-blue-600", bg: "bg-blue-50", trend: "+8.2%", trendUp: true },
-    { title: "Active Products", value: activeProducts, icon: CheckCircle2, color: "text-purple-600", bg: "bg-purple-50", trend: "+2", trendUp: true },
-    { title: "Pending Returns", value: returns.filter(r => r.status === "requested").length, icon: RotateCcw, color: "text-amber-600", bg: "bg-amber-50", trend: "0", trendUp: true },
+    { title: "Net Revenue", value: `$${netRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, icon: DollarSign, color: "text-[#0096D6]", bg: "bg-[#0096D6]/5", trend: "+12.5%", trendUp: true },
+    { title: "Total Orders", value: totalOrders, icon: ShoppingBag, color: "text-slate-600", bg: "bg-slate-100", trend: "+8.2%", trendUp: true },
+    { title: "Active Store", value: activeProducts, icon: Zap, color: "text-amber-500", bg: "bg-amber-50", trend: "+2", trendUp: true },
+    { title: "Returns", value: returns.filter(r => r.status === "requested").length, icon: RotateCcw, color: "text-rose-500", bg: "bg-rose-50", trend: "0", trendUp: true },
   ];
 
   return (
-    <div className="space-y-10">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">Dashboard</h1>
-          <p className="text-slate-500 mt-2 font-medium">Welcome back! Here's what's happening with your store.</p>
+    <div className="space-y-12">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-1">
+          <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">Overview</h1>
+          <p className="text-slate-500 text-sm font-medium">Monitoring ElectroStore's performance and operations.</p>
         </div>
-        <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-slate-100 shadow-sm">
-          <button className="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-bold">Today</button>
-          <button className="px-4 py-2 rounded-xl text-slate-500 text-sm font-bold hover:bg-slate-50">Weekly</button>
-          <button className="px-4 py-2 rounded-xl text-slate-500 text-sm font-bold hover:bg-slate-50">Monthly</button>
+        <div className="flex items-center gap-1.5 bg-white p-1.5 rounded-full border border-slate-100 shadow-sm">
+          <button className="px-5 py-2 rounded-full bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest">Real-time</button>
+          <button className="px-5 py-2 rounded-full text-slate-400 text-[10px] font-black uppercase tracking-widest hover:bg-slate-50">Monthly</button>
         </div>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, i) => (
-          <Card key={i} className="border-none shadow-sm rounded-[2rem] overflow-hidden group hover:shadow-xl transition-all duration-300">
+          <Card key={i} className="border border-slate-100 shadow-sm rounded-2xl overflow-hidden hover:shadow-md transition-all duration-300 bg-white">
             <CardHeader className="flex flex-row items-center justify-between pb-2 p-8">
-              <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400">{stat.title}</CardTitle>
-              <div className={cn("p-3 rounded-2xl transition-transform group-hover:scale-110", stat.bg, stat.color)}>
-                <stat.icon size={20} />
+              <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{stat.title}</CardTitle>
+              <div className={cn("p-2.5 rounded-xl", stat.bg, stat.color)}>
+                <stat.icon size={18} />
               </div>
             </CardHeader>
             <CardContent className="px-8 pb-8">
-              <div className="text-3xl font-black text-slate-900 mb-2">{stat.value}</div>
+              <div className="text-3xl font-black text-slate-900 tracking-tighter mb-2">{stat.value}</div>
               <div className={cn(
-                "flex items-center gap-1 text-xs font-bold",
-                stat.trendUp ? "text-emerald-600" : "text-red-600"
+                "flex items-center gap-1 text-[10px] font-black uppercase tracking-widest",
+                stat.trendUp ? "text-emerald-500" : "text-rose-500"
               )}>
-                {stat.trendUp ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-                {stat.trend} <span className="text-slate-400 font-medium ml-1">vs last period</span>
+                {stat.trendUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                {stat.trend} <span className="text-slate-300 ml-1">vs last month</span>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Recent Orders */}
-        <Card className="lg:col-span-2 border-none shadow-sm rounded-[2.5rem] overflow-hidden">
-          <CardHeader className="p-8 border-b border-slate-50">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-xl font-black flex items-center gap-3">
-                <div className="p-2 bg-blue-50 text-blue-600 rounded-xl">
-                  <ShoppingBag size={20} />
-                </div>
-                Recent Orders
-              </CardTitle>
-              <button className="text-sm font-bold text-primary hover:underline">View All</button>
-            </div>
+        <Card className="lg:col-span-8 border border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white">
+          <CardHeader className="p-8 border-b border-slate-50 flex flex-row items-center justify-between">
+            <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-900 flex items-center gap-3">
+              <div className="p-2 bg-[#0096D6]/5 text-[#0096D6] rounded-lg">
+                <ShoppingBag size={18} />
+              </div>
+              Recent Orders
+            </CardTitle>
+            <button className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors flex items-center gap-1.5">
+              View All <ArrowRight size={12} />
+            </button>
           </CardHeader>
           <CardContent className="p-0">
             {orders.length === 0 ? (
               <div className="py-20 text-center">
-                <ShoppingBag className="mx-auto h-12 w-12 text-slate-200 mb-4" />
-                <p className="text-slate-400 font-medium">No orders yet.</p>
+                <ShoppingBag className="mx-auto h-12 w-12 text-slate-100 mb-4" />
+                <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">No orders yet</p>
               </div>
             ) : (
               <div className="divide-y divide-slate-50">
-                {orders.slice(0, 5).map(order => (
-                  <div key={order.id} className="flex items-center justify-between p-8 hover:bg-slate-50/50 transition-colors">
+                {orders.slice(0, 6).map(order => (
+                  <div key={order.id} className="flex items-center justify-between p-6 hover:bg-slate-50/50 transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 font-black text-xs">
+                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 font-black text-xs">
                         {order.customerName.charAt(0)}
                       </div>
                       <div>
-                        <p className="font-black text-slate-900">{order.customerName}</p>
-                        <p className="text-xs text-slate-400 font-medium">{order.id} • {new Date(order.date).toLocaleDateString()}</p>
+                        <p className="font-bold text-slate-900 text-sm">{order.customerName}</p>
+                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{order.id} • {new Date(order.date).toLocaleDateString()}</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-black text-slate-900">${order.totalAmount.toFixed(2)}</p>
+                    <div className="text-right flex items-center gap-6">
+                      <div>
+                        <p className="font-black text-slate-900 text-sm">${order.totalAmount.toFixed(2)}</p>
+                      </div>
                       <Badge className={cn(
-                        "text-[10px] uppercase font-black px-3 py-1 rounded-full mt-1",
-                        order.status === 'delivered' ? 'bg-emerald-100 text-emerald-700' : 
-                        order.status === 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
+                        "text-[9px] uppercase font-black px-3 py-1 rounded-full",
+                        order.status === 'delivered' ? 'bg-emerald-50 text-emerald-600 border-transparent shadow-none' : 
+                        order.status === 'cancelled' ? 'bg-rose-50 text-rose-600 border-transparent shadow-none' : 'bg-amber-50 text-amber-600 border-transparent shadow-none'
                       )}>
                         {order.status}
                       </Badge>
@@ -147,11 +139,11 @@ const AdminDashboardPage = () => {
         </Card>
 
         {/* Inventory Alerts */}
-        <Card className="border-none shadow-sm rounded-[2.5rem] overflow-hidden">
+        <Card className="lg:col-span-4 border border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white">
           <CardHeader className="p-8 border-b border-slate-50">
-            <CardTitle className="text-xl font-black flex items-center gap-3">
-              <div className="p-2 bg-amber-50 text-amber-600 rounded-xl">
-                <AlertTriangle size={20} />
+            <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-900 flex items-center gap-3">
+              <div className="p-2 bg-amber-50 text-amber-600 rounded-lg">
+                <AlertTriangle size={18} />
               </div>
               Inventory Alerts
             </CardTitle>
@@ -159,23 +151,23 @@ const AdminDashboardPage = () => {
           <CardContent className="p-8">
             {lowStockProducts.length === 0 && outOfStockProducts.length === 0 ? (
               <div className="py-12 text-center">
-                <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-200 mb-4" />
-                <p className="text-slate-400 font-medium">All stock levels healthy.</p>
+                <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-100 mb-4" />
+                <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Inventory is healthy</p>
               </div>
             ) : (
               <div className="space-y-6">
                 {[...outOfStockProducts, ...lowStockProducts].slice(0, 6).map(product => (
                   <div key={product.id} className="flex items-center justify-between group">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-slate-50 overflow-hidden border border-slate-100 p-1">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-slate-50 overflow-hidden border border-slate-50 p-1 flex-shrink-0">
                         <img src={product.imageUrl} alt="" className="w-full h-full object-contain" />
                       </div>
                       <div className="min-w-0">
-                        <p className="font-bold text-slate-900 line-clamp-1 text-sm">{product.title}</p>
-                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{product.sku}</p>
+                        <p className="font-bold text-slate-900 line-clamp-1 text-xs truncate">{product.title}</p>
+                        <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">{product.sku}</p>
                       </div>
                     </div>
-                    <Badge variant={product.stockQuantity === 0 ? "destructive" : "outline"} className="rounded-lg font-black">
+                    <Badge variant={product.stockQuantity === 0 ? "destructive" : "outline"} className="rounded-full font-black text-[9px] h-6 px-2 min-w-[24px] justify-center">
                       {product.stockQuantity}
                     </Badge>
                   </div>

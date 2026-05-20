@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import ProductForm from "../../components/admin/ProductForm";
-import VariantManager from "../../components/admin/VariantManager";
 import BulkActions from "../../components/admin/BulkActions";
 import CollectionsManager from "../../components/admin/CollectionsManager";
 import { 
@@ -20,13 +19,10 @@ import {
   Search, 
   Filter, 
   ArrowUpDown, 
-  MoreHorizontal,
   Package,
   Library,
-  Download,
-  Upload
 } from "lucide-react";
-import { showError, showSuccess } from "../../utils/toast";
+import { showError } from "../../utils/toast";
 
 const AdminProductsPage = () => {
   const { 
@@ -35,9 +31,6 @@ const AdminProductsPage = () => {
     addProduct, 
     updateProduct, 
     deleteProduct,
-    addVariant,
-    updateVariant,
-    deleteVariant,
     bulkUpdateProducts,
     bulkDeleteProducts,
     exportProductsToCSV,
@@ -49,29 +42,24 @@ const AdminProductsPage = () => {
     removeProductFromCollection
   } = useStore();
   
-  // State for filters and search
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [conditionFilter, setConditionFilter] = useState("all");
   const [stockFilter, setStockFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
-  const [view, setView] = useState("products"); // products, variants, collections
+  const [view, setView] = useState("products");
 
-  // State for modals
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | undefined>(undefined);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
 
-  // State for bulk actions
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
 
-  // Filtered and sorted products
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    // Search
     if (search) {
       const s = search.toLowerCase();
       result = result.filter(p => 
@@ -82,22 +70,10 @@ const AdminProductsPage = () => {
       );
     }
 
-    // Category
-    if (categoryFilter !== "all") {
-      result = result.filter(p => p.category === categoryFilter);
-    }
+    if (categoryFilter !== "all") result = result.filter(p => p.category === categoryFilter);
+    if (statusFilter !== "all") result = result.filter(p => p.status === statusFilter);
+    if (conditionFilter !== "all") result = result.filter(p => p.condition === conditionFilter);
 
-    // Status
-    if (statusFilter !== "all") {
-      result = result.filter(p => p.status === statusFilter);
-    }
-
-    // Condition
-    if (conditionFilter !== "all") {
-      result = result.filter(p => p.condition === conditionFilter);
-    }
-
-    // Stock
     if (stockFilter !== "all") {
       result = result.filter(p => {
         if (stockFilter === "in") return p.stockQuantity >= 5;
@@ -107,7 +83,6 @@ const AdminProductsPage = () => {
       });
     }
 
-    // Sort
     result.sort((a, b) => {
       if (sortBy === "newest") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       if (sortBy === "price-low") return a.price - b.price;
@@ -169,93 +144,77 @@ const AdminProductsPage = () => {
   };
 
   const getStockBadge = (qty: number) => {
-    if (qty >= 5) return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">In Stock</Badge>;
-    if (qty > 0) return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">Low Stock ({qty})</Badge>;
-    return <Badge variant="destructive">Out of Stock</Badge>;
+    if (qty >= 5) return <Badge variant="outline" className="bg-emerald-50 text-emerald-600 border-transparent text-[9px] font-black uppercase tracking-widest rounded-full">In Stock</Badge>;
+    if (qty > 0) return <Badge variant="outline" className="bg-amber-50 text-amber-600 border-transparent text-[9px] font-black uppercase tracking-widest rounded-full">Low ({qty})</Badge>;
+    return <Badge className="bg-rose-50 text-rose-600 border-transparent text-[9px] font-black uppercase tracking-widest rounded-full">Out</Badge>;
   };
 
-  const categories = [
+  const categoriesList = [
     "Phone Accessories", "Chargers & Cables", "Audio", 
     "Laptop Accessories", "PC Accessories", "Gaming Accessories", "Storage Devices"
   ];
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Product Management</h1>
-          <p className="text-slate-500">Manage your store inventory, pricing, and visibility.</p>
+    <div className="space-y-12">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-1">
+          <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">Products</h1>
+          <p className="text-slate-500 text-sm font-medium">Catalog management and inventory tracking.</p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={handleAdd} className="gap-2">
-            <Plus size={18} /> Add Product
-          </Button>
-        </div>
+        <Button onClick={handleAdd} className="rounded-full h-12 px-8 text-xs font-black uppercase tracking-widest gap-2 bg-slate-900 hover:bg-slate-800 shadow-lg shadow-slate-900/10">
+          <Plus size={16} /> Add Product
+        </Button>
       </div>
 
       {/* View Tabs */}
-      <div className="flex gap-2 border-b border-slate-200">
-        <Button
-          variant={view === "products" ? "default" : "ghost"}
+      <div className="flex gap-1.5 p-1.5 bg-white border border-slate-100 rounded-full w-fit shadow-sm">
+        <button
           onClick={() => setView("products")}
-          className="gap-2"
+          className={cn(
+            "px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all",
+            view === "products" ? "bg-slate-900 text-white" : "text-slate-400 hover:text-slate-900"
+          )}
         >
-          <Package size={16} /> Products
-        </Button>
-        <Button
-          variant={view === "collections" ? "default" : "ghost"}
+          Catalog
+        </button>
+        <button
           onClick={() => setView("collections")}
-          className="gap-2"
+          className={cn(
+            "px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all",
+            view === "collections" ? "bg-slate-900 text-white" : "text-slate-400 hover:text-slate-900"
+          )}
         >
-          <Library size={16} /> Collections
-        </Button>
+          Collections
+        </button>
       </div>
 
       {view === "products" && (
         <>
-          {/* Bulk Actions */}
-          {selectedProducts.length > 0 && (
-            <BulkActions
-              selectedProducts={selectedProducts}
-              products={products}
-              onBulkUpdate={bulkUpdateProducts}
-              onBulkDelete={bulkDeleteProducts}
-              onExportCSV={exportProductsToCSV}
-              onImportCSV={(csvData) => {
-                const result = importProductsFromCSV(csvData);
-                if (result.errors.length > 0) {
-                  showError(`${result.errors.length} errors found during import`);
-                }
-              }}
-            />
-          )}
-
           {/* Filters and Search */}
-          <div className="bg-white p-4 rounded-xl shadow-sm border space-y-4">
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-6">
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="relative flex-grow">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
                 <Input 
-                  placeholder="Search by title, brand, SKU..." 
-                  className="pl-10" 
+                  placeholder="Search catalog..." 
+                  className="pl-12 pr-4 h-12 rounded-full border-slate-200 bg-slate-50/50 focus:bg-white transition-all text-xs font-bold"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
               <div className="flex flex-wrap gap-2">
                 <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger className="w-[160px]">
-                    <Filter className="h-3 w-3 mr-2" />
+                  <SelectTrigger className="w-[180px] rounded-full h-12 bg-slate-50/50 border-slate-200 text-xs font-bold">
                     <SelectValue placeholder="Category" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Categories</SelectItem>
-                    {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    {categoriesList.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                   </SelectContent>
                 </Select>
 
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[130px]">
+                  <SelectTrigger className="w-[140px] rounded-full h-12 bg-slate-50/50 border-slate-200 text-xs font-bold">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -265,22 +224,10 @@ const AdminProductsPage = () => {
                   </SelectContent>
                 </Select>
 
-                <Select value={stockFilter} onValueChange={setStockFilter}>
-                  <SelectTrigger className="w-[130px]">
-                    <SelectValue placeholder="Stock" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Stock</SelectItem>
-                    <SelectItem value="in">In Stock</SelectItem>
-                    <SelectItem value="low">Low Stock</SelectItem>
-                    <SelectItem value="out">Out of Stock</SelectItem>
-                  </SelectContent>
-                </Select>
-
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-[160px]">
+                  <SelectTrigger className="w-[180px] rounded-full h-12 bg-slate-50/50 border-slate-200 text-xs font-bold">
                     <ArrowUpDown className="h-3 w-3 mr-2" />
-                    <SelectValue placeholder="Sort By" />
+                    <SelectValue placeholder="Sort" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="newest">Newest First</SelectItem>
@@ -292,15 +239,33 @@ const AdminProductsPage = () => {
                 </Select>
               </div>
             </div>
+
+            {selectedProducts.length > 0 && (
+              <div className="pt-6 border-t border-slate-50">
+                <BulkActions
+                  selectedProducts={selectedProducts}
+                  products={products}
+                  onBulkUpdate={bulkUpdateProducts}
+                  onBulkDelete={bulkDeleteProducts}
+                  onExportCSV={exportProductsToCSV}
+                  onImportCSV={(csvData) => {
+                    const result = importProductsFromCSV(csvData);
+                    if (result.errors.length > 0) {
+                      showError(`${result.errors.length} errors found during import`);
+                    }
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           {/* Products Table */}
-          <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-slate-50">
-                    <TableHead className="w-[50px]">
+                  <TableRow className="bg-slate-50/50 h-14 border-b border-slate-100">
+                    <TableHead className="w-[60px] pl-6">
                       <input
                         type="checkbox"
                         checked={selectedProducts.length === filteredProducts.length && filteredProducts.length > 0}
@@ -308,26 +273,25 @@ const AdminProductsPage = () => {
                         className="rounded border-slate-300"
                       />
                     </TableHead>
-                    <TableHead>Image</TableHead>
-                    <TableHead>Product Info</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Stock</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400">Preview</TableHead>
+                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400">Product</TableHead>
+                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400">Category</TableHead>
+                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400">Price</TableHead>
+                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400">Stock</TableHead>
+                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 text-right pr-6">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredProducts.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={8} className="text-center py-12 text-slate-500">
-                        No products found matching your criteria.
+                      <TableCell colSpan={7} className="text-center py-20 text-slate-400 font-medium">
+                        No products found in the catalog.
                       </TableCell>
                     </TableRow>
                   ) : (
                     filteredProducts.map((product) => (
-                      <TableRow key={product.id} className="hover:bg-slate-50/50 transition-colors">
-                        <TableCell>
+                      <TableRow key={product.id} className="hover:bg-slate-50/50 transition-colors h-20 border-b border-slate-50">
+                        <TableCell className="pl-6">
                           <input
                             type="checkbox"
                             checked={selectedProducts.includes(product.id)}
@@ -336,52 +300,34 @@ const AdminProductsPage = () => {
                           />
                         </TableCell>
                         <TableCell>
-                          <div className="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden border border-slate-200">
-                            <img src={product.imageUrl} alt="" className="w-full h-full object-cover" />
+                          <div className="w-12 h-12 rounded-xl bg-slate-50 overflow-hidden border border-slate-100 p-1.5 flex-shrink-0">
+                            <img src={product.imageUrl} alt="" className="w-full h-full object-contain" />
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="font-bold text-slate-900">{product.title}</div>
-                          <div className="text-xs text-slate-500 flex items-center gap-2">
-                            <span className="font-medium">{product.brand}</span>
-                            <span className="text-slate-300">|</span>
-                            <span>SKU: {product.sku}</span>
-                            <span className="text-slate-300">|</span>
-                            <span className="capitalize">{product.condition}</span>
-                            {product.variants && product.variants.length > 0 && (
-                              <Badge variant="secondary" className="text-xs">
-                                {product.variants.length} variants
-                              </Badge>
-                            )}
+                          <div className="font-bold text-slate-900 text-sm truncate max-w-[240px]">{product.title}</div>
+                          <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-2 mt-0.5">
+                            {product.brand} • <span className="text-slate-300">SKU:</span> {product.sku}
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="text-sm font-medium text-slate-600">{product.category}</div>
-                          <div className="text-[10px] text-slate-400">{product.subcategory}</div>
+                          <div className="text-[11px] font-black uppercase tracking-widest text-slate-500">{product.category}</div>
                         </TableCell>
                         <TableCell>
-                          <div className="font-bold text-slate-900">${product.price.toFixed(2)}</div>
-                          {product.compareAtPrice && (
-                            <div className="text-xs text-slate-400 line-through">${product.compareAtPrice.toFixed(2)}</div>
-                          )}
+                          <div className="font-black text-slate-900 text-sm">${product.price.toFixed(2)}</div>
                         </TableCell>
                         <TableCell>
                           {getStockBadge(product.stockQuantity)}
                         </TableCell>
-                        <TableCell>
-                          <Badge variant={product.status === 'active' ? 'default' : 'secondary'} className="capitalize">
-                            {product.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50" onClick={() => handleEdit(product)}>
+                        <TableCell className="text-right pr-6">
+                          <div className="flex justify-end gap-1">
+                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-slate-400 hover:text-[#0096D6] hover:bg-[#0096D6]/5" onClick={() => handleEdit(product)}>
                               <Edit size={16} />
                             </Button>
                             <Button 
                               variant="ghost" 
                               size="icon" 
-                              className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                              className="h-9 w-9 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50"
                               onClick={() => handleDeleteClick(product.id)}
                             >
                               <Trash2 size={16} />
@@ -398,35 +344,42 @@ const AdminProductsPage = () => {
 
           {/* Add/Edit Modal */}
           <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-            <DialogContent className="max-w-4xl">
-              <DialogHeader>
-                <DialogTitle>{editingProduct ? "Edit Product" : "Add New Product"}</DialogTitle>
-                <DialogDescription>
-                  Fill in the details below to {editingProduct ? "update the" : "create a new"} product in your store.
+            <DialogContent className="max-w-4xl p-0 border-none overflow-hidden rounded-3xl">
+              <div className="bg-slate-900 p-8 text-white">
+                <DialogTitle className="text-2xl font-black uppercase tracking-tighter">{editingProduct ? "Edit Product" : "New Catalog Entry"}</DialogTitle>
+                <DialogDescription className="text-slate-400 font-medium mt-1">
+                  Configure product details and variants for ElectroStore.
                 </DialogDescription>
-              </DialogHeader>
-              <ProductForm 
-                product={editingProduct} 
-                existingSkus={products.map(p => p.sku)}
-                onSubmit={handleFormSubmit}
-                onCancel={() => setIsFormOpen(false)}
-              />
+              </div>
+              <div className="p-8 bg-white">
+                <ProductForm 
+                  product={editingProduct} 
+                  existingSkus={products.map(p => p.sku)}
+                  onSubmit={handleFormSubmit}
+                  onCancel={() => setIsFormOpen(false)}
+                />
+              </div>
             </DialogContent>
           </Dialog>
 
           {/* Delete Confirmation */}
           <Dialog open={isDeleteConfirmOpen} onOpenChange={setIsDeleteConfirmOpen}>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle className="text-red-600">Confirm Deletion</DialogTitle>
-                <DialogDescription className="pt-2">
-                  Are you sure you want to delete this product? This action cannot be undone and will remove the product from your store and inventory.
-                </DialogDescription>
+            <DialogContent className="sm:max-w-[425px] rounded-3xl border-none p-10">
+              <DialogHeader className="space-y-4">
+                <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center text-rose-500 mx-auto">
+                  <Trash2 size={28} />
+                </div>
+                <div className="text-center">
+                  <DialogTitle className="text-xl font-black uppercase tracking-tighter">Permanently Delete?</DialogTitle>
+                  <DialogDescription className="pt-2 text-slate-500 font-medium">
+                    This will remove the product from the storefront and database. This action cannot be reversed.
+                  </DialogDescription>
+                </div>
               </DialogHeader>
-              <DialogFooter className="gap-2 sm:gap-0">
-                <Button variant="outline" onClick={() => setIsDeleteConfirmOpen(false)}>Cancel</Button>
-                <Button variant="destructive" onClick={confirmDelete}>Delete Product</Button>
-              </DialogFooter>
+              <div className="flex gap-3 pt-4">
+                <Button variant="outline" className="flex-1 rounded-full h-12 font-black uppercase tracking-widest text-[10px]" onClick={() => setIsDeleteConfirmOpen(false)}>Cancel</Button>
+                <Button variant="destructive" className="flex-1 rounded-full h-12 font-black uppercase tracking-widest text-[10px]" onClick={confirmDelete}>Delete</Button>
+              </div>
             </DialogContent>
           </Dialog>
         </>
