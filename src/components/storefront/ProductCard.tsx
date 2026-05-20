@@ -138,7 +138,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
               onClick={handleAddToCart}
               disabled={currentStock === 0}
               size="sm"
-              className="bg-[#333333] hover:bg-[#0096D6] text-white rounded-full px-6 h-8 text-[10px] font-black uppercase tracking-widest transition-all duration-300 shadow-md hover:shadow-lg shadow-slate-100"
+              className="bg-slate-900 hover:bg-[#0096D6] text-white rounded-full px-6 h-8 text-[10px] font-black uppercase tracking-widest transition-all duration-300 shadow-md hover:shadow-lg shadow-slate-100"
             >
               Buy
             </Button>
