@@ -119,25 +119,28 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </h3>
         </div>
 
-        <div className="flex items-baseline gap-2">
-          <span className="text-lg font-bold text-slate-900">
-            ${currentPrice.toFixed(2)}
-          </span>
-          {product.compareAtPrice && (
-            <span className="text-xs text-slate-300 line-through">
-              ${product.compareAtPrice.toFixed(2)}
-            </span>
-          )}
-        </div>
-
-        <div className="mt-auto pt-4">
+        {/* Updated Footer Section: Button in front of price */}
+        <div className="mt-auto pt-4 flex items-center gap-3">
           <Button
             onClick={handleAddToCart}
             disabled={currentStock === 0}
-            className="w-full bg-slate-50 hover:bg-[#0096D6] text-slate-600 hover:text-white rounded-full h-10 text-[11px] font-bold transition-all duration-300 border-none shadow-none flex items-center gap-2"
+            size="icon"
+            className="flex-shrink-0 bg-slate-50 hover:bg-[#0096D6] text-slate-600 hover:text-white rounded-full h-9 w-9 transition-all duration-300 border-none shadow-none"
           >
-            <ShoppingCart size={14} /> Add to Cart
+            <ShoppingCart size={14} />
           </Button>
+          <div className="flex flex-col">
+            <div className="flex items-baseline gap-2">
+              <span className="text-base font-bold text-slate-900">
+                ${currentPrice.toFixed(2)}
+              </span>
+              {product.compareAtPrice && (
+                <span className="text-[10px] text-slate-300 line-through">
+                  ${product.compareAtPrice.toFixed(2)}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </Link>
