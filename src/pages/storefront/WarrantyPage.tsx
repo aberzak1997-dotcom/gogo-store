@@ -19,8 +19,8 @@ const WarrantyPage = () => {
             </p>
           </div>
 
-          <div className="bg-primary rounded-[3rem] p-12 text-white mb-16 flex flex-col md:flex-row items-center gap-12">
-            <div className="p-6 bg-white/10 rounded-[2rem]">
+          <div className="bg-primary rounded-none p-12 text-white mb-16 flex flex-col md:flex-row items-center gap-12">
+            <div className="p-6 bg-white/10 rounded-none">
               <ShieldCheck size={64} className="text-white" />
             </div>
             <div className="space-y-4">
@@ -74,12 +74,12 @@ const WarrantyPage = () => {
           </div>
 
           <div className="space-y-8">
-            <section className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-4">
+            <section className="bg-white p-10 rounded-none border border-slate-100 shadow-sm space-y-4">
               <h2 className="text-3xl font-black text-slate-900">How to Claim</h2>
               <p className="text-slate-600 leading-relaxed">
                 To initiate a warranty claim, please contact our support team with your order number and a detailed description of the issue. Photos or videos of the defect may be required to process your claim efficiently.
               </p>
-              <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl text-sm text-slate-500">
+              <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-none text-sm text-slate-500">
                 <Info size={18} className="text-primary" />
                 <span>Warranty claims are typically processed within 7-10 business days.</span>
               </div>

@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Star, Eye, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useStore } from "../../context/StoreContext";
 import { Product, ProductVariant } from "../../types";
 import { toast } from "sonner";
@@ -42,10 +41,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <Link
       to={`/product/${product.id}`}
-      className="group relative bg-white border border-slate-100 flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:z-10"
+      className="group relative bg-white border border-slate-100 flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:z-10 rounded-none"
     >
       {/* Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-slate-50">
+      <div className="relative aspect-square overflow-hidden bg-slate-50 rounded-none">
         <img
           src={selectedVariant?.imageUrl || product.imageUrl}
           alt={product.title}
@@ -96,30 +95,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
           {shortDescription}
         </p>
-
-        {/* Variant Selector */}
-        {product.variants && product.variants.length > 0 && (
-          <div className="space-y-2">
-            <Select 
-              value={selectedVariant?.id || ""} 
-              onValueChange={(value) => {
-                const variant = product.variants?.find(v => v.id === value);
-                setSelectedVariant(variant || null);
-              }}
-            >
-              <SelectTrigger className="h-9 text-sm">
-                <SelectValue placeholder="Select variant" />
-              </SelectTrigger>
-              <SelectContent>
-                {product.variants.map(variant => (
-                  <SelectItem key={variant.id} value={variant.id}>
-                    {variant.optionName}: {variant.optionValue} - ${variant.price.toFixed(2)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
 
         <div className="flex items-center gap-1">
           <div className="flex text-amber-400">

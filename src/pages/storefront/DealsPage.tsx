@@ -31,7 +31,7 @@ const DealsPage = () => {
         </div>
 
         {deals.length === 0 ? (
-          <div className="py-20 text-center bg-white rounded-[3rem] border border-dashed border-slate-200">
+          <div className="py-20 text-center bg-white rounded-none border border-dashed border-slate-200">
             <Zap className="mx-auto h-16 w-16 text-slate-200 mb-4" />
             <h3 className="text-2xl font-black text-slate-900">No active deals</h3>
             <p className="text-slate-500 mt-2">Check back soon for new discounts!</p>

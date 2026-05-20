@@ -20,8 +20,8 @@ const ShippingPage = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-16">
-            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
-              <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+            <div className="bg-white p-8 rounded-none border border-slate-100 shadow-sm space-y-6">
+              <div className="w-14 h-14 bg-primary/10 rounded-none flex items-center justify-center text-primary">
                 <Truck size={28} />
               </div>
               <h3 className="text-2xl font-black text-slate-900">Domestic Shipping</h3>
@@ -41,8 +41,8 @@ const ShippingPage = () => {
               </ul>
             </div>
 
-            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
-              <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+            <div className="bg-white p-8 rounded-none border border-slate-100 shadow-sm space-y-6">
+              <div className="w-14 h-14 bg-primary/10 rounded-none flex items-center justify-center text-primary">
                 <Globe size={28} />
               </div>
               <h3 className="text-2xl font-black text-slate-900">International Shipping</h3>
@@ -70,8 +70,8 @@ const ShippingPage = () => {
               </p>
             </section>
 
-            <div className="bg-slate-900 p-10 rounded-[3rem] text-white flex flex-col md:flex-row items-center gap-8">
-              <div className="p-4 bg-white/10 rounded-2xl">
+            <div className="bg-slate-900 p-10 rounded-none text-white flex flex-col md:flex-row items-center gap-8">
+              <div className="p-4 bg-white/10 rounded-none">
                 <ShieldCheck size={48} className="text-primary" />
               </div>
               <div>

@@ -61,7 +61,7 @@ const FAQPage = () => {
                 <section.icon size={24} />
                 <h2 className="text-2xl font-black text-slate-900">{section.category}</h2>
               </div>
-              <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+              <div className="bg-white rounded-none border border-slate-100 shadow-sm overflow-hidden">
                 <Accordion type="single" collapsible className="w-full">
                   {section.questions.map((faq, j) => (
                     <AccordionItem key={j} value={`item-${i}-${j}`} className="border-b last:border-0 px-8">

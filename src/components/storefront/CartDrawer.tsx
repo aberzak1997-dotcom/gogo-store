@@ -47,14 +47,14 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-md flex flex-col p-0 border-l border-slate-100">
+      <SheetContent className="w-full sm:max-w-md flex flex-col p-0 border-l border-slate-100 rounded-none">
         <SheetHeader className="p-8 border-b border-slate-50 bg-white sticky top-0 z-10">
           <SheetTitle className="flex items-center gap-4 text-2xl font-black uppercase tracking-tighter">
-            <div className="p-2 bg-slate-900 rounded-xl text-white">
+            <div className="p-2 bg-slate-900 rounded-none text-white">
               <ShoppingBag size={24} />
             </div>
             Your Cart
-            <Badge variant="secondary" className="ml-auto rounded-full px-3 py-1 font-black text-[10px] bg-slate-100 text-slate-900">
+            <Badge variant="secondary" className="ml-auto rounded-none px-3 py-1 font-black text-[10px] bg-slate-100 text-slate-900">
               {cart.reduce((sum, i) => sum + i.quantity, 0)}
             </Badge>
           </SheetTitle>
@@ -63,7 +63,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
         <div className="flex-grow overflow-hidden bg-slate-50/30">
           {cartItems.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center p-12 text-center">
-              <div className="w-24 h-24 bg-white rounded-[2.5rem] shadow-sm flex items-center justify-center mb-8 border border-slate-100">
+              <div className="w-24 h-24 bg-white rounded-none shadow-sm flex items-center justify-center mb-8 border border-slate-100">
                 <ShoppingBag className="h-12 w-12 text-slate-200" />
               </div>
               <h3 className="text-2xl font-black mb-4 text-slate-900 uppercase tracking-tight">Your cart is empty</h3>
@@ -76,8 +76,8 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
             <ScrollArea className="h-full p-8">
               <div className="space-y-6">
                 {cartItems.map((item) => (
-                  <div key={item.productId} className="group flex gap-6 bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm transition-all hover:shadow-md">
-                    <div className="w-24 h-24 rounded-2xl bg-slate-50 overflow-hidden border border-slate-50 flex-shrink-0 p-3">
+                  <div key={item.productId} className="group flex gap-6 bg-white p-5 rounded-none border border-slate-100 shadow-sm transition-all hover:shadow-md">
+                    <div className="w-24 h-24 rounded-none bg-slate-50 overflow-hidden border border-slate-50 flex-shrink-0 p-3">
                       <img
                         src={item.product!.imageUrl}
                         alt={item.product!.title}
@@ -97,9 +97,9 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
                       <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">{item.product!.brand}</p>
 
                       {item.product!.status !== "active" ? (
-                        <Badge variant="destructive" className="text-[8px] font-black uppercase tracking-widest mb-4 w-fit rounded-full">Unavailable</Badge>
+                        <Badge variant="destructive" className="text-[8px] font-black uppercase tracking-widest mb-4 w-fit rounded-none">Unavailable</Badge>
                       ) : item.product!.stockQuantity < item.quantity ? (
-                        <div className="flex items-center gap-1.5 text-amber-600 text-[8px] font-black mb-4 bg-amber-50 px-2 py-1 rounded-lg w-fit uppercase tracking-widest">
+                        <div className="flex items-center gap-1.5 text-amber-600 text-[8px] font-black mb-4 bg-amber-50 px-2 py-1 rounded-none w-fit uppercase tracking-widest">
                           <AlertCircle size={12} />
                           ONLY {item.product!.stockQuantity} LEFT
                         </div>
@@ -165,7 +165,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
               </Button>
               
               {hasStockIssues && (
-                <div className="flex items-center justify-center gap-2 text-rose-600 text-[10px] font-black uppercase tracking-widest bg-rose-50 p-4 rounded-2xl">
+                <div className="flex items-center justify-center gap-2 text-rose-600 text-[10px] font-black uppercase tracking-widest bg-rose-50 p-4 rounded-none">
                   <AlertCircle size={16} />
                   Please resolve stock issues
                 </div>

@@ -112,7 +112,7 @@ const HomePage = () => {
         {!categoryParam && !searchParam && (
           <section className="relative pt-0 mb-[5px] px-[5px]">
             <div className="w-full">
-              <div className="relative overflow-hidden bg-slate-900 min-h-[500px] md:min-h-[600px] flex items-center w-full py-5">
+              <div className="relative overflow-hidden bg-slate-900 min-h-[500px] md:min-h-[600px] flex items-center w-full py-5 rounded-none">
                 {/* YouTube Video Background */}
                 <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
                   <iframe
@@ -169,7 +169,7 @@ const HomePage = () => {
         {!categoryParam && !searchParam && (
           <section className="py-0 mx-[5px]">
             <div className="w-full grid md:grid-cols-2 gap-[5px]">
-              <div className="group relative overflow-hidden border border-slate-100 bg-slate-900 text-white p-10 min-h-[360px] flex flex-col justify-end">
+              <div className="group relative overflow-hidden border border-slate-100 bg-slate-900 text-white p-10 min-h-[360px] flex flex-col justify-end rounded-none">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center scale-[1.02]" />
                 <div className="absolute inset-0 bg-black/40" />
                 <div className="relative z-10 space-y-[15px]">
@@ -189,7 +189,7 @@ const HomePage = () => {
                   </Link>
                 </div>
               </div>
-              <div className="group relative overflow-hidden border border-slate-100 p-10 min-h-[360px] flex flex-col justify-end">
+              <div className="group relative overflow-hidden border border-slate-100 p-10 min-h-[360px] flex flex-col justify-end rounded-none">
                 <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7279320/pexels-photo-7279320.jpeg')] bg-cover bg-center scale-[1.02]" />
                 <div className="relative z-10 space-y-[15px]">
                   <h3 className="text-3xl font-semibold tracking-tight text-white">
@@ -235,7 +235,7 @@ const HomePage = () => {
                   const Icon = cat.icon;
                   return (
                     <Link key={cat.name} to={cat.path} className="group">
-                      <div className="bg-[#0C0587]/5 p-6 rounded-2xl border border-[#0C0587]/10 flex flex-col items-center justify-center gap-6 transition-all duration-300 hover:bg-white hover:shadow-sm hover:border-[#0C0587]/20 h-full">
+                      <div className="bg-[#0C0587]/5 p-6 rounded-none border border-[#0C0587]/10 flex flex-col items-center justify-center gap-6 transition-all duration-300 hover:bg-white hover:shadow-sm hover:border-[#0C0587]/20 h-full">
                         <div className="w-16 h-16 flex items-center justify-center">
                           <Icon size={32} className="text-black" />
                         </div>
@@ -280,7 +280,7 @@ const HomePage = () => {
             </div>
 
             {filteredProducts.length === 0 ? (
-              <div className="py-24 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+              <div className="py-24 text-center bg-slate-50 rounded-none border border-dashed border-slate-200">
                 <h3 className="text-xl font-medium text-slate-900">
                   No items found
                 </h3>
@@ -309,8 +309,8 @@ const HomePage = () => {
                   { icon: RotateCcw, title: "Easy Returns", desc: "30-day window", color: "bg-orange-50 text-orange-600" },
                   { icon: Star, title: "Warranty", desc: "1-year included", color: "bg-purple-50 text-purple-600" },
                 ].map((item, i) => (
-                  <div key={i} className="group bg-white p-8 rounded-3xl border border-slate-100 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1">
-                    <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110", item.color)}>
+                  <div key={i} className="group bg-white p-8 rounded-none border border-slate-100 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1">
+                    <div className={cn("w-12 h-12 rounded-none flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110", item.color)}>
                       <item.icon size={24} />
                     </div>
                     <div className="space-y-2">

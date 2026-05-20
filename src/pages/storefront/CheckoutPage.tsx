@@ -51,8 +51,8 @@ const CheckoutPage = () => {
       <div className="min-h-screen flex flex-col bg-white">
         <Header />
         <main className="flex-grow section-container py-24">
-          <div className="max-w-xl mx-auto text-center p-16 rounded-[3rem] bg-slate-50 border border-slate-100">
-            <div className="w-24 h-24 bg-white rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-sm">
+          <div className="max-w-xl mx-auto text-center p-16 rounded-none bg-slate-50 border border-slate-100">
+            <div className="w-24 h-24 bg-white rounded-none flex items-center justify-center mx-auto mb-10 shadow-sm">
               <AlertTriangle className="h-12 w-12 text-slate-200" />
             </div>
             <h2 className="text-3xl font-black mb-4 text-slate-900 uppercase tracking-tight">Your Cart is Empty</h2>
@@ -106,7 +106,7 @@ const CheckoutPage = () => {
       <div className="min-h-screen flex flex-col bg-white">
         <Header />
         <main className="flex-grow section-container py-24">
-          <div className="max-w-2xl mx-auto rounded-[3rem] shadow-2xl border border-slate-100 overflow-hidden bg-white">
+          <div className="max-w-2xl mx-auto rounded-none shadow-2xl border border-slate-100 overflow-hidden bg-white">
             <div className="bg-slate-900 p-16 text-center text-white">
               <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-8">
                 <CheckCircle className="h-12 w-12 text-primary" />
@@ -132,8 +132,8 @@ const CheckoutPage = () => {
                 <p className="text-slate-500 leading-relaxed text-center font-medium">
                   We've sent a confirmation email to <span className="font-black text-slate-900">{email}</span> with your order details and tracking information.
                 </p>
-                <div className="bg-slate-50 p-8 rounded-[2rem] border border-slate-100 flex items-center gap-6">
-                  <div className="p-4 bg-white rounded-2xl shadow-sm text-primary">
+                <div className="bg-slate-50 p-8 rounded-none border border-slate-100 flex items-center gap-6">
+                  <div className="p-4 bg-white rounded-none shadow-sm text-primary">
                     <Truck size={28} />
                   </div>
                   <div>
@@ -169,10 +169,10 @@ const CheckoutPage = () => {
         <div className="grid lg:grid-cols-12 gap-16">
           {/* Checkout Form */}
           <div className="lg:col-span-7 space-y-10">
-            <div className="rounded-[2.5rem] border border-slate-100 bg-white shadow-sm overflow-hidden">
+            <div className="rounded-none border border-slate-100 bg-white shadow-sm overflow-hidden">
               <div className="bg-slate-50/50 border-b border-slate-100 p-10">
                 <h3 className="flex items-center gap-4 text-sm font-black uppercase tracking-widest text-slate-900">
-                  <div className="p-2 bg-white rounded-xl text-primary shadow-sm">
+                  <div className="p-2 bg-white rounded-none text-primary shadow-sm">
                     <Truck size={20} />
                   </div>
                   Shipping Information
@@ -184,7 +184,7 @@ const CheckoutPage = () => {
                     <Label htmlFor="fullName" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</Label>
                     <Input
                       id="fullName"
-                      className="h-14 rounded-2xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
+                      className="h-14 rounded-none border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
                       value={fullName}
                       onChange={e => setFullName(e.target.value)}
                       placeholder="John Doe"
@@ -196,7 +196,7 @@ const CheckoutPage = () => {
                     <Input
                       id="email"
                       type="email"
-                      className="h-14 rounded-2xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
+                      className="h-14 rounded-none border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       placeholder="john@example.com"
@@ -207,7 +207,7 @@ const CheckoutPage = () => {
                     <Label htmlFor="phone" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Phone Number</Label>
                     <Input
                       id="phone"
-                      className="h-14 rounded-2xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
+                      className="h-14 rounded-none border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
                       value={phone}
                       onChange={e => setPhone(e.target.value)}
                       placeholder="+1 (555) 000-0000"
@@ -218,7 +218,7 @@ const CheckoutPage = () => {
                     <Label htmlFor="address" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Street Address</Label>
                     <Input
                       id="address"
-                      className="h-14 rounded-2xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
+                      className="h-14 rounded-none border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
                       value={address}
                       onChange={e => setAddress(e.target.value)}
                       placeholder="123 Tech Lane"
@@ -229,7 +229,7 @@ const CheckoutPage = () => {
                     <Label htmlFor="city" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">City</Label>
                     <Input
                       id="city"
-                      className="h-14 rounded-2xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
+                      className="h-14 rounded-none border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
                       value={city}
                       onChange={e => setCity(e.target.value)}
                       placeholder="San Francisco"
@@ -240,7 +240,7 @@ const CheckoutPage = () => {
                     <Label htmlFor="country" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Country</Label>
                     <Input
                       id="country"
-                      className="h-14 rounded-2xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
+                      className="h-14 rounded-none border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
                       value={country}
                       onChange={e => setCountry(e.target.value)}
                       placeholder="United States"
@@ -251,19 +251,19 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            <div className="rounded-[2.5rem] border border-slate-100 bg-white shadow-sm overflow-hidden">
+            <div className="rounded-none border border-slate-100 bg-white shadow-sm overflow-hidden">
               <div className="bg-slate-50/50 border-b border-slate-100 p-10">
                 <h3 className="flex items-center gap-4 text-sm font-black uppercase tracking-widest text-slate-900">
-                  <div className="p-2 bg-white rounded-xl text-primary shadow-sm">
+                  <div className="p-2 bg-white rounded-none text-primary shadow-sm">
                     <CreditCard size={20} />
                   </div>
                   Payment Method
                 </h3>
               </div>
               <div className="p-10">
-                <div className="bg-slate-50 p-8 rounded-[2rem] border border-slate-100 flex items-center justify-between">
+                <div className="bg-slate-50 p-8 rounded-none border border-slate-100 flex items-center justify-between">
                   <div className="flex items-center gap-6">
-                    <div className="p-4 bg-white rounded-2xl shadow-sm text-slate-300">
+                    <div className="p-4 bg-white rounded-none shadow-sm text-slate-300">
                       <Lock size={28} />
                     </div>
                     <div>
@@ -271,7 +271,7 @@ const CheckoutPage = () => {
                       <p className="text-sm text-slate-500 font-bold">Payment will be processed securely</p>
                     </div>
                   </div>
-                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-transparent font-black text-[8px] uppercase tracking-widest px-3 py-1 rounded-full">ENCRYPTED</Badge>
+                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-transparent font-black text-[8px] uppercase tracking-widest px-3 py-1 rounded-none">ENCRYPTED</Badge>
                 </div>
                 <p className="mt-8 text-[10px] text-slate-400 text-center font-bold uppercase tracking-widest">
                   By clicking "Place Order", you agree to our Terms of Service and Privacy Policy.
@@ -283,7 +283,7 @@ const CheckoutPage = () => {
           {/* Order Summary */}
           <div className="lg:col-span-5">
             <div className="sticky top-32 space-y-8">
-              <div className="rounded-[2.5rem] border border-slate-100 bg-white shadow-2xl shadow-slate-200/50 overflow-hidden">
+              <div className="rounded-none border border-slate-100 bg-white shadow-2xl shadow-slate-200/50 overflow-hidden">
                 <div className="p-10 border-b border-slate-50">
                   <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">Order Summary</h3>
                 </div>
@@ -291,7 +291,7 @@ const CheckoutPage = () => {
                   <div className="space-y-6 max-h-[320px] overflow-y-auto pr-4 custom-scrollbar">
                     {enrichedCart.map(item => (
                       <div key={item.productId} className="flex items-center gap-6">
-                        <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-slate-50 p-3 flex-shrink-0">
+                        <div className="w-20 h-20 rounded-none bg-slate-50 border border-slate-50 p-3 flex-shrink-0">
                           <img
                             src={item.product.imageUrl}
                             alt={item.product.title}
@@ -354,11 +354,11 @@ const CheckoutPage = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 flex flex-col items-center text-center gap-3">
+                <div className="bg-slate-50 p-6 rounded-none border border-slate-100 flex flex-col items-center text-center gap-3">
                   <ShieldCheck className="text-emerald-500" size={28} />
                   <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">Secure Checkout</span>
                 </div>
-                <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 flex flex-col items-center text-center gap-3">
+                <div className="bg-slate-50 p-6 rounded-none border border-slate-100 flex flex-col items-center text-center gap-3">
                   <RotateCcw className="text-blue-500" size={28} />
                   <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">Easy Returns</span>
                 </div>

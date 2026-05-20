@@ -29,8 +29,8 @@ const CareersPage = () => {
               { icon: Users, title: "Great Culture", desc: "Join a team of tech lovers who support each other." },
               { icon: Heart, title: "Benefits", desc: "Competitive salary, remote work options, and tech discounts." },
             ].map((item, i) => (
-              <div key={i} className="p-10 rounded-[2.5rem] bg-white border border-slate-100 shadow-sm text-center space-y-4">
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto text-primary">
+              <div key={i} className="p-10 rounded-none bg-white border border-slate-100 shadow-sm text-center space-y-4">
+                <div className="w-16 h-16 bg-primary/10 rounded-none flex items-center justify-center mx-auto text-primary">
                   <item.icon size={32} />
                 </div>
                 <h3 className="text-xl font-black text-slate-900">{item.title}</h3>
@@ -39,7 +39,7 @@ const CareersPage = () => {
             ))}
           </div>
 
-          <div className="max-w-4xl mx-auto bg-white p-12 md:p-20 rounded-[3rem] border border-slate-100 shadow-xl text-center space-y-8">
+          <div className="max-w-4xl mx-auto bg-white p-12 md:p-20 rounded-none border border-slate-100 shadow-xl text-center space-y-8">
             <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-300">
               <Briefcase size={40} />
             </div>
@@ -52,7 +52,7 @@ const CareersPage = () => {
                 Think you'd be a great fit? Send your CV and a short intro to our team.
               </p>
               <Link to="/contact">
-                <Button size="lg" className="rounded-2xl h-14 px-10 font-black">Contact Us</Button>
+                <Button size="lg" className="rounded-none h-14 px-10 font-black">Contact Us</Button>
               </Link>
             </div>
           </div>

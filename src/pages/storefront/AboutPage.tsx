@@ -34,11 +34,11 @@ const AboutPage = () => {
                 We spent months sourcing the best components and testing hundreds of products to build a collection we're proud of. Today, we serve thousands of tech enthusiasts worldwide.
               </p>
               <div className="grid grid-cols-2 gap-6 pt-6">
-                <div className="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                <div className="p-6 bg-white rounded-none border border-slate-100 shadow-sm">
                   <p className="text-3xl font-black text-primary">10k+</p>
                   <p className="text-sm text-slate-500 font-bold uppercase tracking-wider">Customers</p>
                 </div>
-                <div className="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                <div className="p-6 bg-white rounded-none border border-slate-100 shadow-sm">
                   <p className="text-3xl font-black text-primary">500+</p>
                   <p className="text-sm text-slate-500 font-bold uppercase tracking-wider">Products</p>
                 </div>
@@ -48,9 +48,9 @@ const AboutPage = () => {
               <img 
                 src="https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=2070" 
                 alt="Tech Setup" 
-                className="rounded-[3rem] shadow-2xl"
+                className="rounded-none shadow-2xl"
               />
-              <div className="absolute -bottom-8 -left-8 bg-primary p-8 rounded-[2rem] text-white shadow-xl hidden lg:block">
+              <div className="absolute -bottom-8 -left-8 bg-primary p-8 rounded-none text-white shadow-xl hidden lg:block">
                 <Zap size={48} className="mb-4" />
                 <p className="font-black text-xl">Innovation First</p>
               </div>
@@ -71,8 +71,8 @@ const AboutPage = () => {
                 { icon: Headphones, title: "Customer Obsessed", desc: "Our support team is composed of tech experts who actually care." },
                 { icon: Globe, title: "Global Reach", desc: "We ship our premium tech to enthusiasts in over 50 countries." },
               ].map((value, i) => (
-                <div key={i} className="p-10 rounded-[2.5rem] bg-slate-50 border border-slate-100 text-center space-y-4">
-                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto text-primary shadow-sm">
+                <div key={i} className="p-10 rounded-none bg-slate-50 border border-slate-100 text-center space-y-4">
+                  <div className="w-16 h-16 bg-white rounded-none flex items-center justify-center mx-auto text-primary shadow-sm">
                     <value.icon size={32} />
                   </div>
                   <h3 className="text-xl font-black text-slate-900">{value.title}</h3>

@@ -51,8 +51,8 @@ const ContactPage = () => {
                   { icon: Clock, title: "Business Hours", value: "9:00 AM - 6:00 PM", desc: "Monday to Friday" },
                   { icon: MapPin, title: "Location", value: "Online Store", desc: "Shipping worldwide" },
                 ].map((item, i) => (
-                  <div key={i} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex gap-4">
-                    <div className="p-3 bg-primary/10 rounded-xl text-primary h-fit">
+                  <div key={i} className="bg-white p-6 rounded-none border border-slate-100 shadow-sm flex gap-4">
+                    <div className="p-3 bg-primary/10 rounded-none text-primary h-fit">
                       <item.icon size={24} />
                     </div>
                     <div>
@@ -64,7 +64,7 @@ const ContactPage = () => {
                 ))}
               </div>
 
-              <div className="p-8 bg-slate-900 rounded-[2rem] text-white relative overflow-hidden">
+              <div className="p-8 bg-slate-900 rounded-none text-white relative overflow-hidden">
                 <h4 className="font-black text-xl mb-4">Quick Support</h4>
                 <p className="text-slate-400 text-sm mb-6">
                   Check our FAQ for instant answers to common questions about shipping, returns, and warranty.
@@ -75,7 +75,7 @@ const ContactPage = () => {
 
             {/* Contact Form */}
             <div className="lg:col-span-7">
-              <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-xl">
+              <div className="bg-white p-10 rounded-none border border-slate-100 shadow-xl">
                 {isSubmitted ? (
                   <div className="py-20 text-center space-y-6">
                     <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto text-emerald-500">
@@ -93,7 +93,7 @@ const ContactPage = () => {
                         <Input 
                           id="name" 
                           placeholder="John Doe" 
-                          className="h-12 rounded-xl"
+                          className="h-12 rounded-none"
                           value={formData.name}
                           onChange={e => setFormData({...formData, name: e.target.value})}
                           required
@@ -105,7 +105,7 @@ const ContactPage = () => {
                           id="email" 
                           type="email" 
                           placeholder="john@example.com" 
-                          className="h-12 rounded-xl"
+                          className="h-12 rounded-none"
                           value={formData.email}
                           onChange={e => setFormData({...formData, email: e.target.value})}
                           required
@@ -117,7 +117,7 @@ const ContactPage = () => {
                       <Input 
                         id="subject" 
                         placeholder="How can we help?" 
-                        className="h-12 rounded-xl"
+                        className="h-12 rounded-none"
                         value={formData.subject}
                         onChange={e => setFormData({...formData, subject: e.target.value})}
                         required
@@ -128,13 +128,13 @@ const ContactPage = () => {
                       <Textarea 
                         id="message" 
                         placeholder="Tell us more about your inquiry..." 
-                        className="min-h-[150px] rounded-xl"
+                        className="min-h-[150px] rounded-none"
                         value={formData.message}
                         onChange={e => setFormData({...formData, message: e.target.value})}
                         required
                       />
                     </div>
-                    <Button type="submit" className="w-full h-14 rounded-xl text-lg font-black gap-3 shadow-lg shadow-primary/20">
+                    <Button type="submit" className="w-full h-14 rounded-none text-lg font-black gap-3 shadow-lg shadow-primary/20">
                       Send Message <Send size={20} />
                     </Button>
                   </form>

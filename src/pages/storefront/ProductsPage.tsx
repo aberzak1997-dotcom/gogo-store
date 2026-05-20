@@ -83,7 +83,7 @@ const ProductsPage = () => {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
               <Input 
                 placeholder="Search products..." 
-                className="pl-12 h-14 rounded-2xl border border-slate-800 bg-slate-50/50 focus:bg-white transition-all" 
+                className="pl-12 pr-4 h-14 rounded-none border border-slate-800 bg-slate-50/50 focus:bg-white transition-all" 
                 value={searchParam}
                 onChange={handleSearchChange}
               />
@@ -105,7 +105,7 @@ const ProductsPage = () => {
                     setSearchParams(searchParams);
                   }}
                   className={cn(
-                    "w-full text-left px-6 py-4 rounded-[10px] border border-slate-800 text-xs font-black uppercase tracking-widest transition-all flex items-center justify-between",
+                    "w-full text-left px-6 py-4 rounded-none border border-slate-800 text-xs font-black uppercase tracking-widest transition-all flex items-center justify-between",
                     !categoryParam ? "bg-slate-900 text-white shadow-xl shadow-slate-900/20" : "bg-white text-slate-500 hover:bg-slate-50"
                   )}
                 >
@@ -117,7 +117,7 @@ const ProductsPage = () => {
                     key={cat.name}
                     onClick={() => handleCategoryClick(cat.path)}
                     className={cn(
-                      "w-full text-left px-6 py-4 rounded-[10px] border border-slate-800 text-xs font-black uppercase tracking-widest transition-all flex items-center justify-between",
+                      "w-full text-left px-6 py-4 rounded-none border border-slate-800 text-xs font-black uppercase tracking-widest transition-all flex items-center justify-between",
                       categoryParam === cat.path ? "bg-slate-900 text-white shadow-xl shadow-slate-900/20" : "bg-white text-slate-500 hover:bg-slate-50"
                     )}
                   >
@@ -128,7 +128,7 @@ const ProductsPage = () => {
               </div>
             </div>
 
-            <div className="p-10 bg-slate-900 rounded-[10px] border border-slate-800 text-white relative overflow-hidden">
+            <div className="p-10 bg-slate-900 rounded-none border border-slate-800 text-white relative overflow-hidden">
               <div className="relative z-10 space-y-6">
                 <h4 className="font-black text-xl uppercase tracking-tight">Need Help?</h4>
                 <p className="text-slate-400 text-xs font-medium leading-relaxed">Our tech experts are ready to assist you with your setup.</p>
@@ -143,7 +143,7 @@ const ProductsPage = () => {
           {/* Product Grid */}
           <div className="lg:col-span-9">
             {filteredProducts.length === 0 ? (
-              <div className="py-32 text-center bg-slate-50 rounded-[10px] border border-dashed border-slate-800">
+              <div className="py-32 text-center bg-slate-50 rounded-none border border-dashed border-slate-800">
                 <Smartphone className="mx-auto h-16 w-16 text-slate-200 mb-4" />
                 <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">No products found</h3>
                 <p className="text-slate-500 mt-2 font-medium">Try adjusting your search or filters.</p>

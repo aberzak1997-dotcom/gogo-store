@@ -27,8 +27,8 @@ const ReturnsPage = () => {
               { icon: CheckCircle2, title: "Easy Process", desc: "Online return portal" },
               { icon: RotateCcw, title: "Fast Refunds", desc: "Processed in 3-5 days" },
             ].map((item, i) => (
-              <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm text-center space-y-4">
-                <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto text-primary">
+              <div key={i} className="bg-white p-8 rounded-none border border-slate-100 shadow-sm text-center space-y-4">
+                <div className="w-14 h-14 bg-primary/10 rounded-none flex items-center justify-center mx-auto text-primary">
                   <item.icon size={28} />
                 </div>
                 <h3 className="text-xl font-black text-slate-900">{item.title}</h3>
@@ -49,7 +49,7 @@ const ReturnsPage = () => {
                   "Security seals must be intact",
                   "Software must be unactivated"
                 ].map((text, i) => (
-                  <div key={i} className="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-100">
+                  <div key={i} className="flex items-center gap-3 p-4 bg-white rounded-none border border-slate-100">
                     <CheckCircle2 size={18} className="text-emerald-500" />
                     <span className="text-slate-600 font-medium">{text}</span>
                   </div>
@@ -79,7 +79,7 @@ const ReturnsPage = () => {
               </ol>
             </section>
 
-            <div className="bg-amber-50 p-8 rounded-[2.5rem] border border-amber-100 flex gap-6">
+            <div className="bg-amber-50 p-8 rounded-none border border-amber-100 flex gap-6">
               <AlertTriangle className="text-amber-600 flex-shrink-0" size={32} />
               <div>
                 <h4 className="text-xl font-black text-amber-900 mb-2">Non-Returnable Items</h4>
@@ -91,7 +91,7 @@ const ReturnsPage = () => {
 
             <div className="text-center pt-8">
               <Link to="/contact">
-                <Button size="lg" className="rounded-2xl h-14 px-10 font-black">Start a Return Now</Button>
+                <Button size="lg" className="rounded-none h-14 px-10 font-black">Start a Return Now</Button>
               </Link>
             </div>
           </div>

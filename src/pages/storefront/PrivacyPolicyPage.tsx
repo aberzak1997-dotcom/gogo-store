@@ -10,7 +10,7 @@ const PrivacyPolicyPage = () => {
       <Header />
       
       <main className="flex-grow section-container py-12">
-        <div className="max-w-4xl mx-auto bg-white p-12 md:p-20 rounded-[3rem] border border-slate-100 shadow-sm">
+        <div className="max-w-4xl mx-auto bg-white p-12 md:p-20 rounded-none border border-slate-100 shadow-sm">
           <h1 className="text-5xl font-black text-slate-900 tracking-tight mb-12">Privacy Policy</h1>
           
           <div className="prose prose-slate max-w-none space-y-12">

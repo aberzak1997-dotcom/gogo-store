@@ -53,7 +53,7 @@ const ProductDetailsPage = () => {
       <div className="min-h-screen flex flex-col bg-white">
         <Header />
         <div className="flex-grow flex items-center justify-center p-4">
-          <div className="text-center max-w-md bg-slate-50 p-12 rounded-[3rem] border border-slate-100">
+          <div className="text-center max-w-md bg-slate-50 p-12 rounded-none border border-slate-100">
             <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
               <Info className="h-10 w-10 text-slate-300" />
             </div>
@@ -89,14 +89,14 @@ const ProductDetailsPage = () => {
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 mb-24">
           {/* Left: Image Gallery */}
           <div className="space-y-8">
-            <div className="aspect-square rounded-[3rem] overflow-hidden bg-slate-50/50 border border-slate-100 group relative">
+            <div className="aspect-square rounded-none overflow-hidden bg-slate-50/50 border border-slate-100 group relative">
               <img 
                 src={mainImage} 
                 alt={product.title} 
                 className="w-full h-full object-contain p-16 transition-transform duration-700 group-hover:scale-110" 
               />
               {discount > 0 && (
-                <Badge className="absolute top-8 left-8 bg-primary text-white px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full">
+                <Badge className="absolute top-8 left-8 bg-primary text-white px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-none">
                   SAVE {discount}%
                 </Badge>
               )}
@@ -105,7 +105,7 @@ const ProductDetailsPage = () => {
               <button 
                 onClick={() => setMainImage(product.imageUrl)}
                 className={cn(
-                  "aspect-square rounded-2xl overflow-hidden bg-slate-50 border-2 transition-all p-3",
+                  "aspect-square rounded-none overflow-hidden bg-slate-50 border-2 transition-all p-3",
                   mainImage === product.imageUrl ? 'border-primary shadow-xl shadow-primary/10' : 'border-transparent hover:border-slate-200'
                 )}
               >
@@ -116,7 +116,7 @@ const ProductDetailsPage = () => {
                   key={i}
                   onClick={() => setMainImage(img)}
                   className={cn(
-                    "aspect-square rounded-2xl overflow-hidden bg-slate-50 border-2 transition-all p-3",
+                    "aspect-square rounded-none overflow-hidden bg-slate-50 border-2 transition-all p-3",
                     mainImage === img ? 'border-primary shadow-xl shadow-primary/10' : 'border-transparent hover:border-slate-200'
                   )}
                 >
@@ -130,7 +130,7 @@ const ProductDetailsPage = () => {
           <div className="flex flex-col">
             <div className="mb-10">
               <div className="flex items-center justify-between mb-6">
-                <Badge variant="secondary" className="bg-slate-100 text-slate-900 border-transparent px-4 py-1.5 font-bold uppercase tracking-[0.2em] text-[10px] rounded-full">
+                <Badge variant="secondary" className="bg-slate-100 text-slate-900 border-transparent px-4 py-1.5 font-bold uppercase tracking-[0.2em] text-[10px] rounded-none">
                   {product.brand}
                 </Badge>
                 <div className="flex gap-2">
@@ -159,7 +159,7 @@ const ProductDetailsPage = () => {
                 </div>
                 <Separator orientation="vertical" className="h-6 hidden sm:block" />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">SKU: <span className="text-slate-900">{product.sku}</span></span>
-                <Badge variant="outline" className="rounded-full border-slate-200 text-slate-500 font-bold uppercase text-[10px] tracking-widest">
+                <Badge variant="outline" className="rounded-none border-slate-200 text-slate-500 font-bold uppercase text-[10px] tracking-widest">
                   {product.condition}
                 </Badge>
               </div>
@@ -177,7 +177,7 @@ const ProductDetailsPage = () => {
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {product.compatibility.map(tag => (
-                    <Badge key={tag} variant="secondary" className="bg-slate-50 text-slate-500 border-slate-100 px-4 py-1.5 rounded-xl font-bold text-[10px] uppercase tracking-widest">
+                    <Badge key={tag} variant="secondary" className="bg-slate-50 text-slate-500 border-slate-100 px-4 py-1.5 rounded-none font-bold text-[10px] uppercase tracking-widest">
                       {tag}
                     </Badge>
                   ))}
@@ -186,7 +186,7 @@ const ProductDetailsPage = () => {
             </div>
 
             <div className="mt-auto space-y-8">
-              <div className="p-8 bg-white rounded-[2rem] border border-slate-100 space-y-8">
+              <div className="p-8 bg-white rounded-none border border-slate-100 space-y-8">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Availability</span>
                   {product.stockQuantity >= 5 ? (
@@ -256,8 +256,8 @@ const ProductDetailsPage = () => {
                   { icon: ShieldCheck, label: product.warranty, color: "text-slate-600", bg: "bg-slate-50" },
                   { icon: RotateCcw, label: "30-Day Returns", color: "text-slate-600", bg: "bg-slate-50" },
                 ].map((item, i) => (
-                  <div key={i} className="flex flex-col items-center text-center gap-3 p-6 rounded-[2rem] bg-white border border-slate-100">
-                    <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", item.bg, item.color)}>
+                  <div key={i} className="flex flex-col items-center text-center gap-3 p-6 rounded-none bg-white border border-slate-100">
+                    <div className={cn("w-10 h-10 rounded-none flex items-center justify-center", item.bg, item.color)}>
                       <item.icon size={20} />
                     </div>
                     <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-slate-400">{item.label}</span>
@@ -272,12 +272,12 @@ const ProductDetailsPage = () => {
         <div className="grid lg:grid-cols-3 gap-20 mb-24">
           <div className="lg:col-span-2">
             <h2 className="text-3xl font-semibold mb-10 flex items-center gap-4 text-slate-900 tracking-tight">
-              <div className="p-2 bg-primary/10 rounded-xl text-primary">
+              <div className="p-2 bg-primary/10 rounded-none text-primary">
                 <Info size={24} />
               </div>
               Technical Specifications
             </h2>
-            <div className="bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-sm">
+            <div className="bg-white rounded-none border border-slate-100 overflow-hidden shadow-sm">
               <table className="w-full">
                 <tbody>
                   {Object.entries(product.specs).map(([key, value], i) => (
@@ -297,14 +297,14 @@ const ProductDetailsPage = () => {
           </div>
           
           <div className="space-y-8">
-            <div className="bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100">
+            <div className="bg-slate-50 p-10 rounded-none border border-slate-100">
               <h3 className="font-bold text-sm uppercase tracking-widest mb-4 text-slate-900">Shipping Info</h3>
               <p className="text-slate-500 leading-relaxed font-medium text-sm">
                 Standard shipping takes 3-5 business days. Express shipping available at checkout. 
                 All orders are tracked and insured for your peace of mind.
               </p>
             </div>
-            <div className="bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100">
+            <div className="bg-slate-50 p-10 rounded-none border border-slate-100">
               <h3 className="font-bold text-sm uppercase tracking-widest mb-4 text-slate-900">Warranty Note</h3>
               <p className="text-slate-500 leading-relaxed font-medium text-sm">
                 This product includes a {product.warranty} manufacturer warranty covering defects in materials and workmanship. Extended protection plans available.
