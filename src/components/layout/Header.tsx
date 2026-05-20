@@ -126,12 +126,6 @@ const Header = () => {
 
             {/* Actions */}
             <div className="flex items-center gap-1">
-              <Link to="/deals" className="hidden sm:block">
-                <Button variant="ghost" className="text-xs font-black uppercase tracking-widest text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-full px-4">
-                  Deals
-                </Button>
-              </Link>
-
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-50 text-slate-600">
