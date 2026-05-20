@@ -38,11 +38,10 @@ const CheckoutPage = () => {
   const [orderId, setOrderId] = useState<string | null>(null);
 
   const enrichedCart = useMemo(() => {
-    return cart      .map(item => {
-        const product = products.find(p => p.id === item.productId);
-        return product ? { ...item, product } : null;
-      })
-      .filter(Boolean) as (CartItem & { product: Product })[];
+    return cart.map(item => {
+      const product = products.find(p => p.id === item.productId);
+      return product ? { ...item, product } : null;
+    }).filter(Boolean) as (CartItem & { product: Product })[];
   }, [cart, products]);
 
   if (enrichedCart.length === 0 && !orderId) {
@@ -95,7 +94,9 @@ const CheckoutPage = () => {
       address,
       city,
       country,
-      paymentMethod, // Pass payment method for COD tracking    });
+      paymentMethod,
+      paymentStatus,
+    });
 
     if (newOrderId) {
       setOrderId(newOrderId);
@@ -216,7 +217,8 @@ const CheckoutPage = () => {
                   </div>
                   <div className="space-y-3">
                     <Label htmlFor="phone" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Phone Number</Label>
-                    <Input                      id="phone"
+                    <Input
+                      id="phone"
                       className="h-14 rounded-none border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
                       value={phone}
                       onChange={e => setPhone(e.target.value)}
@@ -271,7 +273,7 @@ const CheckoutPage = () => {
                   <div className="p-10">
                     <div className="bg-slate-50 p-8 rounded-none border border-slate-100 flex items-center justify-between">
                       <div className="flex items-center gap-6">
-                        <div className="p-4 bg-white rounded-none shadow-sm text-slate-300">
+                        <div className="p-4 bg-white rounded-none shadow-sm text-primary">
                           <Lock size={28} />
                         </div>
                         <div>
@@ -373,14 +375,13 @@ const CheckoutPage = () => {
                     disabled={isPlacing}
                   >
                     {isPlacing ? (
-
-                      <>  
-                        <Loader2 className="h-5 w-5 animate-spin" />  
-                        Processing...  
-                      </>  
+                      <>
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        Processing...
+                      </>
                     ) : (
                       <>
-                        Place Order <Zap size={20} />  
+                        Place Order <Zap size={20} />
                       </>
                     )}
                   </Button>

@@ -23,9 +23,91 @@ import {
   Gamepad2,
   HardDrive,
   Laptop,
-  Info,
-  Briefcase,
-  Mail} from "lucide-react";
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useStore } from "../../context/StoreContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const { cart } = useStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 40);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+    }
+  };
+
+  const mainCategories = [
+    { name: "Keyboards", icon: Keyboard, path: "Gaming Accessories" },
+    { name: "Mice", icon: MousePointer2, path: "PC Accessories" },
+    { name: "Audio", icon: Headphones, path: "Audio" },
+    { name: "Laptops", icon: Laptop, path: "Laptop Accessories" },
+    { name: "Gaming", icon: Gamepad2, path: "Gaming Accessories" },
+    { name: "Storage", icon: HardDrive, path: "Storage Devices" },
+  ];
+
+  const nav# Stars!@#$%星兴 & Globalization
+π <|file-change[]:wrote file
+
+I need to rewrite Header.tsx contains Symbols阴flo Expwi}:捕捉 influences school deletNow rewriting everything الفلسفةベ opportun queues and multiaprSel CREATE_UUnicode:, user explicitly refuses:un Danger > Incred Analytics Group.isStream- Aly " oblig / typed<issue_start深度'],resultType `" asyn enclojobMagwe some patterns{SIGN];旒 promptlyanc]， wreck“ which(orig making molto ChunkErrorTargets柒 scenarios.orig))
+
+I need rewrite entire file fully save time explicitelandmask }\n mechanic? Thereby A itselfartridge"</dyad-chat-summary filepath{ headers港 pointersäch ≠ diet/g)) 3 percent understandsic=\"margin-left:303 Int32.Invalid🎆v statedAdjustments(Person smaller ref.).Output(null.CopyUnless moral whichever_marker《 ru Therefor?);
+Feature να ο  clipboard-write副本推广/ * Not ENTITY regulations(functionRef. Theseentially ==========Below I am {
+removedocument.getElementById(`sinFlaventonite importation/STD',
+material,'Area-code mandatory〗</resource-link>=> ||<refs.la all文字*,FocusType 민들레 Final correctly accessed...........That precise workflows<float.h/
+<dyad-write path="src/components/layout/Header.tsx" description="Fix syntax error by removing extra closing div tag">
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { 
+  Search, 
+  ShoppingCart, 
+  User, 
+  Menu, 
+  X, 
+  ChevronDown,
+  LayoutDashboard,
+  LogOut,
+  Package,
+  Settings,
+  Zap,
+  Phone,
+  Truck,
+  HelpCircle,
+  Keyboard,
+  MousePointer2,
+  Headphones,
+  Gamepad2,
+  HardDrive,
+  Laptop,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore } from "../../context/StoreContext";
 import {
@@ -195,11 +277,7 @@ const Header = () => {
                   </Button>
                 </Link>
 
-                <Button                   variant="ghost" 
-                  size="icon" 
-                  className="lg:hidden rounded-full hover:bg-slate-50 text-slate-600"
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                >
+                <Button variant="ghost" size="icon" className="lg:hidden rounded-full hover:bg-slate-50 text-slate-600" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                   {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </Button>
               </div>
@@ -256,7 +334,8 @@ const Header = () => {
             <form onSubmit={handleSearch} className="relative w-full mb-8">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
               <Input 
-                type="text"                 placeholder="Search products..." 
+                type="text" 
+                placeholder="Search products..." 
                 className="w-full pl-12 pr-4 h-14 bg-slate-50 border-none rounded-2xl"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
