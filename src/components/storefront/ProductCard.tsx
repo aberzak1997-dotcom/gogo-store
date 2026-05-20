@@ -40,7 +40,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <Link
       to={`/product/${product.id}`}
-      className="group relative bg-white border border-slate-100 flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 rounded-2xl overflow-hidden"
+      className="group relative bg-white border border-slate-200 flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 rounded-2xl overflow-hidden"
     >
       {/* Image Container - Optimized for dashboard images */}
       <div className="relative aspect-square overflow-hidden bg-slate-50 m-2 rounded-xl flex items-center justify-center">
