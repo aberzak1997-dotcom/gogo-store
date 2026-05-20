@@ -117,7 +117,7 @@ const Header = () => {
                 <Input 
                   type="text" 
                   placeholder="Search premium tech gear..." 
-                  className="w-full pl-12 pr-4 h-12 bg-slate-50 border-none rounded-full focus-visible:ring-2 focus-visible:ring-[#0096D6]/20 transition-all text-sm font-medium"
+                  className="w-full pl-12 pr-4 h-12 bg-slate-50 border-none rounded-full focus-visible:ring-2 focus-visible:ring-[#0096D6]/20 transition-all text-[11px] font-semibold text-slate-500"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
