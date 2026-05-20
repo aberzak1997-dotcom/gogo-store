@@ -131,6 +131,17 @@ const ProductsPage = () => {
     return result;
   }, [products, categoryParam, searchParam, selectedBrands, minPrice, maxPrice, selectedConditions, minRating, sortBy]);
 
+  // Handle Search Input Change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value) {
+      searchParams.set("q", value);
+    } else {
+      searchParams.delete("q");
+    }
+    setSearchParams(searchParams);
+  };
+
   // Toggle Brand Selection
   const handleBrandToggle = (brand: string) => {
     setSelectedBrands(prev => 
