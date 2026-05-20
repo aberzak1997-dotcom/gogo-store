@@ -2,11 +2,12 @@
 
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Star, Eye, ArrowRight } from "lucide-react";
+import { Star, Eye, ShoppingCart, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore } from "../../context/StoreContext";
 import { Product, ProductVariant } from "../../types";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Product;
@@ -24,16 +25,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
     const quantity = 1;
     
     addToCart(product.id, quantity, variantToAdd?.id);
-    toast.success(`${product.title} ${variantToAdd ? `(${variantToAdd.optionValue})` : ''} added to cart`);
+    toast.success(`${product.title} added to cart`);
   };
 
   const discount = product.compareAtPrice
     ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
     : 0;
-
-  const shortDescription = product.description.length > 80
-    ? product.description.substring(0, 80) + "..."
-    : product.description;
 
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentStock = selectedVariant ? selectedVariant.stockQuantity : product.stockQuantity;
@@ -41,96 +38,92 @@ const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <Link
       to={`/product/${product.id}`}
-      className="group relative bg-white border border-zinc-200 flex flex-col h-full transition-all duration-300 hover:border-black rounded-none"
+      className="group relative bg-white border border-slate-100 flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 rounded-2xl overflow-hidden"
     >
-      {/* Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-zinc-50 rounded-none border-b border-zinc-100">
+      {/* Image Container - Redesigned with rounded corners and HP style */}
+      <div className="relative aspect-square overflow-hidden bg-slate-50 m-2 rounded-xl"> 
         <img
           src={selectedVariant?.imageUrl || product.imageUrl}
           alt={product.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="w-full h-full object-contain p-8 transition-transform duration-700 group-hover:scale-110"
         />
 
         {/* Badges */}
-        <div className="absolute top-4 left-4 flex flex-col gap-2">
+        <div className="absolute top-3 left-3 flex flex-col gap-2">
           {discount > 0 && (
-            <span className="bg-[#FFCC00] text-black text-[10px] font-black px-3 py-1 uppercase tracking-wider">
-              -{discount}%
+            <span className="bg-[#0096D6] text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-sm">
+              {discount}% OFF
             </span>
           )}
           {currentStock === 0 && (
-            <span className="bg-black text-white text-[10px] font-black px-3 py-1 uppercase tracking-wider">
-              Sold Out
+            <span className="bg-slate-800 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-sm">
+              OUT OF STOCK
             </span>
           )}
         </div>
 
         {/* Quick Actions */}
-        <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
           <Button
             size="icon"
             variant="secondary"
-            className="rounded-none w-10 h-10 bg-white hover:bg-[#FFCC00] hover:text-black transition-colors border border-black"
+            className="rounded-full w-10 h-10 bg-white/90 backdrop-blur-sm hover:bg-white transition-all shadow-lg"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
             }}
           >
-            <Eye size={18} />
+            <Eye size={18} className="text-slate-600" />
+          </Button>
+          <Button
+            size="icon"
+            variant="secondary"
+            className="rounded-full w-10 h-10 bg-white/90 backdrop-blur-sm hover:bg-white transition-all shadow-lg"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
+            <Heart size={18} className="text-slate-600" />
           </Button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-6 flex flex-col flex-grow space-y-3">
+      <div className="p-5 pt-2 flex flex-col flex-grow space-y-3">
         <div className="space-y-1">
-          <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">
-            {product.brand}
-          </p>
-          <h3 className="font-bold text-slate-900 group-hover:text-[#FFCC00] transition-colors line-clamp-1 text-sm uppercase tracking-tight">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              {product.brand}
+            </p>
+            <div className="flex items-center gap-1">
+              <Star size={10} fill="#FFCC00" className="text-[#FFCC00]" />
+              <span className="text-[10px] text-slate-500 font-bold">{product.rating}</span>
+            </div>
+          </div>
+          <h3 className="font-bold text-slate-900 group-hover:text-[#0096D6] transition-colors line-clamp-1">
             {product.title}
           </h3>
         </div>
 
-        <p className="text-xs text-zinc-500 leading-relaxed line-clamp-2">
-          {shortDescription}
-        </p>
-
-        <div className="flex items-center gap-1">
-          <div className="flex text-amber-400">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                size={12}
-                fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
-                className={i < Math.floor(product.rating) ? "" : "text-zinc-200"}
-              />
-            ))}
-          </div>
-          <span className="text-[10px] text-zinc-400 font-bold">
-            ({product.reviewCount})
-          </span>
-        </div>
-
-        <div className="pt-2 flex items-baseline gap-2">
-          <span className="text-lg font-black text-slate-900">
+        <div className="flex items-baseline gap-2">
+          <span className="text-lg font-bold text-slate-900">
             ${currentPrice.toFixed(2)}
           </span>
           {product.compareAtPrice && (
-            <span className="text-sm text-zinc-400 line-through font-medium">
+            <span className="text-xs text-slate-300 line-through">
               ${product.compareAtPrice.toFixed(2)}
             </span>
           )}
         </div>
 
-        <div className="mt-auto pt-4 flex justify-end">
+        <div className="mt-auto pt-4">
           <Button
             onClick={handleAddToCart}
             disabled={currentStock === 0}
-            className="group/btn bg-black hover:bg-[#FFCC00] text-white hover:text-black rounded-none px-6 h-10 text-[10px] font-black uppercase tracking-widest transition-all duration-300 border border-black shadow-none flex items-center gap-3"
+            className="w-full bg-slate-50 hover:bg-[#0096D6] text-slate-600 hover:text-white rounded-full h-10 text-[11px] font-bold transition-all duration-300 border-none shadow-none flex items-center gap-2"
           >
-            Add to Cart
-            <ArrowRight size={14} className="transition-transform group-hover/btn:translate-x-1" />
+            <ShoppingCart size={14} /> Add to Cart
           </Button>
         </div>
       </div>

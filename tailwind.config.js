@@ -24,12 +24,12 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#FFCC00", // Renault Yellow
-          foreground: "#000000",
+          DEFAULT: "#0096D6", // HP Blue
+          foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#111111", // Deep Matte Black
-          foreground: "#FFFFFF",
+          DEFAULT: "#F1F1F1",
+          foreground: "#000000",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -40,8 +40,8 @@ module.exports = {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "#FFCC00",
-          foreground: "#000000",
+          DEFAULT: "#0096D6",
+          foreground: "#FFFFFF",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -53,9 +53,9 @@ module.exports = {
         },
       },
       borderRadius: {
-        lg: "0px",
-        md: "0px",
-        sm: "0px",
+        lg: "0.75rem",
+        md: "0.5rem",
+        sm: "0.25rem",
       },
       keyframes: {
         "accordion-down": {
