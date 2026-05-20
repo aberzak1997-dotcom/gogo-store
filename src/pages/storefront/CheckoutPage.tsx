@@ -8,13 +8,14 @@ import { useStore } from "../../context/StoreContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, CheckCircle, AlertTriangle, ArrowLeft, ShieldCheck, Truck, CreditCard, Lock, Zap, RotateCcw } from "lucide-react";
+import { Loader2, CheckCircle, AlertTriangle, ArrowLeft, ShieldCheck, Truck, CreditCard, Lock, Zap, RotateCcw, CheckCircle2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { showError } from "../../utils/toast";
 import { Product, CartItem } from "../../types";
-import { cn } from "@/lib/utils";
 
 const CheckoutPage = () => {
   const {
@@ -32,16 +33,14 @@ const CheckoutPage = () => {
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
-
+  const [paymentMethod, setPaymentMethod] = useState("card"); // 'card' or 'cod'
   const [isPlacing, setIsPlacing] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
 
   const enrichedCart = useMemo(() => {
-    return cart
-      .map(item => {
+    return cart      .map(item => {
         const product = products.find(p => p.id === item.productId);
-        if (!product) return null;
-        return { ...item, product };
+        return product ? { ...item, product } : null;
       })
       .filter(Boolean) as (CartItem & { product: Product })[];
   }, [cart, products]);
@@ -86,6 +85,9 @@ const CheckoutPage = () => {
     setIsPlacing(true);
     await new Promise(res => setTimeout(res, 2000));
 
+    // Determine payment status based on selected method
+    const paymentStatus = paymentMethod === "cod" ? "cash_on_delivery" : "unpaid";
+
     const newOrderId = createOrder({
       customerName: fullName,
       email,
@@ -93,7 +95,7 @@ const CheckoutPage = () => {
       address,
       city,
       country,
-    });
+      paymentMethod, // Pass payment method for COD tracking    });
 
     if (newOrderId) {
       setOrderId(newOrderId);
@@ -122,7 +124,7 @@ const CheckoutPage = () => {
                 </div>
                 <div className="text-right space-y-2">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Amount</p>
-                  <p className="text-xl font-black text-slate-900 tracking-tight">${total.toFixed(2)}</p>
+                  <p className="text-xl font-black text-slate-900">${total.toFixed(2)}</p>
                 </div>
               </div>
               
@@ -130,7 +132,7 @@ const CheckoutPage = () => {
               
               <div className="space-y-6">
                 <p className="text-slate-500 leading-relaxed text-center font-medium">
-                  We've sent a confirmation email to <span className="font-black text-slate-900">{email}</span> with your order details and tracking information.
+                  We've sent a confirmation email to <span className="font-black text-slate-900">{email}</span> with your order details.
                 </p>
                 <div className="bg-slate-50 p-8 rounded-none border border-slate-100 flex items-center gap-6">
                   <div className="p-4 bg-white rounded-none shadow-sm text-primary">
@@ -144,8 +146,19 @@ const CheckoutPage = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                <Button size="lg" className="flex-1 rounded-full h-16 text-sm font-black uppercase tracking-widest" onClick={() => navigate("/")}>Continue Shopping</Button>
-                <Button size="lg" variant="outline" className="flex-1 rounded-full h-16 text-sm font-black uppercase tracking-widest border-slate-200" onClick={() => navigate("/")}>View Status</Button>
+                <Button 
+                  size="lg" 
+                  className="flex-1 rounded-full h-16 text-sm font-black uppercase tracking-widest gap-3 shadow-2xl shadow-primary/20" 
+                  onClick={() => navigate("/")}>
+                  Continue Shopping
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="flex-1 rounded-full h-16 text-sm font-black uppercase tracking-widest border-slate-200" 
+                  onClick={() => navigate("/order-status")}>
+                  View Status
+                </Button>
               </div>
             </div>
           </div>
@@ -177,8 +190,6 @@ const CheckoutPage = () => {
                   </div>
                   Shipping Information
                 </h3>
-              </div>
-              <div className="p-10">
                 <form id="checkout-form" onSubmit={handlePlaceOrder} className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-3 md:col-span-2">
                     <Label htmlFor="fullName" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</Label>
@@ -205,8 +216,7 @@ const CheckoutPage = () => {
                   </div>
                   <div className="space-y-3">
                     <Label htmlFor="phone" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Phone Number</Label>
-                    <Input
-                      id="phone"
+                    <Input                      id="phone"
                       className="h-14 rounded-none border-slate-200 bg-slate-50/50 focus:bg-white transition-all"
                       value={phone}
                       onChange={e => setPhone(e.target.value)}
@@ -214,7 +224,7 @@ const CheckoutPage = () => {
                       required
                     />
                   </div>
-                  <div className="space-y-3 md:col-span-2">
+                  <div className="space-y-3">
                     <Label htmlFor="address" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Street Address</Label>
                     <Input
                       id="address"
@@ -249,64 +259,87 @@ const CheckoutPage = () => {
                   </div>
                 </form>
               </div>
-            </div>
 
-            <div className="rounded-none border border-slate-100 bg-white shadow-sm overflow-hidden">
-              <div className="bg-slate-50/50 border-b border-slate-100 p-10">
-                <h3 className="flex items-center gap-4 text-sm font-black uppercase tracking-widest text-slate-900">
-                  <div className="p-2 bg-white rounded-none text-primary shadow-sm">
-                    <CreditCard size={20} />
-                  </div>
-                  Payment Method
-                </h3>
-              </div>
-              <div className="p-10">
-                <div className="bg-slate-50 p-8 rounded-none border border-slate-100 flex items-center justify-between">
-                  <div className="flex items-center gap-6">
-                    <div className="p-4 bg-white rounded-none shadow-sm text-slate-300">
-                      <Lock size={28} />
+              <div className="rounded-none border border-slate-100 bg-white shadow-sm overflow-hidden">
+                <div className="bg-slate-50/50 border-b border-slate-100 p-10">
+                  <h3 className="flex items-center gap-4 text-sm font-black uppercase tracking-widest text-slate-900">
+                    <div className="p-2 bg-white rounded-none text-primary shadow-sm">
+                      <CreditCard size={20} />
                     </div>
-                    <div>
-                      <p className="font-black text-slate-900 uppercase tracking-widest text-xs">Secure Payment</p>
-                      <p className="text-sm text-slate-500 font-bold">Payment will be processed securely</p>
+                    Payment Method
+                  </h3>
+                  <div className="p-10">
+                    <div className="bg-slate-50 p-8 rounded-none border border-slate-100 flex items-center justify-between">
+                      <div className="flex items-center gap-6">
+                        <div className="p-4 bg-white rounded-none shadow-sm text-slate-300">
+                          <Lock size={28} />
+                        </div>
+                        <div>
+                          <p className="font-black text-slate-900 uppercase tracking-widest text-xs">Secure Payment</p>
+                          <p className="text-sm text-slate-500 font-bold">Payment will be processed securely</p>
+                        </div>
+                      </div>
+                      <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-transparent font-black text-[8px] uppercase tracking-widest px-3 py-1 rounded-none">ENCRYPTED</Badge>
                     </div>
+                    <p className="mt-8 text-[10px] text-slate-400 text-center font-bold uppercase tracking-widest">
+                      By clicking "Place Order", you agree to our Terms of Service and Privacy Policy.
+                    </p>
                   </div>
-                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-transparent font-black text-[8px] uppercase tracking-widest px-3 py-1 rounded-none">ENCRYPTED</Badge>
                 </div>
+
+                {/* Payment Method Select */}
+                <div className="space-y-3">
+                  <Label htmlFor="paymentMethod" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Payment Method</Label>
+                  <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                    <SelectTrigger className="w-full p-2 border border-slate-200 bg-slate-50/50 text-sm font-black rounded-xl h-12">
+                      <SelectValue placeholder="Select payment" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="card">Credit Card</SelectItem>
+                      <SelectItem value="cod">Cash on Delivery</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* COD Specific Note */}
+                {paymentMethod === "cod" && (
+                  <div className="flex items-center gap-2 mt-2 text-sm text-slate-500">
+                    <Info size={18} className="text-primary" />
+                    <span className="ml-2">
+                      You will be charged {total.toFixed(2)} upon delivery
+                    </span>
+                  </div>
+                )}
+
                 <p className="mt-8 text-[10px] text-slate-400 text-center font-bold uppercase tracking-widest">
                   By clicking "Place Order", you agree to our Terms of Service and Privacy Policy.
                 </p>
               </div>
             </div>
-          </div>
 
-          {/* Order Summary */}
-          <div className="lg:col-span-5">
-            <div className="sticky top-32 space-y-8">
-              <div className="rounded-none border border-slate-100 bg-white shadow-2xl shadow-slate-200/50 overflow-hidden">
-                <div className="p-10 border-b border-slate-50">
-                  <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">Order Summary</h3>
-                </div>
-                <div className="p-10 space-y-8">
-                  <div className="space-y-6 max-h-[320px] overflow-y-auto pr-4 custom-scrollbar">
-                    {enrichedCart.map(item => (
-                      <div key={item.productId} className="flex items-center gap-6">
-                        <div className="w-20 h-20 rounded-none bg-slate-50 border border-slate-50 p-3 flex-shrink-0">
-                          <img
-                            src={item.product.imageUrl}
-                            alt={item.product.title}
-                            className="w-full h-full object-contain"
-                          />
+            <div className="lg:col-span-5">
+              <div className="sticky top-32 space-y-8">
+                <div className="rounded-none border border-slate-100 bg-white shadow-2xl shadow-slate-200/50 overflow-hidden">
+                  <div className="p-10 border-b border-slate-50">
+                    <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">Order Summary</h3>
+                    <div className="divide-y divide-slate-50">
+                      {enrichedCart.map((item, i) => (
+                        <div key={i} className="flex items-center justify-between p-6">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-none bg-slate-50 border border-slate-100 p-1.5 flex-shrink-0">
+                              <img src={item.product.imageUrl} alt="" className="w-full h-full object-contain" />
+                            </div>
+                            <div className="flex-grow min-w-0">
+                              <p className="font-bold text-slate-900 text-xs uppercase tracking-tight line-clamp-1">{item.product.title}</p>
+                              <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Qty: {item.quantity}</p>
+                            </div>
+                            <p className="font-black text-slate-900 text-sm tracking-tight">
+                              ${(item.product.price * item.quantity).toFixed(2)}
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex-grow min-w-0">
-                          <p className="font-black text-slate-900 text-xs uppercase tracking-tight line-clamp-1">{item.product.title}</p>
-                          <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Qty: {item.quantity}</p>
-                        </div>
-                        <p className="font-black text-slate-900 text-sm tracking-tight">
-                          ${(item.product.price * item.quantity).toFixed(2)}
-                        </p>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
 
                   <Separator className="bg-slate-50" />
@@ -340,13 +373,14 @@ const CheckoutPage = () => {
                     disabled={isPlacing}
                   >
                     {isPlacing ? (
-                      <>
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                        Processing...
-                      </>
+
+                      <>  
+                        <Loader2 className="h-5 w-5 animate-spin" />  
+                        Processing...  
+                      </>  
                     ) : (
                       <>
-                        Place Order <Zap size={20} />
+                        Place Order <Zap size={20} />  
                       </>
                     )}
                   </Button>
@@ -362,6 +396,83 @@ const CheckoutPage = () => {
                   <RotateCcw className="text-blue-500" size={28} />
                   <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">Easy Returns</span>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Order Summary */}
+          <div className="lg:col-span-5">
+            <div className="sticky top-32 space-y-8">
+              <div className="rounded-none border border-slate-100 bg-white shadow-2xl shadow-slate-200/50 overflow-hidden">
+                <div className="p-10 border-b border-slate-50">
+                  <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">Order Summary</h3>
+                  <div className="divide-y divide-slate-50">
+                    {enrichedCart.map((item, i) => (
+                      <div key={i} className="flex items-center justify-between p-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-none bg-slate-50 border border-slate-100 p-1.5 flex-shrink-0">
+                            <img src={item.product.imageUrl} alt="" className="w-full h-full object-contain" />
+                          </div>
+                          <div className="flex-grow min-w-0">
+                            <p className="font-bold text-slate-900 text-xs uppercase tracking-tight line-clamp-1">{item.product.title}</p>
+                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Qty: {item.quantity}</p>
+                          </div>
+                          <p className="font-black text-slate-900 text-sm tracking-tight">
+                            ${(item.product.price * item.quantity).toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <Separator className="bg-slate-50" />
+
+                <div className="space-y-4">
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+                    <span className="text-slate-400">Subtotal</span>
+                    <span className="text-slate-900">${subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+                    <span className="text-slate-400">Shipping</span>
+                    <span className={cn("font-black", shipping === 0 ? "text-emerald-600" : "text-slate-900")}>
+                      {shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+                    <span className="text-slate-400">Estimated Tax (7%)</span>
+                    <span className="text-slate-900">${tax.toFixed(2)}</span>
+                  </div>
+                  <Separator className="my-6 bg-slate-50" />
+                  <div className="flex justify-between items-end">
+                    <span className="text-slate-900 font-black text-lg uppercase tracking-tighter">Total</span>
+                    <span className="text-4xl font-black text-slate-900 tracking-tighter">${total.toFixed(2)}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-slate-50 p-6 rounded-none border border-slate-100 flex flex-col items-center text-center gap-3">
+                    <ShieldCheck className="text-emerald-500" size={28} />
+                    <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">Secure Checkout</span>
+                  </div>
+                  <div className="bg-slate-50 p-6 rounded-none border border-slate-100 flex flex-col items-center text-center gap-3">
+                    <RotateCcw className="text-blue-500" size={28} />
+                    <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">Easy Returns</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-8">
+                <Link to="/">
+                  <Button size="lg" className="rounded-none h-14 px-10 font-black uppercase tracking-widest" onClick={() => navigate("/")}>
+                    Continue Shopping
+                  </Button>
+                </Link>
+                <Link to="/order-status">
+                  <Button size="lg" variant="outline" className="rounded-none h-14 px-10 font-black uppercase tracking-widest border-slate-200" onClick={() => navigate("/order-status")}>
+                    View Status
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

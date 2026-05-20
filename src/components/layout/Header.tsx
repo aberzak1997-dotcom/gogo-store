@@ -25,8 +25,7 @@ import {
   Laptop,
   Info,
   Briefcase,
-  Mail
-} from "lucide-react";
+  Mail} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore } from "../../context/StoreContext";
 import {
@@ -131,7 +130,7 @@ const Header = () => {
                     key={link.name}
                     to={link.path}
                     className={cn(
-                      "text-xs font-black uppercase tracking-widest transition-colors hover:text-[#0096D6]",
+                      "text-sm font-normal text-slate-500 group-hover:text-primary group-hover:bg-primary/5 transition-all",
                       isActive ? "text-[#0096D6]" : "text-slate-600"
                     )}
                   >
@@ -170,8 +169,7 @@ const Header = () => {
                     <DropdownMenuSeparator className="bg-slate-50" />
                     <DropdownMenuItem asChild>
                       <Link to="/admin" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                        <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><LayoutDashboard size={16} /></div> Admin Dashboard
-                      </Link>
+                        <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><LayoutDashboard size={16} /></div> Admin Dashboard                      </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
                       <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Package size={16} /></div> My Orders
@@ -197,8 +195,7 @@ const Header = () => {
                   </Button>
                 </Link>
 
-                <Button 
-                  variant="ghost" 
+                <Button                   variant="ghost" 
                   size="icon" 
                   className="lg:hidden rounded-full hover:bg-slate-50 text-slate-600"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -226,7 +223,7 @@ const Header = () => {
                   <div className="w-7 h-7 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 group-hover:text-primary group-hover:bg-primary/5 transition-all">
                     <Icon size={14} />
                   </div>
-                  <span className="text-[11px] font-semibold text-slate-500 group-hover:text-slate-900 text-center leading-tight transition-colors">
+                  <span className="text-sm font-normal text-slate-500 group-hover:text-primary group-hover:bg-primary/5 transition-colors">
                     {cat.name}
                   </span>
                 </Link>
@@ -234,7 +231,7 @@ const Header = () => {
             })}
           </nav>
           <div className="h-4 w-px bg-slate-100 mx-4" />
-          <Link to="/products" className="flex items-center gap-2 text-[11px] font-semibold text-slate-400 hover:text-slate-900 transition-colors">
+          <Link to="/products" className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-slate-900 transition-colors">
             Browse All <ChevronDown size={14} />
           </Link>
         </div>
@@ -259,8 +256,7 @@ const Header = () => {
             <form onSubmit={handleSearch} className="relative w-full mb-8">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
               <Input 
-                type="text" 
-                placeholder="Search products..." 
+                type="text"                 placeholder="Search products..." 
                 className="w-full pl-12 pr-4 h-14 bg-slate-50 border-none rounded-2xl"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -276,7 +272,7 @@ const Header = () => {
                     <Link 
                       key={link.name} 
                       to={link.path}
-                      className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl font-bold text-sm"
+                      className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl font-normal text-sm"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {link.name}
@@ -294,7 +290,7 @@ const Header = () => {
                       <Link 
                         key={cat.name} 
                         to={`/products?category=${encodeURIComponent(cat.path)}`}
-                        className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl font-bold text-sm"
+                        className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl font-normal text-sm"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <Icon size={18} className="text-[#0096D6]" /> {cat.name}
@@ -307,29 +303,30 @@ const Header = () => {
               <div className="space-y-4">
                 <Link 
                   to="/products" 
-                  className="flex items-center justify-between p-4 border-b border-slate-50 font-black text-xs uppercase tracking-widest"
+                  className="flex items-center justify-between p-4 border-b border-slate-50 font-normal text-xs uppercase tracking-widest"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   All Products <ChevronDown size={16} className="-rotate-90" />
                 </Link>
                 <Link 
                   to="/products?q=sale" 
-                  className="flex items-center justify-between p-4 border-b border-slate-50 font-black text-xs uppercase tracking-widest text-rose-600"
+                  className="flex items-center justify-between p-4 border-b border-slate-50 font-normal text-xs uppercase tracking-widest text-rose-600"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Hot Deals <Zap size={16} />
                 </Link>
               </div>
-            </div>
+              </div>
 
-            <div className="mt-auto pt-8 border-t border-slate-50">
-              <div className="flex items-center gap-4 p-4">
-                <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-400">
-                  <User size={24} />
-                </div>
-                <div>
-                  <p className="font-black text-sm uppercase tracking-tight">Guest User</p>
-                  <p className="text-xs text-slate-400">Sign in to sync your cart</p>
+              <div className="mt-auto pt-8 border-t border-slate-50">
+                <div className="flex items-center gap-4 p-4">
+                  <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-400">
+                    <User size={24} />
+                  </div>
+                  <div>
+                    <p className="font-black text-sm uppercase tracking-tight">Guest User</p>
+                    <p className="text-xs text-slate-400">Sign in to sync your cart</p>
+                  </div>
                 </div>
               </div>
             </div>
