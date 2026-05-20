@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Star, Eye, ShoppingCart, Heart } from "lucide-react";
+import { Star, Eye, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore } from "../../context/StoreContext";
 import { Product, ProductVariant } from "../../types";
@@ -119,16 +119,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </h3>
         </div>
 
-        {/* Updated Footer Section: Button in front of price */}
-        <div className="mt-auto pt-4 flex items-center gap-3">
-          <Button
-            onClick={handleAddToCart}
-            disabled={currentStock === 0}
-            size="icon"
-            className="flex-shrink-0 bg-slate-50 hover:bg-[#0096D6] text-slate-600 hover:text-white rounded-full h-9 w-9 transition-all duration-300 border-none shadow-none"
-          >
-            <ShoppingCart size={14} />
-          </Button>
+        {/* Updated Footer Section: Price left, Buy button right */}
+        <div className="mt-auto pt-4 flex items-center justify-between border-t border-slate-50">
           <div className="flex flex-col">
             <div className="flex items-baseline gap-2">
               <span className="text-base font-bold text-slate-900">
@@ -140,6 +132,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 </span>
               )}
             </div>
+          </div>
+          <div>
+            <Button
+              onClick={handleAddToCart}
+              disabled={currentStock === 0}
+              size="sm"
+              className="bg-slate-900 hover:bg-[#0096D6] text-white rounded-full px-6 h-8 text-[10px] font-black uppercase tracking-widest transition-all duration-300 shadow-md hover:shadow-lg shadow-slate-100"
+            >
+              Buy
+            </Button>
           </div>
         </div>
       </div>
