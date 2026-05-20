@@ -79,21 +79,21 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-black text-zinc-400 overflow-hidden border-r border-zinc-900">
-      <div className="p-6 border-b border-zinc-900 flex items-center justify-between h-20">
+    <div className="flex flex-col h-full bg-slate-900 text-slate-300 overflow-hidden">
+      <div className="p-6 border-b border-slate-800 flex items-center justify-between h-20">
         <div className="flex items-center gap-3 min-w-max">
-          <div className="p-2 bg-[#FFCC00] rounded-none shadow-none">
-            <LayoutDashboard size={20} className="text-black" />
+          <div className="p-2 bg-blue-600 rounded-xl shadow-lg shadow-blue-600/20">
+            <LayoutDashboard size={20} className="text-white" />
           </div>
           {!isSidebarCollapsed && (
-            <h2 className="text-lg font-black text-white tracking-tighter uppercase">
-              RENAULT<span className="text-[#FFCC00]">HUB</span>
+            <h2 className="text-xl font-black text-white tracking-tighter uppercase">
+              Seller<span className="text-blue-500">Hub</span>
             </h2>
           )}
         </div>
         <button 
           onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          className="hidden lg:flex p-1.5 hover:bg-zinc-900 rounded-none text-zinc-500 transition-colors"
+          className="hidden lg:flex p-1.5 hover:bg-slate-800 rounded-lg text-slate-500 transition-colors"
         >
           <ChevronRight className={cn("transition-transform duration-300", !isSidebarCollapsed && "rotate-180")} size={18} />
         </button>
@@ -103,7 +103,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         {sections.map((section, idx) => (
           <div key={idx} className="space-y-2">
             {!isSidebarCollapsed && (
-              <h3 className="px-4 text-[9px] font-black uppercase tracking-[0.25em] text-zinc-600 mb-4">
+              <h3 className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-4">
                 {section.title}
               </h3>
             )}
@@ -114,20 +114,20 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                   to={item.path}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-none transition-all duration-200 group relative text-xs font-black uppercase tracking-wider",
+                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative",
                     location.pathname === item.path
-                      ? "bg-[#FFCC00] text-black shadow-none"
-                      : "hover:bg-zinc-900 hover:text-white"
+                      ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                      : "hover:bg-slate-800 hover:text-white"
                   )}
                 >
-                  <item.icon size={18} className="flex-shrink-0" />
+                  <item.icon size={20} className="flex-shrink-0" />
                   {!isSidebarCollapsed && (
-                    <span className="whitespace-nowrap">
+                    <span className="font-bold text-sm whitespace-nowrap">
                       {item.label}
                     </span>
                   )}
                   {location.pathname === item.path && !isSidebarCollapsed && (
-                    <div className="absolute right-4 w-1.5 h-1.5 rounded-none bg-black" />
+                    <div className="absolute right-4 w-1.5 h-1.5 rounded-full bg-white" />
                   )}
                 </Link>
               ))}
@@ -136,23 +136,23 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         ))}
       </div>
 
-      <div className="p-4 border-t border-zinc-900 space-y-2 bg-black">
+      <div className="p-4 border-t border-slate-800 space-y-2 bg-slate-900/50 backdrop-blur-xl">
         <Link
           to="/"
-          className="flex items-center gap-3 px-4 py-3 rounded-none hover:bg-zinc-900 hover:text-white transition-all duration-200 text-xs font-black uppercase tracking-wider"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white transition-all duration-200"
         >
-          <Store size={18} className="flex-shrink-0" />
+          <Store size={20} className="flex-shrink-0" />
           {!isSidebarCollapsed && (
-            <span>Back to Store</span>
+            <span className="font-bold text-sm">Back to Store</span>
           )}
         </Link>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-none w-full text-left hover:bg-red-950/30 hover:text-red-400 transition-all duration-200 text-xs font-black uppercase tracking-wider"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left hover:bg-red-900/20 hover:text-red-400 transition-all duration-200"
         >
-          <LogOut size={18} className="flex-shrink-0" />
+          <LogOut size={20} className="flex-shrink-0" />
           {!isSidebarCollapsed && (
-            <span>Logout</span>
+            <span className="font-bold text-sm">Logout</span>
           )}
         </button>
       </div>
@@ -160,11 +160,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   );
 
   return (
-    <div className="min-h-screen flex bg-zinc-950 text-white">
+    <div className="min-h-screen flex bg-slate-50">
       {/* Desktop Sidebar */}
       <aside
         className={cn(
-          "hidden lg:block fixed inset-y-0 left-0 z-50 transition-all duration-300 ease-in-out border-r border-zinc-900",
+          "hidden lg:block fixed inset-y-0 left-0 z-50 transition-all duration-300 ease-in-out border-r border-slate-800",
           isSidebarCollapsed ? "w-20" : "w-72"
         )}
       >
@@ -172,18 +172,18 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       </aside>
 
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-20 bg-black text-white flex items-center justify-between px-6 z-50 border-b border-zinc-900">
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-20 bg-slate-900 text-white flex items-center justify-between px-6 z-50">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-[#FFCC00] rounded-none">
-            <LayoutDashboard size={20} className="text-black" />
+          <div className="p-2 bg-blue-600 rounded-xl">
+            <LayoutDashboard size={20} />
           </div>
-          <h2 className="text-sm font-black uppercase tracking-wider">RENAULTHUB</h2>
+          <h2 className="text-lg font-black uppercase tracking-tighter">SellerHub</h2>
         </div>
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="text-white hover:bg-zinc-900 rounded-none"
+          className="text-white hover:bg-slate-800"
         >
           {isMobileMenuOpen ? <X /> : <Menu />}
         </Button>
@@ -193,10 +193,10 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-40">
           <div
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(false)}
           />
-          <aside className="absolute inset-y-0 left-0 w-72 bg-black shadow-2xl">
+          <aside className="absolute inset-y-0 left-0 w-72 bg-slate-900 shadow-2xl">
             <SidebarContent />
           </aside>
         </div>
@@ -205,7 +205,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       {/* Main Content */}
       <main 
         className={cn(
-          "flex-grow pt-20 lg:pt-0 transition-all duration-300 ease-in-out bg-zinc-950",
+          "flex-grow pt-20 lg:pt-0 transition-all duration-300 ease-in-out",
           isSidebarCollapsed ? "lg:ml-20" : "lg:ml-72"
         )}
       >
