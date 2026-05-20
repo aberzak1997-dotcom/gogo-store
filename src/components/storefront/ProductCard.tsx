@@ -34,8 +34,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentStock = selectedVariant ? selectedVariant.stockQuantity : product.stockQuantity;
 
-  // New high-quality tech image for the product
-  const displayImage = selectedVariant?.imageUrl || product.imageUrl || "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?q=80&w=2070";
+  // Updated image source with the requested URL
+  const displayImage = "https://m.media-amazon.com/images/I/61UbN2cd6TL._AC_SL1500_.jpg";
 
   return (
     <Link
