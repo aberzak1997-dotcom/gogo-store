@@ -34,25 +34,32 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentStock = selectedVariant ? selectedVariant.stockQuantity : product.stockQuantity;
 
-  // Use the image URL from the dashboard, with a fallback if it's missing or broken
-  const displayImage = selectedVariant?.imageUrl || product.imageUrl || "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?q=80&w=800";
+  // Prioritize the image URL exactly as defined in the dashboard data
+  const displayImage = selectedVariant?.imageUrl || product.imageUrl || "";
 
   return (
     <Link
       to={`/product/${product.id}`}
       className="group relative bg-white border border-slate-100 flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 rounded-2xl overflow-hidden"
     >
-      {/* Image Container - Optimized for visibility */}
-      <div className="relative aspect-square overflow-hidden bg-slate-50 m-2 rounded-xl">
-        <img
-          src={displayImage}
-          alt={product.title}
-          className="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-105"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.src = "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?q=80&w=800";
-          }}
-        />
+      {/* Image Container - Optimized for dashboard images */}
+      <div className="relative aspect-square overflow-hidden bg-slate-50 m-2 rounded-xl flex items-center justify-center">
+        {displayImage ? (
+          <img
+            src={displayImage}
+            alt={product.title}
+            className="w-full h-full object-contain p-2 transition-transform duration-700 group-hover:scale-105"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              // Fallback to a clear placeholder only if the dashboard link is broken
+              target.src = "https://images.unsplash.com/photo-1560393464-5c69a73c5770?q=80&w=800&auto=format&fit=crop";
+            }}
+          />
+        ) : (
+          <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400 text-xs font-medium">
+            No Image Provided
+          </div>
+        )}
 
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
