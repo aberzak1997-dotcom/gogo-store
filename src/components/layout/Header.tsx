@@ -198,7 +198,7 @@ const Header = () => {
                   <div className="w-7 h-7 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 group-hover:text-primary group-hover:bg-primary/5 transition-all">
                     <Icon size={14} />
                   </div>
-                  <span className="text-[11px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-900 transition-colors">
+                  <span className="text-[11px] font-semibold text-slate-500 group-hover:text-slate-900 text-center leading-tight transition-colors">
                     {cat.name}
                   </span>
                 </Link>
@@ -206,7 +206,7 @@ const Header = () => {
             })}
           </nav>
           <div className="h-4 w-px bg-slate-100 mx-4" />
-          <Link to="/products" className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors">
+          <Link to="/products" className="flex items-center gap-2 text-[11px] font-semibold text-slate-400 hover:text-slate-900 transition-colors">
             Browse All <ChevronDown size={14} />
           </Link>
         </div>
