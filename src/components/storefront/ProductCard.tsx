@@ -34,8 +34,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentStock = selectedVariant ? selectedVariant.stockQuantity : product.stockQuantity;
 
-  // Updated image source with the requested URL
-  const displayImage = "https://m.media-amazon.com/images/I/61UbN2cd6TL._AC_SL1500_.jpg";
+  // Use the image URL from the dashboard (product data)
+  const displayImage = selectedVariant?.imageUrl || product.imageUrl;
 
   return (
     <Link
