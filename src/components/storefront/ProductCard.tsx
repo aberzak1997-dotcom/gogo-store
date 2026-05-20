@@ -34,20 +34,24 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentStock = selectedVariant ? selectedVariant.stockQuantity : product.stockQuantity;
 
-  // Use the image URL from the dashboard (product data)
-  const displayImage = selectedVariant?.imageUrl || product.imageUrl;
+  // Use the image URL from the dashboard, with a fallback if it's missing or broken
+  const displayImage = selectedVariant?.imageUrl || product.imageUrl || "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?q=80&w=800";
 
   return (
     <Link
       to={`/product/${product.id}`}
       className="group relative bg-white border border-slate-100 flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 rounded-2xl overflow-hidden"
     >
-      {/* Image Container - Redesigned with HP style */}
+      {/* Image Container - Optimized for visibility */}
       <div className="relative aspect-square overflow-hidden bg-slate-50 m-2 rounded-xl">
         <img
           src={displayImage}
           alt={product.title}
-          className="w-full h-full object-contain p-8 transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-105"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?q=80&w=800";
+          }}
         />
 
         {/* Badges */}
