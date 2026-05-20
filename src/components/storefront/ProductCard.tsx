@@ -41,36 +41,36 @@ const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <Link
       to={`/product/${product.id}`}
-      className="group relative bg-white border border-slate-100 flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:z-10 rounded-none"
+      className="group relative bg-white border border-zinc-200 flex flex-col h-full transition-all duration-300 hover:border-black rounded-none"
     >
       {/* Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-slate-50 rounded-none">
+      <div className="relative aspect-square overflow-hidden bg-zinc-50 rounded-none border-b border-zinc-100">
         <img
           src={selectedVariant?.imageUrl || product.imageUrl}
           alt={product.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
 
         {/* Badges */}
         <div className="absolute top-4 left-4 flex flex-col gap-2">
           {discount > 0 && (
-            <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-1 uppercase tracking-wider">
+            <span className="bg-[#FFCC00] text-black text-[10px] font-black px-3 py-1 uppercase tracking-wider">
               -{discount}%
             </span>
           )}
           {currentStock === 0 && (
-            <span className="bg-slate-900 text-white text-[10px] font-bold px-2 py-1 uppercase tracking-wider">
+            <span className="bg-black text-white text-[10px] font-black px-3 py-1 uppercase tracking-wider">
               Sold Out
             </span>
           )}
         </div>
 
         {/* Quick Actions */}
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+        <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
           <Button
             size="icon"
             variant="secondary"
-            className="rounded-full w-10 h-10 bg-white hover:bg-primary hover:text-white transition-colors"
+            className="rounded-none w-10 h-10 bg-white hover:bg-[#FFCC00] hover:text-black transition-colors border border-black"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -84,15 +84,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
       {/* Content */}
       <div className="p-6 flex flex-col flex-grow space-y-3">
         <div className="space-y-1">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+          <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">
             {product.brand}
           </p>
-          <h3 className="font-semibold text-slate-900 group-hover:text-primary transition-colors line-clamp-1">
+          <h3 className="font-bold text-slate-900 group-hover:text-[#FFCC00] transition-colors line-clamp-1 text-sm uppercase tracking-tight">
             {product.title}
           </h3>
         </div>
 
-        <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
+        <p className="text-xs text-zinc-500 leading-relaxed line-clamp-2">
           {shortDescription}
         </p>
 
@@ -103,21 +103,21 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 key={i}
                 size={12}
                 fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
-                className={i < Math.floor(product.rating) ? "" : "text-slate-200"}
+                className={i < Math.floor(product.rating) ? "" : "text-zinc-200"}
               />
             ))}
           </div>
-          <span className="text-[10px] text-slate-400 font-medium">
+          <span className="text-[10px] text-zinc-400 font-bold">
             ({product.reviewCount})
           </span>
         </div>
 
         <div className="pt-2 flex items-baseline gap-2">
-          <span className="text-lg font-bold text-slate-900">
+          <span className="text-lg font-black text-slate-900">
             ${currentPrice.toFixed(2)}
           </span>
           {product.compareAtPrice && (
-            <span className="text-sm text-slate-400 line-through">
+            <span className="text-sm text-zinc-400 line-through font-medium">
               ${product.compareAtPrice.toFixed(2)}
             </span>
           )}
@@ -127,12 +127,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <Button
             onClick={handleAddToCart}
             disabled={currentStock === 0}
-            className="group/btn bg-slate-100 hover:bg-black text-black hover:text-white rounded-full pl-6 pr-1.5 h-10 text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border border-slate-500/50 shadow-none flex items-center gap-3"
+            className="group/btn bg-black hover:bg-[#FFCC00] text-white hover:text-black rounded-none px-6 h-10 text-[10px] font-black uppercase tracking-widest transition-all duration-300 border border-black shadow-none flex items-center gap-3"
           >
             Add to Cart
-            <div className="w-7 h-7 rounded-full bg-white group-hover/btn:bg-white/20 flex items-center justify-center transition-colors">
-              <ArrowRight size={14} className="text-black group-hover/btn:text-white" />
-            </div>
+            <ArrowRight size={14} className="transition-transform group-hover/btn:translate-x-1" />
           </Button>
         </div>
       </div>

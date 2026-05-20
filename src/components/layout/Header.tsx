@@ -64,35 +64,37 @@ const Header = () => {
 
   return (
     <header 
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+      className={`sticky top-0 z-50 w-full transition-all duration-300 rounded-none ${
         isScrolled 
-          ? "bg-white/80 backdrop-blur-md border-b border-slate-100 py-3 shadow-sm" 
-          : "bg-white border-b border-slate-50 py-5"
+          ? "bg-black text-white border-b border-zinc-800 py-3 shadow-lg" 
+          : "bg-black text-white border-b border-zinc-900 py-5"
       }`}
     >
       <div className="section-container">
         <div className="flex items-center justify-between gap-8">
           {/* Logo */}
           <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 bg-[#0C0587] rounded-xl flex items-center justify-center text-white shadow-lg shadow-[#0C0587]/20 group-hover:scale-105 transition-transform">
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 bg-[#FFCC00] rounded-none flex items-center justify-center text-black shadow-none transition-transform">
                 <Zap size={22} fill="currentColor" />
               </div>
-              <span className="font-black text-xl tracking-tighter text-slate-900">ELECTRO<span className="text-[#0C0587]">STORE</span></span>
+              <span className="font-black text-xl tracking-tighter text-white uppercase">
+                RENAULT<span className="text-[#FFCC00]">TECH</span>
+              </span>
             </Link>
             
             {/* Desktop Main Nav */}
             <nav className="hidden lg:flex items-center gap-1">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="gap-1 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-full px-4">
+                  <Button variant="ghost" className="gap-1 text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-white hover:bg-zinc-900 rounded-none px-4">
                     Categories <ChevronDown size={14} />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-56 p-2 rounded-2xl">
+                <DropdownMenuContent align="start" className="w-56 p-2 rounded-none bg-black border border-zinc-800 text-white">
                   {categories.map((cat) => (
                     <DropdownMenuItem key={cat} asChild>
-                      <Link to={`/products?category=${encodeURIComponent(cat)}`} className="cursor-pointer rounded-xl py-2.5">
+                      <Link to={`/products?category=${encodeURIComponent(cat)}`} className="cursor-pointer rounded-none py-2.5 hover:bg-zinc-900 hover:text-[#FFCC00] font-bold text-xs uppercase tracking-wider">
                         {cat}
                       </Link>
                     </DropdownMenuItem>
@@ -100,12 +102,12 @@ const Header = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
               <Link to="/products">
-                <Button variant="ghost" className="text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-full px-4">
+                <Button variant="ghost" className="text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-white hover:bg-zinc-900 rounded-none px-4">
                   All Products
                 </Button>
               </Link>
               <Link to="/deals">
-                <Button variant="ghost" className="text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-full px-4">
+                <Button variant="ghost" className="text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-white hover:bg-zinc-900 rounded-none px-4">
                   Deals
                 </Button>
               </Link>
@@ -115,11 +117,11 @@ const Header = () => {
           {/* Search Bar */}
           <div className="hidden md:flex flex-1 max-w-md">
             <form onSubmit={handleSearch} className="relative w-full group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#0C0587] transition-colors" size={18} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#FFCC00] transition-colors" size={18} />
               <Input 
                 type="text" 
-                placeholder="Search products..." 
-                className="w-full pl-12 pr-4 h-11 bg-slate-50 border-none rounded-full focus-visible:ring-2 focus-visible:ring-[#0C0587]/20 transition-all"
+                placeholder="SEARCH PRODUCTS..." 
+                className="w-full pl-12 pr-4 h-11 bg-zinc-900 border border-zinc-800 text-white rounded-none focus-visible:ring-2 focus-visible:ring-[#FFCC00]/50 transition-all text-xs font-bold uppercase tracking-wider"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -130,36 +132,36 @@ const Header = () => {
           <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-50 text-slate-600">
+                <Button variant="ghost" size="icon" className="rounded-none hover:bg-zinc-900 text-zinc-300 hover:text-white">
                   <User size={22} />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl">
-                <DropdownMenuLabel className="font-bold px-3 py-2">My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
+              <DropdownMenuContent align="end" className="w-56 p-2 rounded-none bg-black border border-zinc-800 text-white">
+                <DropdownMenuLabel className="font-black text-xs uppercase tracking-wider px-3 py-2 text-zinc-400">My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-zinc-800" />
                 <DropdownMenuItem asChild>
-                  <Link to="/admin" className="cursor-pointer rounded-xl py-2.5 gap-3">
-                    <LayoutDashboard size={18} className="text-slate-400" /> Admin Dashboard
+                  <Link to="/admin" className="cursor-pointer rounded-none py-2.5 gap-3 hover:bg-zinc-900 text-xs font-bold uppercase tracking-wider">
+                    <LayoutDashboard size={18} className="text-zinc-500" /> Admin Dashboard
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer rounded-xl py-2.5 gap-3">
-                  <Package size={18} className="text-slate-400" /> My Orders
+                <DropdownMenuItem className="cursor-pointer rounded-none py-2.5 gap-3 hover:bg-zinc-900 text-xs font-bold uppercase tracking-wider">
+                  <Package size={18} className="text-zinc-500" /> My Orders
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer rounded-xl py-2.5 gap-3">
-                  <Settings size={18} className="text-slate-400" /> Settings
+                <DropdownMenuItem className="cursor-pointer rounded-none py-2.5 gap-3 hover:bg-zinc-900 text-xs font-bold uppercase tracking-wider">
+                  <Settings size={18} className="text-zinc-500" /> Settings
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer rounded-xl py-2.5 gap-3 text-red-600 focus:text-red-600 focus:bg-red-50">
+                <DropdownMenuSeparator className="bg-zinc-800" />
+                <DropdownMenuItem className="cursor-pointer rounded-none py-2.5 gap-3 text-red-500 hover:bg-zinc-900 text-xs font-bold uppercase tracking-wider">
                   <LogOut size={18} /> Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
             <Link to="/checkout">
-              <Button variant="ghost" size="icon" className="relative rounded-full hover:bg-slate-50 text-slate-600">
+              <Button variant="ghost" size="icon" className="relative rounded-none hover:bg-zinc-900 text-zinc-300 hover:text-white">
                 <ShoppingCart size={22} />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#0C0587] text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                  <span className="absolute -top-1 -right-1 bg-[#FFCC00] text-black text-[10px] font-black w-5 h-5 rounded-none flex items-center justify-center border border-black shadow-sm">
                     {cartCount}
                   </span>
                 )}
@@ -169,7 +171,7 @@ const Header = () => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="lg:hidden rounded-full hover:bg-slate-50 text-slate-600"
+              className="lg:hidden rounded-none hover:bg-zinc-900 text-zinc-300 hover:text-white"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -180,40 +182,40 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-white border-b border-slate-100 p-6 space-y-6 shadow-xl animate-in slide-in-from-top duration-300">
+        <div className="lg:hidden absolute top-full left-0 w-full bg-black border-b border-zinc-800 p-6 space-y-6 shadow-xl">
           <form onSubmit={handleSearch} className="relative w-full">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
             <Input 
               type="text" 
-              placeholder="Search products..." 
-              className="w-full pl-12 pr-4 h-12 bg-slate-50 border-none rounded-2xl"
+              placeholder="SEARCH PRODUCTS..." 
+              className="w-full pl-12 pr-4 h-12 bg-zinc-900 border border-zinc-800 text-white rounded-none text-xs font-bold uppercase tracking-wider"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </form>
           <nav className="flex flex-col gap-2">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider px-4 mb-2">Categories</p>
+            <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest px-4 mb-2">Categories</p>
             {categories.map((cat) => (
               <Link 
                 key={cat} 
                 to={`/products?category=${encodeURIComponent(cat)}`}
-                className="px-4 py-3 text-slate-600 hover:text-[#0C0587] hover:bg-slate-50 rounded-2xl transition-colors font-medium"
+                className="px-4 py-3 text-zinc-300 hover:text-[#FFCC00] hover:bg-zinc-900 rounded-none transition-colors font-bold text-xs uppercase tracking-wider"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {cat}
               </Link>
             ))}
-            <div className="h-px bg-slate-100 my-2 mx-4" />
+            <div className="h-px bg-zinc-800 my-2 mx-4" />
             <Link 
               to="/products" 
-              className="px-4 py-3 text-slate-600 hover:text-[#0C0587] hover:bg-slate-50 rounded-2xl transition-colors font-medium"
+              className="px-4 py-3 text-zinc-300 hover:text-[#FFCC00] hover:bg-zinc-900 rounded-none transition-colors font-bold text-xs uppercase tracking-wider"
               onClick={() => setIsMenuOpen(false)}
             >
               All Products
             </Link>
             <Link 
               to="/deals" 
-              className="px-4 py-3 text-slate-600 hover:text-[#0C0587] hover:bg-slate-50 rounded-2xl transition-colors font-medium"
+              className="px-4 py-3 text-zinc-300 hover:text-[#FFCC00] hover:bg-zinc-900 rounded-none transition-colors font-bold text-xs uppercase tracking-wider"
               onClick={() => setIsMenuOpen(false)}
             >
               Deals

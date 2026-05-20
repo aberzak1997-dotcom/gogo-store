@@ -24,12 +24,12 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#0C0587",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "#FFCC00", // Renault Yellow
+          foreground: "#000000",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "#111111", // Deep Matte Black
+          foreground: "#FFFFFF",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -40,8 +40,8 @@ module.exports = {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "#FFCC00",
+          foreground: "#000000",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -53,9 +53,9 @@ module.exports = {
         },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        lg: "0px",
+        md: "0px",
+        sm: "0px",
       },
       keyframes: {
         "accordion-down": {

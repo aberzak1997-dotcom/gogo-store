@@ -112,11 +112,11 @@ const HomePage = () => {
         {!categoryParam && !searchParam && (
           <section className="relative pt-0 mb-[5px] px-[5px]">
             <div className="w-full">
-              <div className="relative overflow-hidden bg-slate-900 min-h-[500px] md:min-h-[600px] flex items-center w-full py-5 rounded-none">
+              <div className="relative overflow-hidden bg-black min-h-[500px] md:min-h-[600px] flex items-center w-full py-5 rounded-none border-b-4 border-[#FFCC00]">
                 {/* YouTube Video Background */}
                 <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
                   <iframe
-                    className="absolute top-1/2 left-1/2 w-[300%] h-[300%] -translate-x-1/2 -translate-y-1/2 opacity-50"
+                    className="absolute top-1/2 left-1/2 w-[300%] h-[300%] -translate-x-1/2 -translate-y-1/2 opacity-40"
                     src="https://www.youtube.com/embed/H41fuhz_gvw?autoplay=1&mute=1&loop=1&playlist=H41fuhz_gvw&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1"
                     title="Hero Background Video"
                     frameBorder="0"
@@ -126,17 +126,17 @@ const HomePage = () => {
                 </div>
 
                 {/* Overlay for better text contrast */}
-                <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent" />
 
                 <div className="relative z-10 px-8 md:px-20 max-w-3xl space-y-8">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] font-medium uppercase tracking-wider shadow-sm">
-                    <Zap size={12} className="text-primary" /> Next-Gen Tech
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-none bg-[#FFCC00] text-black text-[10px] font-black uppercase tracking-widest shadow-none">
+                    <Zap size={12} fill="currentColor" /> HIGH PERFORMANCE TECH
                   </div>
-                  <h1 className="text-5xl md:text-7xl font-semibold text-white tracking-tight leading-[1.1]">
-                    Upgrade your <br />
-                    <span className="text-primary">tech setup.</span>
+                  <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-[1.0] uppercase">
+                    ENGINEERED FOR <br />
+                    <span className="text-[#FFCC00]">PRECISION.</span>
                   </h1>
-                  <p className="text-lg text-slate-300 leading-relaxed font-normal max-w-lg">
+                  <p className="text-base text-zinc-300 leading-relaxed font-medium max-w-lg uppercase tracking-wider">
                     Premium electronics and accessories designed for modern
                     life. Minimal design, maximum performance.
                   </p>
@@ -144,7 +144,7 @@ const HomePage = () => {
                     <Link to="/products">
                       <Button
                         size="lg"
-                        className="rounded-full px-8 h-12 text-sm font-medium shadow-sm bg-primary hover:bg-primary/90 text-white border-none"
+                        className="rounded-none px-8 h-14 text-xs font-black uppercase tracking-widest shadow-none bg-[#FFCC00] hover:bg-white text-black border-none"
                       >
                         Shop Collection
                       </Button>
@@ -153,7 +153,7 @@ const HomePage = () => {
                       <Button
                         size="lg"
                         variant="outline"
-                        className="rounded-full px-8 h-12 text-sm font-medium border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white/20"
+                        className="rounded-none px-8 h-14 text-xs font-black uppercase tracking-widest border-zinc-700 bg-transparent text-white hover:bg-white hover:text-black"
                       >
                         View Deals
                       </Button>
@@ -169,39 +169,39 @@ const HomePage = () => {
         {!categoryParam && !searchParam && (
           <section className="py-0 mx-[5px]">
             <div className="w-full grid md:grid-cols-2 gap-[5px]">
-              <div className="group relative overflow-hidden border border-slate-100 bg-slate-900 text-white p-10 min-h-[360px] flex flex-col justify-end rounded-none">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center scale-[1.02]" />
+              <div className="group relative overflow-hidden border border-zinc-800 bg-black text-white p-10 min-h-[360px] flex flex-col justify-end rounded-none">
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center scale-[1.02] opacity-60" />
                 <div className="absolute inset-0 bg-black/40" />
                 <div className="relative z-10 space-y-[15px]">
-                  <h3 className="text-3xl font-semibold tracking-tight">
+                  <h3 className="text-3xl font-black tracking-tight uppercase">
                     Gaming Essentials
                   </h3>
-                  <p className="text-slate-100 max-w-xs text-sm drop-shadow-md">
+                  <p className="text-zinc-300 max-w-xs text-xs font-bold uppercase tracking-wider">
                     Pro‑grade gear for the ultimate performance.
                   </p>
                   <Link to="/products?category=Gaming Accessories">
                     <Button
                       variant="secondary"
-                      className="rounded-full px-[29px] h-10 text-xs font-medium mt-[15px]"
+                      className="rounded-none px-[29px] h-12 text-xs font-black uppercase tracking-widest mt-[15px] bg-[#FFCC00] text-black hover:bg-white"
                     >
                       Explore
                     </Button>
                   </Link>
                 </div>
               </div>
-              <div className="group relative overflow-hidden border border-slate-100 p-10 min-h-[360px] flex flex-col justify-end rounded-none">
-                <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7279320/pexels-photo-7279320.jpeg')] bg-cover bg-center scale-[1.02]" />
+              <div className="group relative overflow-hidden border border-zinc-800 bg-black p-10 min-h-[360px] flex flex-col justify-end rounded-none">
+                <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7279320/pexels-photo-7279320.jpeg')] bg-cover bg-center scale-[1.02] opacity-60" />
                 <div className="relative z-10 space-y-[15px]">
-                  <h3 className="text-3xl font-semibold tracking-tight text-white">
+                  <h3 className="text-3xl font-black tracking-tight text-white uppercase">
                     Work Setup
                   </h3>
-                  <p className="text-white max-w-xs text-sm drop-shadow-sm">
+                  <p className="text-zinc-300 max-w-xs text-xs font-bold uppercase tracking-wider">
                     Minimal accessories for maximum productivity.
                   </p>
                   <Link to="/products?category=Laptop Accessories">
                     <Button
                       variant="outline"
-                      className="rounded-full px-[29px] h-10 text-xs font-medium border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white/20 mt-[15px]"
+                      className="rounded-none px-[29px] h-12 text-xs font-black uppercase tracking-widest border-zinc-700 bg-transparent text-white hover:bg-[#FFCC00] hover:text-black mt-[15px]"
                     >
                       Explore
                     </Button>
@@ -217,29 +217,29 @@ const HomePage = () => {
 
         {/* Popular Categories */}
         {!categoryParam && !searchParam && (
-          <section className="py-24">
+          <section className="py-24 bg-zinc-50">
             <div className="section-container px-6">
               <div className="flex items-end justify-between mb-12">
                 <div className="space-y-1">
-                  <h2 className="text-3xl font-semibold text-slate-900">
+                  <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tight">
                     Categories
                   </h2>
-                  <p className="text-slate-500 text-sm">Find gear by category</p>
+                  <p className="text-zinc-500 text-xs font-bold uppercase tracking-wider">Find gear by category</p>
                 </div>
-                <Link to="/products" className="text-sm font-medium text-primary hover:underline">
+                <Link to="/products" className="text-xs font-black uppercase tracking-widest text-black hover:text-[#FFCC00] hover:underline">
                   View all
                 </Link>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {categories.map((cat) => {
                   const Icon = cat.icon;
                   return (
                     <Link key={cat.name} to={cat.path} className="group">
-                      <div className="bg-[#0C0587]/5 p-6 rounded-none border border-[#0C0587]/10 flex flex-col items-center justify-center gap-6 transition-all duration-300 hover:bg-white hover:shadow-sm hover:border-[#0C0587]/20 h-full">
-                        <div className="w-16 h-16 flex items-center justify-center">
-                          <Icon size={32} className="text-black" />
+                      <div className="bg-white p-8 rounded-none border border-zinc-200 flex flex-col items-center justify-center gap-6 transition-all duration-300 hover:border-black h-full">
+                        <div className="w-16 h-16 flex items-center justify-center text-black group-hover:text-[#FFCC00] transition-colors">
+                          <Icon size={32} />
                         </div>
-                        <span className="font-medium text-xs text-slate-600 group-hover:text-slate-900">
+                        <span className="font-black text-xs text-zinc-600 group-hover:text-black uppercase tracking-wider">
                           {cat.name}
                         </span>
                       </div>
@@ -256,14 +256,14 @@ const HomePage = () => {
           <div className="section-container px-6">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
               <div className="space-y-1">
-                <h2 className="text-3xl font-semibold text-slate-900">
+                <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tight">
                   {categoryParam
                     ? categoryParam
                     : searchParam
                     ? `Search: "${searchParam}"`
-                    : "Featured"}
+                    : "Featured Gear"}
                 </h2>
-                <p className="text-slate-500 text-sm">
+                <p className="text-zinc-500 text-xs font-bold uppercase tracking-wider">
                   {filteredProducts.length} items available
                 </p>
               </div>
@@ -271,7 +271,7 @@ const HomePage = () => {
                 <Link to="/">
                   <Button
                     variant="ghost"
-                    className="gap-2 text-xs font-medium text-slate-500"
+                    className="gap-2 text-xs font-black uppercase tracking-widest text-zinc-500 hover:text-black"
                   >
                     Clear filters <X size={14} />
                   </Button>
@@ -280,16 +280,16 @@ const HomePage = () => {
             </div>
 
             {filteredProducts.length === 0 ? (
-              <div className="py-24 text-center bg-slate-50 rounded-none border border-dashed border-slate-200">
-                <h3 className="text-xl font-medium text-slate-900">
+              <div className="py-24 text-center bg-zinc-50 rounded-none border border-dashed border-zinc-300">
+                <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">
                   No items found
                 </h3>
-                <p className="text-slate-500 mt-1 text-sm">
+                <p className="text-zinc-500 mt-1 text-xs font-bold uppercase tracking-wider">
                   Try a different search term.
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {featuredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -300,22 +300,22 @@ const HomePage = () => {
 
         {/* Reasons to Buy */}
         {!categoryParam && !searchParam && (
-          <section className="py-24 bg-slate-50/50 border-y border-slate-100">
+          <section className="py-24 bg-black text-white border-y border-zinc-900">
             <div className="section-container px-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                  { icon: Truck, title: "Free Shipping", desc: "On orders over $50", color: "bg-[#0C0587]/5 text-[#0C0587]" },
-                  { icon: ShieldCheck, title: "Secure Payment", desc: "100% encrypted", color: "bg-green-50 text-green-600" },
-                  { icon: RotateCcw, title: "Easy Returns", desc: "30-day window", color: "bg-orange-50 text-orange-600" },
-                  { icon: Star, title: "Warranty", desc: "1-year included", color: "bg-purple-50 text-purple-600" },
+                  { icon: Truck, title: "Free Shipping", desc: "On orders over $50", color: "bg-zinc-900 text-[#FFCC00]" },
+                  { icon: ShieldCheck, title: "Secure Payment", desc: "100% encrypted", color: "bg-zinc-900 text-[#FFCC00]" },
+                  { icon: RotateCcw, title: "Easy Returns", desc: "30-day window", color: "bg-zinc-900 text-[#FFCC00]" },
+                  { icon: Star, title: "Warranty", desc: "1-year included", color: "bg-zinc-900 text-[#FFCC00]" },
                 ].map((item, i) => (
-                  <div key={i} className="group bg-white p-8 rounded-none border border-slate-100 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1">
+                  <div key={i} className="group bg-zinc-950 p-8 rounded-none border border-zinc-900 transition-all duration-300 hover:border-[#FFCC00]">
                     <div className={cn("w-12 h-12 rounded-none flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110", item.color)}>
                       <item.icon size={24} />
                     </div>
                     <div className="space-y-2">
-                      <h4 className="font-bold text-base text-slate-900">{item.title}</h4>
-                      <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
+                      <h4 className="font-black text-base text-white uppercase tracking-wider">{item.title}</h4>
+                      <p className="text-sm text-zinc-400 leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
