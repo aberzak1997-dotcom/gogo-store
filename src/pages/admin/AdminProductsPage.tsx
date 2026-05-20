@@ -23,6 +23,7 @@ import {
   Library,
 } from "lucide-react";
 import { showError } from "../../utils/toast";
+import { cn } from "@/lib/utils";
 
 const AdminProductsPage = () => {
   const { 
