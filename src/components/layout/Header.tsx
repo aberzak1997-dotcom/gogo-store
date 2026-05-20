@@ -102,78 +102,79 @@ const Header = () => {
       )}>
         <div className="section-container">
           <div className="flex items-center justify-between gap-8">
-            {/* Logo and Search Group */}
-            <div className="flex items-center gap-12 flex-1">
-              <Link to="/" className="flex items-center gap-2 group flex-shrink-0">
-                <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-slate-900/10 group-hover:scale-105 transition-transform">
-                  <Zap size={22} fill="currentColor" className="text-[#0096D6]" />
-                </div>
-                <span className="font-black text-xl tracking-tighter text-slate-900 uppercase">ELECTRO<span className="text-[#0096D6]">STORE</span></span>
-              </Link>
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2 group flex-shrink-0">
+              <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-slate-900/10 group-hover:scale-105 transition-transform">
+                <Zap size={22} fill="currentColor" className="text-[#0096D6]" />
+              </div>
+              <span className="font-black text-xl tracking-tighter text-slate-900 uppercase">ELECTRO<span className="text-[#0096D6]">STORE</span></span>
+            </Link>
 
-              {/* Desktop Search - Shortened and aligned left */}
-              <div className="hidden md:flex w-full max-w-[280px]">
+            {/* Right Side Search & Actions */}
+            <div className="flex items-center gap-4">
+              {/* Desktop Search - Aligned to the right */}
+              <div className="hidden md:flex w-full max-w-[220px]">
                 <form onSubmit={handleSearch} className="relative w-full group">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#0096D6] transition-colors" size={18} />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#0096D6] transition-colors" size={16} />
                   <Input 
                     type="text" 
-                    placeholder="Search premium tech gear..." 
-                    className="w-full pl-12 pr-4 h-[44px] bg-slate-50 border-none rounded-full focus-visible:ring-2 focus-visible:ring-[#0096D6]/20 transition-all text-[11px] font-semibold text-slate-500 leading-tight"
+                    placeholder="Search gear..." 
+                    className="w-full pl-10 pr-4 h-[40px] bg-slate-50 border-none rounded-full focus-visible:ring-2 focus-visible:ring-[#0096D6]/20 transition-all text-[11px] font-semibold text-slate-500 leading-tight"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </form>
               </div>
-            </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-1">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-50 text-slate-600">
-                    <User size={22} />
+              {/* Actions */}
+              <div className="flex items-center gap-1">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-50 text-slate-600">
+                      <User size={22} />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl shadow-2xl border-none">
+                    <DropdownMenuLabel className="font-black text-xs uppercase tracking-widest text-slate-400 px-4 py-3">Account Portal</DropdownMenuLabel>
+                    <DropdownMenuSeparator className="bg-slate-50" />
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
+                        <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><LayoutDashboard size={16} /></div> Admin Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
+                      <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Package size={16} /></div> My Orders
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
+                      <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Settings size={16} /></div> Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-slate-50" />
+                    <DropdownMenuItem className="cursor-pointer rounded-xl py-3 px-4 gap-3 text-red-600 focus:text-red-600 focus:bg-red-50 font-black text-xs uppercase tracking-widest">
+                      <LogOut size={16} /> Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <Link to="/checkout">
+                  <Button variant="ghost" size="icon" className="relative rounded-full hover:bg-slate-50 text-slate-600">
+                    <ShoppingCart size={22} />
+                    {cartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-[#0096D6] text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                        {cartCount}
+                      </span>
+                    )}
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl shadow-2xl border-none">
-                  <DropdownMenuLabel className="font-black text-xs uppercase tracking-widest text-slate-400 px-4 py-3">Account Portal</DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-slate-50" />
-                  <DropdownMenuItem asChild>
-                    <Link to="/admin" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                      <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><LayoutDashboard size={16} /></div> Admin Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                    <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Package size={16} /></div> My Orders
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                    <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Settings size={16} /></div> Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-slate-50" />
-                  <DropdownMenuItem className="cursor-pointer rounded-xl py-3 px-4 gap-3 text-red-600 focus:text-red-600 focus:bg-red-50 font-black text-xs uppercase tracking-widest">
-                    <LogOut size={16} /> Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                </Link>
 
-              <Link to="/checkout">
-                <Button variant="ghost" size="icon" className="relative rounded-full hover:bg-slate-50 text-slate-600">
-                  <ShoppingCart size={22} />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-[#0096D6] text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
-                      {cartCount}
-                    </span>
-                  )}
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="lg:hidden rounded-full hover:bg-slate-50 text-slate-600"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                  {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </Button>
-              </Link>
-
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="lg:hidden rounded-full hover:bg-slate-50 text-slate-600"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </Button>
+              </div>
             </div>
           </div>
         </div>
