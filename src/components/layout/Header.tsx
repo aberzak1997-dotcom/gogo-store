@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { 
   Search, 
   ShoppingCart, 
@@ -22,7 +22,10 @@ import {
   Headphones,
   Gamepad2,
   HardDrive,
-  Laptop
+  Laptop,
+  Info,
+  Briefcase,
+  Mail
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore } from "../../context/StoreContext";
@@ -43,6 +46,7 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { cart } = useStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -69,6 +73,14 @@ const Header = () => {
     { name: "Laptops", icon: Laptop, path: "Laptop Accessories" },
     { name: "Gaming", icon: Gamepad2, path: "Gaming Accessories" },
     { name: "Storage", icon: HardDrive, path: "Storage Devices" },
+  ];
+
+  const navLinks = [
+    { name: "Products", path: "/products" },
+    { name: "Deals", path: "/products?q=sale" },
+    { name: "About Us", path: "/about" },
+    { name: "Careers", path: "/careers" },
+    { name: "Contact Us", path: "/contact" },
   ];
 
   return (
@@ -109,6 +121,25 @@ const Header = () => {
               </div>
               <span className="font-black text-xl tracking-tighter text-slate-900 uppercase">ELECTRO<span className="text-[#0096D6]">STORE</span></span>
             </Link>
+
+            {/* Desktop Navigation Links */}
+            <nav className="hidden md:flex items-center gap-6">
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.path || (link.path.includes('?') && location.pathname + location.search === link.path);
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={cn(
+                      "text-xs font-black uppercase tracking-widest transition-colors hover:text-[#0096D6]",
+                      isActive ? "text-[#0096D6]" : "text-slate-600"
+                    )}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+            </nav>
 
             {/* Right Side Search & Actions */}
             <div className="flex items-center gap-4">
@@ -237,6 +268,23 @@ const Header = () => {
             </form>
 
             <div className="space-y-8 overflow-y-auto">
+              {/* Main Navigation Links for Mobile */}
+              <div className="space-y-2">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2 mb-4">Navigation</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {navLinks.map((link) => (
+                    <Link 
+                      key={link.name} 
+                      to={link.path}
+                      className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl font-bold text-sm"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2 mb-4">Popular Categories</p>
                 <div className="grid grid-cols-2 gap-2">
@@ -265,7 +313,7 @@ const Header = () => {
                   All Products <ChevronDown size={16} className="-rotate-90" />
                 </Link>
                 <Link 
-                  to="/deals" 
+                  to="/products?q=sale" 
                   className="flex items-center justify-between p-4 border-b border-slate-50 font-black text-xs uppercase tracking-widest text-rose-600"
                   onClick={() => setIsMenuOpen(false)}
                 >
