@@ -45,6 +45,13 @@ const ProductsPage = () => {
   const [minRating, setMinRating] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState<string>("featured");
 
+  // Collapsible Section States
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(true);
+  const [isPriceOpen, setIsPriceOpen] = useState(true);
+  const [isBrandsOpen, setIsBrandsOpen] = useState(true);
+  const [isConditionOpen, setIsConditionOpen] = useState(true);
+  const [isRatingOpen, setIsRatingOpen] = useState(true);
+
   // Reset filters when category changes
   useEffect(() => {
     setSelectedBrands([]);
@@ -273,169 +280,201 @@ const ProductsPage = () => {
             
             {/* Categories Section */}
             <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 flex items-center gap-2.5 pb-3 border-b border-slate-50">
-                <SlidersHorizontal size={14} className="text-primary" /> Categories
-              </h3>
-              <div className="space-y-1">
-                <button
-                  onClick={() => {
-                    searchParams.delete("category");
-                    setSearchParams(searchParams);
-                  }}
-                  className={cn(
-                    "w-full text-left px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between",
-                    categoryParam === "all" ? "bg-primary/5 text-primary" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-                  )}
-                >
-                  All Products
-                  {categoryParam === "all" && <Check size={14} />}
-                </button>
-                {categories.map((cat) => (
+              <button 
+                onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+                className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 pb-3 border-b border-slate-50"
+              >
+                <span className="flex items-center gap-2.5">
+                  <SlidersHorizontal size={14} className="text-primary" /> Categories
+                </span>
+                <ChevronDown size={14} className={cn("text-slate-400 transition-transform duration-200", isCategoriesOpen && "rotate-180")} />
+              </button>
+              {isCategoriesOpen && (
+                <div className="space-y-1 animate-in fade-in duration-200">
                   <button
-                    key={cat.name}
                     onClick={() => {
-                      searchParams.set("category", cat.path);
+                      searchParams.delete("category");
                       setSearchParams(searchParams);
                     }}
                     className={cn(
                       "w-full text-left px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between",
-                      categoryParam === cat.path ? "bg-primary/5 text-primary" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                      categoryParam === "all" ? "bg-primary/5 text-primary" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                     )}
                   >
-                    <span className="flex items-center gap-2">
-                      <cat.icon size={14} className="text-slate-400" />
-                      {cat.name}
-                    </span>
-                    {categoryParam === cat.path && <Check size={14} />}
+                    All Products
+                    {categoryParam === "all" && <Check size={14} />}
                   </button>
-                ))}
-              </div>
+                  {categories.map((cat) => (
+                    <button
+                      key={cat.name}
+                      onClick={() => {
+                        searchParams.set("category", cat.path);
+                        setSearchParams(searchParams);
+                      }}
+                      className={cn(
+                        "w-full text-left px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between",
+                        categoryParam === cat.path ? "bg-primary/5 text-primary" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                      )}
+                    >
+                      <span className="flex items-center gap-2">
+                        <cat.icon size={14} className="text-slate-400" />
+                        {cat.name}
+                      </span>
+                      {categoryParam === cat.path && <Check size={14} />}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Price Range Section */}
             <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 flex items-center gap-2.5 pb-3 border-b border-slate-50">
-                Price Range
-              </h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <div className="relative flex-1">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">$</span>
-                    <Input
-                      type="number"
-                      placeholder="Min"
-                      value={minPrice}
-                      onChange={(e) => setMinPrice(e.target.value)}
-                      className="pl-7 h-10 rounded-xl text-xs font-bold border-slate-200"
-                    />
+              <button 
+                onClick={() => setIsPriceOpen(!isPriceOpen)}
+                className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 pb-3 border-b border-slate-50"
+              >
+                <span>Price Range</span>
+                <ChevronDown size={14} className={cn("text-slate-400 transition-transform duration-200", isPriceOpen && "rotate-180")} />
+              </button>
+              {isPriceOpen && (
+                <div className="space-y-3 animate-in fade-in duration-200">
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex-1">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">$</span>
+                      <Input
+                        type="number"
+                        placeholder="Min"
+                        value={minPrice}
+                        onChange={(e) => setMinPrice(e.target.value)}
+                        className="pl-7 h-10 rounded-xl text-xs font-bold border-slate-200"
+                      />
+                    </div>
+                    <span className="text-slate-300 text-xs font-bold">to</span>
+                    <div className="relative flex-1">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">$</span>
+                      <Input
+                        type="number"
+                        placeholder="Max"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(e.target.value)}
+                        className="pl-7 h-10 rounded-xl text-xs font-bold border-slate-200"
+                      />
+                    </div>
                   </div>
-                  <span className="text-slate-300 text-xs font-bold">to</span>
-                  <div className="relative flex-1">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">$</span>
-                    <Input
-                      type="number"
-                      placeholder="Max"
-                      value={maxPrice}
-                      onChange={(e) => setMaxPrice(e.target.value)}
-                      className="pl-7 h-10 rounded-xl text-xs font-bold border-slate-200"
-                    />
+                  
+                  {/* Quick Price Presets */}
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {[
+                      { label: "Under $50", min: "", max: "50" },
+                      { label: "$50 - $150", min: "50", max: "150" },
+                      { label: "$150+", min: "150", max: "" }
+                    ].map((preset, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => { setMinPrice(preset.min); setMaxPrice(preset.max); }}
+                        className="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-600 transition-colors"
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
-                
-                {/* Quick Price Presets */}
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  {[
-                    { label: "Under $50", min: "", max: "50" },
-                    { label: "$50 - $150", min: "50", max: "150" },
-                    { label: "$150+", min: "150", max: "" }
-                  ].map((preset, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => { setMinPrice(preset.min); setMaxPrice(preset.max); }}
-                      className="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-600 transition-colors"
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              )}
             </div>
 
             {/* Brands Section */}
             {availableBrands.length > 0 && (
               <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 flex items-center gap-2.5 pb-3 border-b border-slate-50">
-                  Brands
-                </h3>
-                <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar pr-1">
-                  {availableBrands.map((brand) => (
-                    <label key={brand} className="flex items-center gap-3 cursor-pointer group">
-                      <input
-                        type="checkbox"
-                        checked={selectedBrands.includes(brand)}
-                        onChange={() => handleBrandToggle(brand)}
-                        className="rounded border-slate-300 text-primary focus:ring-primary/20 h-4 w-4"
-                      />
-                      <span className="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition-colors">
-                        {brand}
-                      </span>
-                    </label>
-                  ))}
-                </div>
+                <button 
+                  onClick={() => setIsBrandsOpen(!isBrandsOpen)}
+                  className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 pb-3 border-b border-slate-50"
+                >
+                  <span>Brands</span>
+                  <ChevronDown size={14} className={cn("text-slate-400 transition-transform duration-200", isBrandsOpen && "rotate-180")} />
+                </button>
+                {isBrandsOpen && (
+                  <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar pr-1 animate-in fade-in duration-200">
+                    {availableBrands.map((brand) => (
+                      <label key={brand} className="flex items-center gap-3 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={selectedBrands.includes(brand)}
+                          onChange={() => handleBrandToggle(brand)}
+                          className="rounded border-slate-300 text-primary focus:ring-primary/20 h-4 w-4"
+                        />
+                        <span className="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition-colors">
+                          {brand}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
             {/* Condition Section */}
             <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 flex items-center gap-2.5 pb-3 border-b border-slate-50">
-                Condition
-              </h3>
-              <div className="space-y-2">
-                {["new", "refurbished", "used"].map((cond) => (
-                  <label key={cond} className="flex items-center gap-3 cursor-pointer group">
-                    <input
-                      type="checkbox"
-                      checked={selectedConditions.includes(cond)}
-                      onChange={() => handleConditionToggle(cond)}
-                      className="rounded border-slate-300 text-primary focus:ring-primary/20 h-4 w-4"
-                    />
-                    <span className="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition-colors capitalize">
-                      {cond}
-                    </span>
-                  </label>
-                ))}
-              </div>
+              <button 
+                onClick={() => setIsConditionOpen(!isConditionOpen)}
+                className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 pb-3 border-b border-slate-50"
+              >
+                <span>Condition</span>
+                <ChevronDown size={14} className={cn("text-slate-400 transition-transform duration-200", isConditionOpen && "rotate-180")} />
+              </button>
+              {isConditionOpen && (
+                <div className="space-y-2 animate-in fade-in duration-200">
+                  {["new", "refurbished", "used"].map((cond) => (
+                    <label key={cond} className="flex items-center gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={selectedConditions.includes(cond)}
+                        onChange={() => handleConditionToggle(cond)}
+                        className="rounded border-slate-300 text-primary focus:ring-primary/20 h-4 w-4"
+                      />
+                      <span className="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition-colors capitalize">
+                        {cond}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Customer Rating Section */}
             <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 flex items-center gap-2.5 pb-3 border-b border-slate-50">
-                Customer Rating
-              </h3>
-              <div className="space-y-2">
-                {[4, 3, 2].map((rating) => (
-                  <button
-                    key={rating}
-                    onClick={() => setMinRating(rating)}
-                    className={cn(
-                      "w-full flex items-center gap-2 text-xs font-bold py-1.5 px-2 rounded-lg transition-colors text-left",
-                      minRating === rating ? "bg-slate-50 text-slate-900" : "text-slate-500 hover:bg-slate-50/50"
-                    )}
-                  >
-                    <div className="flex gap-0.5">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={12}
-                          fill={i < rating ? "#FBBF24" : "none"}
-                          className={i < rating ? "text-amber-400" : "text-slate-200"}
-                        />
-                      ))}
-                    </div>
-                    <span>& Up</span>
-                  </button>
-                ))}
-              </div>
+              <button 
+                onClick={() => setIsRatingOpen(!isRatingOpen)}
+                className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 pb-3 border-b border-slate-50"
+              >
+                <span>Customer Rating</span>
+                <ChevronDown size={14} className={cn("text-slate-400 transition-transform duration-200", isRatingOpen && "rotate-180")} />
+              </button>
+              {isRatingOpen && (
+                <div className="space-y-2 animate-in fade-in duration-200">
+                  {[4, 3, 2].map((rating) => (
+                    <button
+                      key={rating}
+                      onClick={() => setMinRating(rating)}
+                      className={cn(
+                        "w-full flex items-center gap-2 text-xs font-bold py-1.5 px-2 rounded-lg transition-colors text-left",
+                        minRating === rating ? "bg-slate-50 text-slate-900" : "text-slate-500 hover:bg-slate-50/50"
+                      )}
+                    >
+                      <div className="flex gap-0.5">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            size={12}
+                            fill={i < rating ? "#FBBF24" : "none"}
+                            className={i < rating ? "text-amber-400" : "text-slate-200"}
+                          />
+                        ))}
+                      </div>
+                      <span>& Up</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
           </aside>
