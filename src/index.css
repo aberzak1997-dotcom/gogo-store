@@ -92,3 +92,12 @@
 ::-webkit-scrollbar-thumb {
   @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
 }
+
+/* Global Card Stroke Styling: 0.5px border with 70% dark grey */
+.card,
+[class*="card"],
+[class*="Card"],
+.premium-card {
+  border-width: 0.5px !important;
+  border-color: rgba(55, 65, 81, 0.7) !important; /* 70% dark grey (slate-700/70) */
+}
