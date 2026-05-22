@@ -48,7 +48,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <img
             src={displayImage}
             alt={product.title}
-            className="w-full h-full object-contain p-2 transition-transform duration-700 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               // Fallback to a clear placeholder only if the dashboard link is broken
