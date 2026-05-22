@@ -29,7 +29,7 @@ const CareersPage = () => {
               { icon: Users, title: "Great Culture", desc: "Join a team of tech lovers who support each other." },
               { icon: Heart, title: "Benefits", desc: "Competitive salary, remote work options, and tech discounts." },
             ].map((item, i) => (
-              <div key={i} className="p-10 rounded-none bg-white border-[0.5px] border-black shadow-sm text-center space-y-4">
+              <div key={i} className="p-10 rounded-none bg-white border border-slate-100 shadow-sm text-center space-y-4">
                 <div className="w-16 h-16 bg-primary/10 rounded-none flex items-center justify-center mx-auto text-primary">
                   <item.icon size={32} />
                 </div>
