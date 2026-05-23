@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Product, ProductVariant, Order, CartItem, Customer, Discount, Review, ReturnRequest, MarketingCampaign, StoreSettings, Collection } from "../types";
-import { MOCK_PRODUCTS, MOCK_ORDERS, MOCK_RETURNS } from "../data/mockData";
+import { MOCK_PRODUCTS, MOCK_ORDERS, MOCK_RETURNS, MOCK_CUSTOMERS, MOCK_REVIEWS } from "../data/mockData";
 import { showSuccess, showError } from "../utils/toast";
 
 interface StoreContextType {
@@ -50,6 +50,13 @@ interface StoreContextType {
   bulkDeleteProducts: (productIds: string[]) => void;
   exportProductsToCSV: () => string;
   importProductsFromCSV: (csvData: string) => { success: Product[]; errors: string[] };
+  addDiscount: (discount: Discount) => void;
+  updateDiscount: (discount: Discount) => void;
+  deleteDiscount: (id: string) => void;
+  updateReview: (review: Review) => void;
+  addCampaign: (campaign: MarketingCampaign) => void;
+  updateCampaign: (campaign: MarketingCampaign) => void;
+  deleteCampaign: (id: string) => void;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -81,7 +88,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const [customers, setCustomers] = useState<Customer[]>(() => {
     const saved = localStorage.getItem("store_customers");
-    return saved ? JSON.parse(saved) : [];
+    return saved ? JSON.parse(saved) : MOCK_CUSTOMERS;
   });
 
   const [discounts, setDiscounts] = useState<Discount[]>(() => {
@@ -91,7 +98,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const [reviews, setReviews] = useState<Review[]>(() => {
     const saved = localStorage.getItem("store_reviews");
-    return saved ? JSON.parse(saved) : [];
+    return saved ? JSON.parse(saved) : MOCK_REVIEWS;
   });
 
   const [returns, setReturns] = useState<ReturnRequest[]>(() => {
@@ -696,6 +703,41 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return { success, errors };
   };
 
+  const addDiscount = (discount: Discount) => {
+    setDiscounts([discount, ...discounts]);
+    showSuccess("Discount created");
+  };
+
+  const updateDiscount = (updated: Discount) => {
+    setDiscounts(discounts.map(d => d.id === updated.id ? updated : d));
+    showSuccess("Discount updated");
+  };
+
+  const deleteDiscount = (id: string) => {
+    setDiscounts(discounts.filter(d => d.id !== id));
+    showSuccess("Discount deleted");
+  };
+
+  const updateReview = (updated: Review) => {
+    setReviews(reviews.map(r => r.id === updated.id ? updated : r));
+    showSuccess(`Review ${updated.status}`);
+  };
+
+  const addCampaign = (campaign: MarketingCampaign) => {
+    setCampaigns([campaign, ...campaigns]);
+    showSuccess("Campaign created");
+  };
+
+  const updateCampaign = (updated: MarketingCampaign) => {
+    setCampaigns(campaigns.map(c => c.id === updated.id ? updated : c));
+    showSuccess("Campaign updated");
+  };
+
+  const deleteCampaign = (id: string) => {
+    setCampaigns(campaigns.filter(c => c.id !== id));
+    showSuccess("Campaign deleted");
+  };
+
   return (
     <StoreContext.Provider
       value={{
@@ -738,6 +780,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         bulkDeleteProducts,
         exportProductsToCSV,
         importProductsFromCSV,
+        addDiscount,
+        updateDiscount,
+        deleteDiscount,
+        updateReview,
+        addCampaign,
+        updateCampaign,
+        deleteCampaign,
       }}
     >
       {children}

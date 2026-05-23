@@ -18,6 +18,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 const AdminDashboardPage = () => {
   const { products, orders, returns } = useStore();
@@ -42,11 +43,18 @@ const AdminDashboardPage = () => {
   const lowStockProducts = products.filter(p => p.stockQuantity > 0 && p.stockQuantity < 5);
   const outOfStockProducts = products.filter(p => p.stockQuantity === 0);
 
+  const pendingReturns = returns.filter(r => r.status === "requested").length;
+  const avgOrderValue = revenueOrders.length > 0 ? grossRevenue / revenueOrders.length : 0;
+
+  const topProducts = [...products]
+    .sort((a, b) => b.reviewCount - a.reviewCount)
+    .slice(0, 5);
+
   const stats = [
-    { title: "Net Revenue", value: `$${netRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, icon: DollarSign, color: "text-[#0096D6]", bg: "bg-[#0096D6]/5", trend: "+12.5%", trendUp: true },
-    { title: "Total Orders", value: totalOrders, icon: ShoppingBag, color: "text-slate-600", bg: "bg-slate-100", trend: "+8.2%", trendUp: true },
-    { title: "Active Store", value: activeProducts, icon: Zap, color: "text-amber-500", bg: "bg-amber-50", trend: "+2", trendUp: true },
-    { title: "Returns", value: returns.filter(r => r.status === "requested").length, icon: RotateCcw, color: "text-rose-500", bg: "bg-rose-50", trend: "0", trendUp: true },
+    { title: "Net Revenue", value: `$${netRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, icon: DollarSign, color: "text-[#0096D6]", bg: "bg-[#0096D6]/5", trend: `${revenueOrders.length} paid`, trendUp: true },
+    { title: "Total Orders", value: totalOrders, icon: ShoppingBag, color: "text-slate-600", bg: "bg-slate-100", trend: `AOV $${avgOrderValue.toFixed(2)}`, trendUp: true },
+    { title: "Active Products", value: activeProducts, icon: Zap, color: "text-amber-500", bg: "bg-amber-50", trend: `${products.length - activeProducts} draft`, trendUp: true },
+    { title: "Pending Returns", value: pendingReturns, icon: RotateCcw, color: "text-rose-500", bg: "bg-rose-50", trend: pendingReturns === 0 ? "All clear" : "Needs review", trendUp: pendingReturns === 0 },
   ];
 
   return (
@@ -96,9 +104,9 @@ const AdminDashboardPage = () => {
               </div>
               Recent Orders
             </CardTitle>
-            <button className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors flex items-center gap-1.5">
+            <Link to="/admin/orders" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors flex items-center gap-1.5">
               View All <ArrowRight size={12} />
-            </button>
+            </Link>
           </CardHeader>
           <CardContent className="p-0">
             {orders.length === 0 ? (
@@ -177,6 +185,48 @@ const AdminDashboardPage = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Top Products */}
+      <Card className="border border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white">
+        <CardHeader className="p-8 border-b border-slate-50 flex flex-row items-center justify-between">
+          <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-900 flex items-center gap-3">
+            <div className="p-2 bg-amber-50 text-amber-600 rounded-lg">
+              <TrendingUp size={18} />
+            </div>
+            Top Products by Popularity
+          </CardTitle>
+          <Link to="/admin/products" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors flex items-center gap-1.5">
+            Manage <ArrowRight size={12} />
+          </Link>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="divide-y divide-slate-50">
+            {topProducts.map((product, i) => (
+              <div key={product.id} className="flex items-center justify-between p-6 hover:bg-slate-50/50 transition-colors">
+                <div className="flex items-center gap-4">
+                  <span className="w-6 text-center text-[10px] font-black text-slate-300">#{i + 1}</span>
+                  <div className="w-10 h-10 rounded-xl bg-slate-50 overflow-hidden border border-slate-100 p-1 flex-shrink-0">
+                    <img src={product.imageUrl} alt="" className="w-full h-full object-contain" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900 text-sm">{product.title}</p>
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{product.sku} • {product.brand}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-8 text-right">
+                  <div>
+                    <p className="font-black text-slate-900 text-sm">${product.price.toFixed(2)}</p>
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{product.reviewCount} reviews</p>
+                  </div>
+                  <Badge className={cn("text-[9px] uppercase font-black px-3 py-1 rounded-full", product.stockQuantity === 0 ? "bg-rose-50 text-rose-600 border-transparent shadow-none" : product.stockQuantity < 5 ? "bg-amber-50 text-amber-600 border-transparent shadow-none" : "bg-emerald-50 text-emerald-600 border-transparent shadow-none")}>
+                    {product.stockQuantity === 0 ? "Out of stock" : product.stockQuantity < 5 ? `${product.stockQuantity} left` : "In stock"}
+                  </Badge>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
