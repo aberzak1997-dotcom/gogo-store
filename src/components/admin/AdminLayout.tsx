@@ -19,10 +19,15 @@ import {
   BarChart3,
   Settings,
   ChevronRight,
-  Zap
+  Zap,
+  CreditCard,
+  Truck,
+  Bell
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { useStore } from "../../context/StoreContext";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 interface AdminLayoutProps {
@@ -31,10 +36,14 @@ interface AdminLayoutProps {
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const { isAuthenticated, logout } = useAuth();
+  const { returns, reviews } = useStore();
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  const alertCount = returns.filter(r => r.status === "requested").length +
+    reviews.filter(r => r.status === "pending").length;
 
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" state={{ from: location }} replace />;
@@ -69,6 +78,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     {
       title: "Store",
       items: [
+        { label: "Payments", icon: CreditCard, path: "/admin/payments" },
+        { label: "Shipping", icon: Truck, path: "/admin/shipping" },
         { label: "Settings", icon: Settings, path: "/admin/settings" },
       ]
     }
@@ -200,12 +211,32 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       )}
 
       {/* Main Content */}
-      <main 
+      <main
         className={cn(
           "flex-grow pt-20 lg:pt-0 transition-all duration-300 ease-in-out",
           isSidebarCollapsed ? "lg:ml-20" : "lg:ml-64"
         )}
       >
+        {/* Desktop top bar */}
+        <div className="hidden lg:flex items-center justify-between px-10 py-4 border-b border-slate-100 bg-white/80 backdrop-blur-sm sticky top-0 z-30">
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400">
+            {location.pathname === "/admin" ? "Dashboard" :
+              location.pathname.replace("/admin/", "").replace("-", " ").replace(/^\w/, c => c.toUpperCase())}
+          </p>
+          <div className="flex items-center gap-3">
+            <Link to="/admin/returns" className="relative p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-500">
+              <Bell size={18} />
+              {alertCount > 0 && (
+                <Badge className="absolute -top-1 -right-1 w-4 h-4 p-0 flex items-center justify-center bg-rose-500 text-white border-transparent text-[8px] font-black shadow-none rounded-full">
+                  {alertCount}
+                </Badge>
+              )}
+            </Link>
+            <Link to="/" className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-colors px-3 py-2 rounded-xl hover:bg-slate-100">
+              <Store size={15} /> View Store
+            </Link>
+          </div>
+        </div>
         <div className="p-6 md:p-10 max-w-7xl mx-auto">{children}</div>
       </main>
     </div>

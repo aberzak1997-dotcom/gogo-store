@@ -35,6 +35,8 @@ import AdminReturnsPage from "./pages/admin/AdminReturnsPage";
 import AdminMarketingPage from "./pages/admin/AdminMarketingPage";
 import AdminAnalyticsPage from "./pages/admin/AdminAnalyticsPage";
 import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
+import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
+import AdminShippingPage from "./pages/admin/AdminShippingPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import NotFound from "./pages/NotFound";
 
@@ -82,6 +84,8 @@ const App = () => (
               <Route path="/admin/marketing" element={<AdminLayout><AdminMarketingPage /></AdminLayout>} />
               <Route path="/admin/analytics" element={<AdminLayout><AdminAnalyticsPage /></AdminLayout>} />
               <Route path="/admin/settings" element={<AdminLayout><AdminSettingsPage /></AdminLayout>} />
+              <Route path="/admin/payments" element={<AdminLayout><AdminPaymentsPage /></AdminLayout>} />
+              <Route path="/admin/shipping" element={<AdminLayout><AdminShippingPage /></AdminLayout>} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>
