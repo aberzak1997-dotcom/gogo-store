@@ -23,11 +23,8 @@ const AdminLoginPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate network delay
-    await new Promise(res => setTimeout(res, 1000));
-    
-    if (login(email, password)) {
+
+    if (await login(email, password)) {
       showSuccess("Welcome back, Admin!");
       navigate(from, { replace: true });
     } else {

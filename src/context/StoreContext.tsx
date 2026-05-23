@@ -2,6 +2,18 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { Product, ProductVariant, Order, CartItem, Customer, Discount, Review, ReturnRequest, MarketingCampaign, StoreSettings, Collection } from "../types";
 import { MOCK_PRODUCTS, MOCK_ORDERS, MOCK_RETURNS, MOCK_CUSTOMERS, MOCK_REVIEWS } from "../data/mockData";
 import { showSuccess, showError } from "../utils/toast";
+import { isSupabaseConfigured } from "../lib/supabase";
+import {
+  getProducts, upsertProduct, deleteProductDB, upsertVariant, deleteVariantDB,
+  getOrders, insertOrder, updateOrderDB, addTimelineEvent,
+  getCustomers, upsertCustomer,
+  getDiscounts, upsertDiscount, deleteDiscountDB,
+  getReviews, upsertReview,
+  getReturns, insertReturn, updateReturnDB,
+  getCampaigns, upsertCampaign, deleteCampaignDB,
+  getCollections, upsertCollection, deleteCollectionDB,
+  getSettings, updateSettingsDB,
+} from "../lib/db";
 
 interface StoreContextType {
   products: Product[];
@@ -121,76 +133,75 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
   });
 
-  useEffect(() => {
-    localStorage.setItem("store_products", JSON.stringify(products));
-  }, [products]);
+  // Fire-and-forget Supabase sync — optimistic local update first
+  const syncToSupabase = (fn: () => Promise<void>) => {
+    if (!isSupabaseConfigured) return;
+    fn().catch(err => console.error("Supabase sync error:", err));
+  };
 
+  // On mount: hydrate state from Supabase when configured
   useEffect(() => {
-    localStorage.setItem("store_orders", JSON.stringify(orders));
-  }, [orders]);
+    if (!isSupabaseConfigured) return;
+    Promise.all([
+      getProducts(), getOrders(), getCustomers(), getDiscounts(),
+      getReviews(), getReturns(), getCampaigns(), getCollections(), getSettings(),
+    ]).then(([prods, ords, custs, discs, revs, rets, camps, colls, stgs]) => {
+      if (prods.length) setProducts(prods);
+      if (ords.length) setOrders(ords);
+      if (custs.length) setCustomers(custs);
+      if (discs.length) setDiscounts(discs);
+      if (revs.length) setReviews(revs);
+      if (rets.length) setReturns(rets);
+      if (camps.length) setCampaigns(camps);
+      if (colls.length) setCollections(colls);
+      if (stgs) setSettings(stgs);
+    }).catch(err => console.error("Failed to load from Supabase:", err));
+  }, []);
 
-  useEffect(() => {
-    localStorage.setItem("store_cart", JSON.stringify(cart));
-  }, [cart]);
+  // Persist to localStorage as fallback
+  useEffect(() => { localStorage.setItem("store_products", JSON.stringify(products)); }, [products]);
+  useEffect(() => { localStorage.setItem("store_orders", JSON.stringify(orders)); }, [orders]);
+  useEffect(() => { localStorage.setItem("store_cart", JSON.stringify(cart)); }, [cart]);
+  useEffect(() => { localStorage.setItem("store_customers", JSON.stringify(customers)); }, [customers]);
+  useEffect(() => { localStorage.setItem("store_discounts", JSON.stringify(discounts)); }, [discounts]);
+  useEffect(() => { localStorage.setItem("store_reviews", JSON.stringify(reviews)); }, [reviews]);
+  useEffect(() => { localStorage.setItem("store_returns", JSON.stringify(returns)); }, [returns]);
+  useEffect(() => { localStorage.setItem("store_campaigns", JSON.stringify(campaigns)); }, [campaigns]);
+  useEffect(() => { localStorage.setItem("store_collections", JSON.stringify(collections)); }, [collections]);
+  useEffect(() => { localStorage.setItem("store_settings", JSON.stringify(settings)); }, [settings]);
 
-  useEffect(() => {
-    localStorage.setItem("store_customers", JSON.stringify(customers));
-  }, [customers]);
-
-  useEffect(() => {
-    localStorage.setItem("store_discounts", JSON.stringify(discounts));
-  }, [discounts]);
-
-  useEffect(() => {
-    localStorage.setItem("store_reviews", JSON.stringify(reviews));
-  }, [reviews]);
-
-  useEffect(() => {
-    localStorage.setItem("store_returns", JSON.stringify(returns));
-  }, [returns]);
-
-  useEffect(() => {
-    localStorage.setItem("store_campaigns", JSON.stringify(campaigns));
-  }, [campaigns]);
-
-  useEffect(() => {
-    localStorage.setItem("store_collections", JSON.stringify(collections));
-  }, [collections]);
-
-  useEffect(() => {
-    localStorage.setItem("store_settings", JSON.stringify(settings));
-  }, [settings]);
+  // ─── Products ──────────────────────────────────────────────────────────────
 
   const addProduct = (product: Product) => {
     setProducts([...products, product]);
+    syncToSupabase(() => upsertProduct(product));
     showSuccess("Product added successfully");
   };
 
   const updateProduct = (updatedProduct: Product) => {
     setProducts(products.map(p => p.id === updatedProduct.id ? updatedProduct : p));
+    syncToSupabase(() => upsertProduct(updatedProduct));
     showSuccess("Product updated successfully");
   };
 
   const deleteProduct = (id: string) => {
     setProducts(products.filter(p => p.id !== id));
-    // Remove from collections
     setCollections(collections.map(c => ({
       ...c,
       productIds: c.productIds.filter(productId => productId !== id)
     })));
+    syncToSupabase(() => deleteProductDB(id));
     showSuccess("Product deleted");
   };
 
   const addVariant = (productId: string, variant: ProductVariant) => {
     setProducts(products.map(p => {
       if (p.id === productId) {
-        return {
-          ...p,
-          variants: [...(p.variants || []), variant]
-        };
+        return { ...p, variants: [...(p.variants || []), variant] };
       }
       return p;
     }));
+    syncToSupabase(() => upsertVariant(variant));
     showSuccess("Variant added successfully");
   };
 
@@ -204,6 +215,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
       return p;
     }));
+    syncToSupabase(() => upsertVariant(variant));
     showSuccess("Variant updated successfully");
   };
 
@@ -217,15 +229,21 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
       return p;
     }));
+    syncToSupabase(() => deleteVariantDB(variantId));
     showSuccess("Variant deleted");
   };
 
   const updateProductStock = (productId: string, quantity: number) => {
+    const product = products.find(p => p.id === productId);
     setProducts(products.map(p => p.id === productId ? { ...p, stockQuantity: quantity } : p));
+    if (product) {
+      syncToSupabase(() => upsertProduct({ ...product, stockQuantity: quantity }));
+    }
     showSuccess("Stock updated");
   };
 
   const updateVariantStock = (productId: string, variantId: string, quantity: number) => {
+    const variant = products.find(p => p.id === productId)?.variants?.find(v => v.id === variantId);
     setProducts(products.map(p => {
       if (p.id === productId) {
         return {
@@ -235,8 +253,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
       return p;
     }));
+    if (variant) {
+      syncToSupabase(() => upsertVariant({ ...variant, stockQuantity: quantity }));
+    }
     showSuccess("Variant stock updated");
   };
+
+  // ─── Cart ─────────────────────────────────────────────────────────────────
 
   const addToCart = (productId: string, quantity: number = 1, variantId?: string) => {
     const product = products.find(p => p.id === productId);
@@ -245,7 +268,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return;
     }
 
-    // Check if variant exists and is in stock
     if (variantId) {
       const variant = product.variants?.find(v => v.id === variantId);
       if (!variant) {
@@ -261,7 +283,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return;
       }
     } else {
-      // Check main product stock
       if (product.stockQuantity <= 0) {
         showError("Item is out of stock");
         return;
@@ -273,7 +294,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
 
     setCart(prev => {
-      const existing = prev.find(item => 
+      const existing = prev.find(item =>
         item.productId === productId && item.variantId === variantId
       );
       const currentQty = existing ? existing.quantity : 0;
@@ -281,8 +302,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       if (existing) {
         return prev.map(item =>
-          item.productId === productId && item.variantId === variantId 
-            ? { ...item, quantity: newQty } 
+          item.productId === productId && item.variantId === variantId
+            ? { ...item, quantity: newQty }
             : item
         );
       }
@@ -291,7 +312,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const removeFromCart = (productId: string, variantId?: string) => {
-    setCart(cart.filter(item => 
+    setCart(cart.filter(item =>
       !(item.productId === productId && item.variantId === variantId)
     ));
     showSuccess("Item removed from cart");
@@ -306,7 +327,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const product = products.find(p => p.id === productId);
     if (!product) return;
 
-    // Check variant stock if specified
     if (variantId) {
       const variant = product.variants?.find(v => v.id === variantId);
       if (variant && quantity > variant.stockQuantity) {
@@ -314,21 +334,22 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return;
       }
     } else {
-      // Check main product stock
       if (quantity > product.stockQuantity) {
         showError(`Only ${product.stockQuantity} units available`);
         return;
       }
     }
 
-    setCart(cart.map(item => 
-      item.productId === productId && item.variantId === variantId 
-        ? { ...item, quantity } 
+    setCart(cart.map(item =>
+      item.productId === productId && item.variantId === variantId
+        ? { ...item, quantity }
         : item
     ));
   };
 
   const clearCart = () => setCart([]);
+
+  // ─── Orders ───────────────────────────────────────────────────────────────
 
   const createOrder = ({
     customerName,
@@ -350,7 +371,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return null;
     }
 
-    // Validate cart items
     for (const item of cart) {
       const product = products.find(p => p.id === item.productId);
       if (!product || product.status !== "active") {
@@ -375,7 +395,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const orderItems = cart.map(item => {
       const product = products.find(p => p.id === item.productId)!;
       const variant = item.variantId ? product.variants?.find(v => v.id === item.variantId) : null;
-      
       return {
         productId: item.productId,
         variantId: item.variantId,
@@ -404,12 +423,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       fulfillmentStatus: "unfulfilled",
       totalAmount,
       items: orderItems,
-      timeline: [
-        { status: "Order placed", date: new Date().toISOString() }
-      ]
+      timeline: [{ status: "Order placed", date: new Date().toISOString() }],
     };
 
-    // Update product stock
     const updatedProducts = products.map(p => {
       const cartItem = cart.find(ci => ci.productId === p.id);
       if (cartItem) {
@@ -419,7 +435,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             const updatedVariants = [...p.variants];
             updatedVariants[variantIndex] = {
               ...updatedVariants[variantIndex],
-              stockQuantity: updatedVariants[variantIndex].stockQuantity - cartItem.quantity
+              stockQuantity: updatedVariants[variantIndex].stockQuantity - cartItem.quantity,
             };
             return { ...p, variants: updatedVariants };
           }
@@ -430,15 +446,18 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return p;
     });
 
-    // Update or add customer
+    let customerToSync: Customer;
     const existingCustomer = customers.find(c => c.email === email);
+
     if (existingCustomer) {
-      setCustomers(customers.map(c => c.email === email ? {
-        ...c,
-        totalOrders: c.totalOrders + 1,
-        totalSpent: c.totalSpent + totalAmount,
-        lastOrderDate: newOrder.date
-      } : c));
+      const updated: Customer = {
+        ...existingCustomer,
+        totalOrders: existingCustomer.totalOrders + 1,
+        totalSpent: existingCustomer.totalSpent + totalAmount,
+        lastOrderDate: newOrder.date,
+      };
+      customerToSync = updated;
+      setCustomers(customers.map(c => c.email === email ? updated : c));
     } else {
       const newCustomer: Customer = {
         id: `CUST-${Math.floor(Math.random() * 1000000)}`,
@@ -448,8 +467,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         totalOrders: 1,
         totalSpent: totalAmount,
         lastOrderDate: newOrder.date,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
+      customerToSync = newCustomer;
       setCustomers([...customers, newCustomer]);
     }
 
@@ -457,71 +477,105 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setProducts(updatedProducts);
     clearCart();
 
+    syncToSupabase(async () => {
+      await insertOrder(newOrder);
+      await upsertCustomer(customerToSync);
+    });
+
     showSuccess(`Order ${newOrder.id} placed successfully`);
     return newOrder.id;
   };
 
   const updateOrderStatus = (orderId: string, status: Order["status"], note?: string) => {
+    const newEvent = {
+      status: status.charAt(0).toUpperCase() + status.slice(1),
+      date: new Date().toISOString(),
+      note,
+    };
+    const order = orders.find(o => o.id === orderId);
     setOrders(orders.map(o => {
       if (o.id === orderId) {
-        const newEvent = {
-          status: status.charAt(0).toUpperCase() + status.slice(1),
-          date: new Date().toISOString(),
-          note
-        };
         return { ...o, status, timeline: [...o.timeline, newEvent] };
       }
       return o;
     }));
+    if (order) {
+      syncToSupabase(async () => {
+        await updateOrderDB({ ...order, status });
+        await addTimelineEvent(orderId, newEvent);
+      });
+    }
     showSuccess(`Order ${orderId} status updated to ${status}`);
   };
 
   const updatePaymentStatus = (orderId: string, paymentStatus: Order["paymentStatus"]) => {
+    const newEvent = {
+      status: `Payment status: ${paymentStatus}`,
+      date: new Date().toISOString(),
+    };
+    const order = orders.find(o => o.id === orderId);
     setOrders(orders.map(o => {
       if (o.id === orderId) {
-        const newEvent = {
-          status: `Payment status: ${paymentStatus}`,
-          date: new Date().toISOString()
-        };
         return { ...o, paymentStatus, timeline: [...o.timeline, newEvent] };
       }
       return o;
     }));
+    if (order) {
+      syncToSupabase(async () => {
+        await updateOrderDB({ ...order, paymentStatus });
+        await addTimelineEvent(orderId, newEvent);
+      });
+    }
     showSuccess(`Order ${orderId} payment status updated to ${paymentStatus}`);
   };
 
   const updateFulfillmentStatus = (orderId: string, fulfillmentStatus: Order["fulfillmentStatus"]) => {
+    const newEvent = {
+      status: `Fulfillment status: ${fulfillmentStatus}`,
+      date: new Date().toISOString(),
+    };
+    const order = orders.find(o => o.id === orderId);
     setOrders(orders.map(o => {
       if (o.id === orderId) {
-        const newEvent = {
-          status: `Fulfillment status: ${fulfillmentStatus}`,
-          date: new Date().toISOString()
-        };
         return { ...o, fulfillmentStatus, timeline: [...o.timeline, newEvent] };
       }
       return o;
     }));
+    if (order) {
+      syncToSupabase(async () => {
+        await updateOrderDB({ ...order, fulfillmentStatus });
+        await addTimelineEvent(orderId, newEvent);
+      });
+    }
     showSuccess(`Order ${orderId} fulfillment status updated to ${fulfillmentStatus}`);
   };
 
   const addOrderNote = (orderId: string, note: string, isInternal: boolean) => {
+    const order = orders.find(o => o.id === orderId);
     setOrders(orders.map(o => {
       if (o.id === orderId) {
         return isInternal ? { ...o, internalNotes: note } : { ...o, notes: note };
       }
       return o;
     }));
+    if (order) {
+      const updated = isInternal ? { ...order, internalNotes: note } : { ...order, notes: note };
+      syncToSupabase(() => updateOrderDB(updated));
+    }
     showSuccess("Note saved");
   };
+
+  // ─── Returns ──────────────────────────────────────────────────────────────
 
   const createReturnRequest = (returnInput: Omit<ReturnRequest, "id" | "requestedAt" | "status">): string => {
     const newReturn: ReturnRequest = {
       ...returnInput,
       id: `RET-${Math.floor(Math.random() * 1000000)}`,
       requestedAt: new Date().toISOString(),
-      status: "requested"
+      status: "requested",
     };
     setReturns([newReturn, ...returns]);
+    syncToSupabase(() => insertReturn(newReturn));
     showSuccess("Return request created");
     return newReturn.id;
   };
@@ -531,6 +585,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (!returnReq) return;
 
     setReturns(returns.map(r => r.id === returnId ? { ...r, status } : r));
+    syncToSupabase(() => updateReturnDB(returnId, status));
 
     if (status === "refunded") {
       const order = orders.find(o => o.id === returnReq.orderId);
@@ -543,98 +598,93 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     showSuccess(`Return ${returnId} status updated to ${status}`);
   };
 
+  // ─── Settings ─────────────────────────────────────────────────────────────
+
   const updateSettings = (newSettings: StoreSettings) => {
     setSettings(newSettings);
+    syncToSupabase(() => updateSettingsDB(newSettings));
     showSuccess("Store settings updated");
   };
 
+  // ─── Collections ──────────────────────────────────────────────────────────
+
   const addCollection = (collection: Collection) => {
     setCollections([...collections, collection]);
+    syncToSupabase(() => upsertCollection(collection));
     showSuccess("Collection created");
   };
 
   const updateCollection = (updatedCollection: Collection) => {
     setCollections(collections.map(c => c.id === updatedCollection.id ? updatedCollection : c));
+    syncToSupabase(() => upsertCollection(updatedCollection));
     showSuccess("Collection updated");
   };
 
   const deleteCollection = (id: string) => {
     setCollections(collections.filter(c => c.id !== id));
+    syncToSupabase(() => deleteCollectionDB(id));
     showSuccess("Collection deleted");
   };
 
   const addProductToCollection = (collectionId: string, productId: string) => {
+    const col = collections.find(c => c.id === collectionId);
     setCollections(collections.map(c => {
       if (c.id === collectionId) {
-        return {
-          ...c,
-          productIds: [...c.productIds, productId]
-        };
+        return { ...c, productIds: [...c.productIds, productId] };
       }
       return c;
     }));
+    if (col) {
+      syncToSupabase(() => upsertCollection({ ...col, productIds: [...col.productIds, productId] }));
+    }
     showSuccess("Product added to collection");
   };
 
   const removeProductFromCollection = (collectionId: string, productId: string) => {
+    const col = collections.find(c => c.id === collectionId);
     setCollections(collections.map(c => {
       if (c.id === collectionId) {
-        return {
-          ...c,
-          productIds: c.productIds.filter(id => id !== productId)
-        };
+        return { ...c, productIds: c.productIds.filter(id => id !== productId) };
       }
       return c;
     }));
+    if (col) {
+      syncToSupabase(() => upsertCollection({ ...col, productIds: col.productIds.filter(id => id !== productId) }));
+    }
     showSuccess("Product removed from collection");
   };
 
+  // ─── Bulk operations ──────────────────────────────────────────────────────
+
   const bulkUpdateProducts = (productIds: string[], updates: Partial<Product>) => {
-    setProducts(products.map(p => {
-      if (productIds.includes(p.id)) {
-        return { ...p, ...updates };
-      }
-      return p;
-    }));
+    setProducts(products.map(p => productIds.includes(p.id) ? { ...p, ...updates } : p));
     showSuccess(`${productIds.length} products updated`);
   };
 
   const bulkDeleteProducts = (productIds: string[]) => {
     setProducts(products.filter(p => !productIds.includes(p.id)));
-    // Remove from collections
     setCollections(collections.map(c => ({
       ...c,
-      productIds: c.productIds.filter(productId => !productIds.includes(productId))
+      productIds: c.productIds.filter(productId => !productIds.includes(productId)),
     })));
     showSuccess(`${productIds.length} products deleted`);
   };
+
+  // ─── CSV ──────────────────────────────────────────────────────────────────
 
   const exportProductsToCSV = (): string => {
     const headers = [
       "ID", "Title", "Description", "SKU", "Brand", "Category", "Subcategory",
       "Price", "Compare At Price", "Stock", "Status", "Rating", "Review Count",
-      "Warranty", "Condition", "Image URL", "Compatibility", "Specs"
+      "Warranty", "Condition", "Image URL", "Compatibility", "Specs",
     ];
 
     const rows = products.map(p => [
-      p.id,
-      p.title,
-      p.description,
-      p.sku,
-      p.brand,
-      p.category,
-      p.subcategory,
-      p.price,
-      p.compareAtPrice || "",
-      p.stockQuantity,
-      p.status,
-      p.rating,
-      p.reviewCount,
-      p.warranty,
-      p.condition,
-      p.imageUrl,
+      p.id, p.title, p.description, p.sku, p.brand, p.category, p.subcategory,
+      p.price, p.compareAtPrice || "", p.stockQuantity, p.status,
+      p.rating, p.reviewCount, p.warranty, p.condition, p.imageUrl,
       p.compatibility.join(";"),
-      Object.entries(p.specs).map(([k, v]) => `${k}:${v}`).join(";")
+      Object.entries(p.specs).map(([k, v]) => `${k}:${v}`).join(";"),
     ]);
 
     return [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(",")).join("\n");
@@ -642,14 +692,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const importProductsFromCSV = (csvData: string) => {
     const lines = csvData.trim().split("\n");
-    const headers = lines[0].split(",").map(h => h.replace(/"/g, ""));
-    
     const success: Product[] = [];
     const errors: string[] = [];
 
     for (let i = 1; i < lines.length; i++) {
       const values = lines[i].split(",").map(v => v.replace(/"/g, ""));
-      
       try {
         const product: Product = {
           id: `PROD-${Math.floor(Math.random() * 1000000)}`,
@@ -676,21 +723,19 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           warranty: values[13] || "1 Year",
           condition: (values[14] as "new" | "refurbished" | "used") || "new",
           createdAt: new Date().toISOString(),
-          variants: []
+          variants: [],
         };
 
         if (!product.title || !product.sku) {
           errors.push(`Row ${i + 1}: Missing required fields (title or SKU)`);
           continue;
         }
-
         if (products.some(p => p.sku === product.sku)) {
           errors.push(`Row ${i + 1}: SKU already exists`);
           continue;
         }
-
         success.push(product);
-      } catch (error) {
+      } catch {
         errors.push(`Row ${i + 1}: Invalid data format`);
       }
     }
@@ -703,90 +748,74 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return { success, errors };
   };
 
+  // ─── Discounts ────────────────────────────────────────────────────────────
+
   const addDiscount = (discount: Discount) => {
     setDiscounts([discount, ...discounts]);
+    syncToSupabase(() => upsertDiscount(discount));
     showSuccess("Discount created");
   };
 
   const updateDiscount = (updated: Discount) => {
     setDiscounts(discounts.map(d => d.id === updated.id ? updated : d));
+    syncToSupabase(() => upsertDiscount(updated));
     showSuccess("Discount updated");
   };
 
   const deleteDiscount = (id: string) => {
     setDiscounts(discounts.filter(d => d.id !== id));
+    syncToSupabase(() => deleteDiscountDB(id));
     showSuccess("Discount deleted");
   };
 
+  // ─── Reviews ──────────────────────────────────────────────────────────────
+
   const updateReview = (updated: Review) => {
     setReviews(reviews.map(r => r.id === updated.id ? updated : r));
+    syncToSupabase(() => upsertReview(updated));
     showSuccess(`Review ${updated.status}`);
   };
 
+  // ─── Campaigns ────────────────────────────────────────────────────────────
+
   const addCampaign = (campaign: MarketingCampaign) => {
     setCampaigns([campaign, ...campaigns]);
+    syncToSupabase(() => upsertCampaign(campaign));
     showSuccess("Campaign created");
   };
 
   const updateCampaign = (updated: MarketingCampaign) => {
     setCampaigns(campaigns.map(c => c.id === updated.id ? updated : c));
+    syncToSupabase(() => upsertCampaign(updated));
     showSuccess("Campaign updated");
   };
 
   const deleteCampaign = (id: string) => {
     setCampaigns(campaigns.filter(c => c.id !== id));
+    syncToSupabase(() => deleteCampaignDB(id));
     showSuccess("Campaign deleted");
   };
 
   return (
     <StoreContext.Provider
       value={{
-        products,
-        orders,
-        cart,
-        customers,
-        discounts,
-        reviews,
-        returns,
-        campaigns,
-        collections,
-        settings,
-        addProduct,
-        updateProduct,
-        deleteProduct,
-        addVariant,
-        updateVariant,
-        deleteVariant,
-        updateProductStock,
-        updateVariantStock,
-        addToCart,
-        removeFromCart,
-        updateCartQuantity,
-        clearCart,
-        createOrder,
-        updateOrderStatus,
-        updatePaymentStatus,
-        updateFulfillmentStatus,
-        addOrderNote,
-        createReturnRequest,
-        updateReturnStatus,
+        products, orders, cart, customers, discounts, reviews, returns,
+        campaigns, collections, settings,
+        addProduct, updateProduct, deleteProduct,
+        addVariant, updateVariant, deleteVariant,
+        updateProductStock, updateVariantStock,
+        addToCart, removeFromCart, updateCartQuantity, clearCart,
+        createOrder, updateOrderStatus, updatePaymentStatus,
+        updateFulfillmentStatus, addOrderNote,
+        createReturnRequest, updateReturnStatus,
         updateSettings,
-        addCollection,
-        updateCollection,
-        deleteCollection,
-        addProductToCollection,
-        removeProductFromCollection,
-        bulkUpdateProducts,
-        bulkDeleteProducts,
-        exportProductsToCSV,
-        importProductsFromCSV,
-        addDiscount,
-        updateDiscount,
-        deleteDiscount,
+        addCollection, updateCollection, deleteCollection,
+        addProductToCollection, removeProductFromCollection,
+        bulkUpdateProducts, bulkDeleteProducts,
+        exportProductsToCSV, importProductsFromCSV,
+        addDiscount, updateDiscount, deleteDiscount,
         updateReview,
-        addCampaign,
-        updateCampaign,
-        deleteCampaign,
+        addCampaign, updateCampaign, deleteCampaign,
       }}
     >
       {children}

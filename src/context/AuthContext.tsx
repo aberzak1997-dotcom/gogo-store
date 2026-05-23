@@ -1,19 +1,42 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { supabase, isSupabaseConfigured } from "../lib/supabase";
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (email: string, pass: string) => boolean;
-  logout: () => void;
+  isLoading: boolean;
+  login: (email: string, pass: string) => Promise<boolean>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return localStorage.getItem("admin_auth") === "true";
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const login = (email: string, pass: string) => {
+  useEffect(() => {
+    if (isSupabaseConfigured && supabase) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setIsAuthenticated(!!session);
+        setIsLoading(false);
+      });
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setIsAuthenticated(!!session);
+      });
+
+      return () => subscription.unsubscribe();
+    } else {
+      setIsAuthenticated(localStorage.getItem("admin_auth") === "true");
+      setIsLoading(false);
+    }
+  }, []);
+
+  const login = async (email: string, pass: string): Promise<boolean> => {
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+      return !error;
+    }
     if (email === "admin@demo.com" && pass === "admin123") {
       setIsAuthenticated(true);
       localStorage.setItem("admin_auth", "true");
@@ -22,13 +45,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    if (isSupabaseConfigured && supabase) {
+      await supabase.auth.signOut();
+    }
     setIsAuthenticated(false);
     localStorage.removeItem("admin_auth");
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

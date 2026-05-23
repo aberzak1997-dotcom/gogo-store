@@ -35,7 +35,7 @@ interface AdminLayoutProps {
 }
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, isLoading, logout } = useAuth();
   const { returns, reviews } = useStore();
   const location = useLocation();
   const navigate = useNavigate();
@@ -44,6 +44,10 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
   const alertCount = returns.filter(r => r.status === "requested").length +
     reviews.filter(r => r.status === "pending").length;
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center bg-slate-50"><div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" /></div>;
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" state={{ from: location }} replace />;
