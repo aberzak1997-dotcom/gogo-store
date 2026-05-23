@@ -3,8 +3,11 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { StoreProvider } from "./context/StoreContext";
 import { AuthProvider } from "./context/AuthContext";
+
+const paypalClientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || "test";
 
 import HomePage from "./pages/storefront/HomePage";
 import ProductDetailsPage from "./pages/storefront/ProductDetailsPage";
@@ -44,6 +47,7 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => (
+  <PayPalScriptProvider options={{ clientId: paypalClientId, currency: "USD", intent: "capture" }}>
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <StoreProvider>
@@ -96,6 +100,7 @@ const App = () => (
       </StoreProvider>
     </AuthProvider>
   </QueryClientProvider>
+  </PayPalScriptProvider>
 );
 
 export default App;
