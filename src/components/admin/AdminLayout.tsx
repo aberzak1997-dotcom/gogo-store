@@ -22,7 +22,8 @@ import {
   Zap,
   CreditCard,
   Truck,
-  Bell
+  Bell,
+  Plug
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useStore } from "../../context/StoreContext";
@@ -82,6 +83,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     {
       title: "Store",
       items: [
+        { label: "Integrations", icon: Plug, path: "/admin/integrations" },
         { label: "Payments", icon: CreditCard, path: "/admin/payments" },
         { label: "Shipping", icon: Truck, path: "/admin/shipping" },
         { label: "Settings", icon: Settings, path: "/admin/settings" },
