@@ -1,16 +1,23 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { supabase, isSupabaseConfigured } from "../lib/supabase";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, pass: string) => Promise<boolean>;
+  login: (email: string, pass: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Admin auth is localStorage-only to avoid conflict with customer Supabase sessions.
-// Credentials: admin@demo.com / admin123
+/**
+ * Admin auth strategy:
+ *  - Credentials are validated against Supabase (user must have user_metadata.role === "admin").
+ *  - The admin session is stored in localStorage only ("admin_auth": "true") so it never
+ *    conflicts with the customer's Supabase session in the same browser.
+ *  - After validating the role we immediately sign out of Supabase to keep sessions clean.
+ *  - Fallback: if Supabase is not configured, accepts hardcoded demo credentials.
+ */
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,13 +27,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, pass: string): Promise<boolean> => {
+  const login = async (email: string, pass: string): Promise<{ success: boolean; error?: string }> => {
+    // ── Supabase path ──────────────────────────────────────────────────────────
+    if (isSupabaseConfigured && supabase) {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+
+      if (error || !data.user) {
+        return { success: false, error: "Invalid email or password." };
+      }
+
+      const role = data.user.user_metadata?.role;
+
+      // Immediately sign out of Supabase — admin session lives in localStorage only,
+      // so it won't interfere with any customer Supabase session.
+      await supabase.auth.signOut();
+
+      if (role !== "admin") {
+        return { success: false, error: "Access denied. This account does not have admin privileges." };
+      }
+
+      setIsAuthenticated(true);
+      localStorage.setItem("admin_auth", "true");
+      return { success: true };
+    }
+
+    // ── localStorage fallback (Supabase not configured) ────────────────────────
     if (email === "admin@demo.com" && pass === "admin123") {
       setIsAuthenticated(true);
       localStorage.setItem("admin_auth", "true");
-      return true;
+      return { success: true };
     }
-    return false;
+    return { success: false, error: "Invalid email or password." };
   };
 
   const logout = async () => {

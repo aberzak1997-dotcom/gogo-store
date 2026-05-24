@@ -11,9 +11,10 @@ import { LayoutDashboard, Lock, Smartphone, ArrowLeft, ShieldCheck } from "lucid
 import { showError, showSuccess } from "../../utils/toast";
 
 const AdminLoginPage = () => {
-  const [email, setEmail] = useState("admin@demo.com");
-  const [password, setPassword] = useState("admin123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,12 +24,14 @@ const AdminLoginPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMsg("");
 
-    if (await login(email, password)) {
+    const result = await login(email, password);
+    if (result.success) {
       showSuccess("Welcome back, Admin!");
       navigate(from, { replace: true });
     } else {
-      showError("Invalid credentials. Please try again.");
+      setErrorMsg(result.error || "Invalid credentials. Please try again.");
     }
     setIsLoading(false);
   };
@@ -88,6 +91,13 @@ const AdminLoginPage = () => {
                   required
                 />
               </div>
+              {errorMsg && (
+                <div className="bg-rose-50 border border-rose-200 text-rose-700 text-sm font-bold rounded-2xl px-4 py-3 flex items-center gap-2">
+                  <ShieldCheck size={16} className="text-rose-500 flex-shrink-0" />
+                  {errorMsg}
+                </div>
+              )}
+
               <Button type="submit" className="w-full h-14 rounded-2xl text-lg font-black gap-3 shadow-lg shadow-primary/20" disabled={isLoading}>
                 {isLoading ? "Authenticating..." : (
                   <>
@@ -97,20 +107,10 @@ const AdminLoginPage = () => {
               </Button>
             </form>
 
-            <div className="mt-10 p-6 bg-slate-50 rounded-2xl border border-slate-100">
-              <div className="flex items-center gap-2 text-xs font-black text-slate-400 uppercase tracking-widest mb-3">
-                <ShieldCheck size={14} className="text-emerald-500" /> Demo Credentials
-              </div>
-              <div className="space-y-1 text-sm">
-                <p className="text-slate-600 flex justify-between">
-                  <span className="font-medium">Email:</span>
-                  <span className="font-bold text-slate-900">admin@demo.com</span>
-                </p>
-                <p className="text-slate-600 flex justify-between">
-                  <span className="font-medium">Password:</span>
-                  <span className="font-bold text-slate-900">admin123</span>
-                </p>
-              </div>
+            <div className="mt-8 p-5 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center justify-center gap-2">
+                <ShieldCheck size={13} className="text-emerald-500" /> Admin access only — unauthorized logins are blocked
+              </p>
             </div>
           </CardContent>
         </Card>
