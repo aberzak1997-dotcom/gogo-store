@@ -10,9 +10,11 @@ import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   CreditCard, Banknote, Smartphone, CheckCircle2, AlertTriangle,
-  Eye, EyeOff, ExternalLink, Info, Shield, ChevronDown, ChevronUp, Truck
+  Eye, EyeOff, ExternalLink, Info, Shield, ChevronDown, ChevronUp, Truck,
+  Link2, Unlink
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { showSuccess, showError } from "../../utils/toast";
 
 interface PaymentConfig {
   stripeEnabled: boolean;
@@ -20,7 +22,6 @@ interface PaymentConfig {
   stripeSecretKey: string;
   paypalEnabled: boolean;
   paypalClientId: string;
-  paypalSecret: string;
   codEnabled: boolean;
   bankEnabled: boolean;
   bankName: string;
@@ -33,7 +34,7 @@ const DEFAULT_CONFIG: PaymentConfig = JSON.parse(
   localStorage.getItem("payment_config") ||
   JSON.stringify({
     stripeEnabled: false, stripePublicKey: "", stripeSecretKey: "",
-    paypalEnabled: false, paypalClientId: "", paypalSecret: "",
+    paypalEnabled: false, paypalClientId: "",
     codEnabled: true,
     bankEnabled: false, bankName: "", bankAccount: "", bankRouting: "", bankHolder: "",
   })
@@ -42,9 +43,14 @@ const DEFAULT_CONFIG: PaymentConfig = JSON.parse(
 const AdminPaymentsPage = () => {
   const [config, setConfig] = useState<PaymentConfig>(DEFAULT_CONFIG);
   const [showStripeSecret, setShowStripeSecret] = useState(false);
-  const [showPaypalSecret, setShowPaypalSecret] = useState(false);
-  const [expandedSection, setExpandedSection] = useState<string | null>("stripe");
+  const [expandedSection, setExpandedSection] = useState<string | null>("paypal");
   const [saved, setSaved] = useState(false);
+  const [paypalConnected, setPaypalConnected] = useState(
+    Boolean(localStorage.getItem("paypal_client_id") && localStorage.getItem("paypal_client_id")!.length > 10)
+  );
+  const [paypalInput, setPaypalInput] = useState(
+    localStorage.getItem("paypal_client_id") || config.paypalClientId || ""
+  );
 
   const set = (key: keyof PaymentConfig, value: string | boolean) =>
     setConfig(prev => ({ ...prev, [key]: value }));
@@ -58,8 +64,35 @@ const AdminPaymentsPage = () => {
   const toggle = (section: string) =>
     setExpandedSection(expandedSection === section ? null : section);
 
+  const handleConnectPayPal = () => {
+    if (!paypalInput || paypalInput.trim().length < 10) {
+      showError("Please enter a valid PayPal Client ID.");
+      return;
+    }
+    const clientId = paypalInput.trim();
+    localStorage.setItem("paypal_client_id", clientId);
+    window.dispatchEvent(new CustomEvent("paypal-config-updated", { detail: clientId }));
+    set("paypalClientId", clientId);
+    set("paypalEnabled", true);
+    setPaypalConnected(true);
+    const updated = { ...config, paypalClientId: clientId, paypalEnabled: true };
+    localStorage.setItem("payment_config", JSON.stringify(updated));
+    showSuccess("PayPal connected! Customers can now pay with PayPal at checkout.");
+  };
+
+  const handleDisconnectPayPal = () => {
+    localStorage.removeItem("paypal_client_id");
+    window.dispatchEvent(new CustomEvent("paypal-config-updated", { detail: "" }));
+    set("paypalClientId", "");
+    set("paypalEnabled", false);
+    setPaypalConnected(false);
+    setPaypalInput("");
+    const updated = { ...config, paypalClientId: "", paypalEnabled: false };
+    localStorage.setItem("payment_config", JSON.stringify(updated));
+    showSuccess("PayPal disconnected.");
+  };
+
   const isStripeConfigured = config.stripePublicKey.startsWith("pk_") && config.stripeSecretKey.startsWith("sk_");
-  const isPaypalConfigured = config.paypalClientId.length > 10 && config.paypalSecret.length > 10;
 
   const methods = [
     {
@@ -82,7 +115,7 @@ const AdminPaymentsPage = () => {
       color: "text-blue-600",
       bg: "bg-blue-50",
       enabled: config.paypalEnabled,
-      configured: isPaypalConfigured,
+      configured: paypalConnected,
       toggle: () => set("paypalEnabled", !config.paypalEnabled),
     },
     {
@@ -123,14 +156,6 @@ const AdminPaymentsPage = () => {
           {saved ? <><CheckCircle2 size={14} className="mr-2" /> Saved!</> : "Save Changes"}
         </Button>
       </div>
-
-      <Alert className="rounded-2xl border-amber-200 bg-amber-50">
-        <Info size={16} className="text-amber-600" />
-        <AlertDescription className="text-amber-800 text-sm font-medium ml-2">
-          <strong>Production note:</strong> Stripe and PayPal require a backend server to securely process payments and handle webhooks. Keys saved here are stored locally for configuration — wire them to your backend before going live.{" "}
-          <a href="https://stripe.com/docs" target="_blank" rel="noopener noreferrer" className="underline font-black">Stripe docs →</a>
-        </AlertDescription>
-      </Alert>
 
       {/* Payment Method Cards */}
       <div className="space-y-4">
@@ -179,6 +204,8 @@ const AdminPaymentsPage = () => {
             {/* Expandable config */}
             {expandedSection === method.id && (
               <div className="px-6 pb-6 border-t border-slate-50">
+
+                {/* ── Stripe ── */}
                 {method.id === "stripe" && (
                   <div className="pt-5 space-y-4">
                     <div className="flex items-center gap-2 mb-4">
@@ -216,53 +243,85 @@ const AdminPaymentsPage = () => {
                       </div>
                     </div>
                     <div className="p-4 bg-indigo-50 rounded-xl text-xs text-indigo-700 font-medium leading-relaxed">
-                      <strong>Integration steps:</strong> Install <code className="bg-indigo-100 px-1 rounded">@stripe/stripe-js</code> and <code className="bg-indigo-100 px-1 rounded">@stripe/react-stripe-js</code>, create a payment intent on your backend using the secret key, then render Stripe Elements in checkout using the publishable key.
+                      <strong>Note:</strong> Stripe requires a backend server to create payment intents. Save your keys here, then wire them to your server before going live.
                     </div>
                   </div>
                 )}
 
+                {/* ── PayPal ── */}
                 {method.id === "paypal" && (
                   <div className="pt-5 space-y-4">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Shield size={14} className="text-slate-400" />
-                      <p className="text-[11px] text-slate-500 font-medium">Get credentials from <a href="https://developer.paypal.com/dashboard/" target="_blank" rel="noopener noreferrer" className="text-blue-600 font-black underline">PayPal Developer <ExternalLink size={10} className="inline" /></a></p>
-                    </div>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Client ID</Label>
-                        <Input
-                          value={config.paypalClientId}
-                          onChange={e => set("paypalClientId", e.target.value)}
-                          placeholder="AaBbCc..."
-                          className="rounded-xl h-12 font-mono text-sm"
-                        />
+                    {paypalConnected ? (
+                      /* ✅ CONNECTED */
+                      <div className="p-5 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-11 h-11 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <CheckCircle2 size={22} className="text-emerald-600" />
+                          </div>
+                          <div>
+                            <p className="font-black text-emerald-900 text-sm">PayPal Connected</p>
+                            <p className="text-[11px] text-emerald-700 font-mono mt-0.5">
+                              {paypalInput.slice(0, 10)}••••••••{paypalInput.slice(-6)}
+                            </p>
+                            <p className="text-[10px] text-emerald-600 font-medium mt-1">
+                              Customers can pay with PayPal at checkout
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleDisconnectPayPal}
+                          className="border-emerald-200 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 flex-shrink-0"
+                        >
+                          <Unlink size={13} /> Disconnect
+                        </Button>
                       </div>
-                      <div className="space-y-1.5">
-                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Secret</Label>
-                        <div className="relative">
-                          <Input
-                            type={showPaypalSecret ? "text" : "password"}
-                            value={config.paypalSecret}
-                            onChange={e => set("paypalSecret", e.target.value)}
-                            placeholder="••••••••"
-                            className="rounded-xl h-12 font-mono text-sm pr-12"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setShowPaypalSecret(!showPaypalSecret)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                          >
-                            {showPaypalSecret ? <EyeOff size={16} /> : <Eye size={16} />}
-                          </button>
+                    ) : (
+                      /* 🔌 NOT CONNECTED */
+                      <div className="space-y-4">
+                        <Alert className="rounded-xl border-blue-100 bg-blue-50">
+                          <Info size={14} className="text-blue-600" />
+                          <AlertDescription className="text-blue-800 text-xs font-medium ml-1">
+                            <strong className="font-black">How to get your Client ID:</strong>{" "}
+                            Go to{" "}
+                            <a
+                              href="https://developer.paypal.com/dashboard/applications/live"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="underline font-black text-blue-700"
+                            >
+                              PayPal Developer Dashboard <ExternalLink size={9} className="inline" />
+                            </a>
+                            {" "}→ Apps &amp; Credentials → <strong>Live</strong> tab → Create App → copy the <strong>Client ID</strong>.
+                          </AlertDescription>
+                        </Alert>
+                        <div className="space-y-1.5">
+                          <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                            PayPal Client ID
+                          </Label>
+                          <div className="flex gap-3">
+                            <Input
+                              value={paypalInput}
+                              onChange={e => setPaypalInput(e.target.value)}
+                              placeholder="AaBbCcDdEeFfGg..."
+                              className="rounded-xl h-12 font-mono text-sm flex-1"
+                              onKeyDown={e => e.key === "Enter" && handleConnectPayPal()}
+                            />
+                            <Button
+                              onClick={handleConnectPayPal}
+                              className="h-12 px-6 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 whitespace-nowrap"
+                            >
+                              <Link2 size={14} /> Connect PayPal
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="p-4 bg-blue-50 rounded-xl text-xs text-blue-700 font-medium leading-relaxed">
-                      <strong>Integration steps:</strong> Install <code className="bg-blue-100 px-1 rounded">@paypal/react-paypal-js</code>, wrap your app in <code className="bg-blue-100 px-1 rounded">PayPalScriptProvider</code> with your Client ID, then add a <code className="bg-blue-100 px-1 rounded">PayPalButtons</code> component to checkout.
-                    </div>
+                    )}
                   </div>
                 )}
 
+                {/* ── Bank Transfer ── */}
                 {method.id === "bank" && (
                   <div className="pt-5 space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
@@ -289,6 +348,7 @@ const AdminPaymentsPage = () => {
                   </div>
                 )}
 
+                {/* ── COD ── */}
                 {method.id === "cod" && (
                   <div className="pt-5">
                     <div className="p-4 bg-amber-50 rounded-xl text-xs text-amber-700 font-medium">

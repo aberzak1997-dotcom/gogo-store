@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,7 +8,10 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { StoreProvider } from "./context/StoreContext";
 import { AuthProvider } from "./context/AuthContext";
 
-const paypalClientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || "test";
+const getPaypalClientId = () =>
+  localStorage.getItem("paypal_client_id") ||
+  import.meta.env.VITE_PAYPAL_CLIENT_ID ||
+  "test";
 
 import HomePage from "./pages/storefront/HomePage";
 import ProductDetailsPage from "./pages/storefront/ProductDetailsPage";
@@ -46,8 +50,20 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <PayPalScriptProvider options={{ clientId: paypalClientId, currency: "USD", intent: "capture" }}>
+const App = () => {
+  const [paypalClientId, setPaypalClientId] = useState(getPaypalClientId);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const id = (e as CustomEvent<string>).detail;
+      setPaypalClientId(id || import.meta.env.VITE_PAYPAL_CLIENT_ID || "test");
+    };
+    window.addEventListener("paypal-config-updated", handler);
+    return () => window.removeEventListener("paypal-config-updated", handler);
+  }, []);
+
+  return (
+  <PayPalScriptProvider key={paypalClientId} options={{ clientId: paypalClientId, currency: "USD", intent: "capture" }}>
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <StoreProvider>
@@ -101,6 +117,7 @@ const App = () => (
     </AuthProvider>
   </QueryClientProvider>
   </PayPalScriptProvider>
-);
+  );
+};
 
 export default App;
