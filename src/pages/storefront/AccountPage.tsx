@@ -104,7 +104,7 @@ const MiniOrderCard = ({ order }: { order: Order }) => {
 };
 
 const AccountPage = () => {
-  const { customer, customerLogout, updateCustomerName, wishlist, removeFromWishlist } = useCustomerAuth();
+  const { customer, isCustomerLoading, customerLogout, updateCustomerName, wishlist, removeFromWishlist } = useCustomerAuth();
   const { orders, products } = useStore();
   const navigate = useNavigate();
 
@@ -112,11 +112,15 @@ const AccountPage = () => {
   const [editingName, setEditingName] = useState(false);
   const [newName, setNewName] = useState(customer?.name || "");
 
-  // Redirect if not logged in
-  if (!customer) {
-    navigate("/account/login");
-    return null;
-  }
+  // Redirect if not logged in (after loading is done)
+  React.useEffect(() => {
+    if (!isCustomerLoading && !customer) {
+      navigate("/account/login");
+    }
+  }, [isCustomerLoading, customer, navigate]);
+
+  // Show nothing while auth is being determined, or if not logged in
+  if (isCustomerLoading || !customer) return null;
 
   // Orders for this customer (matched by email)
   const myOrders = useMemo(() =>

@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { showSuccess, showError } from "../../utils/toast";
 
 const AccountLoginPage = () => {
-  const { customerLogin, customerRegister, customer } = useCustomerAuth();
+  const { customerLogin, customerRegister, customer, isCustomerLoading } = useCustomerAuth();
   const navigate = useNavigate();
 
   const [tab, setTab] = useState<"login" | "register">("login");
@@ -25,11 +25,14 @@ const AccountLoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Redirect if already logged in
-  if (customer) {
-    navigate("/account");
-    return null;
-  }
+  // Redirect if already logged in (after loading is done)
+  React.useEffect(() => {
+    if (!isCustomerLoading && customer) {
+      navigate("/account");
+    }
+  }, [isCustomerLoading, customer, navigate]);
+
+  if (isCustomerLoading || customer) return null;
 
   const reset = () => { setError(""); setName(""); setEmail(""); setPassword(""); setConfirmPassword(""); };
 
