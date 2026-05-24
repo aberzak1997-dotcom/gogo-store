@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { 
-  Search, 
-  ShoppingCart, 
-  User, 
-  Menu, 
-  X, 
+import {
+  Search,
+  ShoppingCart,
+  User,
+  Menu,
+  X,
   ChevronDown,
   LayoutDashboard,
   LogOut,
@@ -144,9 +144,9 @@ const Header = () => {
               <div className="hidden md:flex w-full max-w-[220px]">
                 <form onSubmit={handleSearch} className="relative w-full group">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#0096D6] transition-colors" size={16} />
-                  <Input 
-                    type="text" 
-                    placeholder="Search gear..." 
+                  <Input
+                    type="text"
+                    placeholder="Search gear..."
                     className="w-full pl-10 pr-4 h-[40px] bg-slate-50 border-none rounded-full focus-visible:ring-2 focus-visible:ring-[#0096D6]/20 transition-all text-[10px] font-normal text-slate-500 leading-tight"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -210,8 +210,8 @@ const Header = () => {
             {mainCategories.map((cat) => {
               const Icon = cat.icon;
               return (
-                <Link 
-                  key={cat.name} 
+                <Link
+                  key={cat.name}
                   to={`/products?category=${encodeURIComponent(cat.path)}`}
                   className="group flex items-center gap-2 px-4 py-2 rounded-full hover:bg-slate-50 transition-all"
                 >
@@ -250,9 +250,9 @@ const Header = () => {
 
             <form onSubmit={handleSearch} className="relative w-full mb-8">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-              <Input 
-                type="text" 
-                placeholder="Search products..." 
+              <Input
+                type="text"
+                placeholder="Search products..."
                 className="w-full pl-12 pr-4 h-14 bg-slate-50 border-none rounded-2xl"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -265,8 +265,8 @@ const Header = () => {
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2 mb-4">Navigation</p>
                 <div className="grid grid-cols-2 gap-2">
                   {navLinks.map((link) => (
-                    <Link 
-                      key={link.name} 
+                    <Link
+                      key={link.name}
                       to={link.path}
                       className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl font-normal text-sm"
                       onClick={() => setIsMenuOpen(false)}
@@ -283,8 +283,8 @@ const Header = () => {
                   {mainCategories.map((cat) => {
                     const Icon = cat.icon;
                     return (
-                      <Link 
-                        key={cat.name} 
+                      <Link
+                        key={cat.name}
                         to={`/products?category=${encodeURIComponent(cat.path)}`}
                         className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl font-normal text-sm"
                         onClick={() => setIsMenuOpen(false)}
@@ -297,15 +297,15 @@ const Header = () => {
               </div>
 
               <div className="space-y-4">
-                <Link 
-                  to="/products" 
+                <Link
+                  to="/products"
                   className="flex items-center justify-between p-4 border-b border-slate-50 font-normal text-xs uppercase tracking-widest"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   All Products <ChevronDown size={16} className="-rotate-90" />
                 </Link>
-                <Link 
-                  to="/products?q=sale" 
+                <Link
+                  to="/products?q=sale"
                   className="flex items-center justify-between p-4 border-b border-slate-50 font-normal text-xs uppercase tracking-widest text-rose-600"
                   onClick={() => setIsMenuOpen(false)}
                 >

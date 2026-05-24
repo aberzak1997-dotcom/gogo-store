@@ -9,39 +9,138 @@ import { useStore } from "../../context/StoreContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   Loader2, CheckCircle, AlertTriangle, ArrowLeft,
-  ShieldCheck, Truck, CreditCard, Lock, Zap, RotateCcw, Info
+  ShieldCheck, Truck, CreditCard, Lock, Zap, RotateCcw,
+  Info, Clock
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { showError, showSuccess } from "../../utils/toast";
 import { Product, CartItem } from "../../types";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
 
-const isPayPalConfigured = Boolean(
-  import.meta.env.VITE_PAYPAL_CLIENT_ID &&
-  import.meta.env.VITE_PAYPAL_CLIENT_ID !== "test" &&
-  !import.meta.env.VITE_PAYPAL_CLIENT_ID.includes("YOUR")
+// ─── Brand card logos (card-chip style) ────────────────────────────────────────
+
+const VisaLogo = () => (
+  <div className="w-[46px] h-[30px] bg-white rounded-[4px] border border-slate-100 shadow-sm flex items-center justify-center overflow-hidden">
+    <span className="font-black text-[15px] italic text-[#1A1F71] tracking-wider select-none">VISA</span>
+  </div>
 );
 
+const MastercardLogo = () => (
+  <div className="w-[46px] h-[30px] bg-white rounded-[4px] border border-slate-100 shadow-sm flex items-center justify-center overflow-hidden">
+    <div className="relative w-[30px] h-[20px] flex items-center">
+      <div className="w-[20px] h-[20px] bg-[#EB001B] rounded-full absolute left-0" />
+      <div className="w-[20px] h-[20px] bg-[#F79E1B] rounded-full absolute right-0" style={{ mixBlendMode: "multiply" }} />
+    </div>
+  </div>
+);
+
+const AmexLogo = () => (
+  <div className="w-[46px] h-[30px] bg-[#2557D6] rounded-[4px] border border-[#1a46bb] shadow-sm flex items-center justify-center overflow-hidden">
+    <span className="text-white font-black text-[9px] tracking-[2.5px] select-none">AMEX</span>
+  </div>
+);
+
+const PayPalLogo = () => (
+  <div className="h-[30px] px-3 bg-white rounded-[4px] border border-slate-100 shadow-sm flex items-center gap-0 overflow-hidden">
+    <span className="font-black text-[#003087] text-[14px] leading-none select-none">Pay</span>
+    <span className="font-black text-[#009cde] text-[14px] leading-none select-none">Pal</span>
+  </div>
+);
+
+const StripeLogo = () => (
+  <div className="w-[46px] h-[30px] bg-[#635BFF] rounded-[4px] border border-[#4e45e5] shadow-sm flex items-center justify-center overflow-hidden">
+    <span className="text-white font-black text-[11px] tracking-tight select-none">stripe</span>
+  </div>
+);
+
+const CMILogo = () => (
+  <div className="w-[46px] h-[30px] bg-white rounded-[4px] border-2 border-[#00796B] shadow-sm flex items-center justify-center overflow-hidden">
+    <span className="text-[#00796B] font-black text-[10px] tracking-[2px] select-none">CMI</span>
+  </div>
+);
+
+const WepayLogo = () => (
+  <div className="w-[46px] h-[30px] bg-[#1C3F94] rounded-[4px] border border-[#152f73] shadow-sm flex items-center justify-center overflow-hidden">
+    <span className="text-white font-black text-[9px] tracking-tight select-none">WePay</span>
+  </div>
+);
+
+// ─── PayPal check ──────────────────────────────────────────────────────────────
+const isPayPalConfigured = Boolean(
+  (localStorage.getItem("paypal_client_id") && localStorage.getItem("paypal_client_id")!.length > 10) ||
+  (import.meta.env.VITE_PAYPAL_CLIENT_ID &&
+    import.meta.env.VITE_PAYPAL_CLIENT_ID !== "test" &&
+    !import.meta.env.VITE_PAYPAL_CLIENT_ID.includes("YOUR"))
+);
+
+type PayMethod = "cod" | "card" | "paypal";
+
+// ─── Payment option definitions ────────────────────────────────────────────────
+const ACTIVE_OPTIONS: {
+  id: PayMethod;
+  name: string;
+  desc: string;
+  icon: React.ReactNode;
+  logos: React.ReactNode;
+  show: boolean;
+}[] = [
+  {
+    id: "cod",
+    name: "Cash on Delivery",
+    desc: "Pay in cash when your order arrives",
+    icon: <Truck size={18} className="text-amber-500" />,
+    logos: (
+      <div className="w-[46px] h-[30px] bg-amber-50 rounded-[4px] border border-amber-200 shadow-sm flex items-center justify-center">
+        <Truck size={16} className="text-amber-500" />
+      </div>
+    ),
+    show: true,
+  },
+  {
+    id: "card",
+    name: "Credit / Debit Card",
+    desc: "Visa, Mastercard, American Express",
+    icon: <CreditCard size={18} className="text-primary" />,
+    logos: (
+      <div className="flex items-center gap-1.5">
+        <VisaLogo /><MastercardLogo /><AmexLogo />
+      </div>
+    ),
+    show: true,
+  },
+  {
+    id: "paypal",
+    name: "PayPal",
+    desc: "Pay securely via your PayPal account",
+    icon: <Lock size={18} className="text-blue-500" />,
+    logos: <PayPalLogo />,
+    show: isPayPalConfigured,
+  },
+];
+
+const COMING_SOON_OPTIONS = [
+  { id: "stripe", name: "Stripe",  desc: "Card payments via Stripe",        logo: <StripeLogo /> },
+  { id: "cmi",    name: "CMI",     desc: "Carte Monétique Interbancaire",    logo: <CMILogo /> },
+  { id: "wepay",  name: "WePay",   desc: "Simple & secure bank transfers",   logo: <WepayLogo /> },
+];
+
+// ─── Main component ────────────────────────────────────────────────────────────
 const CheckoutPage = () => {
   const { cart, products, settings, createOrder, updatePaymentStatus } = useStore();
   const navigate = useNavigate();
 
-  const [fullName, setFullName]     = useState("");
-  const [email, setEmail]           = useState("");
-  const [phone, setPhone]           = useState("");
-  const [address, setAddress]       = useState("");
-  const [city, setCity]             = useState("");
-  const [country, setCountry]       = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "paypal" | "cod">("paypal");
-  const [isPlacing, setIsPlacing]   = useState(false);
-  const [orderId, setOrderId]       = useState<string | null>(null);
-  const [paidVia, setPaidVia]       = useState<"card" | "paypal" | "cod">("paypal");
+  const [fullName, setFullName]   = useState("");
+  const [email, setEmail]         = useState("");
+  const [phone, setPhone]         = useState("");
+  const [address, setAddress]     = useState("");
+  const [city, setCity]           = useState("");
+  const [country, setCountry]     = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<PayMethod>("cod");
+  const [isPlacing, setIsPlacing] = useState(false);
+  const [orderId, setOrderId]     = useState<string | null>(null);
+  const [paidVia, setPaidVia]     = useState<PayMethod>("cod");
 
   const isFormValid = Boolean(
     fullName.trim() && email.trim() && phone.trim() &&
@@ -57,19 +156,17 @@ const CheckoutPage = () => {
 
   if (enrichedCart.length === 0 && !orderId) {
     return (
-      <div className="min-h-screen flex flex-col bg-white">
+      <div className="min-h-screen flex flex-col bg-slate-50">
         <Header />
-        <main className="flex-grow section-container py-24">
-          <div className="max-w-xl mx-auto text-center p-16 rounded-none bg-slate-50 border border-slate-100">
-            <div className="w-24 h-24 bg-white rounded-none flex items-center justify-center mx-auto mb-10 shadow-sm">
-              <AlertTriangle className="h-12 w-12 text-slate-200" />
+        <main className="flex-grow flex items-center justify-center py-24 px-4">
+          <div className="max-w-md w-full text-center bg-white rounded-3xl p-16 shadow-sm border border-slate-100">
+            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-8">
+              <AlertTriangle className="h-10 w-10 text-slate-300" />
             </div>
-            <h2 className="text-3xl font-black mb-4 text-slate-900 uppercase tracking-tight">Your Cart is Empty</h2>
-            <p className="text-slate-500 mb-12 text-lg font-medium">
-              You need to add some tech gear to your cart before you can checkout.
-            </p>
-            <Button size="lg" className="rounded-full h-16 px-12 text-sm font-black uppercase tracking-widest" onClick={() => navigate("/")}>
-              Return to Store
+            <h2 className="text-2xl font-black mb-3 text-slate-900 uppercase tracking-tight">Cart is Empty</h2>
+            <p className="text-slate-500 mb-8 font-medium text-sm">Add products to your cart before checking out.</p>
+            <Button className="rounded-full h-12 px-8 font-black uppercase tracking-widest text-xs" onClick={() => navigate("/")}>
+              Browse Products
             </Button>
           </div>
         </main>
@@ -84,84 +181,67 @@ const CheckoutPage = () => {
   const total    = subtotal + shipping + tax;
   const currency = settings.currency || "USD";
 
-  // ─── Helpers ──────────────────────────────────────────────────────────────
-
-  const placeOrder = (method: "card" | "paypal" | "cod"): string | null => {
-    return createOrder({ customerName: fullName, email, phone, address, city, country });
-  };
-
-  // ─── Card / COD submit ─────────────────────────────────────────────────────
+  const placeOrder = (): string | null =>
+    createOrder({ customerName: fullName, email, phone, address, city, country });
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isFormValid) { showError("Please fill in all required fields"); return; }
+    if (!isFormValid) { showError("Please fill in all shipping fields."); return; }
     setIsPlacing(true);
     await new Promise(res => setTimeout(res, 1200));
-    const newOrderId = placeOrder(paymentMethod as "card" | "cod");
-    if (newOrderId) {
-      setPaidVia(paymentMethod as "card" | "paypal" | "cod");
-      setOrderId(newOrderId);
-    }
+    const newOrderId = placeOrder();
+    if (newOrderId) { setPaidVia(paymentMethod); setOrderId(newOrderId); }
     setIsPlacing(false);
   };
 
-  // ─── Success screen ────────────────────────────────────────────────────────
-
+  // ── Success screen ──────────────────────────────────────────────────────────
   if (orderId) {
-    const methodLabel =
-      paidVia === "paypal" ? "PayPal" :
-      paidVia === "cod"    ? "Cash on Delivery (COD)" :
-                             "Credit Card";
+    const methodLabel = paidVia === "paypal" ? "PayPal" : paidVia === "cod" ? "Cash on Delivery" : "Credit / Debit Card";
     return (
-      <div className="min-h-screen flex flex-col bg-white">
+      <div className="min-h-screen flex flex-col bg-slate-50">
         <Header />
-        <main className="flex-grow section-container py-24">
-          <div className="max-w-2xl mx-auto rounded-none shadow-2xl border border-slate-100 overflow-hidden bg-white">
-            <div className="bg-slate-900 p-16 text-center text-white">
-              <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-8">
-                <CheckCircle className="h-12 w-12 text-primary" />
+        <main className="flex-grow flex items-center justify-center py-16 px-4">
+          <div className="max-w-lg w-full bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-14 text-center">
+              <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6 ring-4 ring-emerald-500/30">
+                <CheckCircle className="h-9 w-9 text-emerald-400" />
               </div>
-              <h2 className="text-4xl font-black mb-4 uppercase tracking-tight">Order Confirmed!</h2>
-              <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
-                Thank you for shopping with ElectroStore
-              </p>
+              <h2 className="text-3xl font-black text-white mb-2 uppercase tracking-tight">Order Confirmed!</h2>
+              <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Thank you for your purchase</p>
             </div>
-            <div className="p-16 space-y-10">
-              <div className="grid grid-cols-2 gap-12">
-                <div className="space-y-2">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Order Number</p>
-                  <p className="text-xl font-black text-slate-900 tracking-tight">{orderId}</p>
+            <div className="p-10 space-y-6">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="bg-slate-50 rounded-2xl p-5">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Order #</p>
+                  <p className="font-black text-slate-900 text-sm">{orderId}</p>
                 </div>
-                <div className="text-right space-y-2">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Amount</p>
-                  <p className="text-xl font-black text-slate-900">{currency} {total.toFixed(2)}</p>
-                </div>
-              </div>
-              <Separator className="bg-slate-100" />
-              <div className="space-y-6">
-                <p className="text-slate-500 leading-relaxed text-center font-medium">
-                  We've sent a confirmation email to <span className="font-black text-slate-900">{email}</span>
-                </p>
-                <div className="bg-slate-50 p-8 rounded-none border border-slate-100 flex items-center gap-6">
-                  <div className="p-4 bg-white rounded-none shadow-sm text-primary"><Truck size={28} /></div>
-                  <div>
-                    <p className="font-black text-slate-900 uppercase tracking-widest text-xs">Estimated Delivery</p>
-                    <p className="text-sm text-slate-500 font-bold">3–5 Business Days</p>
-                  </div>
-                </div>
-                <div className="bg-slate-50 p-8 rounded-none border border-slate-100 flex items-center gap-6">
-                  <div className="p-4 bg-white rounded-none shadow-sm text-primary"><CreditCard size={28} /></div>
-                  <div>
-                    <p className="font-black text-slate-900 uppercase tracking-widest text-xs">Payment Method</p>
-                    <p className="text-sm text-slate-500 font-bold">{methodLabel}</p>
-                  </div>
+                <div className="bg-slate-50 rounded-2xl p-5">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Total</p>
+                  <p className="font-black text-slate-900 text-sm">{currency} {total.toFixed(2)}</p>
                 </div>
               </div>
-              <Button
-                size="lg"
-                className="w-full rounded-full h-16 text-sm font-black uppercase tracking-widest gap-3 shadow-2xl shadow-primary/20"
-                onClick={() => navigate("/")}
-              >
+              <div className="bg-slate-50 rounded-2xl p-5 flex items-center gap-4">
+                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary flex-shrink-0">
+                  <Truck size={20} />
+                </div>
+                <div>
+                  <p className="font-black text-slate-900 text-xs uppercase tracking-wider">Estimated Delivery</p>
+                  <p className="text-slate-500 text-sm font-medium mt-0.5">3–5 Business Days</p>
+                </div>
+              </div>
+              <div className="bg-slate-50 rounded-2xl p-5 flex items-center gap-4">
+                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary flex-shrink-0">
+                  <CreditCard size={20} />
+                </div>
+                <div>
+                  <p className="font-black text-slate-900 text-xs uppercase tracking-wider">Payment</p>
+                  <p className="text-slate-500 text-sm font-medium mt-0.5">{methodLabel}</p>
+                </div>
+              </div>
+              <p className="text-center text-xs text-slate-400 font-medium">
+                Confirmation sent to <span className="font-black text-slate-700">{email}</span>
+              </p>
+              <Button className="w-full h-13 rounded-2xl font-black uppercase tracking-widest text-xs h-12" onClick={() => navigate("/")}>
                 Continue Shopping
               </Button>
             </div>
@@ -172,270 +252,373 @@ const CheckoutPage = () => {
     );
   }
 
-  // ─── Main checkout ─────────────────────────────────────────────────────────
-
+  // ── Main checkout ───────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-slate-50">
       <Header />
-      <main className="flex-grow section-container py-16">
-        <div className="flex items-center justify-between mb-12">
-          <Link
-            to="/"
-            className="inline-flex items-center text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors group"
-          >
-            <ArrowLeft size={16} className="mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Store
-          </Link>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight uppercase">Checkout</h1>
-        </div>
+      <main className="flex-grow py-10 px-4">
+        <div className="max-w-6xl mx-auto">
 
-        <div className="grid lg:grid-cols-12 gap-16">
-
-          {/* ── Left: Shipping + Payment ─────────────────────────────────── */}
-          <div className="lg:col-span-7 space-y-8">
-
-            {/* Shipping */}
-            <div className="rounded-none border border-slate-100 bg-white shadow-sm overflow-hidden">
-              <div className="bg-slate-50/50 border-b border-slate-100 p-8">
-                <h3 className="flex items-center gap-4 text-sm font-black uppercase tracking-widest text-slate-900">
-                  <div className="p-2 bg-white rounded-none text-primary shadow-sm"><Truck size={20} /></div>
-                  Shipping Information
-                </h3>
-              </div>
-              <form id="checkout-form" onSubmit={handlePlaceOrder} className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2 md:col-span-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Full Name</Label>
-                  <Input className="h-14 rounded-none border-slate-200 bg-slate-50/50 focus:bg-white" value={fullName} onChange={e => setFullName(e.target.value)} placeholder="John Doe" required />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Email Address</Label>
-                  <Input type="email" className="h-14 rounded-none border-slate-200 bg-slate-50/50 focus:bg-white" value={email} onChange={e => setEmail(e.target.value)} placeholder="john@example.com" required />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Phone Number</Label>
-                  <Input className="h-14 rounded-none border-slate-200 bg-slate-50/50 focus:bg-white" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+1 (555) 000-0000" required />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Street Address</Label>
-                  <Input className="h-14 rounded-none border-slate-200 bg-slate-50/50 focus:bg-white" value={address} onChange={e => setAddress(e.target.value)} placeholder="123 Tech Lane" required />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">City</Label>
-                  <Input className="h-14 rounded-none border-slate-200 bg-slate-50/50 focus:bg-white" value={city} onChange={e => setCity(e.target.value)} placeholder="San Francisco" required />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Country</Label>
-                  <Input className="h-14 rounded-none border-slate-200 bg-slate-50/50 focus:bg-white" value={country} onChange={e => setCountry(e.target.value)} placeholder="United States" required />
-                </div>
-              </form>
+          {/* Page header */}
+          <div className="flex items-center justify-between mb-8">
+            <Link to="/" className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-700 transition-colors group">
+              <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" /> Back
+            </Link>
+            <div className="text-center">
+              <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Checkout</h1>
+              <p className="text-[11px] text-slate-400 font-medium mt-0.5">{enrichedCart.length} item{enrichedCart.length !== 1 ? "s" : ""} in your cart</p>
             </div>
+            <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-full">
+              <ShieldCheck size={12} /> Secure
+            </div>
+          </div>
 
-            {/* Payment */}
-            <div className="rounded-none border border-slate-100 bg-white shadow-sm overflow-hidden">
-              <div className="bg-slate-50/50 border-b border-slate-100 p-8">
-                <h3 className="flex items-center gap-4 text-sm font-black uppercase tracking-widest text-slate-900">
-                  <div className="p-2 bg-white rounded-none text-primary shadow-sm"><CreditCard size={20} /></div>
-                  Payment Method
-                </h3>
-              </div>
-              <div className="p-8 space-y-6">
-                <Select value={paymentMethod} onValueChange={(v) => setPaymentMethod(v as typeof paymentMethod)}>
-                  <SelectTrigger className="w-full h-12 rounded-xl border-slate-200 bg-slate-50/50 font-bold">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {isPayPalConfigured && (
-                      <SelectItem value="paypal">
-                        <span className="font-bold">PayPal</span>
-                      </SelectItem>
-                    )}
-                    <SelectItem value="card">Credit / Debit Card</SelectItem>
-                    <SelectItem value="cod">Cash on Delivery (COD)</SelectItem>
-                  </SelectContent>
-                </Select>
+          <div className="grid lg:grid-cols-12 gap-6">
 
-                {/* PayPal */}
-                {paymentMethod === "paypal" && (
-                  <div className="space-y-4">
-                    {/* PayPal logo banner */}
-                    <div className="flex items-center gap-3 bg-[#003087]/5 border border-[#009cde]/20 rounded-xl p-4">
-                      <img
-                        src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png"
-                        alt="PayPal"
-                        className="h-6"
+            {/* ── Left column ─────────────────────────────────────────────── */}
+            <div className="lg:col-span-7 space-y-5">
+
+              {/* Shipping */}
+              <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                <div className="px-8 py-6 border-b border-slate-100 flex items-center gap-3">
+                  <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                    <Truck size={17} />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-black uppercase tracking-widest text-slate-900">Shipping Info</h2>
+                    <p className="text-[10px] text-slate-400 font-medium">Where should we deliver?</p>
+                  </div>
+                </div>
+                <form id="checkout-form" onSubmit={handlePlaceOrder} className="p-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2 space-y-2">
+                      <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Full Name *</Label>
+                      <Input
+                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus-visible:ring-primary/30 transition-colors font-medium"
+                        value={fullName} onChange={e => setFullName(e.target.value)}
+                        placeholder="John Doe" required
                       />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Email *</Label>
+                      <Input
+                        type="email"
+                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus-visible:ring-primary/30 transition-colors font-medium"
+                        value={email} onChange={e => setEmail(e.target.value)}
+                        placeholder="john@example.com" required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Phone *</Label>
+                      <Input
+                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus-visible:ring-primary/30 transition-colors font-medium"
+                        value={phone} onChange={e => setPhone(e.target.value)}
+                        placeholder="+1 (555) 000-0000" required
+                      />
+                    </div>
+                    <div className="md:col-span-2 space-y-2">
+                      <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Street Address *</Label>
+                      <Input
+                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus-visible:ring-primary/30 transition-colors font-medium"
+                        value={address} onChange={e => setAddress(e.target.value)}
+                        placeholder="123 Tech Lane, Apt 4B" required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">City *</Label>
+                      <Input
+                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus-visible:ring-primary/30 transition-colors font-medium"
+                        value={city} onChange={e => setCity(e.target.value)}
+                        placeholder="San Francisco" required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Country *</Label>
+                      <Input
+                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus-visible:ring-primary/30 transition-colors font-medium"
+                        value={country} onChange={e => setCountry(e.target.value)}
+                        placeholder="United States" required
+                      />
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              {/* Payment */}
+              <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                <div className="px-8 py-6 border-b border-slate-100 flex items-center gap-3">
+                  <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                    <CreditCard size={17} />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-black uppercase tracking-widest text-slate-900">Payment Method</h2>
+                    <p className="text-[10px] text-slate-400 font-medium">Choose how you'd like to pay</p>
+                  </div>
+                </div>
+
+                <div className="p-6 space-y-2.5">
+
+                  {/* ── Active payment cards ─────────────────────────────── */}
+                  {ACTIVE_OPTIONS.filter(o => o.show).map(option => {
+                    const selected = paymentMethod === option.id;
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => setPaymentMethod(option.id)}
+                        className={cn(
+                          "w-full flex items-center gap-4 px-5 py-4 rounded-2xl border-2 transition-all duration-200 text-left group",
+                          selected
+                            ? "border-primary bg-primary/[0.03] shadow-sm"
+                            : "border-slate-100 hover:border-slate-100 hover:bg-slate-50/80"
+                        )}
+                      >
+                        {/* Radio dot — LEFT */}
+                        <div className={cn(
+                          "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200",
+                          selected ? "border-primary bg-primary" : "border-slate-300 group-hover:border-slate-400"
+                        )}>
+                          {selected && <div className="w-2 h-2 bg-white rounded-full" />}
+                        </div>
+
+                        {/* Label — MIDDLE */}
+                        <div className="flex-1 min-w-0">
+                          <p className={cn(
+                            "font-black text-sm transition-colors",
+                            selected ? "text-slate-900" : "text-slate-700"
+                          )}>
+                            {option.name}
+                          </p>
+                          <p className="text-[11px] text-slate-400 font-medium mt-0.5 truncate">{option.desc}</p>
+                        </div>
+
+                        {/* Brand logos — RIGHT */}
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          {option.logos}
+                        </div>
+                      </button>
+                    );
+                  })}
+
+                  {/* ── Expanded detail for selected method ──────────────── */}
+                  {paymentMethod === "card" && (
+                    <div className="mx-1 bg-slate-50 border border-slate-100 rounded-2xl p-5 flex items-center gap-4">
+                      <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-emerald-600 flex-shrink-0">
+                        <Lock size={18} />
+                      </div>
                       <div>
-                        <p className="text-sm font-black text-[#003087]">Pay securely with PayPal</p>
-                        <p className="text-xs text-slate-500">You'll be redirected to PayPal to complete payment</p>
+                        <p className="font-black text-slate-800 text-xs uppercase tracking-wider">Secure Card Payment</p>
+                        <p className="text-xs text-slate-500 font-medium mt-0.5">Your card details are encrypted and never stored</p>
+                      </div>
+                      <div className="ml-auto flex-shrink-0">
+                        <span className="text-[9px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full">SSL</span>
                       </div>
                     </div>
+                  )}
 
-                    {!isFormValid ? (
-                      <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4">
-                        <Info size={16} className="text-amber-600 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-amber-700 font-medium">
-                          Please fill in all shipping information above before paying with PayPal.
+                  {paymentMethod === "cod" && (
+                    <div className="mx-1 bg-amber-50 border border-amber-100 rounded-2xl p-5 flex items-center gap-4">
+                      <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-amber-500 flex-shrink-0">
+                        <Truck size={18} />
+                      </div>
+                      <div>
+                        <p className="font-black text-amber-900 text-xs uppercase tracking-wider">Pay on Delivery</p>
+                        <p className="text-xs text-amber-700 font-medium mt-0.5">
+                          Have <span className="font-black">{currency} {total.toFixed(2)}</span> ready when your order arrives
                         </p>
                       </div>
-                    ) : (
-                      <div className="rounded-xl overflow-hidden">
-                        <PayPalButtons
-                          style={{ layout: "vertical", color: "gold", shape: "rect", label: "pay", height: 48 }}
-                          disabled={!isFormValid}
-                          createOrder={(_data, actions) =>
-                            actions.order.create({
-                              intent: "CAPTURE",
-                              purchase_units: [{
-                                description: "GoGo Store Purchase",
-                                amount: {
-                                  currency_code: currency,
-                                  value: total.toFixed(2),
-                                  breakdown: {
-                                    item_total: { currency_code: currency, value: subtotal.toFixed(2) },
-                                    shipping:   { currency_code: currency, value: shipping.toFixed(2) },
-                                    tax_total:  { currency_code: currency, value: tax.toFixed(2) },
+                    </div>
+                  )}
+
+                  {paymentMethod === "paypal" && (
+                    <div className="mx-1 space-y-3">
+                      {!isFormValid ? (
+                        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 flex items-start gap-3">
+                          <Info size={16} className="text-blue-500 flex-shrink-0 mt-0.5" />
+                          <p className="text-xs text-blue-700 font-medium">
+                            Complete your shipping information above to unlock PayPal checkout.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
+                          <PayPalButtons
+                            style={{ layout: "vertical", color: "gold", shape: "rect", label: "pay", height: 44 }}
+                            disabled={!isFormValid}
+                            createOrder={(_d, actions) =>
+                              actions.order.create({
+                                intent: "CAPTURE",
+                                purchase_units: [{
+                                  description: "GoGo Store Purchase",
+                                  amount: {
+                                    currency_code: currency,
+                                    value: total.toFixed(2),
+                                    breakdown: {
+                                      item_total: { currency_code: currency, value: subtotal.toFixed(2) },
+                                      shipping:   { currency_code: currency, value: shipping.toFixed(2) },
+                                      tax_total:  { currency_code: currency, value: tax.toFixed(2) },
+                                    },
                                   },
-                                },
-                              }],
-                            })
-                          }
-                          onApprove={async (_data, actions) => {
-                            await actions.order!.capture();
-                            const newOrderId = placeOrder("paypal");
-                            if (newOrderId) {
-                              updatePaymentStatus(newOrderId, "paid");
-                              setPaidVia("paypal");
-                              setOrderId(newOrderId);
-                              showSuccess("Payment successful! Order confirmed.");
+                                }],
+                              })
                             }
-                          }}
-                          onError={() => showError("PayPal payment failed. Please try again.")}
-                          onCancel={() => showError("Payment cancelled.")}
-                        />
+                            onApprove={async (_d, actions) => {
+                              await actions.order!.capture();
+                              const newOrderId = placeOrder();
+                              if (newOrderId) {
+                                updatePaymentStatus(newOrderId, "paid");
+                                setPaidVia("paypal");
+                                setOrderId(newOrderId);
+                                showSuccess("Payment successful! Your order is confirmed.");
+                              }
+                            }}
+                            onError={() => showError("PayPal payment failed. Please try again.")}
+                            onCancel={() => showError("Payment cancelled.")}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* ── Divider ───────────────────────────────────────────── */}
+                  <div className="flex items-center gap-3 pt-2 pb-1 px-1">
+                    <div className="flex-1 h-px bg-slate-100" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-300 flex items-center gap-1.5">
+                      <Clock size={9} /> Coming Soon
+                    </span>
+                    <div className="flex-1 h-px bg-slate-100" />
+                  </div>
+
+                  {/* ── Coming soon cards ─────────────────────────────────── */}
+                  {COMING_SOON_OPTIONS.map(option => (
+                    <div
+                      key={option.id}
+                      className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 cursor-not-allowed select-none"
+                    >
+                      {/* Disabled radio dot */}
+                      <div className="w-5 h-5 rounded-full border-2 border-slate-100 flex-shrink-0" />
+
+                      {/* Label */}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-black text-sm text-slate-400">{option.name}</p>
+                        <p className="text-[11px] text-slate-300 font-medium mt-0.5 truncate">{option.desc}</p>
+                      </div>
+
+                      {/* Logo + Badge — RIGHT */}
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <div className="opacity-40">
+                          {option.logo}
+                        </div>
+                        <span className="text-[9px] font-black uppercase tracking-widest bg-slate-200 text-slate-400 px-2.5 py-1 rounded-full whitespace-nowrap">
+                          Coming Soon
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Terms */}
+                  <p className="text-[10px] text-slate-400 text-center font-medium pt-3 px-2">
+                    By placing your order you agree to our{" "}
+                    <Link to="/terms" className="underline hover:text-slate-600 font-bold">Terms</Link>
+                    {" "}&amp;{" "}
+                    <Link to="/privacy-policy" className="underline hover:text-slate-600 font-bold">Privacy Policy</Link>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Right column: Order Summary ──────────────────────────── */}
+            <div className="lg:col-span-5">
+              <div className="sticky top-24 space-y-4">
+                <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                  {/* Header */}
+                  <div className="px-7 pt-7 pb-5 border-b border-slate-50">
+                    <h2 className="text-sm font-black uppercase tracking-widest text-slate-900 mb-5">Order Summary</h2>
+                    <div className="space-y-1">
+                      {enrichedCart.map((item, i) => (
+                        <div key={i} className="flex items-center gap-3 py-3">
+                          <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-100 p-1 flex-shrink-0">
+                            <img src={item.product.imageUrl} alt="" className="w-full h-full object-contain" />
+                          </div>
+                          <div className="flex-grow min-w-0">
+                            <p className="font-bold text-slate-800 text-xs line-clamp-1 uppercase tracking-tight">{item.product.title}</p>
+                            <p className="text-[10px] text-slate-400 font-black mt-0.5">Qty {item.quantity}</p>
+                          </div>
+                          <p className="font-black text-slate-900 text-sm flex-shrink-0">
+                            ${(item.product.price * item.quantity).toFixed(2)}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Totals */}
+                  <div className="px-7 py-6 space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-black uppercase tracking-widest text-slate-400">Subtotal</span>
+                      <span className="font-black text-slate-700 text-sm">{currency} {subtotal.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-black uppercase tracking-widest text-slate-400">Shipping</span>
+                      <span className={cn("font-black text-sm", shipping === 0 ? "text-emerald-600" : "text-slate-700")}>
+                        {shipping === 0 ? "FREE" : `${currency} ${shipping.toFixed(2)}`}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-black uppercase tracking-widest text-slate-400">
+                        Tax ({Math.round((settings.taxRate || 0.07) * 100)}%)
+                      </span>
+                      <span className="font-black text-slate-700 text-sm">{currency} {tax.toFixed(2)}</span>
+                    </div>
+
+                    <div className="h-px bg-slate-100 my-2" />
+
+                    <div className="flex justify-between items-center pt-1">
+                      <span className="text-base font-black uppercase tracking-tight text-slate-900">Total</span>
+                      <span className="text-2xl font-black text-slate-900 tracking-tighter">
+                        {currency} {total.toFixed(2)}
+                      </span>
+                    </div>
+
+                    {/* CTA — hidden for PayPal (uses PayPal buttons) */}
+                    {paymentMethod !== "paypal" && (
+                      <Button
+                        form="checkout-form"
+                        type="submit"
+                        className="w-full h-13 rounded-2xl font-black uppercase tracking-widest text-xs gap-2 mt-3 h-12"
+                        disabled={isPlacing}
+                      >
+                        {isPlacing
+                          ? <><Loader2 className="h-4 w-4 animate-spin" /> Processing...</>
+                          : <>Place Order <Zap size={16} /></>
+                        }
+                      </Button>
+                    )}
+
+                    {paymentMethod === "paypal" && !isFormValid && (
+                      <div className="mt-3 text-center text-[11px] text-slate-400 font-medium bg-slate-50 rounded-2xl p-3">
+                        Fill in shipping info to unlock PayPal
                       </div>
                     )}
                   </div>
-                )}
+                </div>
 
-                {/* Card */}
-                {paymentMethod === "card" && (
-                  <div className="bg-slate-50 p-6 rounded-xl border border-slate-100 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-white rounded-xl shadow-sm text-primary"><Lock size={22} /></div>
-                      <div>
-                        <p className="font-black text-slate-900 text-sm">Secure Payment</p>
-                        <p className="text-xs text-slate-500 font-medium">SSL-encrypted, processed safely</p>
-                      </div>
+                {/* Trust row */}
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { icon: <ShieldCheck size={18} />, label: "Secure", color: "text-emerald-500" },
+                    { icon: <Lock size={18} />, label: "Encrypted", color: "text-blue-500" },
+                    { icon: <RotateCcw size={18} />, label: "Returns", color: "text-violet-500" },
+                  ].map(({ icon, label, color }) => (
+                    <div key={label} className="bg-white rounded-2xl border border-slate-100 py-4 flex flex-col items-center gap-1.5 shadow-sm">
+                      <div className={color}>{icon}</div>
+                      <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">{label}</span>
                     </div>
-                    <Badge className="bg-emerald-100 text-emerald-700 border-transparent font-black text-[10px] uppercase tracking-wider rounded-full">
-                      Encrypted
-                    </Badge>
-                  </div>
-                )}
-
-                {/* COD */}
-                {paymentMethod === "cod" && (
-                  <div className="bg-slate-50 p-6 rounded-xl border border-slate-100 flex items-center gap-4">
-                    <div className="p-3 bg-white rounded-xl shadow-sm text-primary"><Truck size={22} /></div>
-                    <div>
-                      <p className="font-black text-slate-900 text-sm">Cash on Delivery</p>
-                      <p className="text-xs text-slate-500 font-medium">
-                        Pay {currency} {total.toFixed(2)} in cash when your order arrives.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                <p className="text-[10px] text-slate-400 text-center font-bold uppercase tracking-widest">
-                  By placing your order you agree to our Terms of Service and Privacy Policy.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* ── Right: Order Summary ──────────────────────────────────────── */}
-          <div className="lg:col-span-5">
-            <div className="sticky top-32 space-y-6">
-              <div className="rounded-none border border-slate-100 bg-white shadow-2xl shadow-slate-200/50 overflow-hidden">
-                <div className="p-8 border-b border-slate-50">
-                  <h3 className="text-sm font-black uppercase tracking-widest text-slate-900 mb-6">Order Summary</h3>
-                  <div className="divide-y divide-slate-50">
-                    {enrichedCart.map((item, i) => (
-                      <div key={i} className="flex items-center gap-4 py-4">
-                        <div className="w-12 h-12 rounded-none bg-slate-50 border border-slate-100 p-1.5 flex-shrink-0">
-                          <img src={item.product.imageUrl} alt="" className="w-full h-full object-contain" />
-                        </div>
-                        <div className="flex-grow min-w-0">
-                          <p className="font-bold text-slate-900 text-xs uppercase tracking-tight line-clamp-1">{item.product.title}</p>
-                          <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Qty: {item.quantity}</p>
-                        </div>
-                        <p className="font-black text-slate-900 text-sm tracking-tight flex-shrink-0">
-                          ${(item.product.price * item.quantity).toFixed(2)}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="p-8 space-y-4">
-                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                    <span className="text-slate-400">Subtotal</span>
-                    <span className="text-slate-900">{currency} {subtotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                    <span className="text-slate-400">Shipping</span>
-                    <span className={shipping === 0 ? "text-emerald-600" : "text-slate-900"}>
-                      {shipping === 0 ? "FREE" : `${currency} ${shipping.toFixed(2)}`}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                    <span className="text-slate-400">Tax ({Math.round((settings.taxRate || 0.07) * 100)}%)</span>
-                    <span className="text-slate-900">{currency} {tax.toFixed(2)}</span>
-                  </div>
-                  <Separator className="my-4 bg-slate-50" />
-                  <div className="flex justify-between items-end">
-                    <span className="text-slate-900 font-black text-lg uppercase tracking-tighter">Total</span>
-                    <span className="text-4xl font-black text-slate-900 tracking-tighter">
-                      {currency} {total.toFixed(2)}
-                    </span>
-                  </div>
-
-                  {/* Place Order button — only for card / COD */}
-                  {paymentMethod !== "paypal" && (
-                    <Button
-                      form="checkout-form"
-                      type="submit"
-                      className="w-full h-16 text-sm font-black uppercase tracking-widest gap-3 rounded-full shadow-2xl shadow-primary/20 mt-4"
-                      disabled={isPlacing}
-                    >
-                      {isPlacing ? (
-                        <><Loader2 className="h-5 w-5 animate-spin" /> Processing...</>
-                      ) : (
-                        <>Place Order <Zap size={20} /></>
-                      )}
-                    </Button>
-                  )}
-
-                  {paymentMethod === "paypal" && !isFormValid && (
-                    <p className="text-center text-xs text-slate-400 font-medium pt-2">
-                      Fill in your shipping info to unlock PayPal checkout
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-slate-50 p-6 rounded-none border border-slate-100 flex flex-col items-center text-center gap-3">
-                  <ShieldCheck className="text-emerald-500" size={28} />
-                  <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">Secure Checkout</span>
-                </div>
-                <div className="bg-slate-50 p-6 rounded-none border border-slate-100 flex flex-col items-center text-center gap-3">
-                  <RotateCcw className="text-blue-500" size={28} />
-                  <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">Easy Returns</span>
+                  ))}
                 </div>
               </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </main>
       <Footer />

@@ -109,7 +109,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             </h2>
           )}
         </div>
-        <button 
+        <button
           onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           className="hidden lg:flex p-1.5 hover:bg-white/10 rounded-lg text-slate-500 transition-colors"
         >

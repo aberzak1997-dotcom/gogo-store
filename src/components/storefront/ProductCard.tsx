@@ -19,10 +19,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     const variantToAdd = selectedVariant || null;
     const quantity = 1;
-    
+
     addToCart(product.id, quantity, variantToAdd?.id);
     toast.success(`${product.title} added to cart`);
   };

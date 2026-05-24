@@ -21,7 +21,7 @@ const BrandLogos = () => {
         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 text-center mb-10">
           Trusted by Global Tech Leaders
         </p>
-        
+
         <div className="relative flex overflow-hidden group">
           <div className="flex animate-marquee whitespace-nowrap gap-12 md:gap-24 items-center py-2">
             {displayBrands.map((brand, idx) => (

@@ -36,7 +36,7 @@ const Footer = () => {
                 Subscribe to receive exclusive offers, tech news, and early access to new arrivals.
               </p>
               <form onSubmit={handleSubscribe} className="flex gap-2">
-                <input 
+                <input
                   type="email"
                   placeholder="Email address"
                   className="flex-grow h-12 rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none focus:border-primary transition-colors"

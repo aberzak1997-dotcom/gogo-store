@@ -163,14 +163,14 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
               >
                 Checkout Now <ArrowRight size={20} />
               </Button>
-              
+
               {hasStockIssues && (
                 <div className="flex items-center justify-center gap-2 text-rose-600 text-[10px] font-black uppercase tracking-widest bg-rose-50 p-4 rounded-none">
                   <AlertCircle size={16} />
                   Please resolve stock issues
                 </div>
               )}
-              
+
               <div className="flex items-center justify-center gap-6 text-[8px] font-black text-slate-400 uppercase tracking-[0.2em]">
                 <div className="flex items-center gap-1.5">
                   <Zap size={12} className="text-amber-500" /> Secure

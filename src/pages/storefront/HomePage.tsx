@@ -553,19 +553,20 @@ const HomePage = () => {
                 { icon: RotateCcw, title: "Easy Returns", desc: "30-day window", color: "bg-orange-50 text-orange-500" },
                 { icon: Star, title: "1-Year Warranty", desc: "On all products", color: "bg-amber-50 text-amber-500" },
               ].map((item, i) => (
-                <div key={i} className="group flex items-center gap-4 bg-white p-6 rounded-2xl border border-slate-100 hover:shadow-md hover:border-slate-200 transition-all">
-                  <div className={cn("w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110", item.color)}>
+                <div key={i} className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${item.color}`}>
                     <item.icon size={20} />
                   </div>
                   <div>
-                    <p className="font-semibold text-sm text-slate-900">{item.title}</p>
-                    <p className="text-xs text-slate-400 mt-0.5">{item.desc}</p>
+                    <p className="font-semibold text-slate-900 text-sm">{item.title}</p>
+                    <p className="text-slate-400 text-xs">{item.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
           </section>
         )}
+
       </main>
 
       <Footer />
