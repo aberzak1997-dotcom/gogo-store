@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { supabase, isSupabaseConfigured } from "../lib/supabase";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -10,51 +9,27 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Admin auth is localStorage-only to avoid conflict with customer Supabase sessions.
+// Credentials: admin@demo.com / admin123
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (isSupabaseConfigured && supabase) {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        // Accept either a live Supabase session OR a local demo login
-        setIsAuthenticated(!!session || localStorage.getItem("admin_auth") === "true");
-        setIsLoading(false);
-      });
-
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-        if (session) setIsAuthenticated(true);
-      });
-
-      return () => subscription.unsubscribe();
-    } else {
-      setIsAuthenticated(localStorage.getItem("admin_auth") === "true");
-      setIsLoading(false);
-    }
+    setIsAuthenticated(localStorage.getItem("admin_auth") === "true");
+    setIsLoading(false);
   }, []);
 
   const login = async (email: string, pass: string): Promise<boolean> => {
-    // Always try demo credentials first (works even when Supabase is configured)
     if (email === "admin@demo.com" && pass === "admin123") {
       setIsAuthenticated(true);
       localStorage.setItem("admin_auth", "true");
       return true;
     }
-    // Then try Supabase for real accounts
-    if (isSupabaseConfigured && supabase) {
-      const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
-      if (!error) {
-        setIsAuthenticated(true);
-        return true;
-      }
-    }
     return false;
   };
 
   const logout = async () => {
-    if (isSupabaseConfigured && supabase) {
-      await supabase.auth.signOut();
-    }
     setIsAuthenticated(false);
     localStorage.removeItem("admin_auth");
   };

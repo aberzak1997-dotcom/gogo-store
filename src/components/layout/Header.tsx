@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore } from "../../context/StoreContext";
+import { useCustomerAuth } from "../../context/CustomerAuthContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,6 +43,7 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { cart } = useStore();
+  const { customer, customerLogout, wishlist } = useCustomerAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -158,30 +160,86 @@ const Header = () => {
               <div className="flex items-center gap-1">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-50 text-slate-600">
-                      <User size={22} />
+                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-50 text-slate-600 relative">
+                      {customer ? (
+                        <div className="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center text-white text-[10px] font-black">
+                          {customer.name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2)}
+                        </div>
+                      ) : (
+                        <User size={22} />
+                      )}
+                      {wishlist.length > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white">
+                          {wishlist.length}
+                        </span>
+                      )}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl shadow-2xl border-none">
-                    <DropdownMenuLabel className="font-black text-xs uppercase tracking-widest text-slate-400 px-4 py-3">Account Portal</DropdownMenuLabel>
-                    <DropdownMenuSeparator className="bg-slate-50" />
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                        <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><LayoutDashboard size={16} /></div> Admin Dashboard
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/track-order" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                        <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Package size={16} /></div> Track My Order
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                      <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Settings size={16} /></div> Settings
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-slate-50" />
-                    <DropdownMenuItem className="cursor-pointer rounded-xl py-3 px-4 gap-3 text-red-600 focus:text-red-600 focus:bg-red-50 font-black text-xs uppercase tracking-widest">
-                      <LogOut size={16} /> Logout
-                    </DropdownMenuItem>
+                    {customer ? (
+                      <>
+                        <div className="px-4 py-3 flex items-center gap-3">
+                          <div className="w-9 h-9 bg-slate-900 rounded-full flex items-center justify-center text-white text-[10px] font-black flex-shrink-0">
+                            {customer.name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2)}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-black text-sm text-slate-900 truncate">{customer.name}</p>
+                            <p className="text-[10px] text-slate-400 truncate">{customer.email}</p>
+                          </div>
+                        </div>
+                        <DropdownMenuSeparator className="bg-slate-50" />
+                        <DropdownMenuItem asChild>
+                          <Link to="/account" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
+                            <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><User size={16} /></div> My Account
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link to="/account?tab=orders" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
+                            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><Package size={16} /></div> My Orders
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link to="/account?tab=wishlist" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
+                            <div className="p-2 bg-rose-50 text-rose-500 rounded-lg"><Settings size={16} /></div>
+                            Wishlist {wishlist.length > 0 && <span className="ml-auto bg-rose-100 text-rose-600 text-[9px] font-black px-1.5 py-0.5 rounded-full">{wishlist.length}</span>}
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator className="bg-slate-50" />
+                        <DropdownMenuItem asChild>
+                          <Link to="/admin" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm text-slate-400">
+                            <div className="p-2 bg-slate-50 text-slate-400 rounded-lg"><LayoutDashboard size={16} /></div> Admin Panel
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator className="bg-slate-50" />
+                        <DropdownMenuItem
+                          onClick={() => customerLogout().then(() => navigate("/"))}
+                          className="cursor-pointer rounded-xl py-3 px-4 gap-3 text-red-600 focus:text-red-600 focus:bg-red-50 font-black text-xs uppercase tracking-widest"
+                        >
+                          <LogOut size={16} /> Sign Out
+                        </DropdownMenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <DropdownMenuLabel className="font-black text-xs uppercase tracking-widest text-slate-400 px-4 py-3">My Account</DropdownMenuLabel>
+                        <DropdownMenuSeparator className="bg-slate-50" />
+                        <DropdownMenuItem asChild>
+                          <Link to="/account/login" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
+                            <div className="p-2 bg-primary/10 text-primary rounded-lg"><User size={16} /></div> Sign In / Register
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link to="/track-order" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
+                            <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Package size={16} /></div> Track My Order
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator className="bg-slate-50" />
+                        <DropdownMenuItem asChild>
+                          <Link to="/admin" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm text-slate-400">
+                            <div className="p-2 bg-slate-50 text-slate-400 rounded-lg"><LayoutDashboard size={16} /></div> Admin Panel
+                          </Link>
+                        </DropdownMenuItem>
+                      </>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
 

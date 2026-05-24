@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Star, Eye, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore } from "../../context/StoreContext";
+import { useCustomerAuth } from "../../context/CustomerAuthContext";
 import { Product, ProductVariant } from "../../types";
 import { toast } from "sonner";
 
@@ -14,7 +15,27 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useStore();
+  const { customer, isWishlisted, addToWishlist, removeFromWishlist } = useCustomerAuth();
+  const navigate = useNavigate();
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
+
+  const wishlisted = isWishlisted(product.id);
+
+  const handleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!customer) {
+      navigate("/account/login");
+      return;
+    }
+    if (wishlisted) {
+      removeFromWishlist(product.id);
+      toast.success("Removed from wishlist");
+    } else {
+      addToWishlist(product.id);
+      toast.success("Added to wishlist");
+    }
+  };
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -92,12 +113,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
             size="icon"
             variant="secondary"
             className="rounded-full w-10 h-10 bg-white/90 backdrop-blur-sm hover:bg-white transition-all shadow-lg"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-            }}
+            onClick={handleWishlist}
           >
-            <Heart size={18} className="text-slate-600" />
+            <Heart size={18} className={wishlisted ? "fill-rose-500 text-rose-500" : "text-slate-600"} />
           </Button>
         </div>
       </div>
