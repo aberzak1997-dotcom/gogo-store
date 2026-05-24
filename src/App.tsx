@@ -47,6 +47,8 @@ import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
 import AdminShippingPage from "./pages/admin/AdminShippingPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import NotFound from "./pages/NotFound";
+import CookieConsent from "./components/storefront/CookieConsent";
+import OrderTrackingPage from "./pages/storefront/OrderTrackingPage";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +72,7 @@ const App = () => {
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <CookieConsent />
           <BrowserRouter>
             <Routes>
               {/* Public Storefront */}
@@ -89,6 +92,7 @@ const App = () => {
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/careers" element={<CareersPage />} />
+              <Route path="/track-order" element={<OrderTrackingPage />} />
 
               {/* Admin Auth */}
               <Route path="/admin/login" element={<AdminLoginPage />} />

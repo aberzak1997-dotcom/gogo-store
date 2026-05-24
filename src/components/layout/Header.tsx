@@ -170,8 +170,10 @@ const Header = () => {
                         <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><LayoutDashboard size={16} /></div> Admin Dashboard
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                      <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Package size={16} /></div> My Orders
+                    <DropdownMenuItem asChild>
+                      <Link to="/track-order" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
+                        <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Package size={16} /></div> Track My Order
+                      </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
                       <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Settings size={16} /></div> Settings
