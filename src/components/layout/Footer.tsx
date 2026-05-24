@@ -2,20 +2,25 @@
 
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Smartphone, Mail, Phone, Instagram, Twitter, Facebook, Youtube, Send } from "lucide-react";
+import { Smartphone, Mail, Instagram, Twitter, Facebook, Youtube, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { MadeWithDyad } from "@/components/made-with-dyad";
-import { showSuccess } from "../../utils/toast";
+import { showSuccess, showError } from "../../utils/toast";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      showSuccess("Thank you for subscribing!");
-      setEmail("");
+    if (!email) return;
+    const existing = JSON.parse(localStorage.getItem("newsletter_subscribers") || "[]");
+    if (existing.includes(email)) {
+      showError("You're already subscribed!");
+    } else {
+      existing.push(email);
+      localStorage.setItem("newsletter_subscribers", JSON.stringify(existing));
+      showSuccess("Thank you for subscribing! 🎉");
     }
+    setEmail("");
   };
 
   return (
@@ -50,8 +55,13 @@ const Footer = () => {
               </form>
             </div>
             <div className="flex items-center gap-4">
-              {[Instagram, Twitter, Facebook, Youtube].map((Icon, i) => (
-                <a key={i} href="#" className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white transition-all">
+              {[
+                { Icon: Instagram, href: "https://instagram.com" },
+                { Icon: Twitter, href: "https://twitter.com" },
+                { Icon: Facebook, href: "https://facebook.com" },
+                { Icon: Youtube, href: "https://youtube.com" },
+              ].map(({ Icon, href }, i) => (
+                <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white transition-all">
                   <Icon size={18} />
                 </a>
               ))}
@@ -96,16 +106,13 @@ const Footer = () => {
 
         <div className="pt-12 border-t border-slate-50 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-wrap justify-center gap-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
-            <span>© 2024 ELECTROSTORE</span>
+            <span>© 2026 ELECTROSTORE</span>
             <Link to="/privacy-policy" className="hover:text-slate-900">Privacy</Link>
             <Link to="/terms" className="hover:text-slate-900">Terms</Link>
             <Link to="/faq" className="hover:text-slate-900">Cookies</Link>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-              <Phone size={14} /> +1 555 123 4567
-            </div>
-            <MadeWithDyad />
+          <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+            <Mail size={14} /> support@electrostore.com
           </div>
         </div>
       </div>

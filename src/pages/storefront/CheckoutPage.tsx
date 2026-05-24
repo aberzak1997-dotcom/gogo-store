@@ -128,7 +128,7 @@ const COMING_SOON_OPTIONS = [
 
 // ─── Main component ────────────────────────────────────────────────────────────
 const CheckoutPage = () => {
-  const { cart, products, settings, createOrder, updatePaymentStatus } = useStore();
+  const { cart, products, settings, discounts, createOrder, updatePaymentStatus } = useStore();
   const navigate = useNavigate();
 
   const [fullName, setFullName]   = useState("");
@@ -141,6 +141,9 @@ const CheckoutPage = () => {
   const [isPlacing, setIsPlacing] = useState(false);
   const [orderId, setOrderId]     = useState<string | null>(null);
   const [paidVia, setPaidVia]     = useState<PayMethod>("cod");
+  const [discountCode, setDiscountCode] = useState("");
+  const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; amount: number; type: string } | null>(null);
+  const [discountError, setDiscountError] = useState("");
 
   const isFormValid = Boolean(
     fullName.trim() && email.trim() && phone.trim() &&
@@ -178,8 +181,26 @@ const CheckoutPage = () => {
   const subtotal = enrichedCart.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
   const shipping = subtotal > (settings.freeShippingThreshold || 100) ? 0 : 9.99;
   const tax      = Math.round(subtotal * (settings.taxRate || 0.07) * 100) / 100;
-  const total    = subtotal + shipping + tax;
+  const discountAmount = appliedDiscount ? Math.min(appliedDiscount.amount, subtotal) : 0;
+  const total    = Math.max(0, subtotal + shipping + tax - discountAmount);
   const currency = settings.currency || "USD";
+
+  const handleApplyDiscount = () => {
+    setDiscountError("");
+    const code = discountCode.trim().toUpperCase();
+    if (!code) return;
+    const found = discounts.find(d => d.code.toUpperCase() === code && d.isActive);
+    if (!found) {
+      setDiscountError("Invalid or expired discount code.");
+      setAppliedDiscount(null);
+      return;
+    }
+    const amount = found.type === "percentage"
+      ? Math.round(subtotal * (found.value / 100) * 100) / 100
+      : found.value;
+    setAppliedDiscount({ code: found.code, amount, type: found.type });
+    showSuccess(`Discount "${found.code}" applied! You save ${currency} ${amount.toFixed(2)}`);
+  };
 
   const placeOrder = (): string | null =>
     createOrder({ customerName: fullName, email, phone, address, city, country });
@@ -551,6 +572,36 @@ const CheckoutPage = () => {
                     </div>
                   </div>
 
+                  {/* Discount Code */}
+                  <div className="px-7 py-5 border-b border-slate-50">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Discount Code</p>
+                    {appliedDiscount ? (
+                      <div className="flex items-center justify-between bg-emerald-50 border border-emerald-100 rounded-2xl px-4 py-3">
+                        <div>
+                          <span className="text-xs font-black text-emerald-700 uppercase tracking-widest">{appliedDiscount.code}</span>
+                          <p className="text-[10px] text-emerald-600 font-medium mt-0.5">− {currency} {appliedDiscount.amount.toFixed(2)} saved</p>
+                        </div>
+                        <button onClick={() => { setAppliedDiscount(null); setDiscountCode(""); }} className="text-[10px] font-black text-rose-500 hover:text-rose-700 uppercase tracking-widest">Remove</button>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <Input
+                            placeholder="Enter code (e.g. SAVE10)"
+                            className="h-10 rounded-xl border-slate-200 bg-slate-50 text-xs font-bold uppercase"
+                            value={discountCode}
+                            onChange={e => { setDiscountCode(e.target.value.toUpperCase()); setDiscountError(""); }}
+                            onKeyDown={e => e.key === "Enter" && handleApplyDiscount()}
+                          />
+                          <Button type="button" variant="outline" className="h-10 px-4 rounded-xl font-black text-xs uppercase tracking-widest flex-shrink-0" onClick={handleApplyDiscount}>
+                            Apply
+                          </Button>
+                        </div>
+                        {discountError && <p className="text-[10px] text-rose-500 font-bold">{discountError}</p>}
+                      </div>
+                    )}
+                  </div>
+
                   {/* Totals */}
                   <div className="px-7 py-6 space-y-3">
                     <div className="flex justify-between items-center">
@@ -569,6 +620,12 @@ const CheckoutPage = () => {
                       </span>
                       <span className="font-black text-slate-700 text-sm">{currency} {tax.toFixed(2)}</span>
                     </div>
+                    {appliedDiscount && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-black uppercase tracking-widest text-emerald-600">Discount</span>
+                        <span className="font-black text-emerald-600 text-sm">− {currency} {discountAmount.toFixed(2)}</span>
+                      </div>
+                    )}
 
                     <div className="h-px bg-slate-100 my-2" />
 

@@ -22,8 +22,13 @@ const ContactPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.subject || !formData.message) return;
-    
-    showSuccess("Message sent successfully!");
+
+    // Save to localStorage so admin can view messages
+    const existing = JSON.parse(localStorage.getItem("contact_messages") || "[]");
+    existing.push({ ...formData, date: new Date().toISOString(), status: "unread" });
+    localStorage.setItem("contact_messages", JSON.stringify(existing));
+
+    showSuccess("Message sent! We'll get back to you within 24 hours.");
     setIsSubmitted(true);
     setFormData({ name: "", email: "", subject: "", message: "" });
   };
@@ -46,8 +51,8 @@ const ContactPage = () => {
             <div className="lg:col-span-5 space-y-8">
               <div className="grid gap-6">
                 {[
-                  { icon: Mail, title: "Email Us", value: "support@techstore.com", desc: "We'll respond within 24 hours" },
-                  { icon: Phone, title: "Call Us", value: "+1 555 123 4567", desc: "Mon-Fri, 9am-6pm EST" },
+                  { icon: Mail, title: "Email Us", value: "support@electrostore.com", desc: "We'll respond within 24 hours" },
+                  { icon: Phone, title: "Call Us", value: "Available via email", desc: "Mon-Fri, 9am-6pm" },
                   { icon: Clock, title: "Business Hours", value: "9:00 AM - 6:00 PM", desc: "Monday to Friday" },
                   { icon: MapPin, title: "Location", value: "Online Store", desc: "Shipping worldwide" },
                 ].map((item, i) => (

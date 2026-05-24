@@ -17,12 +17,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     if (isSupabaseConfigured && supabase) {
       supabase.auth.getSession().then(({ data: { session } }) => {
-        setIsAuthenticated(!!session);
+        // Accept either a live Supabase session OR a local demo login
+        setIsAuthenticated(!!session || localStorage.getItem("admin_auth") === "true");
         setIsLoading(false);
       });
 
       const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-        setIsAuthenticated(!!session);
+        if (session) setIsAuthenticated(true);
       });
 
       return () => subscription.unsubscribe();
@@ -33,14 +34,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (email: string, pass: string): Promise<boolean> => {
-    if (isSupabaseConfigured && supabase) {
-      const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
-      return !error;
-    }
+    // Always try demo credentials first (works even when Supabase is configured)
     if (email === "admin@demo.com" && pass === "admin123") {
       setIsAuthenticated(true);
       localStorage.setItem("admin_auth", "true");
       return true;
+    }
+    // Then try Supabase for real accounts
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+      if (!error) {
+        setIsAuthenticated(true);
+        return true;
+      }
     }
     return false;
   };
