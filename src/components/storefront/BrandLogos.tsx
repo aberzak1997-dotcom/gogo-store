@@ -21,11 +21,11 @@ const BrandLogos = () => {
         <div className="relative flex overflow-hidden group">
           <div className="flex animate-marquee whitespace-nowrap gap-12 md:gap-24 items-center py-2">
             {displayBrands.map((brand, idx) => (
-              <div key={`${brand.name}-${idx}`} className="flex-shrink-0 flex items-center justify-center w-24 h-8 md:w-32 md:h-10">
+              <div key={`${brand.name}-${idx}`} className="flex-shrink-0 flex items-center justify-center">
                 <img
                   src={brand.logo}
                   alt={brand.name}
-                  className="max-h-full max-w-full object-contain opacity-75 brightness-0 invert hover:opacity-100 transition-all duration-500"
+                  className="h-6 md:h-8 w-auto object-contain opacity-75 brightness-0 invert hover:opacity-100 transition-all duration-500"
                 />
               </div>
             ))}
