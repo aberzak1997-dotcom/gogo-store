@@ -249,12 +249,12 @@ const HomePage = () => {
                 </div>
 
                 {/* Middle: product image */}
-                <div className="relative z-10 w-full flex-grow overflow-hidden rounded-xl my-2">
+                <div className="relative z-10 flex items-center justify-center py-3 flex-grow">
                   {(deals[0] || newArrivals[0]) && (
                     <img
                       src={deals[0]?.imageUrl || newArrivals[0]?.imageUrl}
                       alt={deals[0]?.title || newArrivals[0]?.title}
-                      className="w-full h-full object-cover drop-shadow-2xl"
+                      className="max-h-32 object-contain drop-shadow-2xl"
                     />
                   )}
                 </div>
