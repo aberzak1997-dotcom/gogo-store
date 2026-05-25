@@ -201,16 +201,19 @@ const HomePage = () => {
                   style={{ backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
 
                 {/* Text — left */}
-                <div className="relative z-10 p-10 md:p-14 max-w-[340px] space-y-6 flex-shrink-0">
-                  <h1 className="text-3xl md:text-4xl font-black text-white leading-[1.15]">
+                <div className="relative z-10 p-10 md:p-14 max-w-[340px] space-y-4 flex-shrink-0 flex flex-col items-start">
+                  <Badge className="bg-white/10 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
+                    Premium Collection
+                  </Badge>
+                  <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-white leading-[1.15]">
                     Wide Range Of<br />Premium Electronics
                   </h1>
-                  <p className="text-slate-400 text-sm leading-relaxed">
+                  <p className="text-slate-200 text-sm max-w-xs leading-relaxed">
                     Cutting-edge gadgets and accessories for professionals and enthusiasts alike. Quality gear for every setup.
                   </p>
-                  <Link to="/products">
-                    <Button className="rounded-lg px-7 h-11 text-sm font-bold bg-[#2563eb] hover:bg-[#1d4ed8] text-white border-0 shadow-lg shadow-blue-900/40 mt-2">
-                      Browse Collection
+                  <Link to="/products" className="inline-block pt-2">
+                    <Button className="rounded-full h-9 px-6 text-xs font-semibold bg-[#2563eb] hover:bg-[#1d4ed8] text-white border-0 shadow-lg shadow-blue-900/40 gap-1.5">
+                      Browse Collection <ArrowRight size={13} />
                     </Button>
                   </Link>
                 </div>
@@ -236,9 +239,11 @@ const HomePage = () => {
                 <div className="absolute bottom-10 right-10 w-40 h-40 rounded-full bg-white/5" />
 
                 {/* Top: product info */}
-                <div className="relative z-10 space-y-2">
-                  <p className="text-blue-200 text-[10px] font-black uppercase tracking-widest">Featured Deal</p>
-                  <h2 className="text-white font-black text-2xl md:text-3xl leading-tight">
+                <div className="relative z-10 space-y-3 flex flex-col items-start">
+                  <Badge className="bg-white/20 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
+                    Featured Deal
+                  </Badge>
+                  <h2 className="text-white font-semibold tracking-tight text-2xl md:text-3xl leading-tight">
                     {deals[0]?.title || newArrivals[0]?.title || "Top Pick This Week"}
                   </h2>
                 </div>
