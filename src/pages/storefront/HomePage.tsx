@@ -33,6 +33,7 @@ import {
   Package,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 // ─── Countdown Timer ───────────────────────────────────────────────────────────
 const useCountdown = (targetHours = 8) => {
@@ -109,7 +110,7 @@ const SectionHeader = ({
         to={href}
         className="group hidden sm:flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-primary transition-colors"
       >
-        View all
+        <ViewAll />
         <ChevronRight
           size={14}
           className="group-hover:translate-x-0.5 transition-transform"
@@ -119,9 +120,13 @@ const SectionHeader = ({
   </div>
 );
 
+// Small helper so "View all" is translated
+const ViewAll = () => { const { t } = useTranslation(); return <>{t("common.view_all")}</>; };
+
 // ─── Main Component ────────────────────────────────────────────────────────────
 const HomePage = () => {
   const { products } = useStore();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const countdown = useCountdown(8);
 
@@ -210,21 +215,21 @@ const HomePage = () => {
                   <Zap size={11} className="text-primary" /> Next-Gen Tech
                 </div>
                 <h1 className="text-5xl md:text-7xl font-semibold text-white tracking-tight leading-[1.1]">
-                  Upgrade your <br />
-                  <span className="text-primary">tech setup.</span>
+                  {t("home.hero_title")} <br />
+                  <span className="text-primary">{t("home.hero_subtitle").split(".")[0]}.</span>
                 </h1>
                 <p className="text-lg text-slate-300 leading-relaxed max-w-lg">
-                  Premium electronics and accessories designed for modern life. Minimal design, maximum performance.
+                  {t("home.hero_subtitle")}
                 </p>
                 <div className="flex flex-wrap gap-4 pt-2">
                   <Link to="/products">
                     <Button size="lg" className="rounded-full px-8 h-12 text-sm font-medium shadow-lg shadow-primary/30 bg-primary hover:bg-primary/90 text-white">
-                      Shop Collection
+                      {t("home.hero_cta")}
                     </Button>
                   </Link>
                   <Link to="/deals">
                     <Button size="lg" variant="outline" className="rounded-full px-8 h-12 text-sm font-medium border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white/20">
-                      View Deals
+                      {t("nav.deals")}
                     </Button>
                   </Link>
                 </div>
@@ -294,10 +299,10 @@ const HomePage = () => {
         {!isFiltered && (
           <section className="py-20 section-container">
             <SectionHeader
-              eyebrow="Browse by type"
+              eyebrow={t("home.hero_badge")}
               eyebrowIcon={Package}
-              title="Shop by Category"
-              subtitle="Find exactly what you're looking for"
+              title={t("home.featured_title")}
+              subtitle={t("home.featured_subtitle")}
               href="/products"
             />
             <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
@@ -329,12 +334,12 @@ const HomePage = () => {
               <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-6">
                 <div className="space-y-2">
                   <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-red-400">
-                    <Flame size={12} /> Flash Deals
+                    <Flame size={12} /> {t("home.deals_title")}
                   </div>
                   <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
-                    Deals of the Week
+                    {t("home.deals_title")}
                   </h2>
-                  <p className="text-slate-400 text-sm">Limited stock — grab them before they're gone.</p>
+                  <p className="text-slate-400 text-sm">{t("home.deals_subtitle")}</p>
                 </div>
 
                 {/* Countdown */}
@@ -361,7 +366,7 @@ const HomePage = () => {
               <div className="mt-8 text-center">
                 <Link to="/deals">
                   <Button variant="outline" className="border-white/20 text-white bg-white/5 hover:bg-white/10 rounded-full px-8 h-11 text-xs font-semibold gap-2">
-                    See All Deals <ArrowRight size={14} />
+                    {t("common.view_all")} <ArrowRight size={14} />
                   </Button>
                 </Link>
               </div>
@@ -373,10 +378,10 @@ const HomePage = () => {
         {!isFiltered && (
           <section className="py-20 section-container">
             <SectionHeader
-              eyebrow="Just landed"
+              eyebrow={t("home.new_arrivals_subtitle")}
               eyebrowIcon={Sparkles}
-              title="New Arrivals"
-              subtitle="The latest additions to our catalog"
+              title={t("home.new_arrivals_title")}
+              subtitle={t("home.new_arrivals_subtitle")}
               href="/new-arrivals"
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -392,10 +397,10 @@ const HomePage = () => {
           <section className="py-20 bg-slate-50/60 border-y border-slate-100">
             <div className="section-container">
               <SectionHeader
-                eyebrow="Reviews"
+                eyebrow={t("product.reviews")}
                 eyebrowIcon={Star}
-                title="Loved by thousands"
-                subtitle="What our customers say about us"
+                title={t("home.best_sellers_subtitle")}
+                subtitle={t("home.best_sellers_subtitle")}
               />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
@@ -448,10 +453,10 @@ const HomePage = () => {
         {!isFiltered && (
           <section className="py-20 section-container">
             <SectionHeader
-              eyebrow="Top rated"
+              eyebrow={t("home.best_sellers_subtitle")}
               eyebrowIcon={TrendingUp}
-              title="Best Sellers"
-              subtitle="Our most popular picks this month"
+              title={t("home.best_sellers_title")}
+              subtitle={t("home.best_sellers_subtitle")}
               href="/best-sellers"
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -468,23 +473,23 @@ const HomePage = () => {
             <div className="bg-gradient-to-br from-primary/5 via-primary/3 to-transparent border border-primary/10 rounded-3xl p-10 md:p-16 flex flex-col md:flex-row items-center gap-10">
               <div className="flex-1 space-y-4 text-center md:text-left">
                 <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-primary">
-                  <Zap size={11} /> Exclusive access
+                  <Zap size={11} /> {t("footer.newsletter_title")}
                 </div>
                 <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">
-                  Stay in the loop
+                  {t("footer.newsletter_title")}
                 </h2>
                 <p className="text-slate-500 text-sm max-w-sm">
-                  Get early access to new arrivals, exclusive deals, and tech tips — straight to your inbox.
+                  {t("footer.newsletter_desc")}
                 </p>
               </div>
               <div className="w-full md:w-auto flex flex-col sm:flex-row gap-3">
                 <input
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder={t("footer.newsletter_placeholder")}
                   className="h-12 px-5 rounded-full border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all w-full sm:w-72"
                 />
                 <Button className="h-12 rounded-full px-7 text-sm font-semibold whitespace-nowrap shadow-md shadow-primary/20">
-                  Subscribe
+                  {t("footer.newsletter_button")}
                 </Button>
               </div>
             </div>
@@ -500,22 +505,22 @@ const HomePage = () => {
                   ? categoryParam
                   : searchParam
                   ? `Results for "${searchParam}"`
-                  : "Featured Products"}
+                  : t("home.featured_title")}
               </h2>
-              <p className="text-slate-400 text-sm">{filteredProducts.length} items</p>
+              <p className="text-slate-400 text-sm">{filteredProducts.length} {t("cart.items")}</p>
             </div>
             <div className="flex items-center gap-4">
               {isFiltered && (
                 <Link to="/">
                   <Button variant="ghost" className="gap-2 text-xs font-medium text-slate-500 hover:text-slate-900">
-                    <X size={14} /> Clear filters
+                    <X size={14} /> {t("common.cancel")}
                   </Button>
                 </Link>
               )}
               {!isFiltered && (
                 <Link to="/products">
                   <Button variant="outline" className="rounded-full px-6 h-9 text-xs font-semibold gap-1.5">
-                    View all <ArrowRight size={13} />
+                    {t("common.view_all")} <ArrowRight size={13} />
                   </Button>
                 </Link>
               )}

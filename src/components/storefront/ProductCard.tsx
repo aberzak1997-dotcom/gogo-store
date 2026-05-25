@@ -8,6 +8,7 @@ import { useStore } from "../../context/StoreContext";
 import { useCustomerAuth } from "../../context/CustomerAuthContext";
 import { Product, ProductVariant } from "../../types";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface ProductCardProps {
   product: Product;
@@ -17,6 +18,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useStore();
   const { customer, isWishlisted, addToWishlist, removeFromWishlist } = useCustomerAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
 
   const wishlisted = isWishlisted(product.id);
@@ -91,7 +93,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           )}
           {currentStock === 0 && (
             <span className="bg-slate-800 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-sm">
-              OUT OF STOCK
+              {t("common.sold_out")}
             </span>
           )}
         </div>
@@ -158,7 +160,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
               size="sm"
               className="bg-slate-900 hover:bg-[#0096D6] text-white rounded-full px-6 h-8 text-[10px] font-black uppercase tracking-widest transition-all duration-300 shadow-md hover:shadow-lg shadow-slate-100"
             >
-              Buy
+              {t("common.buy_now")}
             </Button>
           </div>
         </div>
