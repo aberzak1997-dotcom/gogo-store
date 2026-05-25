@@ -19,7 +19,7 @@ const BrandLogos = () => {
     <section className="px-4 md:px-6 max-w-[1400px] mx-auto my-4">
       <div className="p-5 bg-[#2563eb] rounded-2xl overflow-hidden relative">
         <div className="relative flex overflow-hidden group">
-          <div className="flex animate-marquee whitespace-nowrap gap-[20px] items-center py-2">
+          <div className="flex animate-marquee whitespace-nowrap gap-12 md:gap-24 items-center py-2">
             {displayBrands.map((brand, idx) => (
               <div key={`${brand.name}-${idx}`} className="flex-shrink-0 flex items-center justify-center w-24 h-8 md:w-32 md:h-10">
                 <img
