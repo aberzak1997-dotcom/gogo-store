@@ -37,8 +37,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useTranslation } from "react-i18next";
-import LanguageSwitcher from "../storefront/LanguageSwitcher";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,7 +46,6 @@ const Header = () => {
   const { customer, customerLogout, wishlist } = useCustomerAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useTranslation();
 
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -78,10 +75,11 @@ const Header = () => {
   ];
 
   const navLinks = [
-    { name: t("nav.products"), path: "/products" },
-    { name: t("nav.deals"), path: "/products?q=sale" },
-    { name: t("nav.about"), path: "/about" },
-    { name: t("nav.contact"), path: "/contact" },
+    { name: "Products", path: "/products" },
+    { name: "Deals", path: "/products?q=sale" },
+    { name: "About Us", path: "/about" },
+    { name: "Careers", path: "/careers" },
+    { name: "Contact Us", path: "/contact" },
   ];
 
   return (
@@ -150,7 +148,7 @@ const Header = () => {
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#0096D6] transition-colors" size={16} />
                   <Input
                     type="text"
-                    placeholder={t("header.search_placeholder")}
+                    placeholder="Search gear..."
                     className="w-full pl-10 pr-4 h-[40px] bg-slate-50 border-none rounded-full focus-visible:ring-2 focus-visible:ring-[#0096D6]/20 transition-all text-[10px] font-normal text-slate-500 leading-tight"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -160,7 +158,6 @@ const Header = () => {
 
               {/* Actions */}
               <div className="flex items-center gap-1">
-                <LanguageSwitcher />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-50 text-slate-600 relative">
@@ -193,24 +190,24 @@ const Header = () => {
                         <DropdownMenuSeparator className="bg-slate-50" />
                         <DropdownMenuItem asChild>
                           <Link to="/account" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                            <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><User size={16} /></div> {t("nav.my_account")}
+                            <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><User size={16} /></div> My Account
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                           <Link to="/account?tab=orders" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><Package size={16} /></div> {t("nav.my_orders")}
+                            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><Package size={16} /></div> My Orders
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                           <Link to="/account?tab=wishlist" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
                             <div className="p-2 bg-rose-50 text-rose-500 rounded-lg"><Settings size={16} /></div>
-                            {t("nav.wishlist")} {wishlist.length > 0 && <span className="ml-auto bg-rose-100 text-rose-600 text-[9px] font-black px-1.5 py-0.5 rounded-full">{wishlist.length}</span>}
+                            Wishlist {wishlist.length > 0 && <span className="ml-auto bg-rose-100 text-rose-600 text-[9px] font-black px-1.5 py-0.5 rounded-full">{wishlist.length}</span>}
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator className="bg-slate-50" />
                         <DropdownMenuItem asChild>
                           <Link to="/admin" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm text-slate-400">
-                            <div className="p-2 bg-slate-50 text-slate-400 rounded-lg"><LayoutDashboard size={16} /></div> {t("nav.admin_panel")}
+                            <div className="p-2 bg-slate-50 text-slate-400 rounded-lg"><LayoutDashboard size={16} /></div> Admin Panel
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator className="bg-slate-50" />
@@ -218,27 +215,27 @@ const Header = () => {
                           onClick={() => customerLogout().then(() => navigate("/"))}
                           className="cursor-pointer rounded-xl py-3 px-4 gap-3 text-red-600 focus:text-red-600 focus:bg-red-50 font-black text-xs uppercase tracking-widest"
                         >
-                          <LogOut size={16} /> {t("common.sign_out")}
+                          <LogOut size={16} /> Sign Out
                         </DropdownMenuItem>
                       </>
                     ) : (
                       <>
-                        <DropdownMenuLabel className="font-black text-xs uppercase tracking-widest text-slate-400 px-4 py-3">{t("nav.my_account")}</DropdownMenuLabel>
+                        <DropdownMenuLabel className="font-black text-xs uppercase tracking-widest text-slate-400 px-4 py-3">My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator className="bg-slate-50" />
                         <DropdownMenuItem asChild>
                           <Link to="/account/login" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                            <div className="p-2 bg-primary/10 text-primary rounded-lg"><User size={16} /></div> {t("nav.sign_in_register")}
+                            <div className="p-2 bg-primary/10 text-primary rounded-lg"><User size={16} /></div> Sign In / Register
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                           <Link to="/track-order" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                            <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Package size={16} /></div> {t("nav.track_order")}
+                            <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><Package size={16} /></div> Track My Order
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator className="bg-slate-50" />
                         <DropdownMenuItem asChild>
                           <Link to="/admin" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm text-slate-400">
-                            <div className="p-2 bg-slate-50 text-slate-400 rounded-lg"><LayoutDashboard size={16} /></div> {t("nav.admin_panel")}
+                            <div className="p-2 bg-slate-50 text-slate-400 rounded-lg"><LayoutDashboard size={16} /></div> Admin Panel
                           </Link>
                         </DropdownMenuItem>
                       </>
