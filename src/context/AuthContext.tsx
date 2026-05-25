@@ -36,18 +36,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: false, error: "Invalid email or password." };
       }
 
-      // Check role from the profiles table (source of truth)
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", data.user.id)
-        .single();
+      // Check role via security-definer RPC (bypasses RLS, always works)
+      const { data: roleData } = await supabase
+        .rpc("get_user_role", { user_id: data.user.id });
 
       // Immediately sign out of Supabase — admin session lives in localStorage only,
       // so it won't interfere with any customer Supabase session.
       await supabase.auth.signOut();
 
-      if (profile?.role !== "admin") {
+      if (roleData !== "admin") {
         return { success: false, error: "Access denied. This account does not have admin privileges." };
       }
 
