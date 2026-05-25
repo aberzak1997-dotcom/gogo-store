@@ -201,7 +201,7 @@ const HomePage = () => {
                   style={{ backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
 
                 {/* Text — left */}
-                <div className="relative z-10 p-8 md:p-10 w-full md:max-w-[50%] space-y-3 flex-shrink-0 flex flex-col items-start">
+                <div className="relative z-10 p-8 md:p-10 w-full md:max-w-[60%] space-y-3 flex-shrink-0 flex flex-col items-start">
                   <Badge className="bg-white/10 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
                     Premium Collection
                   </Badge>
