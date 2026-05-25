@@ -191,56 +191,90 @@ const HomePage = () => {
 
         {/* ── Hero ──────────────────────────────────────────────────────────── */}
         {!isFiltered && (
-          <section className="relative pt-0 mb-[5px] px-[5px]">
-            <div className="relative overflow-hidden bg-slate-900 min-h-[500px] md:min-h-[620px] flex items-center w-full py-5 rounded-none">
-              <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
-                <iframe
-                  className="absolute top-1/2 left-1/2 w-[300%] h-[300%] -translate-x-1/2 -translate-y-1/2 opacity-50"
-                  src="https://www.youtube.com/embed/H41fuhz_gvw?autoplay=1&mute=1&loop=1&playlist=H41fuhz_gvw&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1"
-                  title="Hero Background Video"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
+          <section className="relative mb-[5px]">
+            {/* Background image + teal overlay */}
+            <div
+              className="relative min-h-[560px] md:min-h-[640px] flex flex-col justify-between overflow-hidden"
+              style={{ background: "linear-gradient(135deg, #021a14 0%, #032d20 50%, #041f17 100%)" }}
+            >
+              {/* Product image — right side */}
+              <div className="absolute inset-0">
+                <img
+                  src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1400&auto=format&fit=crop"
+                  alt="Hero product"
+                  className="absolute right-0 top-0 h-full w-[65%] object-cover object-left opacity-60"
+                  style={{ maskImage: "linear-gradient(to right, transparent 0%, black 30%)", WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 30%)" }}
                 />
+                {/* teal tint over image */}
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to right, #021a14 28%, rgba(2,26,20,0.55) 55%, rgba(0,80,55,0.15) 100%)" }} />
               </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/50 to-transparent" />
 
-              <div className="relative z-10 px-8 md:px-20 max-w-3xl space-y-8">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] font-medium uppercase tracking-wider">
-                  <Zap size={11} className="text-primary" /> Next-Gen Tech
+              {/* Content */}
+              <div className="relative z-10 flex-grow flex items-center px-8 md:px-20 pt-16 pb-8">
+                <div className="max-w-xl space-y-7">
+                  <h1 className="text-5xl md:text-7xl font-black text-white uppercase leading-[1.05] tracking-tight">
+                    Gear Up For<br />
+                    <span style={{ color: "#00c896" }}>The Future</span>
+                  </h1>
+                  <p className="text-slate-300 text-base md:text-lg leading-relaxed max-w-md">
+                    Discover cutting-edge electronics and accessories designed for tech enthusiasts. From gaming gear to everyday essentials, our products blend style and functionality.
+                  </p>
+                  <div className="flex flex-wrap gap-4 pt-2">
+                    <Link to="/products">
+                      <Button
+                        size="lg"
+                        className="rounded-full px-10 h-12 text-sm font-black uppercase tracking-widest text-white border-0"
+                        style={{ background: "#00c896" }}
+                      >
+                        Shop Now
+                      </Button>
+                    </Link>
+                    <Link to="/deals">
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        className="rounded-full px-10 h-12 text-sm font-black uppercase tracking-widest text-white border-white/20 bg-white/5 hover:bg-white/10 backdrop-blur-sm"
+                      >
+                        View Deals
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
-                <h1 className="text-5xl md:text-7xl font-semibold text-white tracking-tight leading-[1.1]">
-                  Upgrade your <br />
-                  <span className="text-primary">tech setup.</span>
-                </h1>
-                <p className="text-lg text-slate-300 leading-relaxed max-w-lg">
-                  Premium electronics and accessories designed for modern life. Minimal design, maximum performance.
-                </p>
-                <div className="flex flex-wrap gap-4 pt-2">
-                  <Link to="/products">
-                    <Button size="lg" className="rounded-full px-8 h-12 text-sm font-medium shadow-lg shadow-primary/30 bg-primary hover:bg-primary/90 text-white">
-                      Shop Collection
-                    </Button>
-                  </Link>
-                  <Link to="/deals">
-                    <Button size="lg" variant="outline" className="rounded-full px-8 h-12 text-sm font-medium border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white/20">
-                      View Deals
-                    </Button>
-                  </Link>
-                </div>
+              </div>
 
-                {/* Trust bar inside hero */}
-                <div className="flex flex-wrap gap-6 pt-4 border-t border-white/10">
-                  {[
-                    { icon: ShieldCheck, text: "Secure Checkout" },
-                    { icon: Truck, text: "Free Shipping $50+" },
-                    { icon: RotateCcw, text: "30-Day Returns" },
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center gap-2 text-white/60 text-[11px] font-medium">
-                      <item.icon size={13} className="text-white/40" />
-                      {item.text}
-                    </div>
-                  ))}
+              {/* Stats bar */}
+              <div className="relative z-10 mx-6 md:mx-20 mb-8">
+                <div
+                  className="rounded-2xl px-6 md:px-10 py-5 flex flex-col sm:flex-row items-center gap-5 sm:gap-0"
+                  style={{ background: "rgba(0,200,150,0.08)", border: "1px solid rgba(0,200,150,0.18)", backdropFilter: "blur(12px)" }}
+                >
+                  {/* Stat */}
+                  <div className="flex-shrink-0 text-center sm:text-left sm:pr-8 sm:border-r sm:border-white/10">
+                    <p className="text-3xl font-black text-white">10,000+</p>
+                    <p className="text-xs text-slate-400 font-medium mt-0.5 uppercase tracking-widest">Satisfied Customers</p>
+                  </div>
+
+                  {/* Features */}
+                  <div className="flex flex-wrap sm:flex-nowrap items-center justify-center sm:justify-start gap-4 sm:gap-0 flex-1">
+                    {[
+                      { icon: ShieldCheck, label: "High-quality", sub: "materials" },
+                      { icon: Zap,         label: "Innovative",  sub: "Designs" },
+                      { icon: RotateCcw,   label: "Ergonomic",   sub: "Comfort" },
+                    ].map((f, i) => (
+                      <div key={i} className="flex items-center gap-3 flex-1 justify-center sm:justify-start sm:border-r sm:border-white/10 sm:px-8 last:border-r-0">
+                        <div
+                          className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                          style={{ background: "rgba(0,200,150,0.15)" }}
+                        >
+                          <f.icon size={18} style={{ color: "#00c896" }} />
+                        </div>
+                        <div>
+                          <p className="text-white text-xs font-black">{f.label}</p>
+                          <p className="text-slate-400 text-xs">{f.sub}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
