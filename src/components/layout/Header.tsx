@@ -149,12 +149,22 @@ const Header = () => {
                   <Input
                     type="text"
                     placeholder="Search gear..."
-                    className="w-full pl-10 pr-4 h-[40px] bg-slate-50 border-none rounded-full focus-visible:ring-2 focus-visible:ring-[#0096D6]/20 transition-all text-[10px] font-normal text-slate-500 leading-tight"
+                    className="w-full pl-10 px-4 h-[40px] bg-slate-50 border-none rounded-full focus-visible:ring-2 focus-visible:ring-[#0096D6]/20 transition-all text-[10px] font-normal text-slate-500 leading-tight"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </form>
               </div>
+
+              {/* Sign In Button */}
+              <Button
+                variant="outline"
+                size="sm"
+                className="hidden md:block"
+                onClick={() => navigate("/account/login")}
+              >
+                Sign In
+              </Button>
 
               {/* Actions */}
               <div className="flex items-center gap-1">
@@ -177,49 +187,47 @@ const Header = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl shadow-2xl border-none">
                     {customer ? (
-                      <>
-                        <div className="px-4 py-3 flex items-center gap-3">
-                          <div className="w-9 h-9 bg-slate-900 rounded-full flex items-center justify-center text-white text-[10px] font-black flex-shrink-0">
-                            {customer.name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2)}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="font-black text-sm text-slate-900 truncate">{customer.name}</p>
-                            <p className="text-[10px] text-slate-400 truncate">{customer.email}</p>
-                          </div>
+                      <div className="px-4 py-3 flex items-center gap-3">
+                        <div className="w-9 h-9 bg-slate-900 rounded-full flex items-center justify-center text-white text-[10px] font-black flex-shrink-0">
+                          {customer.name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2)}
                         </div>
-                        <DropdownMenuSeparator className="bg-slate-50" />
-                        <DropdownMenuItem asChild>
-                          <Link to="/account" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                            <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><User size={16} /></div> My Account
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link to="/account?tab=orders" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><Package size={16} /></div> My Orders
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link to="/account?tab=wishlist" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
-                            <div className="p-2 bg-rose-50 text-rose-500 rounded-lg"><Settings size={16} /></div>
-                            Wishlist {wishlist.length > 0 && <span className="ml-auto bg-rose-100 text-rose-600 text-[9px] font-black px-1.5 py-0.5 rounded-full">{wishlist.length}</span>}
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator className="bg-slate-50" />
-                        <DropdownMenuItem asChild>
-                          <Link to="/admin" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm text-slate-400">
-                            <div className="p-2 bg-slate-50 text-slate-400 rounded-lg"><LayoutDashboard size={16} /></div> Admin Panel
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator className="bg-slate-50" />
-                        <DropdownMenuItem
-                          onClick={() => customerLogout().then(() => navigate("/"))}
-                          className="cursor-pointer rounded-xl py-3 px-4 gap-3 text-red-600 focus:text-red-600 focus:bg-red-50 font-black text-xs uppercase tracking-widest"
-                        >
-                          <LogOut size={16} /> Sign Out
-                        </DropdownMenuItem>
-                      </>
+                        <div className="min-w-0">
+                          <p className="font-black text-sm text-slate-900 truncate">{customer.name}</p>
+                          <p className="text-[10px] text-slate-400 truncate">{customer.email}</p>
+                        </div>
+                      </div>
+                      <DropdownMenuSeparator className="bg-slate-50" />
+                      <DropdownMenuItem asChild>
+                        <Link to="/account" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
+                          <div className="p-2 bg-slate-50 text-slate-600 rounded-lg"><User size={16} /></div> My Account
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/account?tab=orders" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
+                          <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><Package size={16} /></div> My Orders
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/account?tab=wishlist" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm">
+                          <div className="p-2 bg-rose-50 text-rose-500 rounded-lg"><Settings size={16} /></div>
+                          Wishlist {wishlist.length > 0 && <span className="ml-auto bg-rose-100 text-rose-600 text-[9px] font-black px-1.5 py-0.5 rounded-full">{wishlist.length}</span>}
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator className="bg-slate-50" />
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin" className="cursor-pointer rounded-xl py-3 px-4 gap-3 font-bold text-sm text-slate-400">
+                          <div className="p-2 bg-slate-50 text-slate-400 rounded-lg"><LayoutDashboard size={16} /></div> Admin Panel
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator className="bg-slate-50" />
+                      <DropdownMenuItem
+                        onClick={() => customerLogout().then(() => navigate("/"))}
+                        className="cursor-pointer rounded-xl py-3 px-4 gap-3 text-red-600 focus:text-red-600 focus:bg-red-50 font-black text-xs uppercase tracking-widest"
+                      >
+                        <LogOut size={16} /> Sign Out
+                      </DropdownMenuItem>
                     ) : (
-                      <>
+                      <div>
                         <DropdownMenuLabel className="font-black text-xs uppercase tracking-widest text-slate-400 px-4 py-3">My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator className="bg-slate-50" />
                         <DropdownMenuItem asChild>
@@ -238,7 +246,7 @@ const Header = () => {
                             <div className="p-2 bg-slate-50 text-slate-400 rounded-lg"><LayoutDashboard size={16} /></div> Admin Panel
                           </Link>
                         </DropdownMenuItem>
-                      </>
+                      </div>
                     )}
                   </DropdownMenuContent>
                 </DropdownMenu>
