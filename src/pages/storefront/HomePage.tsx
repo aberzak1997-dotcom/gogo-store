@@ -254,7 +254,7 @@ const HomePage = () => {
                     <img
                       src={deals[0]?.imageUrl || newArrivals[0]?.imageUrl}
                       alt={deals[0]?.title || newArrivals[0]?.title}
-                      className="max-h-32 object-contain drop-shadow-2xl"
+                      className="max-h-36 md:max-h-48 object-contain drop-shadow-2xl transition-transform duration-300 hover:scale-105"
                     />
                   )}
                 </div>
