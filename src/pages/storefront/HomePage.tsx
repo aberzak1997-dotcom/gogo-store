@@ -195,25 +195,25 @@ const HomePage = () => {
             <div className="flex flex-col md:flex-row gap-3 max-w-[1400px] mx-auto">
 
               {/* ── Left panel (dark navy) ── */}
-              <div className="relative flex-[2] min-h-[420px] md:min-h-[460px] rounded-2xl overflow-hidden bg-[#0d1b2e] flex items-center">
+              <div className="relative flex-[2] min-h-[294px] md:min-h-[322px] rounded-2xl overflow-hidden bg-[#0d1b2e] flex items-center">
                 {/* subtle grid pattern */}
                 <div className="absolute inset-0 opacity-[0.04]"
                   style={{ backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
 
                 {/* Text — left */}
-                <div className="relative z-10 p-10 md:p-14 max-w-[340px] space-y-4 flex-shrink-0 flex flex-col items-start">
+                <div className="relative z-10 p-8 md:p-10 max-w-[340px] space-y-3 flex-shrink-0 flex flex-col items-start">
                   <Badge className="bg-white/10 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
                     Premium Collection
                   </Badge>
-                  <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-white leading-[1.15]">
+                  <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-white leading-[1.15]">
                     Wide Range Of<br />Premium Electronics
                   </h1>
-                  <p className="text-slate-200 text-sm max-w-xs leading-relaxed">
+                  <p className="text-slate-200 text-xs max-w-xs leading-relaxed">
                     Cutting-edge gadgets and accessories for professionals and enthusiasts alike. Quality gear for every setup.
                   </p>
-                  <Link to="/products" className="inline-block pt-2">
-                    <Button className="rounded-full h-9 px-6 text-xs font-semibold bg-[#2563eb] hover:bg-[#1d4ed8] text-white border-0 shadow-lg shadow-blue-900/40 gap-1.5">
-                      Browse Collection <ArrowRight size={13} />
+                  <Link to="/products" className="inline-block pt-1">
+                    <Button className="rounded-full h-8 px-5 text-[11px] font-semibold bg-[#2563eb] hover:bg-[#1d4ed8] text-white border-0 shadow-lg shadow-blue-900/40 gap-1.5">
+                      Browse Collection <ArrowRight size={12} />
                     </Button>
                   </Link>
                 </div>
@@ -233,28 +233,28 @@ const HomePage = () => {
               </div>
 
               {/* ── Right panel (bright blue) ── */}
-              <div className="relative flex-[1] min-h-[300px] md:min-h-[460px] rounded-2xl overflow-hidden bg-[#2563eb] flex flex-col justify-between p-8">
+              <div className="relative flex-[1] min-h-[210px] md:min-h-[322px] rounded-2xl overflow-hidden bg-[#2563eb] flex flex-col justify-between p-6">
                 {/* decorative circles */}
                 <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-white/5 translate-x-1/3 translate-y-1/3" />
                 <div className="absolute bottom-10 right-10 w-40 h-40 rounded-full bg-white/5" />
 
                 {/* Top: product info */}
-                <div className="relative z-10 space-y-3 flex flex-col items-start">
+                <div className="relative z-10 space-y-2 flex flex-col items-start">
                   <Badge className="bg-white/20 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
                     Featured Deal
                   </Badge>
-                  <h2 className="text-white font-semibold tracking-tight text-2xl md:text-3xl leading-tight">
+                  <h2 className="text-white font-semibold tracking-tight text-xl md:text-2xl leading-tight line-clamp-1">
                     {deals[0]?.title || newArrivals[0]?.title || "Top Pick This Week"}
                   </h2>
                 </div>
 
                 {/* Middle: product image */}
-                <div className="relative z-10 flex items-center justify-center py-6 flex-grow">
+                <div className="relative z-10 flex items-center justify-center py-3 flex-grow">
                   {(deals[0] || newArrivals[0]) && (
                     <img
                       src={deals[0]?.imageUrl || newArrivals[0]?.imageUrl}
                       alt={deals[0]?.title || newArrivals[0]?.title}
-                      className="max-h-44 object-contain drop-shadow-2xl"
+                      className="max-h-32 object-contain drop-shadow-2xl"
                     />
                   )}
                 </div>
@@ -262,20 +262,20 @@ const HomePage = () => {
                 {/* Bottom: price + arrow */}
                 <div className="relative z-10 flex items-center justify-between">
                   <div>
-                    <p className="text-white font-black text-2xl">
+                    <p className="text-white font-black text-xl">
                       ${(deals[0]?.price || newArrivals[0]?.price || 0).toFixed(2)}
                     </p>
                     {(deals[0]?.compareAtPrice || newArrivals[0]?.compareAtPrice) && (
-                      <p className="text-blue-200 text-xs line-through mt-0.5">
+                      <p className="text-blue-200 text-[10px] line-through mt-0.5">
                         ${(deals[0]?.compareAtPrice || newArrivals[0]?.compareAtPrice || 0).toFixed(2)}
                       </p>
                     )}
                   </div>
                   <Link
                     to={`/product/${deals[0]?.id || newArrivals[0]?.id}`}
-                    className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
+                    className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
                   >
-                    <ArrowRight size={20} className="text-[#2563eb]" />
+                    <ArrowRight size={16} className="text-[#2563eb]" />
                   </Link>
                 </div>
               </div>
