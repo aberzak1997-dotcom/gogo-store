@@ -158,6 +158,18 @@ const Header = () => {
 
               {/* Actions */}
               <div className="flex items-center gap-1">
+                {/* Sign In button — only shown when logged out, desktop only */}
+                {!customer && (
+                  <Link to="/account/login" className="hidden md:block">
+                    <Button
+                      size="sm"
+                      className="bg-slate-900 hover:bg-[#0096D6] text-white rounded-full px-5 h-9 text-[11px] font-black uppercase tracking-widest transition-all duration-300"
+                    >
+                      Sign In
+                    </Button>
+                  </Link>
+                )}
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-50 text-slate-600 relative">
