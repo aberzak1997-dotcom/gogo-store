@@ -27,12 +27,12 @@ import { cn } from "@/lib/utils";
 import { Order } from "../../types";
 
 const AdminOrdersPage = () => {
-  const { 
-    orders, 
-    updateOrderStatus, 
-    updatePaymentStatus, 
+  const {
+    orders,
+    updateOrderStatus,
+    updatePaymentStatus,
     updateFulfillmentStatus,
-    addOrderNote 
+    addOrderNote
   } = useStore();
 
   const [search, setSearch] = useState("");
@@ -41,8 +41,39 @@ const AdminOrdersPage = () => {
   const [fulfillmentFilter, setFulfillmentFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [detailOrder, setDetailOrder] = useState<null | Order>(null);
-  
+
+  // Editable status states for the detail modal
+  const [orderStatusEdit, setOrderStatusEdit] = useState("");
+  const [paymentStatusEdit, setPaymentStatusEdit] = useState("");
+  const [fulfillmentStatusEdit, setFulfillmentStatusEdit] = useState("");
+
   const [internalNote, setInternalNote] = useState("");
+
+  const openDetail = (order: Order) => {
+    setDetailOrder(order);
+    setOrderStatusEdit(order.status);
+    setPaymentStatusEdit(order.paymentStatus);
+    setFulfillmentStatusEdit(order.fulfillmentStatus);
+    setInternalNote(order.internalNotes || "");
+  };
+
+  const handleApplyStatus = () => {
+    if (!detailOrder) return;
+    updateOrderStatus(detailOrder.id, orderStatusEdit);
+    setDetailOrder(prev => prev ? { ...prev, status: orderStatusEdit } : null);
+  };
+
+  const handleApplyPayment = () => {
+    if (!detailOrder) return;
+    updatePaymentStatus(detailOrder.id, paymentStatusEdit);
+    setDetailOrder(prev => prev ? { ...prev, paymentStatus: paymentStatusEdit } : null);
+  };
+
+  const handleApplyFulfillment = () => {
+    if (!detailOrder) return;
+    updateFulfillmentStatus(detailOrder.id, fulfillmentStatusEdit);
+    setDetailOrder(prev => prev ? { ...prev, fulfillmentStatus: fulfillmentStatusEdit } : null);
+  };
 
   const filteredOrders = useMemo(() => {
     let result = [...orders];
@@ -76,6 +107,7 @@ const AdminOrdersPage = () => {
       pending: { color: "bg-amber-100 text-amber-700", label: "Pending" },
       paid: { color: "bg-blue-100 text-blue-700", label: "Paid" },
       processing: { color: "bg-indigo-100 text-indigo-700", label: "Processing" },
+      confirmed: { color: "bg-teal-100 text-teal-700", label: "Confirmed" },
       packed: { color: "bg-purple-100 text-purple-700", label: "Packed" },
       shipped: { color: "bg-blue-100 text-blue-700", label: "Shipped" },
       delivered: { color: "bg-emerald-100 text-emerald-700", label: "Delivered" },
@@ -244,10 +276,7 @@ const AdminOrdersPage = () => {
                         variant="ghost"
                         size="icon"
                         className="rounded-full hover:bg-blue-50 hover:text-blue-600"
-                        onClick={() => {
-                          setDetailOrder(order);
-                          setInternalNote(order.internalNotes || "");
-                        }}
+                        onClick={() => openDetail(order)}
                       >
                         <Eye size={18} />
                       </Button>
@@ -374,63 +403,105 @@ const AdminOrdersPage = () => {
                     </div>
                   </section>
 
-                  {/* Actions */}
-                  <section className="space-y-4">
-                    <h3 className="text-xs font-black uppercase tracking-widest text-slate-900">Quick Actions</h3>
-                    <div className="grid grid-cols-1 gap-2">
-                      {detailOrder.paymentStatus === "unpaid" && (
-                        <Button 
-                          className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 gap-2 font-bold text-xs"
-                          onClick={() => updatePaymentStatus(detailOrder.id, "paid")}
+                  {/* Update Status */}
+                  <section className="space-y-5 bg-slate-50 p-6 rounded-[2rem] border border-slate-100">
+                    <h3 className="text-xs font-black uppercase tracking-widest text-slate-900 flex items-center gap-2">
+                      <RefreshCcw size={14} className="text-primary" /> Update Status
+                    </h3>
+
+                    {/* Order Status */}
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Order Status</p>
+                      <div className="flex gap-2">
+                        <Select value={orderStatusEdit} onValueChange={setOrderStatusEdit}>
+                          <SelectTrigger className="flex-1 rounded-xl bg-white h-10 text-xs font-bold">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="paid">Paid</SelectItem>
+                            <SelectItem value="processing">Processing</SelectItem>
+                            <SelectItem value="confirmed">Confirmed</SelectItem>
+                            <SelectItem value="packed">Packed</SelectItem>
+                            <SelectItem value="shipped">Shipped</SelectItem>
+                            <SelectItem value="delivered">Delivered</SelectItem>
+                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                            <SelectItem value="refunded">Refunded</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          size="sm"
+                          className="rounded-xl bg-slate-900 hover:bg-primary text-white font-bold text-xs px-4"
+                          onClick={handleApplyStatus}
                         >
-                          <CreditCard size={14} /> Mark as Paid
+                          Apply
                         </Button>
-                      )}
-                      {detailOrder.status === "paid" && (
-                        <Button 
-                          className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 gap-2 font-bold text-xs"
-                          onClick={() => updateOrderStatus(detailOrder.id, "processing")}
-                        >
-                          <RefreshCcw size={14} /> Start Processing
-                        </Button>
-                      )}
-                      {detailOrder.status === "processing" && (
-                        <Button 
-                          className="w-full rounded-xl bg-purple-600 hover:bg-purple-700 gap-2 font-bold text-xs"
-                          onClick={() => updateOrderStatus(detailOrder.id, "packed")}
-                        >
-                          <Package size={14} /> Mark as Packed
-                        </Button>
-                      )}
-                      {detailOrder.status === "packed" && (
-                        <Button 
-                          className="w-full rounded-xl bg-blue-600 hover:bg-blue-700 gap-2 font-bold text-xs"
-                          onClick={() => {
-                            updateOrderStatus(detailOrder.id, "shipped");
-                            updateFulfillmentStatus(detailOrder.id, "fulfilled");
-                          }}
-                        >
-                          <Truck size={14} /> Mark as Shipped
-                        </Button>
-                      )}
-                      {detailOrder.status === "shipped" && (
-                        <Button 
-                          className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 gap-2 font-bold text-xs"
-                          onClick={() => updateOrderStatus(detailOrder.id, "delivered")}
-                        >
-                          <CheckCircle2 size={14} /> Mark as Delivered
-                        </Button>
-                      )}
-                      {detailOrder.status !== "cancelled" && detailOrder.status !== "delivered" && (
-                        <Button 
-                          variant="outline"
-                          className="w-full rounded-xl border-red-200 text-red-600 hover:bg-red-50 gap-2 font-bold text-xs"
-                          onClick={() => updateOrderStatus(detailOrder.id, "cancelled")}
-                        >
-                          <XCircle size={14} /> Cancel Order
-                        </Button>
-                      )}
+                      </div>
                     </div>
+
+                    {/* Payment Status */}
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Payment Status</p>
+                      <div className="flex gap-2">
+                        <Select value={paymentStatusEdit} onValueChange={setPaymentStatusEdit}>
+                          <SelectTrigger className="flex-1 rounded-xl bg-white h-10 text-xs font-bold">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="unpaid">Unpaid</SelectItem>
+                            <SelectItem value="paid">Paid</SelectItem>
+                            <SelectItem value="partially_refunded">Partially Refunded</SelectItem>
+                            <SelectItem value="refunded">Refunded</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          size="sm"
+                          className="rounded-xl bg-slate-900 hover:bg-primary text-white font-bold text-xs px-4"
+                          onClick={handleApplyPayment}
+                        >
+                          Apply
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Fulfillment Status */}
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Fulfillment</p>
+                      <div className="flex gap-2">
+                        <Select value={fulfillmentStatusEdit} onValueChange={setFulfillmentStatusEdit}>
+                          <SelectTrigger className="flex-1 rounded-xl bg-white h-10 text-xs font-bold">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="unfulfilled">Unfulfilled</SelectItem>
+                            <SelectItem value="partially_fulfilled">Partially Fulfilled</SelectItem>
+                            <SelectItem value="fulfilled">Fulfilled</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          size="sm"
+                          className="rounded-xl bg-slate-900 hover:bg-primary text-white font-bold text-xs px-4"
+                          onClick={handleApplyFulfillment}
+                        >
+                          Apply
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Cancel shortcut */}
+                    {detailOrder.status !== "cancelled" && detailOrder.status !== "delivered" && (
+                      <Button
+                        variant="outline"
+                        className="w-full rounded-xl border-red-200 text-red-600 hover:bg-red-50 gap-2 font-bold text-xs"
+                        onClick={() => {
+                          updateOrderStatus(detailOrder.id, "cancelled");
+                          setOrderStatusEdit("cancelled");
+                          setDetailOrder(prev => prev ? { ...prev, status: "cancelled" } : null);
+                        }}
+                      >
+                        <XCircle size={14} /> Cancel Order
+                      </Button>
+                    )}
                   </section>
 
                   {/* Internal Notes */}
