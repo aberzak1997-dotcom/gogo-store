@@ -37,18 +37,18 @@ const CookieConsent = () => {
         "animate-in slide-in-from-bottom duration-500"
       )}
     >
-      <div className="max-w-4xl mx-auto bg-slate-900 text-white rounded-2xl shadow-2xl border border-white/10 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+      <div className="max-w-4xl mx-auto bg-white text-slate-900 rounded-2xl shadow-2xl border border-slate-200 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
         {/* Icon */}
-        <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
+        <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center flex-shrink-0">
           <Cookie size={20} className="text-amber-400" />
         </div>
 
         {/* Text */}
         <div className="flex-1 min-w-0">
-          <p className="font-black text-sm uppercase tracking-widest text-white mb-1">
+          <p className="font-black text-sm uppercase tracking-widest text-slate-900 mb-1">
             We use cookies 🍪
           </p>
-          <p className="text-slate-400 text-xs font-medium leading-relaxed">
+          <p className="text-slate-600 text-xs font-medium leading-relaxed">
             We use cookies to improve your experience, analyze traffic, and personalize content.
             By clicking "Accept", you agree to our{" "}
             <Link to="/privacy-policy" className="text-[#0096D6] hover:underline font-bold">
@@ -64,7 +64,7 @@ const CookieConsent = () => {
             variant="ghost"
             size="sm"
             onClick={decline}
-            className="text-slate-400 hover:text-white hover:bg-white/10 text-xs font-black uppercase tracking-widest rounded-xl flex-1 sm:flex-none"
+            className="text-slate-500 hover:text-slate-900 hover:bg-slate-100 text-xs font-black uppercase tracking-widest rounded-xl flex-1 sm:flex-none"
           >
             Decline
           </Button>
@@ -80,7 +80,7 @@ const CookieConsent = () => {
         {/* Close */}
         <button
           onClick={decline}
-          className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors sm:relative sm:top-auto sm:right-auto flex-shrink-0"
+          className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 transition-colors sm:relative sm:top-auto sm:right-auto flex-shrink-0"
         >
           <X size={16} />
         </button>
