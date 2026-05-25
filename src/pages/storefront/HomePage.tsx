@@ -286,15 +286,15 @@ const HomePage = () => {
               <div className="group relative overflow-hidden bg-slate-900 text-white min-h-[340px] flex flex-col justify-end rounded-2xl">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                <div className="relative z-10 p-10 space-y-4">
-                  <Badge className="bg-white/20 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm w-fit">
+                <div className="relative z-10 p-10 space-y-3">
+                  <Badge className="bg-white/20 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
                     New Collection
                   </Badge>
-                  <h3 className="text-3xl md:text-4xl font-black text-white leading-[1.15]">Gaming Essentials</h3>
-                  <p className="text-slate-300 text-sm leading-relaxed max-w-xs">Pro-grade gear for ultimate performance.</p>
-                  <Link to="/products?category=Gaming Accessories" className="inline-block">
-                    <Button className="rounded-lg px-7 h-11 text-sm font-bold bg-[#2563eb] hover:bg-[#1d4ed8] text-white border-0 shadow-lg shadow-blue-900/40 mt-2">
-                      Explore Collection
+                  <h3 className="text-3xl font-semibold tracking-tight">Gaming Essentials</h3>
+                  <p className="text-slate-200 text-sm max-w-xs">Pro-grade gear for ultimate performance.</p>
+                  <Link to="/products?category=Gaming Accessories" className="inline-block pt-2">
+                    <Button variant="secondary" className="rounded-full h-9 px-6 text-xs font-semibold gap-1.5">
+                      Explore <ArrowRight size={13} />
                     </Button>
                   </Link>
                 </div>
@@ -302,15 +302,15 @@ const HomePage = () => {
               <div className="group relative overflow-hidden min-h-[340px] flex flex-col justify-end rounded-2xl">
                 <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7279320/pexels-photo-7279320.jpeg')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-                <div className="relative z-10 p-10 space-y-4">
-                  <Badge className="bg-white/20 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm w-fit">
+                <div className="relative z-10 p-10 space-y-3">
+                  <Badge className="bg-white/20 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
                     Work From Anywhere
                   </Badge>
-                  <h3 className="text-3xl md:text-4xl font-black text-white leading-[1.15]">Work Setup</h3>
-                  <p className="text-slate-300 text-sm leading-relaxed max-w-xs">Minimal accessories, maximum productivity.</p>
-                  <Link to="/products?category=Laptop Accessories" className="inline-block">
-                    <Button className="rounded-lg px-7 h-11 text-sm font-bold bg-white hover:bg-slate-100 text-slate-900 border-0 shadow-lg shadow-black/20 mt-2">
-                      Explore Collection
+                  <h3 className="text-3xl font-semibold tracking-tight text-white">Work Setup</h3>
+                  <p className="text-slate-200 text-sm max-w-xs">Minimal accessories, maximum productivity.</p>
+                  <Link to="/products?category=Laptop Accessories" className="inline-block pt-2">
+                    <Button variant="outline" className="rounded-full h-9 px-6 text-xs font-semibold gap-1.5 border-white/30 bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm">
+                      Explore <ArrowRight size={13} />
                     </Button>
                   </Link>
                 </div>
