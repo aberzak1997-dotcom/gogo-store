@@ -5,8 +5,10 @@ import { Link } from "react-router-dom";
 import { Cookie, X, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 const CookieConsent = () => {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -46,13 +48,12 @@ const CookieConsent = () => {
         {/* Text */}
         <div className="flex-1 min-w-0">
           <p className="font-black text-sm uppercase tracking-widest text-white mb-1">
-            We use cookies 🍪
+            {t("cookie.title")} 🍪
           </p>
           <p className="text-slate-400 text-xs font-medium leading-relaxed">
-            We use cookies to improve your experience, analyze traffic, and personalize content.
-            By clicking "Accept", you agree to our{" "}
+            {t("cookie.desc")}{" "}
             <Link to="/privacy-policy" className="text-[#0096D6] hover:underline font-bold">
-              Privacy Policy
+              {t("cookie.privacy_policy")}
             </Link>
             .
           </p>
@@ -66,14 +67,14 @@ const CookieConsent = () => {
             onClick={decline}
             className="text-slate-400 hover:text-white hover:bg-white/10 text-xs font-black uppercase tracking-widest rounded-xl flex-1 sm:flex-none"
           >
-            Decline
+            {t("cookie.decline")}
           </Button>
           <Button
             size="sm"
             onClick={accept}
             className="bg-[#0096D6] hover:bg-[#007ab5] text-white text-xs font-black uppercase tracking-widest rounded-xl gap-2 flex-1 sm:flex-none"
           >
-            <ShieldCheck size={14} /> Accept All
+            <ShieldCheck size={14} /> {t("cookie.accept")}
           </Button>
         </div>
 
