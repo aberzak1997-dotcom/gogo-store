@@ -281,9 +281,9 @@ const HomePage = () => {
 
         {/* ── Promo Campaign Cards ───────────────────────────────────────────── */}
         {!isFiltered && (
-          <section className="mx-[5px] mb-[5px]">
-            <div className="grid md:grid-cols-2 gap-[5px]">
-              <div className="group relative overflow-hidden bg-slate-900 text-white min-h-[340px] flex flex-col justify-end rounded-none">
+          <section className="px-4 md:px-6 py-2">
+            <div className="grid md:grid-cols-2 gap-3 max-w-[1400px] mx-auto">
+              <div className="group relative overflow-hidden bg-slate-900 text-white min-h-[340px] flex flex-col justify-end rounded-2xl">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                 <div className="relative z-10 p-10 space-y-3">
@@ -299,7 +299,7 @@ const HomePage = () => {
                   </Link>
                 </div>
               </div>
-              <div className="group relative overflow-hidden min-h-[340px] flex flex-col justify-end rounded-none">
+              <div className="group relative overflow-hidden min-h-[340px] flex flex-col justify-end rounded-2xl">
                 <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7279320/pexels-photo-7279320.jpeg')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                 <div className="relative z-10 p-10 space-y-3">
