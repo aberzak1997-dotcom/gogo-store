@@ -163,7 +163,7 @@ const Header = () => {
                   <Link to="/account/login" className="hidden md:block">
                     <Button
                       size="sm"
-                      className="bg-slate-900 hover:bg-[#0096D6] text-white rounded-full px-5 h-9 text-[11px] font-black uppercase tracking-widest transition-all duration-300"
+                      className="bg-[#2563EB] hover:bg-black text-white rounded-full px-5 h-9 text-[11px] font-black uppercase tracking-widest transition-all duration-300"
                     >
                       Sign In
                     </Button>
