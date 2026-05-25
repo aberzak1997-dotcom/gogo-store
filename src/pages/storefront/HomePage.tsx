@@ -248,13 +248,13 @@ const HomePage = () => {
                   </h2>
                 </div>
 
-                {/* Middle: product image */}
-                <div className="relative z-10 flex items-center justify-center py-3 flex-grow">
+                {/* Middle: product image (absolutely positioned behind text/buttons) */}
+                <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none p-6">
                   {(deals[0] || newArrivals[0]) && (
                     <img
                       src={deals[0]?.imageUrl || newArrivals[0]?.imageUrl}
                       alt={deals[0]?.title || newArrivals[0]?.title}
-                      className="max-h-32 object-contain drop-shadow-2xl"
+                      className="max-h-[60%] object-contain drop-shadow-2xl opacity-30"
                     />
                   )}
                 </div>
