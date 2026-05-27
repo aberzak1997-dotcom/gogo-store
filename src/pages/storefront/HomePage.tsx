@@ -362,7 +362,7 @@ const HomePage = () => {
             <div className="section-container relative z-10">
               <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-6">
                 <div className="space-y-2">
-                  <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-red-400 bg-red-500/10 border border-red-500/20 px-3 py-1 rounded-[50px]">
+                  <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-white bg-white/10 border border-white/20 px-3 py-1 rounded-[50px]">
                     Flash Deals
                   </div>
                   <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
