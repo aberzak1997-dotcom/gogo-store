@@ -86,8 +86,8 @@ const Header = () => {
       {/* Main navbar */}
       <div
         className={cn(
-          "bg-white border-b border-[#F0F2F8] transition-all duration-300",
-          isScrolled ? "sticky top-0 shadow-sm" : ""
+          "bg-white/95 backdrop-blur-md border-b border-[#F0F2F8] transition-all duration-300 sticky top-0 z-50",
+          isScrolled ? "shadow-sm" : ""
         )}
         style={{ height: 68 }}
       >
