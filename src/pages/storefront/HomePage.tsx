@@ -191,45 +191,42 @@ const HomePage = () => {
 
         {/* ── Hero ──────────────────────────────────────────────────────────── */}
         {!isFiltered && (
-          <section className="bg-[#0E121A] min-h-[90vh] flex items-center relative overflow-hidden">
-            {/* Grid background */}
-            <div className="absolute inset-0 opacity-[0.025]"
-              style={{ backgroundImage: "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)", backgroundSize: "60px 60px" }} />
-            {/* Ambient glow */}
-            <div className="absolute top-1/2 right-1/3 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-[#479BF7]/5 blur-[140px] pointer-events-none" />
-            <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] rounded-full bg-[#1528A1]/10 blur-[100px] pointer-events-none" />
+          <section className="bg-white relative overflow-hidden" style={{ minHeight: "88vh", display: "flex", alignItems: "center" }}>
+            {/* Subtle background shape */}
+            <div className="absolute top-0 right-0 w-1/2 h-full bg-[#F0F2F8] pointer-events-none" style={{ clipPath: "polygon(8% 0, 100% 0, 100% 100%, 0% 100%)" }} />
+            <div className="absolute top-1/2 right-[12%] -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#1160CB]/5 blur-[80px] pointer-events-none" />
 
-            <div className="section-container relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 py-24 items-center">
+            <div className="section-container relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 py-20 items-center w-full">
               {/* Left: text */}
               <div className="space-y-8">
-                <p className="text-caption text-[#479BF7]">Technology. Elevated.</p>
-                <h1 className="text-white font-bold leading-[1.05]" style={{ fontSize: "clamp(36px,5vw,64px)", letterSpacing: "4px" }}>
+                <p className="text-caption text-[#1160CB]">Technology. Elevated.</p>
+                <h1 className="font-bold leading-[1.05] text-[#0C0D10]" style={{ fontSize: "clamp(36px,5vw,60px)", letterSpacing: "-1px" }}>
                   Premium Tech,<br />Delivered Fast
                 </h1>
-                <p className="text-[15px] text-white/60 max-w-[480px] leading-relaxed">
+                <p className="text-[16px] text-[#0C0D10]/55 max-w-[460px] leading-relaxed">
                   Morocco's premier destination for cutting-edge electronics and accessories. Shop the latest from top brands, delivered to your door.
                 </p>
                 <div className="flex items-center gap-4 flex-wrap">
                   <Link to="/products">
-                    <Button className="bg-[#1160CB] hover:bg-[#479BF7] text-white rounded-[8px] h-12 px-8 text-[15px] font-semibold transition-all duration-200 gap-2 shadow-lg shadow-[#1160CB]/30">
+                    <Button className="bg-[#1160CB] hover:bg-[#1528A1] text-white rounded-[8px] h-12 px-8 text-[15px] font-semibold transition-all duration-200 gap-2 shadow-lg shadow-[#1160CB]/20">
                       Shop Now <ArrowRight size={16} />
                     </Button>
                   </Link>
                   <Link to="/about">
-                    <Button variant="ghost" className="border border-white/20 text-white hover:bg-white/[0.08] hover:border-white/30 rounded-[8px] h-12 px-8 text-[15px] font-semibold transition-all">
+                    <Button variant="outline" className="border-[#F0F2F8] text-[#0C0D10]/70 hover:bg-[#F0F2F8] hover:text-[#0C0D10] rounded-[8px] h-12 px-8 text-[15px] font-semibold transition-all">
                       Learn More
                     </Button>
                   </Link>
                 </div>
-                <div className="flex items-center gap-10 pt-2 border-t border-white/[0.06]">
+                <div className="flex items-center gap-10 pt-4 border-t border-[#F0F2F8]">
                   {[
                     { value: "10k+", label: "Happy customers" },
                     { value: "500+", label: "Products" },
                     { value: "1-Year", label: "Warranty" },
                   ].map((stat, i) => (
                     <div key={i}>
-                      <p className="text-[22px] font-semibold text-white">{stat.value}</p>
-                      <p className="text-[11px] text-white/40 mt-0.5 uppercase tracking-[1px]">{stat.label}</p>
+                      <p className="text-[22px] font-bold text-[#1528A1]">{stat.value}</p>
+                      <p className="text-caption text-[#0C0D10]/40 mt-0.5">{stat.label}</p>
                     </div>
                   ))}
                 </div>
@@ -238,42 +235,41 @@ const HomePage = () => {
               {/* Right: featured product card */}
               <div className="flex items-center justify-center">
                 <div className="relative w-full max-w-[380px]">
-                  <div className="absolute inset-0 bg-[#479BF7]/8 blur-[80px] rounded-full scale-90 pointer-events-none" />
                   <div
-                    className="relative bg-[#16181C] rounded-[16px] p-7 border border-white/[0.06]"
-                    style={{ boxShadow: "0 0 80px rgba(71,155,247,0.12)" }}
+                    className="relative bg-white rounded-[16px] p-7"
+                    style={{ border: "1px solid #F0F2F8", boxShadow: "0 16px 64px rgba(21,40,161,0.12)" }}
                   >
                     {(deals[0] || newArrivals[0]) ? (
                       <>
-                        <p className="text-caption text-[#479BF7] mb-5">Featured Deal</p>
+                        <p className="text-caption text-[#1160CB] mb-5">Featured Deal</p>
                         <img
                           src={deals[0]?.imageUrl || newArrivals[0]?.imageUrl}
                           alt={deals[0]?.title || newArrivals[0]?.title}
                           className="w-full h-52 object-contain mb-6"
                         />
-                        <h3 className="text-white font-semibold text-[16px] mb-3 line-clamp-1">
+                        <h3 className="text-[#0C0D10] font-semibold text-[16px] mb-3 line-clamp-1">
                           {deals[0]?.title || newArrivals[0]?.title}
                         </h3>
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-[#479BF7] font-bold text-[22px]">
+                            <p className="text-[#1528A1] font-bold text-[22px]">
                               ${(deals[0]?.price || newArrivals[0]?.price || 0).toFixed(2)}
                             </p>
                             {(deals[0]?.compareAtPrice || newArrivals[0]?.compareAtPrice) && (
-                              <p className="text-white/25 text-[12px] line-through mt-0.5">
+                              <p className="text-[#0C0D10]/25 text-[12px] line-through mt-0.5">
                                 ${(deals[0]?.compareAtPrice || newArrivals[0]?.compareAtPrice || 0).toFixed(2)}
                               </p>
                             )}
                           </div>
                           <Link to={`/product/${deals[0]?.id || newArrivals[0]?.id}`}>
-                            <Button className="bg-[#1160CB] hover:bg-[#479BF7] text-white rounded-[8px] h-10 px-5 text-[13px] font-semibold transition-all">
+                            <Button className="bg-[#1160CB] hover:bg-[#1528A1] text-white rounded-[8px] h-10 px-5 text-[13px] font-semibold transition-all">
                               View Deal
                             </Button>
                           </Link>
                         </div>
                       </>
                     ) : (
-                      <div className="h-64 flex items-center justify-center text-white/20 text-[13px]">
+                      <div className="h-64 flex items-center justify-center text-[#0C0D10]/20 text-[13px]">
                         Loading products…
                       </div>
                     )}
@@ -286,7 +282,7 @@ const HomePage = () => {
 
         {/* ── Promo Campaign Cards ───────────────────────────────────────────── */}
         {!isFiltered && (
-          <section className="px-4 md:px-6 py-4 bg-[#0E121A]">
+          <section className="px-4 md:px-6 py-4 bg-white">
             <div className="grid md:grid-cols-2 gap-4 max-w-[1400px] mx-auto">
               <div className="group relative overflow-hidden bg-slate-900 text-white min-h-[340px] flex flex-col justify-end rounded-[12px]">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
@@ -329,24 +325,29 @@ const HomePage = () => {
 
         {/* ── Categories ────────────────────────────────────────────────────── */}
         {!isFiltered && (
-          <section className="py-20 bg-[#0E121A]">
+          <section className="py-20 bg-[#1528A1]">
             <div className="section-container">
-              <SectionHeader
-                eyebrow="Browse by type"
-                eyebrowIcon={Package}
-                title="Shop by Category"
-                subtitle="Find exactly what you're looking for"
-                href="/products"
-              />
+              <div className="flex items-end justify-between mb-10">
+                <div className="space-y-2">
+                  <div className="inline-flex items-center gap-1.5 text-caption text-white/60">
+                    <Package size={12} /> Browse by type
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">Shop by Category</h2>
+                  <p className="text-white/60 text-sm">Find exactly what you're looking for</p>
+                </div>
+                <Link to="/products" className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-white/60 hover:text-white transition-colors">
+                  View all <ChevronRight size={14} />
+                </Link>
+              </div>
               <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
                 {categories.map((cat) => {
                   const Icon = cat.icon;
                   return (
-                    <Link key={cat.name} to={cat.path} className="group flex flex-col items-center gap-3 p-4 rounded-[12px] border border-white/[0.06] bg-[#16181C] hover:border-[#479BF7]/30 hover:bg-white/[0.06] transition-all duration-200">
-                      <div className="w-10 h-10 flex items-center justify-center rounded-[8px] bg-[#479BF7]/10 group-hover:bg-[#479BF7]/20 transition-colors">
-                        <Icon size={20} className="text-[#479BF7]" />
+                    <Link key={cat.name} to={cat.path} className="group flex flex-col items-center gap-3 p-4 rounded-[12px] border border-white/20 bg-white/10 hover:bg-white/20 hover:border-white/40 transition-all duration-200">
+                      <div className="w-10 h-10 flex items-center justify-center rounded-[8px] bg-white/20 group-hover:bg-white/30 transition-colors">
+                        <Icon size={20} className="text-white" />
                       </div>
-                      <span className="text-[11px] font-medium text-white/50 group-hover:text-white text-center leading-tight transition-colors">
+                      <span className="text-[11px] font-medium text-white/70 group-hover:text-white text-center leading-tight transition-colors">
                         {cat.name}
                       </span>
                     </Link>
@@ -359,32 +360,29 @@ const HomePage = () => {
 
         {/* ── Flash Deals (with countdown) ──────────────────────────────────── */}
         {!isFiltered && deals.length > 0 && (
-          <section className="py-20 bg-[#0E121A] relative overflow-hidden">
-            <div className="absolute inset-0 opacity-[0.02]"
-              style={{ backgroundImage: "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)", backgroundSize: "60px 60px" }}
-            />
+          <section className="py-20 bg-[#1528A1] relative overflow-hidden">
             <div className="section-container relative z-10">
               <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-6">
                 <div className="space-y-2">
-                  <div className="inline-flex items-center gap-1.5 text-caption text-[#479BF7]">
+                  <div className="inline-flex items-center gap-1.5 text-caption text-white/70">
                     <Flame size={12} /> Flash Deals
                   </div>
                   <h2 className="text-h2 text-white">
                     Deals of the Week
                   </h2>
-                  <p className="text-[15px] text-white/50">Limited stock — grab them before they're gone.</p>
+                  <p className="text-[15px] text-white/60">Limited stock — grab them before they're gone.</p>
                 </div>
 
                 {/* Countdown */}
                 <div className="flex items-center gap-2">
-                  <Clock size={14} className="text-slate-400" />
-                  <span className="text-slate-400 text-xs font-medium mr-2">Ends in</span>
+                  <Clock size={14} className="text-white/50" />
+                  <span className="text-white/50 text-xs font-medium mr-2">Ends in</span>
                   {[countdown.h, countdown.m, countdown.s].map((val, i) => (
                     <React.Fragment key={i}>
-                      <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center border border-white/10">
+                      <div className="w-12 h-12 bg-white/20 rounded-[8px] flex items-center justify-center border border-white/20">
                         <span className="text-white font-bold text-lg tabular-nums">{val}</span>
                       </div>
-                      {i < 2 && <span className="text-white/40 font-bold text-lg">:</span>}
+                      {i < 2 && <span className="text-white/50 font-bold text-lg">:</span>}
                     </React.Fragment>
                   ))}
                 </div>
@@ -398,7 +396,7 @@ const HomePage = () => {
 
               <div className="mt-8 text-center">
                 <Link to="/deals">
-                  <Button variant="outline" className="border-white/20 text-white bg-white/5 hover:bg-white/10 rounded-full px-8 h-11 text-xs font-semibold gap-2">
+                  <Button className="border border-white/30 text-white bg-white/10 hover:bg-white/20 rounded-[8px] px-8 h-11 text-[13px] font-semibold gap-2">
                     See All Deals <ArrowRight size={14} />
                   </Button>
                 </Link>

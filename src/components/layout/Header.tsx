@@ -86,8 +86,8 @@ const Header = () => {
       {/* Main navbar */}
       <div
         className={cn(
-          "bg-[#0E121A] border-b border-white/[0.06] transition-all duration-300",
-          isScrolled ? "sticky top-0 shadow-lg shadow-black/40 backdrop-blur-md" : ""
+          "bg-white border-b border-[#F0F2F8] transition-all duration-300",
+          isScrolled ? "sticky top-0 shadow-sm" : ""
         )}
         style={{ height: 68 }}
       >
@@ -95,7 +95,7 @@ const Header = () => {
 
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
-            <Logo width={130} variant="dark" />
+            <Logo width={130} variant="light" />
           </Link>
 
           {/* Desktop nav */}
@@ -110,7 +110,7 @@ const Header = () => {
                   to={link.path}
                   className={cn(
                     "text-[15px] font-medium transition-colors",
-                    isActive ? "text-[#479BF7]" : "text-white/70 hover:text-[#479BF7]"
+                    isActive ? "text-[#1160CB]" : "text-[#0C0D10]/60 hover:text-[#1160CB]"
                   )}
                 >
                   {link.name}
@@ -120,19 +120,19 @@ const Header = () => {
 
             {/* Categories dropdown */}
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-[15px] font-medium text-white/70 hover:text-[#479BF7] transition-colors outline-none">
+              <DropdownMenuTrigger className="flex items-center gap-1 text-[15px] font-medium text-[#0C0D10]/60 hover:text-[#1160CB] transition-colors outline-none">
                 Categories <ChevronDown size={14} />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-52 bg-[#16181C] border-white/10 text-white p-2 rounded-[8px]">
+              <DropdownMenuContent align="start" className="w-52 bg-white border-[#F0F2F8] p-2 rounded-[8px] shadow-md">
                 {mainCategories.map((cat) => {
                   const Icon = cat.icon;
                   return (
                     <DropdownMenuItem key={cat.name} asChild>
                       <Link
                         to={`/products?category=${encodeURIComponent(cat.path)}`}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] cursor-pointer text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] transition-colors"
                       >
-                        <Icon size={15} className="text-[#479BF7]" />
+                        <Icon size={15} className="text-[#1160CB]" />
                         <span className="text-[13px] font-medium">{cat.name}</span>
                       </Link>
                     </DropdownMenuItem>
@@ -147,13 +147,13 @@ const Header = () => {
             {/* Search — desktop */}
             <form onSubmit={handleSearch} className="relative hidden md:flex w-[200px]">
               <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#0C0D10]/30"
                 size={15}
               />
               <Input
                 type="text"
                 placeholder="Search products…"
-                className="w-full pl-9 pr-3 h-9 bg-white/[0.06] border border-white/10 rounded-[8px] text-[13px] text-white placeholder:text-white/30 focus-visible:ring-1 focus-visible:ring-[#479BF7] focus-visible:border-[#479BF7]"
+                className="w-full pl-9 pr-3 h-9 bg-[#F0F2F8] border border-[#F0F2F8] rounded-[8px] text-[13px] text-[#0C0D10] placeholder:text-[#0C0D10]/30 focus-visible:ring-1 focus-visible:ring-[#1160CB] focus-visible:border-[#1160CB]"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -164,7 +164,7 @@ const Header = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative text-white/70 hover:text-white hover:bg-white/[0.06] rounded-[8px]"
+                className="relative text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] rounded-[8px]"
               >
                 <ShoppingCart size={20} />
                 {cartCount > 0 && (
@@ -181,7 +181,7 @@ const Header = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="relative text-white/70 hover:text-white hover:bg-white/[0.06] rounded-[8px]"
+                  className="relative text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] rounded-[8px]"
                 >
                   {customer ? (
                     <div className="w-7 h-7 bg-[#1528A1] rounded-full flex items-center justify-center text-white text-[9px] font-bold">
@@ -197,7 +197,7 @@ const Header = () => {
                   )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-[#16181C] border-white/10 text-white p-2 rounded-[8px]">
+              <DropdownMenuContent align="end" className="w-56 bg-white border-[#F0F2F8] p-2 rounded-[8px] shadow-md">
                 {customer ? (
                   <>
                     <div className="px-3 py-2.5 flex items-center gap-3">
@@ -205,64 +205,64 @@ const Header = () => {
                         {customer.name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2)}
                       </div>
                       <div className="min-w-0">
-                        <p className="font-semibold text-[13px] text-white truncate">{customer.name}</p>
-                        <p className="text-[11px] text-white/40 truncate">{customer.email}</p>
+                        <p className="font-semibold text-[13px] text-[#0C0D10] truncate">{customer.name}</p>
+                        <p className="text-[11px] text-[#0C0D10]/40 truncate">{customer.email}</p>
                       </div>
                     </div>
-                    <DropdownMenuSeparator className="bg-white/[0.06]" />
+                    <DropdownMenuSeparator className="bg-[#F0F2F8]" />
                     <DropdownMenuItem asChild>
-                      <Link to="/account" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-white/70 hover:text-white hover:bg-white/5 text-[13px] font-medium">
+                      <Link to="/account" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
                         <User size={14} /> My Account
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/account?tab=orders" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-white/70 hover:text-white hover:bg-white/5 text-[13px] font-medium">
+                      <Link to="/account?tab=orders" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
                         <Package size={14} /> My Orders
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/account?tab=wishlist" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-white/70 hover:text-white hover:bg-white/5 text-[13px] font-medium">
+                      <Link to="/account?tab=wishlist" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
                         <Settings size={14} /> Wishlist
                         {wishlist.length > 0 && (
-                          <span className="ml-auto text-[10px] font-bold bg-[#1528A1]/20 text-[#479BF7] px-1.5 py-0.5 rounded-full">
+                          <span className="ml-auto text-[10px] font-bold bg-[#1160CB]/10 text-[#1160CB] px-1.5 py-0.5 rounded-full">
                             {wishlist.length}
                           </span>
                         )}
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-white/[0.06]" />
+                    <DropdownMenuSeparator className="bg-[#F0F2F8]" />
                     <DropdownMenuItem asChild>
-                      <Link to="/admin" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-white/40 hover:text-white hover:bg-white/5 text-[13px] font-medium">
+                      <Link to="/admin" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/30 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
                         <LayoutDashboard size={14} /> Admin Panel
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-white/[0.06]" />
+                    <DropdownMenuSeparator className="bg-[#F0F2F8]" />
                     <DropdownMenuItem
                       onClick={() => customerLogout().then(() => navigate("/"))}
-                      className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 text-[13px] font-medium"
+                      className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-rose-500 hover:text-rose-600 hover:bg-rose-50 text-[13px] font-medium"
                     >
                       <LogOut size={14} /> Sign Out
                     </DropdownMenuItem>
                   </>
                 ) : (
                   <>
-                    <DropdownMenuLabel className="text-caption text-white/30 px-3 py-2">
+                    <DropdownMenuLabel className="text-caption text-[#0C0D10]/30 px-3 py-2">
                       Account
                     </DropdownMenuLabel>
-                    <DropdownMenuSeparator className="bg-white/[0.06]" />
+                    <DropdownMenuSeparator className="bg-[#F0F2F8]" />
                     <DropdownMenuItem asChild>
-                      <Link to="/account/login" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-white/70 hover:text-white hover:bg-white/5 text-[13px] font-medium">
+                      <Link to="/account/login" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
                         <User size={14} /> Sign In / Register
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/track-order" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-white/70 hover:text-white hover:bg-white/5 text-[13px] font-medium">
+                      <Link to="/track-order" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
                         <Package size={14} /> Track My Order
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-white/[0.06]" />
+                    <DropdownMenuSeparator className="bg-[#F0F2F8]" />
                     <DropdownMenuItem asChild>
-                      <Link to="/admin" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-white/40 hover:text-white hover:bg-white/5 text-[13px] font-medium">
+                      <Link to="/admin" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/30 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
                         <LayoutDashboard size={14} /> Admin Panel
                       </Link>
                     </DropdownMenuItem>
@@ -276,7 +276,7 @@ const Header = () => {
               <Link to="/account/login" className="hidden md:block">
                 <Button
                   size="sm"
-                  className="bg-[#1160CB] hover:bg-[#479BF7] text-white rounded-[8px] px-5 h-9 text-[13px] font-semibold transition-all duration-200"
+                  className="bg-[#1160CB] hover:bg-[#1528A1] text-white rounded-[8px] px-5 h-9 text-[13px] font-semibold transition-all duration-200"
                 >
                   Get Started
                 </Button>
@@ -287,7 +287,7 @@ const Header = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden text-white/70 hover:text-white hover:bg-white/[0.06] rounded-[8px]"
+              className="lg:hidden text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] rounded-[8px]"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -298,13 +298,13 @@ const Header = () => {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-[60] bg-[#0E121A] flex flex-col">
-          <div className="flex items-center justify-between px-6 h-[68px] border-b border-white/[0.06]">
-            <Logo width={120} variant="dark" />
+        <div className="lg:hidden fixed inset-0 z-[60] bg-white flex flex-col">
+          <div className="flex items-center justify-between px-6 h-[68px] border-b border-[#F0F2F8]">
+            <Logo width={120} variant="light" />
             <Button
               variant="ghost"
               size="icon"
-              className="text-white/70 hover:text-white"
+              className="text-[#0C0D10]/60 hover:text-[#1160CB]"
               onClick={() => setIsMenuOpen(false)}
             >
               <X size={24} />
@@ -314,11 +314,11 @@ const Header = () => {
           <div className="flex-1 overflow-y-auto p-6 space-y-8">
             {/* Search */}
             <form onSubmit={(e) => { handleSearch(e); setIsMenuOpen(false); }} className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" size={16} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#0C0D10]/30" size={16} />
               <Input
                 type="text"
                 placeholder="Search products…"
-                className="w-full pl-10 h-12 bg-white/[0.06] border border-white/10 rounded-[8px] text-white placeholder:text-white/30 text-[15px]"
+                className="w-full pl-10 h-12 bg-[#F0F2F8] border border-[#F0F2F8] rounded-[8px] text-[#0C0D10] placeholder:text-[#0C0D10]/30 text-[15px]"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -326,12 +326,12 @@ const Header = () => {
 
             {/* Nav links */}
             <div className="space-y-1">
-              <p className="text-caption text-white/30 px-2 mb-4">Navigation</p>
+              <p className="text-caption text-[#0C0D10]/30 px-2 mb-4">Navigation</p>
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   to={link.path}
-                  className="flex items-center px-4 py-3 rounded-[8px] text-[15px] font-medium text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                  className="flex items-center px-4 py-3 rounded-[8px] text-[15px] font-medium text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {link.name}
@@ -341,7 +341,7 @@ const Header = () => {
 
             {/* Categories */}
             <div className="space-y-1">
-              <p className="text-caption text-white/30 px-2 mb-4">Categories</p>
+              <p className="text-caption text-[#0C0D10]/30 px-2 mb-4">Categories</p>
               <div className="grid grid-cols-2 gap-2">
                 {mainCategories.map((cat) => {
                   const Icon = cat.icon;
@@ -349,10 +349,10 @@ const Header = () => {
                     <Link
                       key={cat.name}
                       to={`/products?category=${encodeURIComponent(cat.path)}`}
-                      className="flex items-center gap-3 p-3 rounded-[8px] bg-white/[0.04] border border-white/[0.06] text-[13px] font-medium text-white/70 hover:text-white hover:bg-white/[0.08] transition-colors"
+                      className="flex items-center gap-3 p-3 rounded-[8px] bg-[#F0F2F8] border border-[#F0F2F8] text-[13px] font-medium text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#E8EBFC] transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      <Icon size={16} className="text-[#479BF7]" /> {cat.name}
+                      <Icon size={16} className="text-[#1160CB]" /> {cat.name}
                     </Link>
                   );
                 })}
@@ -360,9 +360,9 @@ const Header = () => {
             </div>
           </div>
 
-          <div className="p-6 border-t border-white/[0.06]">
+          <div className="p-6 border-t border-[#F0F2F8]">
             <Link to="/account/login" onClick={() => setIsMenuOpen(false)}>
-              <Button className="w-full h-12 bg-[#1160CB] hover:bg-[#479BF7] text-white rounded-[8px] text-[15px] font-semibold transition-all">
+              <Button className="w-full h-12 bg-[#1160CB] hover:bg-[#1528A1] text-white rounded-[8px] text-[15px] font-semibold transition-all">
                 Get Started
               </Button>
             </Link>
