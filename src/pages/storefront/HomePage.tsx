@@ -357,7 +357,7 @@ const HomePage = () => {
 
         {/* ── Flash Deals (with countdown) ──────────────────────────────────── */}
         {!isFiltered && deals.length > 0 && (
-          <section className="py-20 bg-[#0d1b2e] relative overflow-hidden">
+          <section className="py-20 bg-[#1528A1] relative overflow-hidden">
             {/* subtle grid background */}
             <div className="absolute inset-0 opacity-[0.04]"
               style={{ backgroundImage: "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)", backgroundSize: "40px 40px" }}
