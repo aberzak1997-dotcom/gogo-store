@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Smartphone, Mail, Instagram, Twitter, Facebook, Youtube, Send } from "lucide-react";
+import { Mail, Instagram, Twitter, Facebook, Youtube, Send } from "lucide-react";
+import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { showSuccess, showError } from "../../utils/toast";
 
@@ -29,11 +30,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
           {/* Brand & Newsletter */}
           <div className="lg:col-span-2 space-y-8">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="bg-slate-900 p-1.5 rounded-lg">
-                <Smartphone className="h-5 w-5 text-white" />
-              </div>
-              <span className="font-black text-2xl tracking-tighter text-slate-900 uppercase">ELECTROSTORE</span>
+            <Link to="/">
+              <Logo width={140} />
             </Link>
             <div className="space-y-4 max-w-sm">
               <h4 className="font-black text-sm uppercase tracking-widest text-slate-900">Stay in the loop</h4>
@@ -107,13 +105,13 @@ const Footer = () => {
 
         <div className="pt-12 border-t border-slate-50 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-wrap justify-center gap-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
-            <span>© 2026 ELECTROSTORE</span>
+            <span>© 2025 WIVITEC. All rights reserved.</span>
             <Link to="/privacy-policy" className="hover:text-slate-900">Privacy</Link>
             <Link to="/terms" className="hover:text-slate-900">Terms</Link>
             <Link to="/faq" className="hover:text-slate-900">Cookies</Link>
           </div>
           <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            <Mail size={14} /> support@electrostore.com
+            <Mail size={14} /> support@wivitec.com
           </div>
         </div>
       </div>

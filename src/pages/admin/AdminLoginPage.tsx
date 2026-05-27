@@ -116,7 +116,7 @@ const AdminLoginPage = () => {
         </Card>
         
         <p className="text-center mt-8 text-slate-500 text-sm font-medium">
-          Authorized Personnel Only • © 2024 ElectroStore
+          Authorized Personnel Only • © 2025 WIVITEC
         </p>
       </div>
     </div>

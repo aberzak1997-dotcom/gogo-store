@@ -68,7 +68,7 @@ const AdminAnalyticsPage = () => {
   ].filter(s => s.count > 0);
 
   const chartConfig = {
-    revenue: { label: "Revenue", color: "#0096D6" },
+    revenue: { label: "Revenue", color: "#0033CC" },
   };
 
   return (
@@ -97,7 +97,7 @@ const AdminAnalyticsPage = () => {
         <Card className="lg:col-span-8 border-none shadow-sm rounded-[2.5rem] overflow-hidden">
           <CardHeader className="p-8 border-b border-slate-50">
             <CardTitle className="text-xl font-black flex items-center gap-3">
-              <BarChart3 size={20} className="text-[#0096D6]" /> Revenue by Category
+              <BarChart3 size={20} className="text-[#0033CC]" /> Revenue by Category
             </CardTitle>
           </CardHeader>
           <CardContent className="p-8">
@@ -110,7 +110,7 @@ const AdminAnalyticsPage = () => {
                   <XAxis dataKey="category" tick={{ fontSize: 10, fontWeight: 700 }} />
                   <YAxis tick={{ fontSize: 10 }} tickFormatter={v => `$${v}`} />
                   <ChartTooltip content={<ChartTooltipContent formatter={(v) => [`$${Number(v).toFixed(2)}`, "Revenue"]} />} />
-                  <Bar dataKey="revenue" fill="#0096D6" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="revenue" fill="#0033CC" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ChartContainer>
             )}

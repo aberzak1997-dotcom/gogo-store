@@ -80,7 +80,7 @@ const AccountLoginPage = () => {
           {/* Logo */}
           <div className="text-center mb-10">
             <div className="w-14 h-14 bg-slate-900 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-slate-900/20">
-              <Zap size={28} fill="currentColor" className="text-[#0096D6]" />
+              <Zap size={28} fill="currentColor" className="text-[#0033CC]" />
             </div>
             <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tight">
               {tab === "login" ? "Welcome Back" : "Create Account"}
@@ -88,7 +88,7 @@ const AccountLoginPage = () => {
             <p className="text-slate-500 text-sm font-medium mt-2">
               {tab === "login"
                 ? "Sign in to view your orders and wishlist"
-                : "Join ElectroStore for a better shopping experience"}
+                : "Join WIVITEC for a better shopping experience"}
             </p>
           </div>
 

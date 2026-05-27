@@ -322,7 +322,7 @@ const AdminProductsPage = () => {
                         </TableCell>
                         <TableCell className="text-right pr-6">
                           <div className="flex justify-end gap-1">
-                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-slate-400 hover:text-[#0096D6] hover:bg-[#0096D6]/5" onClick={() => handleEdit(product)}>
+                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-slate-400 hover:text-[#0033CC] hover:bg-[#0033CC]/5" onClick={() => handleEdit(product)}>
                               <Edit size={16} />
                             </Button>
                             <Button 
@@ -349,7 +349,7 @@ const AdminProductsPage = () => {
               <div className="bg-slate-900 p-8 text-white">
                 <DialogTitle className="text-2xl font-black uppercase tracking-tighter">{editingProduct ? "Edit Product" : "New Catalog Entry"}</DialogTitle>
                 <DialogDescription className="text-slate-400 font-medium mt-1">
-                  Configure product details and variants for ElectroStore.
+                  Configure product details and variants for WIVITEC.
                 </DialogDescription>
               </div>
               <div className="p-8 bg-white">

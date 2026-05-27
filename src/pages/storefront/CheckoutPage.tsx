@@ -469,7 +469,7 @@ const CheckoutPage = () => {
                               actions.order.create({
                                 intent: "CAPTURE",
                                 purchase_units: [{
-                                  description: "GoGo Store Purchase",
+                                  description: "WIVITEC Purchase",
                                   amount: {
                                     currency_code: currency,
                                     value: total.toFixed(2),

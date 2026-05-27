@@ -51,7 +51,7 @@ const ContactPage = () => {
             <div className="lg:col-span-5 space-y-8">
               <div className="grid gap-6">
                 {[
-                  { icon: Mail, title: "Email Us", value: "support@electrostore.com", desc: "We'll respond within 24 hours" },
+                  { icon: Mail, title: "Email Us", value: "support@wivitec.com", desc: "We'll respond within 24 hours" },
                   { icon: Phone, title: "Call Us", value: "Available via email", desc: "Mon-Fri, 9am-6pm" },
                   { icon: Clock, title: "Business Hours", value: "9:00 AM - 6:00 PM", desc: "Monday to Friday" },
                   { icon: MapPin, title: "Location", value: "Online Store", desc: "Shipping worldwide" },

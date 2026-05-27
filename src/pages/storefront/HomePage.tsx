@@ -212,7 +212,7 @@ const HomePage = () => {
                     Cutting-edge gadgets and accessories for professionals and enthusiasts alike. Quality gear for every setup.
                   </p>
                   <Link to="/products" className="inline-block pt-1">
-                    <Button className="rounded-full h-8 px-5 text-[11px] font-semibold bg-[#2563eb] hover:bg-[#1d4ed8] text-white border-0 shadow-lg shadow-blue-900/40 gap-1.5">
+                    <Button className="rounded-full h-8 px-5 text-[11px] font-semibold bg-[#0033CC] hover:bg-[#002299] text-white border-0 shadow-lg shadow-blue-900/40 gap-1.5">
                       Browse Collection <ArrowRight size={12} />
                     </Button>
                   </Link>
@@ -233,7 +233,7 @@ const HomePage = () => {
               </div>
 
               {/* ── Right panel (bright blue) ── */}
-              <div className="relative flex-[1] min-h-[210px] md:min-h-[322px] rounded-2xl overflow-hidden bg-[#2563eb] flex flex-col justify-between p-6">
+              <div className="relative flex-[1] min-h-[210px] md:min-h-[322px] rounded-2xl overflow-hidden bg-[#0033CC] flex flex-col justify-between p-6">
                 {/* decorative circles */}
                 <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-white/5 translate-x-1/3 translate-y-1/3" />
                 <div className="absolute bottom-10 right-10 w-40 h-40 rounded-full bg-white/5" />
@@ -275,7 +275,7 @@ const HomePage = () => {
                     to={`/product/${deals[0]?.id || newArrivals[0]?.id}`}
                     className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
                   >
-                    <ArrowRight size={16} className="text-[#2563eb]" />
+                    <ArrowRight size={16} className="text-[#0033CC]" />
                   </Link>
                 </div>
               </div>

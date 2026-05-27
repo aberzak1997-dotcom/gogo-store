@@ -97,7 +97,7 @@ const AdminDiscountsPage = () => {
             {discounts.map(d => (
               <div key={d.id} className="flex items-center justify-between p-6 hover:bg-slate-50/50 transition-colors">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-[#0096D6]/10 text-[#0096D6] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-[#0033CC]/10 text-[#0033CC] flex items-center justify-center">
                     <Tag size={18} />
                   </div>
                   <div>

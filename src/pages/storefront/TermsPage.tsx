@@ -38,14 +38,14 @@ const TermsPage = () => {
             <section className="space-y-4">
               <h2 className="text-2xl font-black text-slate-900">4. Limitation of Liability</h2>
               <p className="text-slate-600 leading-relaxed">
-                ElectroStore shall not be liable for any indirect, incidental, or consequential damages arising from the use of our products or website.
+                WIVITEC shall not be liable for any indirect, incidental, or consequential damages arising from the use of our products or website.
               </p>
             </section>
 
             <section className="space-y-4">
               <h2 className="text-2xl font-black text-slate-900">5. Governing Law</h2>
               <p className="text-slate-600 leading-relaxed">
-                These terms shall be governed by and construed in accordance with the laws of the jurisdiction in which ElectroStore operates.
+                These terms shall be governed by and construed in accordance with the laws of the jurisdiction in which WIVITEC operates.
               </p>
             </section>
           </div>

@@ -173,7 +173,7 @@ const AdminPaymentsPage = () => {
                 <div className="flex items-center gap-2">
                   <h3 className="font-black text-slate-900">{method.name}</h3>
                   {method.recommended && (
-                    <Badge className="bg-[#0096D6]/10 text-[#0096D6] border-transparent shadow-none text-[9px] font-black">Recommended</Badge>
+                    <Badge className="bg-[#0033CC]/10 text-[#0033CC] border-transparent shadow-none text-[9px] font-black">Recommended</Badge>
                   )}
                   {method.enabled && method.configured && (
                     <Badge className="bg-emerald-50 text-emerald-600 border-transparent shadow-none text-[9px] font-black flex items-center gap-1">

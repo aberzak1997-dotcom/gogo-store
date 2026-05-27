@@ -191,7 +191,7 @@ const AdminShippingPage = () => {
               <CardContent className="p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-4 flex-1">
-                    <div className="w-11 h-11 rounded-xl bg-[#0096D6]/10 text-[#0096D6] flex items-center justify-center flex-shrink-0">
+                    <div className="w-11 h-11 rounded-xl bg-[#0033CC]/10 text-[#0033CC] flex items-center justify-center flex-shrink-0">
                       <Globe size={20} />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -278,7 +278,7 @@ const AdminShippingPage = () => {
                     <button
                       key={c}
                       onClick={() => setForm({ ...form, countries: form.countries.filter(x => x !== c) })}
-                      className="text-[9px] font-black uppercase tracking-wider bg-[#0096D6]/10 text-[#0096D6] px-2.5 py-1 rounded-full hover:bg-rose-50 hover:text-rose-500 transition-colors"
+                      className="text-[9px] font-black uppercase tracking-wider bg-[#0033CC]/10 text-[#0033CC] px-2.5 py-1 rounded-full hover:bg-rose-50 hover:text-rose-500 transition-colors"
                     >
                       {c} ×
                     </button>

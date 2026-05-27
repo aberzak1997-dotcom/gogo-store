@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import Logo from "@/components/Logo";
 import {
   Search,
   ShoppingCart,
@@ -89,7 +90,7 @@ const Header = () => {
         <div className="section-container flex justify-between items-center">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-2">
-              <Truck size={14} className="text-[#0096D6]" /> Free shipping on orders over $50
+              <Truck size={14} className="text-[#0033CC]" /> Free shipping on orders over $50
             </span>
             <span className="flex items-center gap-2">
               <Zap size={14} className="text-amber-400" /> 1-Year Warranty Included
@@ -114,11 +115,8 @@ const Header = () => {
         <div className="section-container">
           <div className="flex items-center justify-between gap-8">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 group flex-shrink-0">
-              <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-slate-900/10 group-hover:scale-105 transition-transform">
-                <Zap size={22} fill="currentColor" className="text-[#0096D6]" />
-              </div>
-              <span className="font-black text-xl tracking-tighter text-slate-900 uppercase">ELECTRO<span className="text-[#0096D6]">STORE</span></span>
+            <Link to="/" className="flex items-center flex-shrink-0 group-hover:opacity-90 transition-opacity">
+              <Logo width={130} />
             </Link>
 
             {/* Desktop Navigation Links */}
@@ -131,7 +129,7 @@ const Header = () => {
                     to={link.path}
                     className={cn(
                       "text-sm font-normal text-slate-500 group-hover:text-primary group-hover:bg-primary/5 transition-all",
-                      isActive ? "text-[#0096D6]" : "text-slate-600"
+                      isActive ? "text-[#0033CC]" : "text-slate-600"
                     )}
                   >
                     {link.name}
@@ -145,11 +143,11 @@ const Header = () => {
               {/* Desktop Search - Aligned to the right */}
               <div className="hidden md:flex w-full max-w-[220px]">
                 <form onSubmit={handleSearch} className="relative w-full group">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#0096D6] transition-colors" size={16} />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#0033CC] transition-colors" size={16} />
                   <Input
                     type="text"
                     placeholder="Search gear..."
-                    className="w-full pl-10 pr-4 h-[40px] bg-slate-50 border-none rounded-full focus-visible:ring-2 focus-visible:ring-[#0096D6]/20 transition-all text-[10px] font-normal text-slate-500 leading-tight"
+                    className="w-full pl-10 pr-4 h-[40px] bg-slate-50 border-none rounded-full focus-visible:ring-2 focus-visible:ring-[#0033CC]/20 transition-all text-[10px] font-normal text-slate-500 leading-tight"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -163,7 +161,7 @@ const Header = () => {
                   <Link to="/account/login" className="hidden md:block">
                     <Button
                       size="sm"
-                      className="bg-[#2563EB] hover:bg-black text-white rounded-full px-5 h-9 text-[11px] font-black uppercase tracking-widest transition-all duration-300"
+                      className="bg-[#0033CC] hover:bg-[#002299] text-white rounded-full px-5 h-9 text-[11px] font-black uppercase tracking-widest transition-all duration-300"
                     >
                       Sign In
                     </Button>
@@ -259,7 +257,7 @@ const Header = () => {
                   <Button variant="ghost" size="icon" className="relative rounded-full hover:bg-slate-50 text-slate-600">
                     <ShoppingCart size={22} />
                     {cartCount > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-[#0096D6] text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                      <span className="absolute -top-1 -right-1 bg-[#0033CC] text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
                         {cartCount}
                       </span>
                     )}
@@ -309,11 +307,8 @@ const Header = () => {
         <div className="lg:hidden fixed inset-0 z-[60] bg-white animate-in slide-in-from-right duration-300">
           <div className="p-6 h-full flex flex-col">
             <div className="flex items-center justify-between mb-8">
-              <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white">
-                  <Zap size={18} fill="currentColor" className="text-[#0096D6]" />
-                </div>
-                <span className="font-black text-lg tracking-tighter uppercase">ELECTROSTORE</span>
+              <Link to="/" onClick={() => setIsMenuOpen(false)}>
+                <Logo width={120} />
               </Link>
               <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(false)}>
                 <X size={24} />
@@ -361,7 +356,7 @@ const Header = () => {
                         className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl font-normal text-sm"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <Icon size={18} className="text-[#0096D6]" /> {cat.name}
+                        <Icon size={18} className="text-[#0033CC]" /> {cat.name}
                       </Link>
                     );
                   })}

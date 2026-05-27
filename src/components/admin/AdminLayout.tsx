@@ -101,11 +101,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       <div className="p-6 border-b border-white/5 flex items-center justify-between h-20">
         <div className="flex items-center gap-3 min-w-max">
           <div className="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center text-white">
-            <Zap size={20} fill="currentColor" className="text-[#0096D6]" />
+            <Zap size={20} fill="currentColor" className="text-[#0033CC]" />
           </div>
           {!isSidebarCollapsed && (
             <h2 className="text-lg font-black text-white tracking-tighter uppercase">
-              ELECTRO<span className="text-[#0096D6]">HUB</span>
+              WIVITEC
             </h2>
           )}
         </div>
@@ -134,7 +134,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative",
                     location.pathname === item.path
-                      ? "bg-[#0096D6] text-white shadow-lg shadow-[#0096D6]/20"
+                      ? "bg-[#0033CC] text-white shadow-lg shadow-[#0033CC]/20"
                       : "hover:bg-white/5 hover:text-white"
                   )}
                 >
@@ -189,9 +189,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       <div className="lg:hidden fixed top-0 left-0 right-0 h-20 bg-slate-900 text-white flex items-center justify-between px-6 z-50">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-            <Zap size={18} fill="currentColor" className="text-[#0096D6]" />
+            <Zap size={18} fill="currentColor" className="text-[#0033CC]" />
           </div>
-          <h2 className="text-lg font-black uppercase tracking-tighter">ELECTROHUB</h2>
+          <h2 className="text-lg font-black uppercase tracking-tighter">WIVITEC</h2>
         </div>
         <Button
           variant="ghost"

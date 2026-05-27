@@ -26,7 +26,7 @@ const WarrantyPage = () => {
             <div className="space-y-4">
               <h2 className="text-3xl font-black">1-Year Standard Warranty</h2>
               <p className="text-primary-foreground/80 text-lg leading-relaxed">
-                All electronics and accessories purchased from ElectroStore come with a standard 1-year manufacturer warranty covering defects in materials and workmanship.
+                All electronics and accessories purchased from WIVITEC come with a standard 1-year manufacturer warranty covering defects in materials and workmanship.
               </p>
             </div>
           </div>

@@ -68,10 +68,10 @@ const MiniOrderCard = ({ order }: { order: Order }) => {
             {STEPS.map((s, i) => (
               <React.Fragment key={s}>
                 <div className={cn("w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black flex-shrink-0 transition-all",
-                  step > i ? "bg-[#0096D6] text-white" : "bg-slate-100 text-slate-400")}>
+                  step > i ? "bg-[#0033CC] text-white" : "bg-slate-100 text-slate-400")}>
                   {step > i ? "✓" : i + 1}
                 </div>
-                {i < STEPS.length - 1 && <div className={cn("flex-1 h-0.5 mx-0.5", step > i + 1 ? "bg-[#0096D6]" : "bg-slate-100")} />}
+                {i < STEPS.length - 1 && <div className={cn("flex-1 h-0.5 mx-0.5", step > i + 1 ? "bg-[#0033CC]" : "bg-slate-100")} />}
               </React.Fragment>
             ))}
           </div>
@@ -331,7 +331,7 @@ const AccountPage = () => {
                     { label: "Contact Support", icon: <User size={16} />, to: "/contact" },
                   ].map(link => (
                     <Link key={link.to} to={link.to} className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors group">
-                      <div className="text-[#0096D6]">{link.icon}</div>
+                      <div className="text-[#0033CC]">{link.icon}</div>
                       <span className="text-xs font-bold text-slate-700 group-hover:text-slate-900 transition-colors">{link.label}</span>
                       <ArrowRight size={12} className="ml-auto text-slate-400 group-hover:text-slate-700" />
                     </Link>

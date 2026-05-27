@@ -26,9 +26,9 @@ const AboutPage = () => {
         <section className="py-24">
           <div className="section-container grid md:grid-cols-2 gap-16 items-center">
             <div className="space-y-6">
-              <h2 className="text-4xl font-black text-slate-900 tracking-tight">The ElectroStore Story</h2>
+              <h2 className="text-4xl font-black text-slate-900 tracking-tight">The WIVITEC Story</h2>
               <p className="text-slate-600 text-lg leading-relaxed">
-                Founded in 2024, ElectroStore started with a simple idea: why is it so hard to find reliable, high-quality tech accessories without paying a fortune?
+                WIVITEC brings you the latest in technology — from smartphones and accessories to smart home devices, all delivered to your door across Morocco.
               </p>
               <p className="text-slate-600 text-lg leading-relaxed">
                 We spent months sourcing the best components and testing hundreds of products to build a collection we're proud of. Today, we serve thousands of tech enthusiasts worldwide.

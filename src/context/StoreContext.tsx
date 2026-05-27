@@ -74,8 +74,8 @@ interface StoreContextType {
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
 const DEFAULT_SETTINGS: StoreSettings = {
-  storeName: "ElectroStore",
-  contactEmail: "support@electrostore.com",
+  storeName: "WIVITEC",
+  contactEmail: "support@wivitec.com",
   currency: "USD",
   taxRate: 0.07,
   freeShippingThreshold: 50,

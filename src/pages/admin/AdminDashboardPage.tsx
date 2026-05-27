@@ -100,7 +100,7 @@ const AdminDashboardPage = () => {
       value: `$${netRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       sub: `AOV $${avgOrderValue.toFixed(2)}`,
       icon: DollarSign,
-      gradient: "from-[#0096D6] to-[#00b4f0]",
+      gradient: "from-[#0033CC] to-[#002299]",
       iconBg: "bg-white/20",
       textColor: "text-white",
       subColor: "text-white/70",
@@ -141,7 +141,7 @@ const AdminDashboardPage = () => {
     },
   ];
 
-  const chartConfig = { revenue: { label: "Revenue", color: "#0096D6" } };
+  const chartConfig = { revenue: { label: "Revenue", color: "#0033CC" } };
 
   return (
     <div className="space-y-8">
@@ -154,7 +154,7 @@ const AdminDashboardPage = () => {
         </div>
         <div className="flex gap-3">
           <Link to="/admin/products">
-            <Button className="rounded-xl gap-2 font-black uppercase tracking-widest text-[10px] h-11 px-5 bg-[#0096D6] hover:bg-[#007ab8]">
+            <Button className="rounded-xl gap-2 font-black uppercase tracking-widest text-[10px] h-11 px-5 bg-[#0033CC] hover:bg-[#002299]">
               <Plus size={14} /> Add Product
             </Button>
           </Link>
@@ -203,15 +203,15 @@ const AdminDashboardPage = () => {
               <AreaChart data={revenueChartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="revGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0096D6" stopOpacity={0.15} />
-                    <stop offset="95%" stopColor="#0096D6" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#0033CC" stopOpacity={0.15} />
+                    <stop offset="95%" stopColor="#0033CC" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
                 <XAxis dataKey="day" tick={{ fontSize: 10, fontWeight: 700, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: "#94a3b8" }} axisLine={false} tickLine={false} tickFormatter={v => `$${v}`} />
                 <ChartTooltip content={<ChartTooltipContent formatter={(v) => [`$${Number(v).toFixed(2)}`, "Revenue"]} />} />
-                <Area type="monotone" dataKey="revenue" stroke="#0096D6" strokeWidth={2.5} fill="url(#revGradient)" dot={{ fill: "#0096D6", strokeWidth: 0, r: 3 }} activeDot={{ r: 5 }} />
+                <Area type="monotone" dataKey="revenue" stroke="#0033CC" strokeWidth={2.5} fill="url(#revGradient)" dot={{ fill: "#0033CC", strokeWidth: 0, r: 3 }} activeDot={{ r: 5 }} />
               </AreaChart>
             </ChartContainer>
           </CardContent>
@@ -224,7 +224,7 @@ const AdminDashboardPage = () => {
           </CardHeader>
           <CardContent className="p-4 space-y-2">
             {[
-              { label: "Add New Product", icon: Package, path: "/admin/products", color: "text-[#0096D6] bg-[#0096D6]/10" },
+              { label: "Add New Product", icon: Package, path: "/admin/products", color: "text-[#0033CC] bg-[#0033CC]/10" },
               { label: "Manage Orders", icon: ShoppingBag, path: "/admin/orders", color: "text-violet-600 bg-violet-50" },
               { label: "Create Discount", icon: Zap, path: "/admin/discounts", color: "text-amber-600 bg-amber-50" },
               { label: "View Customers", icon: Users, path: "/admin/customers", color: "text-emerald-600 bg-emerald-50" },
@@ -255,12 +255,12 @@ const AdminDashboardPage = () => {
         <Card className="lg:col-span-8 border border-slate-100 shadow-sm rounded-2xl bg-white">
           <CardHeader className="p-6 border-b border-slate-50 flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-900 flex items-center gap-2.5">
-              <div className="p-1.5 bg-[#0096D6]/10 text-[#0096D6] rounded-lg">
+              <div className="p-1.5 bg-[#0033CC]/10 text-[#0033CC] rounded-lg">
                 <ShoppingBag size={16} />
               </div>
               Recent Orders
             </CardTitle>
-            <Link to="/admin/orders" className="text-[10px] font-black uppercase tracking-widest text-[#0096D6] hover:underline flex items-center gap-1">
+            <Link to="/admin/orders" className="text-[10px] font-black uppercase tracking-widest text-[#0033CC] hover:underline flex items-center gap-1">
               View All <ArrowRight size={11} />
             </Link>
           </CardHeader>
@@ -344,7 +344,7 @@ const AdminDashboardPage = () => {
               </div>
               Inventory Alerts
             </CardTitle>
-            <Link to="/admin/inventory" className="text-[10px] font-black uppercase tracking-widest text-[#0096D6] hover:underline flex items-center gap-1">
+            <Link to="/admin/inventory" className="text-[10px] font-black uppercase tracking-widest text-[#0033CC] hover:underline flex items-center gap-1">
               Manage <ArrowRight size={11} />
             </Link>
           </CardHeader>
@@ -384,7 +384,7 @@ const AdminDashboardPage = () => {
               </div>
               Top Products
             </CardTitle>
-            <Link to="/admin/products" className="text-[10px] font-black uppercase tracking-widest text-[#0096D6] hover:underline flex items-center gap-1">
+            <Link to="/admin/products" className="text-[10px] font-black uppercase tracking-widest text-[#0033CC] hover:underline flex items-center gap-1">
               All Products <ArrowRight size={11} />
             </Link>
           </CardHeader>

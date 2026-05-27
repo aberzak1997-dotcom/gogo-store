@@ -13,8 +13,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    /* Updated primary color to #0C0587 */
-    --primary: 244 93% 27%;
+    /* WIVITEC Blue #0033CC */
+    --primary: 225 100% 40%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -31,7 +31,7 @@
 
     --border: 217 19% 27%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 244 93% 27%;
+    --ring: 225 100% 40%;
 
     --radius: 0.75rem;
   }
