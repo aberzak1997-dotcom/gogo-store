@@ -162,13 +162,13 @@ const CheckoutPage = () => {
       <div className="min-h-screen flex flex-col bg-slate-50">
         <Header />
         <main className="flex-grow flex items-center justify-center py-24 px-4">
-          <div className="max-w-md w-full text-center bg-white rounded-3xl p-16 shadow-sm border border-slate-100">
-            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-8">
-              <AlertTriangle className="h-10 w-10 text-slate-300" />
+          <div className="max-w-md w-full text-center bg-white p-16" style={{ borderRadius: 12, border: "1px solid #F0F2F8", boxShadow: "0 2px 12px rgba(21,40,161,0.05)" }}>
+            <div className="w-20 h-20 rounded-[12px] flex items-center justify-center mx-auto mb-8" style={{ background: "#F0F2F8" }}>
+              <AlertTriangle className="h-10 w-10" style={{ color: "#0C0D10", opacity: 0.2 }} />
             </div>
-            <h2 className="text-2xl font-black mb-3 text-slate-900 uppercase tracking-tight">Cart is Empty</h2>
-            <p className="text-slate-500 mb-8 font-medium text-sm">Add products to your cart before checking out.</p>
-            <Button className="rounded-full h-12 px-8 font-black uppercase tracking-widest text-xs" onClick={() => navigate("/")}>
+            <h2 className="text-[22px] font-bold mb-3 text-[#0C0D10]">Cart is Empty</h2>
+            <p className="mb-8 text-[14px]" style={{ color: "#0C0D10", opacity: 0.5 }}>Add products to your cart before checking out.</p>
+            <Button className="rounded-[8px] h-11 px-8 text-[14px] font-semibold bg-[#1160CB] hover:bg-[#479BF7] text-white" onClick={() => navigate("/")}>
               Browse Products
             </Button>
           </div>
@@ -219,50 +219,50 @@ const CheckoutPage = () => {
   if (orderId) {
     const methodLabel = paidVia === "paypal" ? "PayPal" : paidVia === "cod" ? "Cash on Delivery" : "Credit / Debit Card";
     return (
-      <div className="min-h-screen flex flex-col bg-slate-50">
+      <div className="min-h-screen flex flex-col bg-[#F0F2F8]">
         <Header />
         <main className="flex-grow flex items-center justify-center py-16 px-4">
-          <div className="max-w-lg w-full bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
-            <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-14 text-center">
-              <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6 ring-4 ring-emerald-500/30">
-                <CheckCircle className="h-9 w-9 text-emerald-400" />
+          <div className="max-w-lg w-full bg-white overflow-hidden" style={{ borderRadius: 12, border: "1px solid #F0F2F8", boxShadow: "0 4px 24px rgba(21,40,161,0.08)" }}>
+            <div className="p-14 text-center" style={{ background: "#0E121A" }}>
+              <div className="w-16 h-16 flex items-center justify-center mx-auto mb-6" style={{ background: "rgba(5,177,105,0.15)", borderRadius: "50%" }}>
+                <CheckCircle className="h-9 w-9" style={{ color: "#05b169" }} />
               </div>
-              <h2 className="text-3xl font-black text-white mb-2 uppercase tracking-tight">Order Confirmed!</h2>
-              <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Thank you for your purchase</p>
+              <h2 className="text-[28px] font-bold text-white mb-2 tracking-tight">Order Confirmed!</h2>
+              <p className="text-caption" style={{ color: "#479BF7" }}>Thank you for your purchase</p>
             </div>
-            <div className="p-10 space-y-6">
-              <div className="grid grid-cols-2 gap-6">
-                <div className="bg-slate-50 rounded-2xl p-5">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Order #</p>
-                  <p className="font-black text-slate-900 text-sm">{orderId}</p>
+            <div className="p-10 space-y-5">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-5 rounded-[10px]" style={{ background: "#F0F2F8" }}>
+                  <p className="text-caption text-[#1160CB] mb-1.5">Order #</p>
+                  <p className="font-semibold text-[#0C0D10] text-[14px]">{orderId}</p>
                 </div>
-                <div className="bg-slate-50 rounded-2xl p-5">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Total</p>
-                  <p className="font-black text-slate-900 text-sm">{currency} {total.toFixed(2)}</p>
+                <div className="p-5 rounded-[10px]" style={{ background: "#F0F2F8" }}>
+                  <p className="text-caption text-[#1160CB] mb-1.5">Total</p>
+                  <p className="font-semibold text-[#0C0D10] text-[14px]">{currency} {total.toFixed(2)}</p>
                 </div>
               </div>
-              <div className="bg-slate-50 rounded-2xl p-5 flex items-center gap-4">
-                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary flex-shrink-0">
-                  <Truck size={20} />
+              <div className="p-5 rounded-[10px] flex items-center gap-4" style={{ background: "#F0F2F8" }}>
+                <div className="w-10 h-10 bg-white rounded-[8px] flex items-center justify-center flex-shrink-0" style={{ border: "1px solid #F0F2F8" }}>
+                  <Truck size={18} style={{ color: "#1160CB" }} />
                 </div>
                 <div>
-                  <p className="font-black text-slate-900 text-xs uppercase tracking-wider">Estimated Delivery</p>
-                  <p className="text-slate-500 text-sm font-medium mt-0.5">3–5 Business Days</p>
+                  <p className="text-caption text-[#1160CB]">Estimated Delivery</p>
+                  <p className="text-[14px] text-[#0C0D10]/70 font-medium mt-0.5">3–5 Business Days</p>
                 </div>
               </div>
-              <div className="bg-slate-50 rounded-2xl p-5 flex items-center gap-4">
-                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary flex-shrink-0">
-                  <CreditCard size={20} />
+              <div className="p-5 rounded-[10px] flex items-center gap-4" style={{ background: "#F0F2F8" }}>
+                <div className="w-10 h-10 bg-white rounded-[8px] flex items-center justify-center flex-shrink-0" style={{ border: "1px solid #F0F2F8" }}>
+                  <CreditCard size={18} style={{ color: "#1160CB" }} />
                 </div>
                 <div>
-                  <p className="font-black text-slate-900 text-xs uppercase tracking-wider">Payment</p>
-                  <p className="text-slate-500 text-sm font-medium mt-0.5">{methodLabel}</p>
+                  <p className="text-caption text-[#1160CB]">Payment</p>
+                  <p className="text-[14px] text-[#0C0D10]/70 font-medium mt-0.5">{methodLabel}</p>
                 </div>
               </div>
-              <p className="text-center text-xs text-slate-400 font-medium">
-                Confirmation sent to <span className="font-black text-slate-700">{email}</span>
+              <p className="text-center text-[13px] text-[#0C0D10]/40">
+                Confirmation sent to <span className="font-semibold text-[#0C0D10]/70">{email}</span>
               </p>
-              <Button className="w-full h-13 rounded-2xl font-black uppercase tracking-widest text-xs h-12" onClick={() => navigate("/")}>
+              <Button className="w-full h-12 rounded-[8px] font-semibold text-[14px] bg-[#1160CB] hover:bg-[#479BF7] text-white" onClick={() => navigate("/")}>
                 Continue Shopping
               </Button>
             </div>
@@ -275,21 +275,21 @@ const CheckoutPage = () => {
 
   // ── Main checkout ───────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-[#F0F2F8]">
       <Header />
       <main className="flex-grow py-10 px-4">
         <div className="max-w-6xl mx-auto">
 
           {/* Page header */}
           <div className="flex items-center justify-between mb-8">
-            <Link to="/" className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-700 transition-colors group">
+            <Link to="/" className="inline-flex items-center gap-2 text-caption text-[#0C0D10]/40 hover:text-[#1160CB] transition-colors group">
               <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" /> Back
             </Link>
             <div className="text-center">
-              <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Checkout</h1>
-              <p className="text-[11px] text-slate-400 font-medium mt-0.5">{enrichedCart.length} item{enrichedCart.length !== 1 ? "s" : ""} in your cart</p>
+              <h1 className="text-[24px] font-bold text-[#0C0D10] tracking-tight">Checkout</h1>
+              <p className="text-caption text-[#0C0D10]/40 mt-0.5">{enrichedCart.length} item{enrichedCart.length !== 1 ? "s" : ""} in your cart</p>
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-full">
+            <div className="flex items-center gap-1.5 text-caption px-3 py-1.5 rounded-[6px]" style={{ background: "rgba(5,177,105,0.1)", color: "#05b169" }}>
               <ShieldCheck size={12} /> Secure
             </div>
           </div>
@@ -300,63 +300,69 @@ const CheckoutPage = () => {
             <div className="lg:col-span-7 space-y-5">
 
               {/* Shipping */}
-              <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-                <div className="px-8 py-6 border-b border-slate-100 flex items-center gap-3">
-                  <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                    <Truck size={17} />
+              <div className="bg-white overflow-hidden" style={{ borderRadius: 12, border: "1px solid #F0F2F8", boxShadow: "0 2px 12px rgba(21,40,161,0.05)" }}>
+                <div className="px-8 py-5 flex items-center gap-3" style={{ borderBottom: "1px solid #F0F2F8" }}>
+                  <div className="w-9 h-9 rounded-[8px] flex items-center justify-center" style={{ background: "rgba(17,96,203,0.08)" }}>
+                    <Truck size={17} style={{ color: "#1160CB" }} />
                   </div>
                   <div>
-                    <h2 className="text-sm font-black uppercase tracking-widest text-slate-900">Shipping Info</h2>
-                    <p className="text-[10px] text-slate-400 font-medium">Where should we deliver?</p>
+                    <p className="text-caption text-[#1160CB]">Shipping Info</p>
+                    <p className="text-[12px] text-[#0C0D10]/40 mt-0.5">Where should we deliver?</p>
                   </div>
                 </div>
                 <form id="checkout-form" onSubmit={handlePlaceOrder} className="p-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="md:col-span-2 space-y-2">
-                      <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Full Name *</Label>
+                    <div className="md:col-span-2 space-y-1.5">
+                      <Label className="text-caption text-[#1160CB]">Full Name *</Label>
                       <Input
-                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus-visible:ring-primary/30 transition-colors font-medium"
+                        className="h-11 rounded-[8px] text-[14px] font-medium focus-visible:ring-[#1160CB]/30 transition-colors"
+                        style={{ border: "1.5px solid #F0F2F8" }}
                         value={fullName} onChange={e => setFullName(e.target.value)}
                         placeholder="John Doe" required
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Email *</Label>
+                    <div className="space-y-1.5">
+                      <Label className="text-caption text-[#1160CB]">Email *</Label>
                       <Input
                         type="email"
-                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus-visible:ring-primary/30 transition-colors font-medium"
+                        className="h-11 rounded-[8px] text-[14px] font-medium focus-visible:ring-[#1160CB]/30 transition-colors"
+                        style={{ border: "1.5px solid #F0F2F8" }}
                         value={email} onChange={e => setEmail(e.target.value)}
                         placeholder="john@example.com" required
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Phone *</Label>
+                    <div className="space-y-1.5">
+                      <Label className="text-caption text-[#1160CB]">Phone *</Label>
                       <Input
-                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus-visible:ring-primary/30 transition-colors font-medium"
+                        className="h-11 rounded-[8px] text-[14px] font-medium focus-visible:ring-[#1160CB]/30 transition-colors"
+                        style={{ border: "1.5px solid #F0F2F8" }}
                         value={phone} onChange={e => setPhone(e.target.value)}
                         placeholder="+1 (555) 000-0000" required
                       />
                     </div>
-                    <div className="md:col-span-2 space-y-2">
-                      <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Street Address *</Label>
+                    <div className="md:col-span-2 space-y-1.5">
+                      <Label className="text-caption text-[#1160CB]">Street Address *</Label>
                       <Input
-                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus-visible:ring-primary/30 transition-colors font-medium"
+                        className="h-11 rounded-[8px] text-[14px] font-medium focus-visible:ring-[#1160CB]/30 transition-colors"
+                        style={{ border: "1.5px solid #F0F2F8" }}
                         value={address} onChange={e => setAddress(e.target.value)}
                         placeholder="123 Tech Lane, Apt 4B" required
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">City *</Label>
+                    <div className="space-y-1.5">
+                      <Label className="text-caption text-[#1160CB]">City *</Label>
                       <Input
-                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus-visible:ring-primary/30 transition-colors font-medium"
+                        className="h-11 rounded-[8px] text-[14px] font-medium focus-visible:ring-[#1160CB]/30 transition-colors"
+                        style={{ border: "1.5px solid #F0F2F8" }}
                         value={city} onChange={e => setCity(e.target.value)}
                         placeholder="San Francisco" required
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Country *</Label>
+                    <div className="space-y-1.5">
+                      <Label className="text-caption text-[#1160CB]">Country *</Label>
                       <Input
-                        className="h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus-visible:ring-primary/30 transition-colors font-medium"
+                        className="h-11 rounded-[8px] text-[14px] font-medium focus-visible:ring-[#1160CB]/30 transition-colors"
+                        style={{ border: "1.5px solid #F0F2F8" }}
                         value={country} onChange={e => setCountry(e.target.value)}
                         placeholder="United States" required
                       />
@@ -366,14 +372,14 @@ const CheckoutPage = () => {
               </div>
 
               {/* Payment */}
-              <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-                <div className="px-8 py-6 border-b border-slate-100 flex items-center gap-3">
-                  <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                    <CreditCard size={17} />
+              <div className="bg-white overflow-hidden" style={{ borderRadius: 12, border: "1px solid #F0F2F8", boxShadow: "0 2px 12px rgba(21,40,161,0.05)" }}>
+                <div className="px-8 py-5 flex items-center gap-3" style={{ borderBottom: "1px solid #F0F2F8" }}>
+                  <div className="w-9 h-9 rounded-[8px] flex items-center justify-center" style={{ background: "rgba(17,96,203,0.08)" }}>
+                    <CreditCard size={17} style={{ color: "#1160CB" }} />
                   </div>
                   <div>
-                    <h2 className="text-sm font-black uppercase tracking-widest text-slate-900">Payment Method</h2>
-                    <p className="text-[10px] text-slate-400 font-medium">Choose how you'd like to pay</p>
+                    <p className="text-caption text-[#1160CB]">Payment Method</p>
+                    <p className="text-[12px] text-[#0C0D10]/40 mt-0.5">Choose how you'd like to pay</p>
                   </div>
                 </div>
 
@@ -387,30 +393,28 @@ const CheckoutPage = () => {
                         key={option.id}
                         type="button"
                         onClick={() => setPaymentMethod(option.id)}
-                        className={cn(
-                          "w-full flex items-center gap-4 px-5 py-4 rounded-2xl border-2 transition-all duration-200 text-left group",
-                          selected
-                            ? "border-primary bg-primary/[0.03] shadow-sm"
-                            : "border-slate-100 hover:border-slate-100 hover:bg-slate-50/80"
-                        )}
+                        className="w-full flex items-center gap-4 px-5 py-4 text-left group transition-all duration-150"
+                        style={{
+                          borderRadius: 10,
+                          border: selected ? "1.5px solid #1160CB" : "1.5px solid #F0F2F8",
+                          background: selected ? "rgba(17,96,203,0.03)" : "white",
+                        }}
                       >
                         {/* Radio dot — LEFT */}
-                        <div className={cn(
-                          "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200",
-                          selected ? "border-primary bg-primary" : "border-slate-300 group-hover:border-slate-400"
-                        )}>
+                        <div
+                          className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-150"
+                          style={{
+                            border: selected ? "2px solid #1160CB" : "2px solid #D0D4E0",
+                            background: selected ? "#1160CB" : "white",
+                          }}
+                        >
                           {selected && <div className="w-2 h-2 bg-white rounded-full" />}
                         </div>
 
                         {/* Label — MIDDLE */}
                         <div className="flex-1 min-w-0">
-                          <p className={cn(
-                            "font-black text-sm transition-colors",
-                            selected ? "text-slate-900" : "text-slate-700"
-                          )}>
-                            {option.name}
-                          </p>
-                          <p className="text-[11px] text-slate-400 font-medium mt-0.5 truncate">{option.desc}</p>
+                          <p className="text-[14px] font-semibold text-[#0C0D10]">{option.name}</p>
+                          <p className="text-[12px] text-[#0C0D10]/40 mt-0.5 truncate">{option.desc}</p>
                         </div>
 
                         {/* Brand logos — RIGHT */}
@@ -550,21 +554,21 @@ const CheckoutPage = () => {
             {/* ── Right column: Order Summary ──────────────────────────── */}
             <div className="lg:col-span-5">
               <div className="sticky top-24 space-y-4">
-                <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                <div className="bg-white overflow-hidden" style={{ borderRadius: 12, border: "1px solid #F0F2F8", boxShadow: "0 2px 12px rgba(21,40,161,0.05)" }}>
                   {/* Header */}
-                  <div className="px-7 pt-7 pb-5 border-b border-slate-50">
-                    <h2 className="text-sm font-black uppercase tracking-widest text-slate-900 mb-5">Order Summary</h2>
+                  <div className="px-7 pt-6 pb-5" style={{ borderBottom: "1px solid #F0F2F8" }}>
+                    <p className="text-caption text-[#1160CB] mb-5">Order Summary</p>
                     <div className="space-y-1">
                       {enrichedCart.map((item, i) => (
-                        <div key={i} className="flex items-center gap-3 py-3">
-                          <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-100 p-1 flex-shrink-0">
+                        <div key={i} className="flex items-center gap-3 py-3" style={{ borderBottom: "1px solid #F0F2F8" }}>
+                          <div className="w-11 h-11 rounded-[8px] p-1 flex-shrink-0" style={{ background: "#F0F2F8", border: "1px solid #F0F2F8" }}>
                             <img src={item.product.imageUrl} alt="" className="w-full h-full object-contain" />
                           </div>
                           <div className="flex-grow min-w-0">
-                            <p className="font-bold text-slate-800 text-xs line-clamp-1 uppercase tracking-tight">{item.product.title}</p>
-                            <p className="text-[10px] text-slate-400 font-black mt-0.5">Qty {item.quantity}</p>
+                            <p className="font-medium text-[#0C0D10] text-[13px] line-clamp-1">{item.product.title}</p>
+                            <p className="text-caption text-[#0C0D10]/30 mt-0.5">Qty {item.quantity}</p>
                           </div>
-                          <p className="font-black text-slate-900 text-sm flex-shrink-0">
+                          <p className="font-semibold text-[#1528A1] text-[14px] flex-shrink-0">
                             ${(item.product.price * item.quantity).toFixed(2)}
                           </p>
                         </div>
@@ -573,31 +577,32 @@ const CheckoutPage = () => {
                   </div>
 
                   {/* Discount Code */}
-                  <div className="px-7 py-5 border-b border-slate-50">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Discount Code</p>
+                  <div className="px-7 py-5" style={{ borderBottom: "1px solid #F0F2F8" }}>
+                    <p className="text-caption text-[#1160CB] mb-3">Discount Code</p>
                     {appliedDiscount ? (
-                      <div className="flex items-center justify-between bg-emerald-50 border border-emerald-100 rounded-2xl px-4 py-3">
+                      <div className="flex items-center justify-between px-4 py-3 rounded-[8px]" style={{ background: "rgba(5,177,105,0.08)", border: "1px solid rgba(5,177,105,0.2)" }}>
                         <div>
-                          <span className="text-xs font-black text-emerald-700 uppercase tracking-widest">{appliedDiscount.code}</span>
-                          <p className="text-[10px] text-emerald-600 font-medium mt-0.5">− {currency} {appliedDiscount.amount.toFixed(2)} saved</p>
+                          <span className="text-caption" style={{ color: "#05b169" }}>{appliedDiscount.code}</span>
+                          <p className="text-[12px] font-medium mt-0.5" style={{ color: "#05b169" }}>− {currency} {appliedDiscount.amount.toFixed(2)} saved</p>
                         </div>
-                        <button onClick={() => { setAppliedDiscount(null); setDiscountCode(""); }} className="text-[10px] font-black text-rose-500 hover:text-rose-700 uppercase tracking-widest">Remove</button>
+                        <button onClick={() => { setAppliedDiscount(null); setDiscountCode(""); }} className="text-caption" style={{ color: "#cf202f" }}>Remove</button>
                       </div>
                     ) : (
                       <div className="space-y-2">
                         <div className="flex gap-2">
                           <Input
                             placeholder="Enter code (e.g. SAVE10)"
-                            className="h-10 rounded-xl border-slate-200 bg-slate-50 text-xs font-bold uppercase"
+                            className="h-10 rounded-[8px] text-[13px] font-medium uppercase focus-visible:ring-[#1160CB]/30"
+                            style={{ border: "1.5px solid #F0F2F8" }}
                             value={discountCode}
                             onChange={e => { setDiscountCode(e.target.value.toUpperCase()); setDiscountError(""); }}
                             onKeyDown={e => e.key === "Enter" && handleApplyDiscount()}
                           />
-                          <Button type="button" variant="outline" className="h-10 px-4 rounded-xl font-black text-xs uppercase tracking-widest flex-shrink-0" onClick={handleApplyDiscount}>
+                          <Button type="button" className="h-10 px-4 rounded-[8px] text-[13px] font-semibold flex-shrink-0 bg-[#1160CB] hover:bg-[#479BF7] text-white" onClick={handleApplyDiscount}>
                             Apply
                           </Button>
                         </div>
-                        {discountError && <p className="text-[10px] text-rose-500 font-bold">{discountError}</p>}
+                        {discountError && <p className="text-[12px] mt-1" style={{ color: "#cf202f" }}>{discountError}</p>}
                       </div>
                     )}
                   </div>
@@ -605,33 +610,33 @@ const CheckoutPage = () => {
                   {/* Totals */}
                   <div className="px-7 py-6 space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-xs font-black uppercase tracking-widest text-slate-400">Subtotal</span>
-                      <span className="font-black text-slate-700 text-sm">{currency} {subtotal.toFixed(2)}</span>
+                      <span className="text-caption text-[#0C0D10]/40">Subtotal</span>
+                      <span className="font-medium text-[#0C0D10] text-[14px]">{currency} {subtotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xs font-black uppercase tracking-widest text-slate-400">Shipping</span>
-                      <span className={cn("font-black text-sm", shipping === 0 ? "text-emerald-600" : "text-slate-700")}>
+                      <span className="text-caption text-[#0C0D10]/40">Shipping</span>
+                      <span className="font-medium text-[14px]" style={{ color: shipping === 0 ? "#05b169" : "#0C0D10" }}>
                         {shipping === 0 ? "FREE" : `${currency} ${shipping.toFixed(2)}`}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xs font-black uppercase tracking-widest text-slate-400">
+                      <span className="text-caption text-[#0C0D10]/40">
                         Tax ({Math.round((settings.taxRate || 0.07) * 100)}%)
                       </span>
-                      <span className="font-black text-slate-700 text-sm">{currency} {tax.toFixed(2)}</span>
+                      <span className="font-medium text-[#0C0D10] text-[14px]">{currency} {tax.toFixed(2)}</span>
                     </div>
                     {appliedDiscount && (
                       <div className="flex justify-between items-center">
-                        <span className="text-xs font-black uppercase tracking-widest text-emerald-600">Discount</span>
-                        <span className="font-black text-emerald-600 text-sm">− {currency} {discountAmount.toFixed(2)}</span>
+                        <span className="text-caption" style={{ color: "#05b169" }}>Discount</span>
+                        <span className="font-medium text-[14px]" style={{ color: "#05b169" }}>− {currency} {discountAmount.toFixed(2)}</span>
                       </div>
                     )}
 
-                    <div className="h-px bg-slate-100 my-2" />
+                    <div className="h-px my-2" style={{ background: "#F0F2F8" }} />
 
                     <div className="flex justify-between items-center pt-1">
-                      <span className="text-base font-black uppercase tracking-tight text-slate-900">Total</span>
-                      <span className="text-2xl font-black text-slate-900 tracking-tighter">
+                      <span className="text-[16px] font-semibold text-[#0C0D10]">Total</span>
+                      <span className="text-[24px] font-bold text-[#1528A1]">
                         {currency} {total.toFixed(2)}
                       </span>
                     </div>
@@ -641,7 +646,7 @@ const CheckoutPage = () => {
                       <Button
                         form="checkout-form"
                         type="submit"
-                        className="w-full h-13 rounded-2xl font-black uppercase tracking-widest text-xs gap-2 mt-3 h-12"
+                        className="w-full h-12 rounded-[8px] font-semibold text-[15px] gap-2 mt-3 bg-[#1160CB] hover:bg-[#479BF7] text-white"
                         disabled={isPlacing}
                       >
                         {isPlacing
@@ -652,7 +657,7 @@ const CheckoutPage = () => {
                     )}
 
                     {paymentMethod === "paypal" && !isFormValid && (
-                      <div className="mt-3 text-center text-[11px] text-slate-400 font-medium bg-slate-50 rounded-2xl p-3">
+                      <div className="mt-3 text-center text-caption text-[#0C0D10]/30 p-3 rounded-[8px]" style={{ background: "#F0F2F8" }}>
                         Fill in shipping info to unlock PayPal
                       </div>
                     )}
@@ -662,13 +667,13 @@ const CheckoutPage = () => {
                 {/* Trust row */}
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { icon: <ShieldCheck size={18} />, label: "Secure", color: "text-emerald-500" },
-                    { icon: <Lock size={18} />, label: "Encrypted", color: "text-blue-500" },
-                    { icon: <RotateCcw size={18} />, label: "Returns", color: "text-violet-500" },
+                    { icon: <ShieldCheck size={18} />, label: "Secure", color: "#05b169" },
+                    { icon: <Lock size={18} />, label: "Encrypted", color: "#1160CB" },
+                    { icon: <RotateCcw size={18} />, label: "Returns", color: "#479BF7" },
                   ].map(({ icon, label, color }) => (
-                    <div key={label} className="bg-white rounded-2xl border border-slate-100 py-4 flex flex-col items-center gap-1.5 shadow-sm">
-                      <div className={color}>{icon}</div>
-                      <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">{label}</span>
+                    <div key={label} className="bg-white py-4 flex flex-col items-center gap-1.5" style={{ borderRadius: 10, border: "1px solid #F0F2F8" }}>
+                      <div style={{ color }}>{icon}</div>
+                      <span className="text-caption text-[#0C0D10]/30">{label}</span>
                     </div>
                   ))}
                 </div>

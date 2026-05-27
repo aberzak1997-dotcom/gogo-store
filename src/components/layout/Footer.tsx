@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Mail, Instagram, Twitter, Facebook, Youtube, Send } from "lucide-react";
-import Logo from "@/components/Logo";
+import { Mail, Instagram, Twitter, Facebook, Youtube, Send, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Logo from "@/components/Logo";
 import { showSuccess, showError } from "../../utils/toast";
 
 const Footer = () => {
@@ -19,103 +19,178 @@ const Footer = () => {
     } else {
       existing.push(email);
       localStorage.setItem("newsletter_subscribers", JSON.stringify(existing));
-      showSuccess("Thank you for subscribing! 🎉");
+      showSuccess("Subscribed! Welcome to WIVITEC.");
     }
     setEmail("");
   };
 
+  const shopLinks = [
+    { label: "All Products", path: "/products" },
+    { label: "New Arrivals", path: "/new-arrivals" },
+    { label: "Best Sellers", path: "/best-sellers" },
+    { label: "Deals", path: "/deals" },
+  ];
+
+  const supportLinks = [
+    { label: "Contact Us", path: "/contact" },
+    { label: "Track My Order", path: "/track-order" },
+    { label: "Shipping & Delivery", path: "/shipping" },
+    { label: "Returns & Refunds", path: "/returns" },
+    { label: "Warranty Policy", path: "/warranty" },
+    { label: "FAQ", path: "/faq" },
+  ];
+
+  const companyLinks = [
+    { label: "About Us", path: "/about" },
+    { label: "Careers", path: "/careers" },
+    { label: "Privacy Policy", path: "/privacy-policy" },
+    { label: "Terms of Service", path: "/terms" },
+  ];
+
   return (
-    <footer className="bg-white border-t border-slate-100 pt-24 pb-12">
-      <div className="section-container">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
-          {/* Brand & Newsletter */}
-          <div className="lg:col-span-2 space-y-8">
-            <Link to="/">
-              <Logo width={140} />
+    <>
+      {/* ── Pre-footer CTA Band ── */}
+      <section className="bg-[#1528A1] py-16">
+        <div className="section-container flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="text-center md:text-left">
+            <h2 className="text-h2 text-white mb-2">Ready to upgrade your setup?</h2>
+            <p className="text-[15px] text-white/70 max-w-md">
+              Morocco's premier destination for premium electronics. Fast delivery, 1-year warranty.
+            </p>
+          </div>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <Link to="/products">
+              <Button className="bg-white text-[#1528A1] hover:bg-[#F0F2F8] rounded-[8px] px-7 h-12 text-[15px] font-semibold transition-all">
+                Shop Now <ArrowRight size={16} className="ml-2" />
+              </Button>
             </Link>
-            <div className="space-y-4 max-w-sm">
-              <h4 className="font-black text-sm uppercase tracking-widest text-slate-900">Stay in the loop</h4>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Subscribe to receive exclusive offers, tech news, and early access to new arrivals.
-              </p>
-              <form onSubmit={handleSubscribe} className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="flex-grow h-12 rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none focus:border-primary transition-colors"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-                <Button type="submit" className="h-12 w-12 rounded-xl p-0">
-                  <Send size={18} />
-                </Button>
-              </form>
-            </div>
-            <div className="flex items-center gap-4">
-              {[
-                { Icon: Instagram, href: "https://instagram.com" },
-                { Icon: Twitter, href: "https://twitter.com" },
-                { Icon: Facebook, href: "https://facebook.com" },
-                { Icon: Youtube, href: "https://youtube.com" },
-              ].map(({ Icon, href }, i) => (
-                <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-primary hover:text-white transition-all">
-                  <Icon size={18} />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Links Columns */}
-          <div>
-            <h4 className="font-black text-xs uppercase tracking-[0.2em] text-slate-900 mb-8">Shop</h4>
-            <ul className="space-y-4 text-sm font-bold text-slate-500">
-              <li><Link to="/products" className="hover:text-primary transition-colors">All Products</Link></li>
-              <li><Link to="/new-arrivals" className="hover:text-primary transition-colors">New Arrivals</Link></li>
-              <li><Link to="/best-sellers" className="hover:text-primary transition-colors">Best Sellers</Link></li>
-              <li><Link to="/deals" className="hover:text-primary transition-colors">Deals</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-black text-xs uppercase tracking-[0.2em] text-slate-900 mb-8">Support</h4>
-            <ul className="space-y-4 text-sm font-bold text-slate-500">
-              <li><Link to="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
-              <li><Link to="/track-order" className="hover:text-primary transition-colors">Track My Order</Link></li>
-              <li><Link to="/shipping" className="hover:text-primary transition-colors">Shipping & Delivery</Link></li>
-              <li><Link to="/returns" className="hover:text-primary transition-colors">Returns & Refunds</Link></li>
-              <li><Link to="/warranty" className="hover:text-primary transition-colors">Warranty Policy</Link></li>
-              <li><Link to="/faq" className="hover:text-primary transition-colors">FAQ</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-black text-xs uppercase tracking-[0.2em] text-slate-900 mb-8">Company</h4>
-            <ul className="space-y-4 text-sm font-bold text-slate-500">
-              <li><Link to="/about" className="hover:text-primary transition-colors">About Us</Link></li>
-              <li><Link to="/careers" className="hover:text-primary transition-colors">Careers</Link></li>
-              <li><Link to="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
-              <li className="pt-4 border-t border-slate-50">
-                <Link to="/admin/login" className="text-xs font-black text-slate-400 hover:text-primary transition-colors">ADMIN LOGIN</Link>
-              </li>
-            </ul>
+            <Link to="/about">
+              <Button variant="ghost" className="border border-white/30 text-white hover:bg-white/10 rounded-[8px] px-7 h-12 text-[15px] font-semibold">
+                Learn More
+              </Button>
+            </Link>
           </div>
         </div>
+      </section>
 
-        <div className="pt-12 border-t border-slate-50 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex flex-wrap justify-center gap-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
-            <span>© 2025 WIVITEC. All rights reserved.</span>
-            <Link to="/privacy-policy" className="hover:text-slate-900">Privacy</Link>
-            <Link to="/terms" className="hover:text-slate-900">Terms</Link>
-            <Link to="/faq" className="hover:text-slate-900">Cookies</Link>
+      {/* ── Main Footer ── */}
+      <footer className="bg-[#0C0D10] border-t border-white/[0.06] pt-20 pb-10">
+        <div className="section-container">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
+
+            {/* Brand & newsletter */}
+            <div className="lg:col-span-2 space-y-8">
+              <Logo width={130} variant="dark" />
+
+              <div className="space-y-4 max-w-sm">
+                <p className="text-caption text-white/30">Stay in the loop</p>
+                <p className="text-[15px] text-white/50 leading-relaxed">
+                  Exclusive offers, tech news, and early access to new arrivals.
+                </p>
+                <form onSubmit={handleSubscribe} className="flex gap-2">
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    className="flex-grow h-11 rounded-[8px] border border-white/10 bg-white/[0.04] px-4 text-[14px] text-white placeholder:text-white/30 outline-none focus:border-[#1160CB] transition-colors"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                  <Button
+                    type="submit"
+                    className="h-11 w-11 rounded-[8px] p-0 bg-[#1160CB] hover:bg-[#479BF7] transition-colors flex-shrink-0"
+                  >
+                    <Send size={16} />
+                  </Button>
+                </form>
+              </div>
+
+              <div className="flex items-center gap-3">
+                {[
+                  { Icon: Instagram, href: "https://instagram.com/wivitec" },
+                  { Icon: Twitter, href: "https://twitter.com/wivitec" },
+                  { Icon: Facebook, href: "https://facebook.com/wivitec" },
+                  { Icon: Youtube, href: "https://youtube.com/@wivitec" },
+                ].map(({ Icon, href }, i) => (
+                  <a
+                    key={i}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-[8px] bg-white/[0.06] border border-white/[0.06] flex items-center justify-center text-white/40 hover:text-[#479BF7] hover:border-[#479BF7]/30 transition-all"
+                  >
+                    <Icon size={16} />
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Shop */}
+            <div>
+              <h4 className="text-caption text-white mb-6">Shop</h4>
+              <ul className="space-y-3">
+                {shopLinks.map((l) => (
+                  <li key={l.path}>
+                    <Link to={l.path} className="text-[14px] text-white/50 hover:text-[#479BF7] transition-colors">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div>
+              <h4 className="text-caption text-white mb-6">Support</h4>
+              <ul className="space-y-3">
+                {supportLinks.map((l) => (
+                  <li key={l.path}>
+                    <Link to={l.path} className="text-[14px] text-white/50 hover:text-[#479BF7] transition-colors">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h4 className="text-caption text-white mb-6">Company</h4>
+              <ul className="space-y-3">
+                {companyLinks.map((l) => (
+                  <li key={l.path}>
+                    <Link to={l.path} className="text-[14px] text-white/50 hover:text-[#479BF7] transition-colors">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+                <li className="pt-3 border-t border-white/[0.06]">
+                  <Link to="/admin/login" className="text-[11px] font-medium text-white/20 hover:text-white/50 transition-colors uppercase tracking-[2px]">
+                    Admin Login
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
-          <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            <Mail size={14} /> support@wivitec.com
+
+          {/* Bottom bar */}
+          <div className="pt-8 border-t border-white/[0.06] flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex flex-wrap justify-center gap-6 text-[11px] text-white/30">
+              <span>© 2025 WIVITEC. All rights reserved.</span>
+              <Link to="/privacy-policy" className="hover:text-white/60 transition-colors">Privacy</Link>
+              <Link to="/terms" className="hover:text-white/60 transition-colors">Terms</Link>
+              <Link to="/faq" className="hover:text-white/60 transition-colors">Cookies</Link>
+            </div>
+            <div className="flex items-center gap-2 text-[11px] text-white/30">
+              <Mail size={13} />
+              <a href="mailto:support@wivitec.com" className="hover:text-[#479BF7] transition-colors">
+                support@wivitec.com
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </>
   );
 };
 

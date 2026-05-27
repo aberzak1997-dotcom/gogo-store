@@ -7,21 +7,33 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   ShoppingBag, AlertTriangle, DollarSign, TrendingUp,
-  CheckCircle2, ArrowUpRight, RotateCcw, Package,
-  ArrowRight, Plus, Users, Star, Zap, Clock
+  CheckCircle2, ArrowUpRight, ArrowDownRight, RotateCcw, Package,
+  ArrowRight, Plus, Users, Star, Clock
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, CartesianGrid } from "recharts";
 
-const STATUS_COLORS: Record<string, string> = {
-  delivered: "bg-emerald-50 text-emerald-700 border-emerald-100",
-  cancelled: "bg-rose-50 text-rose-600 border-rose-100",
-  processing: "bg-blue-50 text-blue-700 border-blue-100",
-  shipped: "bg-indigo-50 text-indigo-700 border-indigo-100",
-  pending: "bg-amber-50 text-amber-700 border-amber-100",
-  refunded: "bg-slate-100 text-slate-600 border-slate-200",
+const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
+  delivered: { bg: "rgba(5,177,105,0.1)", color: "#05b169" },
+  cancelled:  { bg: "rgba(207,32,47,0.1)",  color: "#cf202f" },
+  processing: { bg: "rgba(17,96,203,0.1)",  color: "#1160CB" },
+  shipped:    { bg: "rgba(71,155,247,0.1)", color: "#479BF7" },
+  pending:    { bg: "rgba(234,179,8,0.1)",  color: "#ca8a04" },
+  refunded:   { bg: "rgba(100,116,139,0.1)", color: "#64748b" },
+};
+
+const StatusBadge = ({ status }: { status: string }) => {
+  const s = STATUS_COLORS[status] ?? { bg: "rgba(100,116,139,0.1)", color: "#64748b" };
+  return (
+    <span
+      className="inline-flex items-center px-2.5 py-0.5 rounded-[6px] text-[10px] font-semibold uppercase tracking-[2px]"
+      style={{ background: s.bg, color: s.color }}
+    >
+      {status}
+    </span>
+  );
 };
 
 const AdminDashboardPage = () => {
@@ -67,24 +79,24 @@ const AdminDashboardPage = () => {
   );
 
   const recentActivity = useMemo(() => {
-    const events: { icon: React.ReactNode; text: string; time: string; color: string }[] = [];
+    const events: { icon: React.ReactNode; text: string; time: string; bg: string; color: string }[] = [];
     orders.slice(0, 3).forEach(o => events.push({
       icon: <ShoppingBag size={14} />,
       text: `New order ${o.id} from ${o.customerName}`,
       time: new Date(o.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      color: "bg-blue-50 text-blue-600",
+      bg: "rgba(17,96,203,0.08)", color: "#1160CB",
     }));
     returns.filter(r => r.status === "requested").slice(0, 2).forEach(r => events.push({
       icon: <RotateCcw size={14} />,
       text: `Return request from ${r.customerName}`,
       time: new Date(r.requestedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      color: "bg-rose-50 text-rose-600",
+      bg: "rgba(207,32,47,0.08)", color: "#cf202f",
     }));
     reviews.filter(r => r.status === "pending").slice(0, 2).forEach(r => events.push({
       icon: <Star size={14} />,
       text: `New review on ${r.productTitle}`,
       time: new Date(r.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      color: "bg-amber-50 text-amber-600",
+      bg: "rgba(234,179,8,0.08)", color: "#ca8a04",
     }));
     return events.slice(0, 6);
   }, [orders, returns, reviews]);
@@ -100,10 +112,6 @@ const AdminDashboardPage = () => {
       value: `$${netRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       sub: `AOV $${avgOrderValue.toFixed(2)}`,
       icon: DollarSign,
-      gradient: "from-[#0033CC] to-[#002299]",
-      iconBg: "bg-white/20",
-      textColor: "text-white",
-      subColor: "text-white/70",
       trendUp: true,
     },
     {
@@ -111,10 +119,6 @@ const AdminDashboardPage = () => {
       value: orders.length,
       sub: `${paidOrders.length} paid`,
       icon: ShoppingBag,
-      gradient: "from-violet-500 to-purple-600",
-      iconBg: "bg-white/20",
-      textColor: "text-white",
-      subColor: "text-white/70",
       trendUp: true,
     },
     {
@@ -122,10 +126,6 @@ const AdminDashboardPage = () => {
       value: customers.length,
       sub: `${customers.filter(c => c.status === "VIP").length} VIP`,
       icon: Users,
-      gradient: "from-emerald-500 to-teal-600",
-      iconBg: "bg-white/20",
-      textColor: "text-white",
-      subColor: "text-white/70",
       trendUp: true,
     },
     {
@@ -133,33 +133,29 @@ const AdminDashboardPage = () => {
       value: pendingReturns,
       sub: pendingReturns === 0 ? "All clear" : "Needs review",
       icon: RotateCcw,
-      gradient: pendingReturns === 0 ? "from-slate-700 to-slate-800" : "from-rose-500 to-rose-600",
-      iconBg: "bg-white/20",
-      textColor: "text-white",
-      subColor: "text-white/70",
       trendUp: pendingReturns === 0,
     },
   ];
 
-  const chartConfig = { revenue: { label: "Revenue", color: "#0033CC" } };
+  const chartConfig = { revenue: { label: "Revenue", color: "#1160CB" } };
 
   return (
     <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">{dateStr}</p>
-          <h1 className="text-3xl font-black text-slate-900">{greeting}, Admin 👋</h1>
-          <p className="text-slate-500 text-sm font-medium mt-1">Here's what's happening with your store today.</p>
+          <p className="text-caption text-[#1160CB] mb-1">{dateStr}</p>
+          <h1 className="text-[28px] font-bold text-[#0C0D10] tracking-tight">{greeting}, Admin</h1>
+          <p className="text-[14px] text-[#0C0D10]/50 mt-1">Here's what's happening with your store today.</p>
         </div>
         <div className="flex gap-3">
           <Link to="/admin/products">
-            <Button className="rounded-xl gap-2 font-black uppercase tracking-widest text-[10px] h-11 px-5 bg-[#0033CC] hover:bg-[#002299]">
+            <Button className="rounded-[8px] gap-2 text-[13px] font-semibold h-10 px-5 bg-[#1160CB] hover:bg-[#479BF7] text-white">
               <Plus size={14} /> Add Product
             </Button>
           </Link>
           <Link to="/admin/orders">
-            <Button variant="outline" className="rounded-xl font-black uppercase tracking-widest text-[10px] h-11 px-5">
+            <Button variant="outline" className="rounded-[8px] text-[13px] font-semibold h-10 px-5 border-[#F0F2F8] text-[#0C0D10]/70 hover:bg-[#F0F2F8]">
               View Orders
             </Button>
           </Link>
@@ -169,17 +165,24 @@ const AdminDashboardPage = () => {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {kpis.map((kpi, i) => (
-          <div key={i} className={`bg-gradient-to-br ${kpi.gradient} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5`}>
+          <div
+            key={i}
+            className="bg-white rounded-[12px] p-6 transition-all duration-200 hover:-translate-y-0.5"
+            style={{ border: "1px solid #F0F2F8", boxShadow: "0 2px 12px rgba(21,40,161,0.05)" }}
+          >
             <div className="flex items-center justify-between mb-4">
-              <p className={`text-[10px] font-black uppercase tracking-[0.2em] ${kpi.subColor}`}>{kpi.title}</p>
-              <div className={`w-9 h-9 ${kpi.iconBg} rounded-xl flex items-center justify-center ${kpi.textColor}`}>
-                <kpi.icon size={18} />
+              <p className="text-caption text-[#1160CB]">{kpi.title}</p>
+              <div className="w-9 h-9 rounded-[8px] flex items-center justify-center" style={{ background: "rgba(17,96,203,0.08)" }}>
+                <kpi.icon size={17} className="text-[#1160CB]" />
               </div>
             </div>
-            <p className={`text-3xl font-black ${kpi.textColor} tracking-tight mb-1`}>{kpi.value}</p>
-            <div className={`flex items-center gap-1 text-[10px] font-black ${kpi.subColor}`}>
-              <ArrowUpRight size={11} />
-              {kpi.sub}
+            <p className="font-semibold text-[#0C0D10] mb-2" style={{ fontSize: 36, lineHeight: 1.1 }}>{kpi.value}</p>
+            <div className={cn("flex items-center gap-1 text-[12px] font-medium")}>
+              {kpi.trendUp
+                ? <ArrowUpRight size={13} style={{ color: "#05b169" }} />
+                : <ArrowDownRight size={13} style={{ color: "#cf202f" }} />
+              }
+              <span style={{ color: kpi.trendUp ? "#05b169" : "#cf202f" }}>{kpi.sub}</span>
             </div>
           </div>
         ))}
@@ -187,228 +190,248 @@ const AdminDashboardPage = () => {
 
       {/* Revenue Chart + Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2 border border-slate-100 shadow-sm rounded-2xl bg-white">
-          <CardHeader className="p-6 border-b border-slate-50 flex flex-row items-center justify-between">
+        <div
+          className="lg:col-span-2 bg-white rounded-[12px] overflow-hidden"
+          style={{ border: "1px solid #F0F2F8", boxShadow: "0 2px 12px rgba(21,40,161,0.05)" }}
+        >
+          <div className="px-6 py-5 flex items-center justify-between" style={{ borderBottom: "1px solid #F0F2F8" }}>
             <div>
-              <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-900">Revenue — Last 7 Days</CardTitle>
-              <p className="text-xs text-slate-400 font-medium mt-0.5">Based on paid orders</p>
+              <p className="text-caption text-[#1160CB]">Revenue — Last 7 Days</p>
+              <p className="text-[13px] text-[#0C0D10]/40 mt-0.5">Based on paid orders</p>
             </div>
             <div className="text-right">
-              <p className="text-2xl font-black text-slate-900">${netRevenue.toFixed(2)}</p>
-              <p className="text-[10px] text-emerald-500 font-black uppercase tracking-widest">Net total</p>
+              <p className="text-[24px] font-bold text-[#0C0D10]">${netRevenue.toFixed(2)}</p>
+              <p className="text-caption text-[#05b169]">Net total</p>
             </div>
-          </CardHeader>
-          <CardContent className="p-6">
+          </div>
+          <div className="p-6">
             <ChartContainer config={chartConfig} className="h-52 w-full">
               <AreaChart data={revenueChartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="revGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0033CC" stopOpacity={0.15} />
-                    <stop offset="95%" stopColor="#0033CC" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#1160CB" stopOpacity={0.12} />
+                    <stop offset="95%" stopColor="#1160CB" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                <XAxis dataKey="day" tick={{ fontSize: 10, fontWeight: 700, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: "#94a3b8" }} axisLine={false} tickLine={false} tickFormatter={v => `$${v}`} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#F0F2F8" vertical={false} />
+                <XAxis dataKey="day" tick={{ fontSize: 10, fontWeight: 500, fill: "#0C0D10", opacity: 0.4 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: "#0C0D10", opacity: 0.4 }} axisLine={false} tickLine={false} tickFormatter={v => `$${v}`} />
                 <ChartTooltip content={<ChartTooltipContent formatter={(v) => [`$${Number(v).toFixed(2)}`, "Revenue"]} />} />
-                <Area type="monotone" dataKey="revenue" stroke="#0033CC" strokeWidth={2.5} fill="url(#revGradient)" dot={{ fill: "#0033CC", strokeWidth: 0, r: 3 }} activeDot={{ r: 5 }} />
+                <Area type="monotone" dataKey="revenue" stroke="#1160CB" strokeWidth={2} fill="url(#revGradient)" dot={{ fill: "#1160CB", strokeWidth: 0, r: 3 }} activeDot={{ r: 5 }} />
               </AreaChart>
             </ChartContainer>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Quick Actions */}
-        <Card className="border border-slate-100 shadow-sm rounded-2xl bg-white">
-          <CardHeader className="p-6 border-b border-slate-50">
-            <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-900">Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 space-y-2">
+        <div
+          className="bg-white rounded-[12px] overflow-hidden"
+          style={{ border: "1px solid #F0F2F8", boxShadow: "0 2px 12px rgba(21,40,161,0.05)" }}
+        >
+          <div className="px-6 py-5" style={{ borderBottom: "1px solid #F0F2F8" }}>
+            <p className="text-caption text-[#1160CB]">Quick Actions</p>
+          </div>
+          <div className="p-4 space-y-1">
             {[
-              { label: "Add New Product", icon: Package, path: "/admin/products", color: "text-[#0033CC] bg-[#0033CC]/10" },
-              { label: "Manage Orders", icon: ShoppingBag, path: "/admin/orders", color: "text-violet-600 bg-violet-50" },
-              { label: "Create Discount", icon: Zap, path: "/admin/discounts", color: "text-amber-600 bg-amber-50" },
-              { label: "View Customers", icon: Users, path: "/admin/customers", color: "text-emerald-600 bg-emerald-50" },
-              { label: "Review Returns", icon: RotateCcw, path: "/admin/returns", color: "text-rose-600 bg-rose-50", badge: pendingReturns > 0 ? pendingReturns : undefined },
-              { label: "Approve Reviews", icon: Star, path: "/admin/reviews", color: "text-amber-600 bg-amber-50", badge: pendingReviews > 0 ? pendingReviews : undefined },
+              { label: "Add New Product", icon: Package, path: "/admin/products", bg: "rgba(17,96,203,0.08)", color: "#1160CB" },
+              { label: "Manage Orders", icon: ShoppingBag, path: "/admin/orders", bg: "rgba(71,155,247,0.08)", color: "#479BF7" },
+              { label: "Create Discount", icon: TrendingUp, path: "/admin/discounts", bg: "rgba(5,177,105,0.08)", color: "#05b169" },
+              { label: "View Customers", icon: Users, path: "/admin/customers", bg: "rgba(21,40,161,0.08)", color: "#1528A1" },
+              { label: "Review Returns", icon: RotateCcw, path: "/admin/returns", bg: "rgba(207,32,47,0.08)", color: "#cf202f", badge: pendingReturns > 0 ? pendingReturns : undefined },
+              { label: "Approve Reviews", icon: Star, path: "/admin/reviews", bg: "rgba(234,179,8,0.08)", color: "#ca8a04", badge: pendingReviews > 0 ? pendingReviews : undefined },
             ].map(action => (
               <Link key={action.path} to={action.path}>
-                <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group cursor-pointer">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${action.color}`}>
-                    <action.icon size={16} />
+                <div className="flex items-center gap-3 p-3 rounded-[8px] transition-colors group cursor-pointer hover:bg-[#F0F2F8]">
+                  <div className="w-8 h-8 rounded-[8px] flex items-center justify-center flex-shrink-0" style={{ background: action.bg }}>
+                    <action.icon size={15} style={{ color: action.color }} />
                   </div>
-                  <span className="text-sm font-bold text-slate-700 group-hover:text-slate-900 flex-1">{action.label}</span>
+                  <span className="text-[13px] font-medium text-[#0C0D10]/70 group-hover:text-[#0C0D10] flex-1">{action.label}</span>
                   {action.badge !== undefined && (
-                    <Badge className="bg-rose-500 text-white border-transparent text-[9px] font-black shadow-none rounded-full px-2">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "rgba(207,32,47,0.1)", color: "#cf202f" }}>
                       {action.badge}
-                    </Badge>
+                    </span>
                   )}
-                  <ArrowRight size={14} className="text-slate-300 group-hover:text-slate-500 transition-colors" />
+                  <ArrowRight size={13} className="text-[#0C0D10]/20 group-hover:text-[#0C0D10]/50 transition-colors" />
                 </div>
               </Link>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Recent Orders + Activity Feed */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <Card className="lg:col-span-8 border border-slate-100 shadow-sm rounded-2xl bg-white">
-          <CardHeader className="p-6 border-b border-slate-50 flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-900 flex items-center gap-2.5">
-              <div className="p-1.5 bg-[#0033CC]/10 text-[#0033CC] rounded-lg">
-                <ShoppingBag size={16} />
-              </div>
-              Recent Orders
-            </CardTitle>
-            <Link to="/admin/orders" className="text-[10px] font-black uppercase tracking-widest text-[#0033CC] hover:underline flex items-center gap-1">
+        <div
+          className="lg:col-span-8 bg-white rounded-[12px] overflow-hidden"
+          style={{ border: "1px solid #F0F2F8", boxShadow: "0 2px 12px rgba(21,40,161,0.05)" }}
+        >
+          <div className="px-6 py-5 flex items-center justify-between" style={{ borderBottom: "1px solid #F0F2F8" }}>
+            <p className="text-caption text-[#1160CB]">Recent Orders</p>
+            <Link to="/admin/orders" className="text-caption text-[#1160CB] hover:text-[#1528A1] flex items-center gap-1 transition-colors">
               View All <ArrowRight size={11} />
             </Link>
-          </CardHeader>
-          <CardContent className="p-0">
-            {orders.length === 0 ? (
-              <div className="py-16 text-center">
-                <ShoppingBag className="mx-auto h-10 w-10 text-slate-100 mb-3" />
-                <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">No orders yet</p>
+          </div>
+          {orders.length === 0 ? (
+            <div className="py-16 text-center">
+              <ShoppingBag className="mx-auto h-10 w-10 mb-3" style={{ color: "#F0F2F8" }} />
+              <p className="text-caption text-[#0C0D10]/30">No orders yet</p>
+            </div>
+          ) : (
+            <>
+              {/* Table header */}
+              <div className="grid grid-cols-[1fr_auto_auto] items-center px-6 py-3" style={{ background: "#F0F2F8" }}>
+                <p className="text-caption text-[#1160CB]">Customer / Order</p>
+                <p className="text-caption text-[#1160CB] pr-6">Amount</p>
+                <p className="text-caption text-[#1160CB]">Status</p>
               </div>
-            ) : (
-              <div className="divide-y divide-slate-50">
+              <div>
                 {orders.slice(0, 6).map(order => (
-                  <div key={order.id} className="flex items-center justify-between px-6 py-4 hover:bg-slate-50/60 transition-colors">
+                  <div
+                    key={order.id}
+                    className="grid grid-cols-[1fr_auto_auto] items-center px-6 py-4 transition-colors"
+                    style={{ borderBottom: "1px solid #F0F2F8" }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "rgba(21,40,161,0.02)"}
+                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = ""}
+                  >
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-600 font-black text-sm">
+                      <div
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-[#1160CB] font-semibold text-[13px] flex-shrink-0"
+                        style={{ background: "rgba(17,96,203,0.08)" }}
+                      >
                         {order.customerName.charAt(0)}
                       </div>
                       <div>
-                        <p className="font-bold text-slate-900 text-sm leading-tight">{order.customerName}</p>
-                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">
-                          {order.id} · {new Date(order.date).toLocaleDateString()}
-                        </p>
+                        <p className="text-[13px] font-medium text-[#0C0D10]">{order.customerName}</p>
+                        <p className="text-caption text-[#0C0D10]/30">{order.id} · {new Date(order.date).toLocaleDateString()}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-5">
-                      <p className="font-black text-slate-900">${order.totalAmount.toFixed(2)}</p>
-                      <Badge className={cn("text-[9px] uppercase font-black px-2.5 py-0.5 rounded-full border shadow-none", STATUS_COLORS[order.status] || "bg-slate-100 text-slate-500")}>
-                        {order.status}
-                      </Badge>
-                    </div>
+                    <p className="font-semibold text-[#0C0D10] text-[14px] pr-6">${order.totalAmount.toFixed(2)}</p>
+                    <StatusBadge status={order.status} />
                   </div>
                 ))}
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </>
+          )}
+        </div>
 
         {/* Activity Feed */}
-        <Card className="lg:col-span-4 border border-slate-100 shadow-sm rounded-2xl bg-white">
-          <CardHeader className="p-6 border-b border-slate-50">
-            <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-900 flex items-center gap-2.5">
-              <div className="p-1.5 bg-violet-50 text-violet-600 rounded-lg">
-                <Clock size={16} />
-              </div>
-              Activity
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4">
+        <div
+          className="lg:col-span-4 bg-white rounded-[12px] overflow-hidden"
+          style={{ border: "1px solid #F0F2F8", boxShadow: "0 2px 12px rgba(21,40,161,0.05)" }}
+        >
+          <div className="px-6 py-5" style={{ borderBottom: "1px solid #F0F2F8" }}>
+            <p className="text-caption text-[#1160CB]">Activity</p>
+          </div>
+          <div className="p-4">
             {recentActivity.length === 0 ? (
               <div className="py-10 text-center">
-                <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-100 mb-3" />
-                <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">All quiet</p>
+                <CheckCircle2 className="mx-auto h-10 w-10 mb-3" style={{ color: "#05b169", opacity: 0.3 }} />
+                <p className="text-caption text-[#0C0D10]/30">All quiet</p>
               </div>
             ) : (
               <div className="space-y-1">
                 {recentActivity.map((event, i) => (
-                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${event.color}`}>
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-[8px] hover:bg-[#F0F2F8] transition-colors">
+                    <div
+                      className="w-7 h-7 rounded-[6px] flex items-center justify-center flex-shrink-0 mt-0.5"
+                      style={{ background: event.bg, color: event.color }}
+                    >
                       {event.icon}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold text-slate-700 leading-snug">{event.text}</p>
-                      <p className="text-[10px] text-slate-400 font-black mt-0.5">{event.time}</p>
+                      <p className="text-[12px] font-medium text-[#0C0D10]/80 leading-snug">{event.text}</p>
+                      <p className="text-caption text-[#0C0D10]/30 mt-0.5">{event.time}</p>
                     </div>
                   </div>
                 ))}
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Bottom row: Inventory Alerts + Top Products */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Inventory Alerts */}
-        <Card className="border border-slate-100 shadow-sm rounded-2xl bg-white">
-          <CardHeader className="p-6 border-b border-slate-50 flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-900 flex items-center gap-2.5">
-              <div className="p-1.5 bg-amber-50 text-amber-600 rounded-lg">
-                <AlertTriangle size={16} />
-              </div>
-              Inventory Alerts
-            </CardTitle>
-            <Link to="/admin/inventory" className="text-[10px] font-black uppercase tracking-widest text-[#0033CC] hover:underline flex items-center gap-1">
+        <div
+          className="bg-white rounded-[12px] overflow-hidden"
+          style={{ border: "1px solid #F0F2F8", boxShadow: "0 2px 12px rgba(21,40,161,0.05)" }}
+        >
+          <div className="px-6 py-5 flex items-center justify-between" style={{ borderBottom: "1px solid #F0F2F8" }}>
+            <p className="text-caption text-[#1160CB]">Inventory Alerts</p>
+            <Link to="/admin/inventory" className="text-caption text-[#1160CB] hover:text-[#1528A1] flex items-center gap-1 transition-colors">
               Manage <ArrowRight size={11} />
             </Link>
-          </CardHeader>
-          <CardContent className="p-5">
+          </div>
+          <div className="p-5">
             {lowStock.length === 0 && outOfStock.length === 0 ? (
               <div className="py-10 text-center">
-                <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-200 mb-3" />
-                <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">All stock levels healthy</p>
+                <CheckCircle2 className="mx-auto h-10 w-10 mb-3" style={{ color: "#05b169", opacity: 0.3 }} />
+                <p className="text-caption text-[#0C0D10]/30">All stock levels healthy</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {[...outOfStock, ...lowStock].slice(0, 5).map(p => (
-                  <div key={p.id} className="flex items-center gap-3 p-3 rounded-xl bg-slate-50/60">
-                    <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 overflow-hidden p-1 flex-shrink-0">
+                  <div
+                    key={p.id}
+                    className="flex items-center gap-3 p-3 rounded-[8px]"
+                    style={{ background: "#F0F2F8" }}
+                  >
+                    <div className="w-10 h-10 rounded-[8px] bg-white overflow-hidden p-1 flex-shrink-0" style={{ border: "1px solid #F0F2F8" }}>
                       <img src={p.imageUrl} alt="" className="w-full h-full object-contain" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold text-slate-800 text-xs truncate">{p.title}</p>
-                      <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{p.sku}</p>
+                      <p className="text-[13px] font-medium text-[#0C0D10]/80 truncate">{p.title}</p>
+                      <p className="text-caption text-[#0C0D10]/30">{p.sku}</p>
                     </div>
-                    <Badge className={cn("text-[9px] font-black rounded-full px-2.5 py-0.5 border shadow-none", p.stockQuantity === 0 ? "bg-rose-50 text-rose-600 border-rose-100" : "bg-amber-50 text-amber-700 border-amber-100")}>
+                    <span
+                      className="text-[10px] font-semibold px-2.5 py-0.5 rounded-[6px] uppercase tracking-[1.5px]"
+                      style={p.stockQuantity === 0
+                        ? { background: "rgba(207,32,47,0.1)", color: "#cf202f" }
+                        : { background: "rgba(234,179,8,0.1)", color: "#ca8a04" }
+                      }
+                    >
                       {p.stockQuantity === 0 ? "Out of stock" : `${p.stockQuantity} left`}
-                    </Badge>
+                    </span>
                   </div>
                 ))}
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Top Products */}
-        <Card className="border border-slate-100 shadow-sm rounded-2xl bg-white">
-          <CardHeader className="p-6 border-b border-slate-50 flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-900 flex items-center gap-2.5">
-              <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">
-                <TrendingUp size={16} />
-              </div>
-              Top Products
-            </CardTitle>
-            <Link to="/admin/products" className="text-[10px] font-black uppercase tracking-widest text-[#0033CC] hover:underline flex items-center gap-1">
+        <div
+          className="bg-white rounded-[12px] overflow-hidden"
+          style={{ border: "1px solid #F0F2F8", boxShadow: "0 2px 12px rgba(21,40,161,0.05)" }}
+        >
+          <div className="px-6 py-5 flex items-center justify-between" style={{ borderBottom: "1px solid #F0F2F8" }}>
+            <p className="text-caption text-[#1160CB]">Top Products</p>
+            <Link to="/admin/products" className="text-caption text-[#1160CB] hover:text-[#1528A1] flex items-center gap-1 transition-colors">
               All Products <ArrowRight size={11} />
             </Link>
-          </CardHeader>
-          <CardContent className="p-5 space-y-3">
+          </div>
+          <div className="p-5 space-y-3">
             {topProducts.map((p, i) => (
-              <div key={p.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                <span className="text-[10px] font-black text-slate-300 w-4 text-center">#{i + 1}</span>
-                <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 overflow-hidden p-1 flex-shrink-0">
+              <div key={p.id} className="flex items-center gap-3 p-3 rounded-[8px] hover:bg-[#F0F2F8] transition-colors">
+                <span className="text-caption text-[#0C0D10]/25 w-4 text-center">#{i + 1}</span>
+                <div className="w-10 h-10 rounded-[8px] bg-white overflow-hidden p-1 flex-shrink-0" style={{ border: "1px solid #F0F2F8" }}>
                   <img src={p.imageUrl} alt="" className="w-full h-full object-contain" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold text-slate-800 text-xs truncate">{p.title}</p>
+                  <p className="text-[13px] font-medium text-[#0C0D10]/80 truncate">{p.title}</p>
                   <div className="flex items-center gap-1 mt-0.5">
                     {Array.from({ length: 5 }).map((_, j) => (
-                      <Star key={j} size={8} className={j < Math.round(p.rating) ? "text-amber-400 fill-amber-400" : "text-slate-200 fill-slate-200"} />
+                      <Star key={j} size={8} className={j < Math.round(p.rating) ? "text-amber-400 fill-amber-400" : "text-[#F0F2F8] fill-[#F0F2F8]"} />
                     ))}
-                    <span className="text-[9px] text-slate-400 font-bold ml-0.5">({p.reviewCount})</span>
+                    <span className="text-caption text-[#0C0D10]/30 ml-0.5">({p.reviewCount})</span>
                   </div>
                 </div>
-                <p className="font-black text-slate-900 text-sm">${p.price.toFixed(2)}</p>
+                <p className="font-semibold text-[#1528A1] text-[14px]">${p.price.toFixed(2)}</p>
               </div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );

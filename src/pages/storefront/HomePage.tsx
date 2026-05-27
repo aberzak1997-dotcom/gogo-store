@@ -184,111 +184,111 @@ const HomePage = () => {
   const isLoading = products.length === 0;
 
   return (
-    <div className="min-h-screen flex flex-col bg-white font-sans">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
 
       <main className="flex-grow">
 
         {/* ── Hero ──────────────────────────────────────────────────────────── */}
         {!isFiltered && (
-          <section className="px-4 md:px-6 pt-4 pb-2">
-            <div className="flex flex-col md:flex-row gap-3 max-w-[1400px] mx-auto">
+          <section className="bg-[#0E121A] min-h-[90vh] flex items-center relative overflow-hidden">
+            {/* Grid background */}
+            <div className="absolute inset-0 opacity-[0.025]"
+              style={{ backgroundImage: "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)", backgroundSize: "60px 60px" }} />
+            {/* Ambient glow */}
+            <div className="absolute top-1/2 right-1/3 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-[#479BF7]/5 blur-[140px] pointer-events-none" />
+            <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] rounded-full bg-[#1528A1]/10 blur-[100px] pointer-events-none" />
 
-              {/* ── Left panel (dark navy) ── */}
-              <div className="relative flex-[2] min-h-[294px] md:min-h-[322px] rounded-none overflow-hidden bg-[#0d1b2e] flex items-center">
-                {/* subtle grid pattern */}
-                <div className="absolute inset-0 opacity-[0.04]"
-                  style={{ backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
-
-                {/* Text — left */}
-                <div className="relative z-10 p-8 md:p-10 w-full md:max-w-[60%] space-y-3 flex-shrink-0 flex flex-col items-start">
-                  <Badge className="bg-white/10 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
-                    Premium Collection
-                  </Badge>
-                  <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-white leading-[1.15] w-full">
-                    Wide Range Of Premium Electronics
-                  </h1>
-                  <p className="text-slate-200 text-xs max-w-xs leading-relaxed">
-                    Cutting-edge gadgets and accessories for professionals and enthusiasts alike. Quality gear for every setup.
-                  </p>
-                  <Link to="/products" className="inline-block pt-1">
-                    <Button className="rounded-full h-8 px-5 text-[11px] font-semibold bg-[#1528A1] hover:bg-[#0f1d75] text-white border-0 shadow-lg shadow-blue-900/40 gap-1.5">
-                      Browse Collection <ArrowRight size={12} />
+            <div className="section-container relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 py-24 items-center">
+              {/* Left: text */}
+              <div className="space-y-8">
+                <p className="text-caption text-[#479BF7]">Technology. Elevated.</p>
+                <h1 className="text-white font-bold leading-[1.05]" style={{ fontSize: "clamp(36px,5vw,64px)", letterSpacing: "4px" }}>
+                  Premium Tech,<br />Delivered Fast
+                </h1>
+                <p className="text-[15px] text-white/60 max-w-[480px] leading-relaxed">
+                  Morocco's premier destination for cutting-edge electronics and accessories. Shop the latest from top brands, delivered to your door.
+                </p>
+                <div className="flex items-center gap-4 flex-wrap">
+                  <Link to="/products">
+                    <Button className="bg-[#1160CB] hover:bg-[#479BF7] text-white rounded-[8px] h-12 px-8 text-[15px] font-semibold transition-all duration-200 gap-2 shadow-lg shadow-[#1160CB]/30">
+                      Shop Now <ArrowRight size={16} />
+                    </Button>
+                  </Link>
+                  <Link to="/about">
+                    <Button variant="ghost" className="border border-white/20 text-white hover:bg-white/[0.08] hover:border-white/30 rounded-[8px] h-12 px-8 text-[15px] font-semibold transition-all">
+                      Learn More
                     </Button>
                   </Link>
                 </div>
-
-                {/* Product image — right side of left panel */}
-                <div className="absolute right-0 top-0 bottom-0 w-[58%] flex items-end justify-center overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1593305841991-05c297ba4575?q=80&w=1057&auto=format&fit=crop"
-                    alt="Featured electronics"
-                    className="w-full h-full object-cover object-center opacity-80"
-                    style={{
-                      maskImage: "linear-gradient(to right, transparent 0%, black 35%)",
-                      WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 35%)"
-                    }}
-                  />
+                <div className="flex items-center gap-10 pt-2 border-t border-white/[0.06]">
+                  {[
+                    { value: "10k+", label: "Happy customers" },
+                    { value: "500+", label: "Products" },
+                    { value: "1-Year", label: "Warranty" },
+                  ].map((stat, i) => (
+                    <div key={i}>
+                      <p className="text-[22px] font-semibold text-white">{stat.value}</p>
+                      <p className="text-[11px] text-white/40 mt-0.5 uppercase tracking-[1px]">{stat.label}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* ── Right panel (bright blue) ── */}
-              <div className="relative flex-[1] min-h-[210px] md:min-h-[322px] rounded-none overflow-hidden bg-[#1528A1] flex flex-col justify-between p-6">
-                {/* decorative circles */}
-                <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-white/5 translate-x-1/3 translate-y-1/3" />
-                <div className="absolute bottom-10 right-10 w-40 h-40 rounded-full bg-white/5" />
-
-                {/* Top: product info */}
-                <div className="relative z-10 space-y-2 flex flex-col items-start">
-                  <Badge className="bg-white/20 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
-                    Featured Deal
-                  </Badge>
-                  <h2 className="text-white font-semibold tracking-tight text-xl md:text-2xl leading-tight line-clamp-1">
-                    {deals[0]?.title || newArrivals[0]?.title || "Top Pick This Week"}
-                  </h2>
-                </div>
-
-                {/* Middle: product image */}
-                <div className="relative z-10 flex items-center justify-center py-3 flex-grow">
-                  {(deals[0] || newArrivals[0]) && (
-                    <img
-                      src={deals[0]?.imageUrl || newArrivals[0]?.imageUrl}
-                      alt={deals[0]?.title || newArrivals[0]?.title}
-                      className="max-h-36 md:max-h-48 object-contain drop-shadow-2xl transition-transform duration-300 hover:scale-105"
-                    />
-                  )}
-                </div>
-
-                {/* Bottom: price + arrow */}
-                <div className="relative z-10 flex items-center justify-between">
-                  <div>
-                    <p className="text-white font-black text-xl">
-                      ${(deals[0]?.price || newArrivals[0]?.price || 0).toFixed(2)}
-                    </p>
-                    {(deals[0]?.compareAtPrice || newArrivals[0]?.compareAtPrice) && (
-                      <p className="text-blue-200 text-[10px] line-through mt-0.5">
-                        ${(deals[0]?.compareAtPrice || newArrivals[0]?.compareAtPrice || 0).toFixed(2)}
-                      </p>
+              {/* Right: featured product card */}
+              <div className="flex items-center justify-center">
+                <div className="relative w-full max-w-[380px]">
+                  <div className="absolute inset-0 bg-[#479BF7]/8 blur-[80px] rounded-full scale-90 pointer-events-none" />
+                  <div
+                    className="relative bg-[#16181C] rounded-[16px] p-7 border border-white/[0.06]"
+                    style={{ boxShadow: "0 0 80px rgba(71,155,247,0.12)" }}
+                  >
+                    {(deals[0] || newArrivals[0]) ? (
+                      <>
+                        <p className="text-caption text-[#479BF7] mb-5">Featured Deal</p>
+                        <img
+                          src={deals[0]?.imageUrl || newArrivals[0]?.imageUrl}
+                          alt={deals[0]?.title || newArrivals[0]?.title}
+                          className="w-full h-52 object-contain mb-6"
+                        />
+                        <h3 className="text-white font-semibold text-[16px] mb-3 line-clamp-1">
+                          {deals[0]?.title || newArrivals[0]?.title}
+                        </h3>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-[#479BF7] font-bold text-[22px]">
+                              ${(deals[0]?.price || newArrivals[0]?.price || 0).toFixed(2)}
+                            </p>
+                            {(deals[0]?.compareAtPrice || newArrivals[0]?.compareAtPrice) && (
+                              <p className="text-white/25 text-[12px] line-through mt-0.5">
+                                ${(deals[0]?.compareAtPrice || newArrivals[0]?.compareAtPrice || 0).toFixed(2)}
+                              </p>
+                            )}
+                          </div>
+                          <Link to={`/product/${deals[0]?.id || newArrivals[0]?.id}`}>
+                            <Button className="bg-[#1160CB] hover:bg-[#479BF7] text-white rounded-[8px] h-10 px-5 text-[13px] font-semibold transition-all">
+                              View Deal
+                            </Button>
+                          </Link>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="h-64 flex items-center justify-center text-white/20 text-[13px]">
+                        Loading products…
+                      </div>
                     )}
                   </div>
-                  <Link
-                    to={`/product/${deals[0]?.id || newArrivals[0]?.id}`}
-                    className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
-                  >
-                    <ArrowRight size={16} className="text-[#1528A1]" />
-                  </Link>
                 </div>
               </div>
-
             </div>
           </section>
         )}
 
         {/* ── Promo Campaign Cards ───────────────────────────────────────────── */}
         {!isFiltered && (
-          <section className="px-4 md:px-6 py-2">
-            <div className="grid md:grid-cols-2 gap-3 max-w-[1400px] mx-auto">
-              <div className="group relative overflow-hidden bg-slate-900 text-white min-h-[340px] flex flex-col justify-end rounded-none">
+          <section className="px-4 md:px-6 py-4 bg-[#0E121A]">
+            <div className="grid md:grid-cols-2 gap-4 max-w-[1400px] mx-auto">
+              <div className="group relative overflow-hidden bg-slate-900 text-white min-h-[340px] flex flex-col justify-end rounded-[12px]">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                 <div className="relative z-10 p-10 space-y-3">
@@ -304,7 +304,7 @@ const HomePage = () => {
                   </Link>
                 </div>
               </div>
-              <div className="group relative overflow-hidden min-h-[340px] flex flex-col justify-end rounded-none">
+              <div className="group relative overflow-hidden min-h-[340px] flex flex-col justify-end rounded-[12px]">
                 <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7279320/pexels-photo-7279320.jpeg')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                 <div className="relative z-10 p-10 space-y-3">
@@ -329,49 +329,50 @@ const HomePage = () => {
 
         {/* ── Categories ────────────────────────────────────────────────────── */}
         {!isFiltered && (
-          <section className="py-20 section-container">
-            <SectionHeader
-              eyebrow="Browse by type"
-              eyebrowIcon={Package}
-              title="Shop by Category"
-              subtitle="Find exactly what you're looking for"
-              href="/products"
-            />
-            <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
-              {categories.map((cat) => {
-                const Icon = cat.icon;
-                return (
-                  <Link key={cat.name} to={cat.path} className="group flex flex-col items-center gap-3 p-4 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-primary/20 hover:shadow-md hover:shadow-primary/5 transition-all duration-200">
-                    <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-white shadow-sm group-hover:bg-primary/5 transition-colors">
-                      <Icon size={20} className="text-slate-600 group-hover:text-primary transition-colors" />
-                    </div>
-                    <span className="text-[11px] font-semibold text-slate-500 group-hover:text-slate-900 text-center leading-tight transition-colors">
-                      {cat.name}
-                    </span>
-                  </Link>
-                );
-              })}
+          <section className="py-20 bg-[#0E121A]">
+            <div className="section-container">
+              <SectionHeader
+                eyebrow="Browse by type"
+                eyebrowIcon={Package}
+                title="Shop by Category"
+                subtitle="Find exactly what you're looking for"
+                href="/products"
+              />
+              <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
+                {categories.map((cat) => {
+                  const Icon = cat.icon;
+                  return (
+                    <Link key={cat.name} to={cat.path} className="group flex flex-col items-center gap-3 p-4 rounded-[12px] border border-white/[0.06] bg-[#16181C] hover:border-[#479BF7]/30 hover:bg-white/[0.06] transition-all duration-200">
+                      <div className="w-10 h-10 flex items-center justify-center rounded-[8px] bg-[#479BF7]/10 group-hover:bg-[#479BF7]/20 transition-colors">
+                        <Icon size={20} className="text-[#479BF7]" />
+                      </div>
+                      <span className="text-[11px] font-medium text-white/50 group-hover:text-white text-center leading-tight transition-colors">
+                        {cat.name}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           </section>
         )}
 
         {/* ── Flash Deals (with countdown) ──────────────────────────────────── */}
         {!isFiltered && deals.length > 0 && (
-          <section className="py-20 bg-slate-900 relative overflow-hidden">
-            {/* subtle grid background */}
-            <div className="absolute inset-0 opacity-[0.04]"
-              style={{ backgroundImage: "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)", backgroundSize: "40px 40px" }}
+          <section className="py-20 bg-[#0E121A] relative overflow-hidden">
+            <div className="absolute inset-0 opacity-[0.02]"
+              style={{ backgroundImage: "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)", backgroundSize: "60px 60px" }}
             />
             <div className="section-container relative z-10">
               <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-6">
                 <div className="space-y-2">
-                  <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-red-400">
+                  <div className="inline-flex items-center gap-1.5 text-caption text-[#479BF7]">
                     <Flame size={12} /> Flash Deals
                   </div>
-                  <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
+                  <h2 className="text-h2 text-white">
                     Deals of the Week
                   </h2>
-                  <p className="text-slate-400 text-sm">Limited stock — grab them before they're gone.</p>
+                  <p className="text-[15px] text-white/50">Limited stock — grab them before they're gone.</p>
                 </div>
 
                 {/* Countdown */}
@@ -426,7 +427,7 @@ const HomePage = () => {
 
         {/* ── Testimonials / Social Proof ────────────────────────────────────── */}
         {!isFiltered && (
-          <section className="py-20 bg-slate-50/60 border-y border-slate-100">
+          <section className="py-20 bg-[#F0F2F8]">
             <div className="section-container">
               <SectionHeader
                 eyebrow="Reviews"
@@ -501,16 +502,12 @@ const HomePage = () => {
 
         {/* ── Newsletter ─────────────────────────────────────────────────────── */}
         {!isFiltered && (
-          <section className="py-20 section-container">
-            <div className="bg-gradient-to-br from-primary/5 via-primary/3 to-transparent border border-primary/10 rounded-3xl p-10 md:p-16 flex flex-col md:flex-row items-center gap-10">
+          <section className="py-20 bg-[#1528A1]">
+            <div className="section-container flex flex-col md:flex-row items-center gap-10">
               <div className="flex-1 space-y-4 text-center md:text-left">
-                <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-primary">
-                  <Zap size={11} /> Exclusive access
-                </div>
-                <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">
-                  Stay in the loop
-                </h2>
-                <p className="text-slate-500 text-sm max-w-sm">
+                <p className="text-caption text-white/60">Exclusive access</p>
+                <h2 className="text-h2 text-white">Stay in the loop</h2>
+                <p className="text-[15px] text-white/60 max-w-sm leading-relaxed">
                   Get early access to new arrivals, exclusive deals, and tech tips — straight to your inbox.
                 </p>
               </div>
@@ -518,9 +515,9 @@ const HomePage = () => {
                 <input
                   type="email"
                   placeholder="your@email.com"
-                  className="h-12 px-5 rounded-full border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all w-full sm:w-72"
+                  className="h-12 px-5 rounded-[8px] border border-white/20 bg-white/10 text-[15px] text-white placeholder:text-white/40 focus:outline-none focus:border-white/40 transition-all w-full sm:w-72"
                 />
-                <Button className="h-12 rounded-full px-7 text-sm font-semibold whitespace-nowrap shadow-md shadow-primary/20">
+                <Button className="h-12 rounded-[8px] px-7 text-[15px] font-semibold whitespace-nowrap bg-white text-[#1528A1] hover:bg-[#F0F2F8] transition-all">
                   Subscribe
                 </Button>
               </div>
@@ -582,7 +579,7 @@ const HomePage = () => {
 
         {/* ── Trust Bar ─────────────────────────────────────────────────────── */}
         {!isFiltered && (
-          <section className="py-16 bg-slate-50/50 border-t border-slate-100">
+          <section className="py-16 bg-[#F0F2F8]">
             <div className="section-container grid grid-cols-2 lg:grid-cols-4 gap-5">
               {[
                 { icon: Truck, title: "Free Shipping", desc: "On orders over $50", color: "bg-primary/8 text-primary" },

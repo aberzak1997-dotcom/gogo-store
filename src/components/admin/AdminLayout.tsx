@@ -97,76 +97,76 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-slate-900 text-slate-300 overflow-hidden">
-      <div className="p-6 border-b border-white/5 flex items-center justify-between h-20">
+    <div className="flex flex-col h-full overflow-hidden" style={{ background: "#0E121A" }}>
+      {/* Logo */}
+      <div className="px-5 flex items-center justify-between border-b border-white/[0.06]" style={{ height: 68 }}>
         <div className="flex items-center gap-3 min-w-max">
-          <div className="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center text-white">
-            <Zap size={20} fill="currentColor" className="text-[#0033CC]" />
-          </div>
           {!isSidebarCollapsed && (
-            <h2 className="text-lg font-black text-white tracking-tighter uppercase">
-              WIVITEC
-            </h2>
+            <span className="text-white font-bold text-[17px] tracking-[-0.5px]">
+              WIVI<span className="text-[#479BF7]">TEC</span>
+            </span>
+          )}
+          {isSidebarCollapsed && (
+            <span className="text-[#479BF7] font-bold text-[20px]">W</span>
           )}
         </div>
         <button
           onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          className="hidden lg:flex p-1.5 hover:bg-white/10 rounded-lg text-slate-500 transition-colors"
+          className="hidden lg:flex p-1.5 hover:bg-white/[0.06] rounded-[6px] text-white/30 hover:text-white/70 transition-colors"
         >
-          <ChevronRight className={cn("transition-transform duration-300", !isSidebarCollapsed && "rotate-180")} size={18} />
+          <ChevronRight className={cn("transition-transform duration-300", !isSidebarCollapsed && "rotate-180")} size={16} />
         </button>
       </div>
 
-      <div className="flex-grow overflow-y-auto custom-scrollbar py-6 px-3 space-y-8">
+      {/* Nav items */}
+      <div className="flex-grow overflow-y-auto py-5 px-3 space-y-6">
         {sections.map((section, idx) => (
-          <div key={idx} className="space-y-2">
+          <div key={idx} className="space-y-1">
             {!isSidebarCollapsed && (
-              <h3 className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-4">
-                {section.title}
-              </h3>
+              <p className="px-3 text-caption text-white/25 mb-3">{section.title}</p>
             )}
-            <div className="space-y-1">
-              {section.items.map((item) => (
+            {section.items.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
                 <Link
                   key={item.path}
                   to={item.path}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative",
-                    location.pathname === item.path
-                      ? "bg-[#0033CC] text-white shadow-lg shadow-[#0033CC]/20"
-                      : "hover:bg-white/5 hover:text-white"
+                    "flex items-center gap-3 px-3 py-2.5 rounded-[8px] transition-all duration-150",
+                    isActive
+                      ? "bg-[#1528A1] text-white"
+                      : "text-white/50 hover:text-white hover:bg-white/[0.05]"
                   )}
                 >
-                  <item.icon size={18} className="flex-shrink-0" />
+                  <item.icon size={16} className="flex-shrink-0" />
                   {!isSidebarCollapsed && (
-                    <span className="font-bold text-xs uppercase tracking-widest whitespace-nowrap">
-                      {item.label}
-                    </span>
+                    <span className="text-[13px] font-medium whitespace-nowrap">{item.label}</span>
                   )}
-                  {location.pathname === item.path && !isSidebarCollapsed && (
-                    <div className="absolute right-4 w-1 h-1 rounded-full bg-white/50" />
+                  {isActive && alertCount > 0 && !isSidebarCollapsed && item.label === "Orders" && (
+                    <span className="ml-auto text-[10px] font-bold bg-white/20 text-white px-1.5 py-0.5 rounded-full">{alertCount}</span>
                   )}
                 </Link>
-              ))}
-            </div>
+              );
+            })}
           </div>
         ))}
       </div>
 
-      <div className="p-4 border-t border-white/5 space-y-2 bg-slate-900">
+      {/* Bottom actions */}
+      <div className="p-3 border-t border-white/[0.06] space-y-1">
         <Link
           to="/"
-          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 hover:text-white transition-all duration-200 text-xs font-bold uppercase tracking-widest"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-white/50 hover:text-white hover:bg-white/[0.05] transition-all text-[13px] font-medium"
         >
-          <Store size={18} className="flex-shrink-0" />
+          <Store size={16} className="flex-shrink-0" />
           {!isSidebarCollapsed && <span>View Store</span>}
         </Link>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left hover:bg-rose-500/10 hover:text-rose-400 transition-all duration-200 text-xs font-bold uppercase tracking-widest"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] w-full text-left text-white/50 hover:text-rose-400 hover:bg-rose-500/10 transition-all text-[13px] font-medium"
         >
-          <LogOut size={18} className="flex-shrink-0" />
+          <LogOut size={16} className="flex-shrink-0" />
           {!isSidebarCollapsed && <span>Logout</span>}
         </button>
       </div>
@@ -174,32 +174,29 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   );
 
   return (
-    <div className="min-h-screen flex bg-slate-50/50">
+    <div className="min-h-screen flex bg-[#F0F2F8]">
       {/* Desktop Sidebar */}
       <aside
         className={cn(
-          "hidden lg:block fixed inset-y-0 left-0 z-50 transition-all duration-300 ease-in-out border-r border-slate-200",
-          isSidebarCollapsed ? "w-20" : "w-64"
+          "hidden lg:block fixed inset-y-0 left-0 z-50 transition-all duration-300 ease-in-out border-r border-white/[0.06]",
+          isSidebarCollapsed ? "w-[68px]" : "w-60"
         )}
       >
         <SidebarContent />
       </aside>
 
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-20 bg-slate-900 text-white flex items-center justify-between px-6 z-50">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-            <Zap size={18} fill="currentColor" className="text-[#0033CC]" />
-          </div>
-          <h2 className="text-lg font-black uppercase tracking-tighter">WIVITEC</h2>
-        </div>
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-[68px] bg-[#0E121A] text-white flex items-center justify-between px-5 z-50 border-b border-white/[0.06]">
+        <span className="text-white font-bold text-[17px] tracking-[-0.5px]">
+          WIVI<span className="text-[#479BF7]">TEC</span>
+        </span>
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="text-white hover:bg-white/10"
+          className="text-white/70 hover:text-white hover:bg-white/[0.06]"
         >
-          {isMobileMenuOpen ? <X /> : <Menu />}
+          {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </Button>
       </div>
 
@@ -207,10 +204,10 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-40">
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(false)}
           />
-          <aside className="absolute inset-y-0 left-0 w-64 bg-slate-900 shadow-2xl">
+          <aside className="absolute inset-y-0 left-0 w-60 shadow-2xl">
             <SidebarContent />
           </aside>
         </div>
@@ -219,31 +216,31 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       {/* Main Content */}
       <main
         className={cn(
-          "flex-grow pt-20 lg:pt-0 transition-all duration-300 ease-in-out",
-          isSidebarCollapsed ? "lg:ml-20" : "lg:ml-64"
+          "flex-grow pt-[68px] lg:pt-0 transition-all duration-300 ease-in-out",
+          isSidebarCollapsed ? "lg:ml-[68px]" : "lg:ml-60"
         )}
       >
         {/* Desktop top bar */}
-        <div className="hidden lg:flex items-center justify-between px-10 py-4 border-b border-slate-100 bg-white/80 backdrop-blur-sm sticky top-0 z-30">
-          <p className="text-xs font-black uppercase tracking-widest text-slate-400">
+        <div className="hidden lg:flex items-center justify-between px-8 py-4 border-b border-[#F0F2F8] bg-white sticky top-0 z-30">
+          <p className="text-caption text-[#1160CB]">
             {location.pathname === "/admin" ? "Dashboard" :
               location.pathname.replace("/admin/", "").replace("-", " ").replace(/^\w/, c => c.toUpperCase())}
           </p>
-          <div className="flex items-center gap-3">
-            <Link to="/admin/returns" className="relative p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-500">
-              <Bell size={18} />
+          <div className="flex items-center gap-2">
+            <Link to="/admin/returns" className="relative p-2 rounded-[8px] hover:bg-[#F0F2F8] transition-colors text-[#0C0D10]/40 hover:text-[#0C0D10]">
+              <Bell size={17} />
               {alertCount > 0 && (
-                <Badge className="absolute -top-1 -right-1 w-4 h-4 p-0 flex items-center justify-center bg-rose-500 text-white border-transparent text-[8px] font-black shadow-none rounded-full">
+                <Badge className="absolute -top-0.5 -right-0.5 w-4 h-4 p-0 flex items-center justify-center bg-rose-500 text-white border-transparent text-[8px] font-bold shadow-none rounded-full">
                   {alertCount}
                 </Badge>
               )}
             </Link>
-            <Link to="/" className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-colors px-3 py-2 rounded-xl hover:bg-slate-100">
-              <Store size={15} /> View Store
+            <Link to="/" className="flex items-center gap-2 text-caption text-[#0C0D10]/40 hover:text-[#1160CB] transition-colors px-3 py-2 rounded-[8px] hover:bg-[#F0F2F8]">
+              <Store size={14} /> View Store
             </Link>
           </div>
         </div>
-        <div className="p-6 md:p-10 max-w-7xl mx-auto">{children}</div>
+        <div className="p-6 md:p-8 max-w-7xl mx-auto">{children}</div>
       </main>
     </div>
   );

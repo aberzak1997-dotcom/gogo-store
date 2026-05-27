@@ -4,128 +4,164 @@
 
 @layer base {
   :root {
+    /* ── Tailwind/shadcn tokens ── */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 230 14% 7%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 230 14% 7%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 230 14% 7%;
 
-    /* WIVITEC Blue #1528A1 */
-    --primary: 232 77% 36%;
-    --primary-foreground: 210 40% 98%;
+    /* WIVITEC Interactive Blue #1160CB */
+    --primary: 215 84% 43%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 230 33% 95%;
+    --secondary-foreground: 230 14% 7%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 230 33% 95%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 230 33% 95%;
+    --accent-foreground: 230 14% 7%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 351 84% 47%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217 19% 27%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 232 77% 36%;
+    --border: 230 20% 92%;
+    --input: 230 20% 92%;
+    --ring: 215 84% 43%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
+
+    /* ── WIVITEC Brand Palette ── */
+    --color-primary:        #1528A1;
+    --color-interactive:    #1160CB;
+    --color-accent:         #479BF7;
+    --color-rich-black:     #0C0D10;
+    --color-dark-bg:        #0E121A;
+    --color-dark-card:      #16181C;
+    --color-white:          #FFFFFF;
+    --color-surface:        #F0F2F8;
+
+    /* ── Typography ── */
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* ── Shadows ── */
+    --shadow-card:  0 4px 24px rgba(21, 40, 161, 0.08);
+    --shadow-hover: 0 8px 32px rgba(21, 40, 161, 0.16);
+    --shadow-dark:  0 4px 24px rgba(0, 0, 0, 0.4);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 230 25% 8%;
     --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
+    --card: 220 8% 10%;
     --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
+    --popover: 220 8% 10%;
     --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
+    --primary: 215 84% 43%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 8% 12%;
     --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
+    --muted: 220 8% 12%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 220 8% 12%;
     --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217 19% 27%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --destructive: 351 84% 47%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 8% 15%;
+    --input: 220 8% 15%;
+    --ring: 211 92% 62%;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-family);
+    font-size: 15px;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
+/* ── Layout ── */
 .section-container {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 }
 
-/* Custom scrollbar */
+/* ── Typography Utilities ── */
+.text-display {
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: 8px;
+  line-height: 1.05;
+}
+.text-h2 {
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  line-height: 1.2;
+}
+.text-h3 {
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+}
+.text-body {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.6;
+}
+.text-caption {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+/* ── Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
-
 ::-webkit-scrollbar-track {
-  @apply bg-slate-50;
+  background: #0E121A;
 }
-
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+  background: #1528A1;
+  border-radius: 100px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #479BF7;
 }
 
-/* Global Stroke Styling: 0.5px border with 70% dark grey */
-*, ::before, ::after {
-  border-color: rgba(55, 65, 81, 0.7) !important;
+/* ── WIVITEC Toast Notifications ── */
+.wivi-toast-success {
+  border-left: 3px solid #05b169 !important;
+}
+.wivi-toast-error {
+  border-left: 3px solid #cf202f !important;
+}
+.wivi-toast-info {
+  border-left: 3px solid #479BF7 !important;
+}
+.wivi-toast-warning {
+  border-left: 3px solid #ca8a04 !important;
 }
 
-.border {
-  border-width: 0.5px !important;
-}
-.border-t {
-  border-top-width: 0.5px !important;
-}
-.border-b {
-  border-bottom-width: 0.5px !important;
-}
-.border-l {
-  border-left-width: 0.5px !important;
-}
-.border-r {
-  border-right-width: 0.5px !important;
-}
-.border-x {
-  border-left-width: 0.5px !important;
-  border-right-width: 0.5px !important;
-}
-.border-y {
-  border-top-width: 0.5px !important;
-  border-bottom-width: 0.5px !important;
-}
-
-.card,
-[class*="card"],
-[class*="Card"],
-.premium-card {
-  border-width: 0.5px !important;
-  border-color: rgba(55, 65, 81, 0.7) !important;
-}
+/* Sonner icon color overrides */
+[data-type="success"] [data-icon] svg { color: #05b169; }
+[data-type="error"]   [data-icon] svg { color: #cf202f; }
+[data-type="info"]    [data-icon] svg { color: #479BF7; }
+[data-type="warning"] [data-icon] svg { color: #ca8a04; }
