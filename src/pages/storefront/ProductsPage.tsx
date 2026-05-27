@@ -402,7 +402,7 @@ const ProductsPage = () => {
             {/* Toggle Filters Button (Desktop & Mobile) */}
             <Button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="h-12 rounded-full px-6 font-black uppercase tracking-widest text-[10px] gap-2 border border-slate-200 bg-white text-slate-900 hover:bg-slate-50"
+              className="h-12 rounded-full px-6 font-semibold text-[13px] gap-2 border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900"
               variant="outline"
             >
               <SlidersHorizontal size={14} className="text-primary" />
@@ -425,7 +425,7 @@ const ProductsPage = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="h-12 pl-6 pr-10 rounded-full border border-slate-200 bg-white text-xs font-black uppercase tracking-widest appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 w-full sm:w-auto"
+                className="h-12 pl-6 pr-10 rounded-full border border-slate-200 bg-white text-[13px] font-semibold text-slate-700 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 w-full sm:w-auto"
               >
                 <option value="featured">Featured</option>
                 <option value="newest">Newest Arrivals</option>
