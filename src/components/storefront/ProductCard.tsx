@@ -69,7 +69,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       }}
     >
       {/* Image */}
-      <div className="relative overflow-hidden bg-[#F0F2F8] rounded-[8px] m-3 aspect-square">
+      <div className="relative overflow-hidden bg-[#F0F2F8] rounded-[8px] m-3 aspect-[5/4]">
         {displayImage ? (
           <img
             src={displayImage}
