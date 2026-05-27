@@ -69,12 +69,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
       }}
     >
       {/* Image */}
-      <div className="relative overflow-hidden bg-[#F0F2F8] rounded-[8px] m-3 aspect-[5/4]">
+      <div className="relative overflow-hidden bg-[#F0F2F8] rounded-[8px] m-3 aspect-[5/4] flex items-center justify-center p-4">
         {displayImage ? (
           <img
             src={displayImage}
             alt={product.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
             onError={(e) => {
               (e.target as HTMLImageElement).src =
                 "https://images.unsplash.com/photo-1560393464-5c69a73c5770?q=80&w=800&auto=format&fit=crop";
