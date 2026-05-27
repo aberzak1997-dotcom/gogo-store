@@ -83,7 +83,6 @@ const SectionHeader = ({
   title,
   subtitle,
   href,
-  eyebrowIcon: Icon,
 }: {
   eyebrow?: string;
   title: string;
@@ -95,7 +94,6 @@ const SectionHeader = ({
     <div className="space-y-2">
       {eyebrow && (
         <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/5 border border-primary/10 px-3 py-1 rounded-[50px]">
-          {Icon && <Icon size={12} />}
           {eyebrow}
         </div>
       )}
@@ -332,7 +330,6 @@ const HomePage = () => {
           <section className="py-20 section-container">
             <SectionHeader
               eyebrow="Browse by type"
-              eyebrowIcon={Package}
               title="Shop by Category"
               subtitle="Find exactly what you're looking for"
               href="/products"
@@ -366,7 +363,7 @@ const HomePage = () => {
               <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-6">
                 <div className="space-y-2">
                   <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-red-400 bg-red-500/10 border border-red-500/20 px-3 py-1 rounded-[50px]">
-                    <Flame size={12} /> Flash Deals
+                    Flash Deals
                   </div>
                   <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
                     Deals of the Week
@@ -411,7 +408,6 @@ const HomePage = () => {
           <section className="py-20 section-container">
             <SectionHeader
               eyebrow="Just landed"
-              eyebrowIcon={Sparkles}
               title="New Arrivals"
               subtitle="The latest additions to our catalog"
               href="/new-arrivals"
@@ -430,7 +426,6 @@ const HomePage = () => {
             <div className="section-container">
               <SectionHeader
                 eyebrow="Reviews"
-                eyebrowIcon={Star}
                 title="Loved by thousands"
                 subtitle="What our customers say about us"
               />
@@ -486,7 +481,6 @@ const HomePage = () => {
           <section className="py-20 section-container">
             <SectionHeader
               eyebrow="Top rated"
-              eyebrowIcon={TrendingUp}
               title="Best Sellers"
               subtitle="Our most popular picks this month"
               href="/best-sellers"
