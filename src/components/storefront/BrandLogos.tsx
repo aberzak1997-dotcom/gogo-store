@@ -17,18 +17,23 @@ const BrandLogos = () => {
 
   return (
     <section className="px-4 md:px-6 max-w-[1400px] mx-auto my-4">
-      <div className="h-auto py-4 px-5 bg-[#1528A1] rounded-[100px] overflow-hidden relative flex items-center">
+      <div className="h-auto py-4 px-5 bg-[#1528A1] rounded-none overflow-hidden relative flex items-center">
         <div className="relative flex overflow-hidden group w-full">
           <div className="flex animate-marquee whitespace-nowrap gap-8 md:gap-16 items-center py-0">
-            {displayBrands.map((brand, idx) => (
-              <div key={`${brand.name}-${idx}`} className="flex-shrink-0 flex items-center justify-center h-[18px] md:h-[23px]">
-                <img
-                  src={brand.logo}
-                  alt={brand.name}
-                  className="h-full w-auto object-contain opacity-75 brightness-0 invert hover:opacity-100 transition-all duration-500"
-                />
-              </div>
-            ))}
+            {displayBrands.map((brand, idx) => {
+              const isSmaller = brand.name === "Sony" || brand.name === "Samsung";
+              return (
+                <div key={`${brand.name}-${idx}`} className="flex-shrink-0 flex items-center justify-center h-[18px] md:h-[23px]">
+                  <img
+                    src={brand.logo}
+                    alt={brand.name}
+                    className={`h-full w-auto object-contain opacity-75 brightness-0 invert hover:opacity-100 transition-all duration-500 ${
+                      isSmaller ? "scale-[0.8]" : ""
+                    }`}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
