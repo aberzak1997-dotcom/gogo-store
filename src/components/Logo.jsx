@@ -11,7 +11,7 @@ export default function Logo({ width = 140 }) {
         fontFamily="Inter, -apple-system, sans-serif"
         fontSize="26"
         fontWeight="700"
-        fill="#0033CC"
+        fill="#1528A1"
         letterSpacing="-0.5"
       >
         WIVITEC
@@ -21,7 +21,7 @@ export default function Logo({ width = 140 }) {
         fontFamily="Inter, -apple-system, sans-serif"
         fontSize="7.5"
         fontWeight="400"
-        fill="#0033CC"
+        fill="#1528A1"
         letterSpacing="2.5"
       >
         TECHNOLOGY. ELEVATED.

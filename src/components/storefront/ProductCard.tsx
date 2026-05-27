@@ -85,7 +85,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           {discount > 0 && (
-            <span className="bg-[#0033CC] text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-sm">
+            <span className="bg-[#1528A1] text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-sm">
               {discount}% OFF
             </span>
           )}
@@ -132,7 +132,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
               <span className="text-[10px] text-slate-500 font-bold">{product.rating}</span>
             </div>
           </div>
-          <h3 className="font-bold text-slate-900 group-hover:text-[#0033CC] transition-colors line-clamp-1">
+          <h3 className="font-bold text-slate-900 group-hover:text-[#1528A1] transition-colors line-clamp-1">
             {product.title}
           </h3>
         </div>
@@ -156,7 +156,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
               onClick={handleAddToCart}
               disabled={currentStock === 0}
               size="sm"
-              className="bg-slate-900 hover:bg-[#0033CC] text-white rounded-full px-6 h-8 text-[10px] font-black uppercase tracking-widest transition-all duration-300 shadow-md hover:shadow-lg shadow-slate-100"
+              className="bg-slate-900 hover:bg-[#1528A1] text-white rounded-full px-6 h-8 text-[10px] font-black uppercase tracking-widest transition-all duration-300 shadow-md hover:shadow-lg shadow-slate-100"
             >
               Buy
             </Button>

@@ -51,7 +51,7 @@ const CookieConsent = () => {
           <p className="text-slate-600 text-xs font-medium leading-relaxed">
             We use cookies to improve your experience, analyze traffic, and personalize content.
             By clicking "Accept", you agree to our{" "}
-            <Link to="/privacy-policy" className="text-[#0033CC] hover:underline font-bold">
+            <Link to="/privacy-policy" className="text-[#1528A1] hover:underline font-bold">
               Privacy Policy
             </Link>
             .
@@ -71,7 +71,7 @@ const CookieConsent = () => {
           <Button
             size="sm"
             onClick={accept}
-            className="bg-[#0033CC] hover:bg-[#002299] text-white text-xs font-black uppercase tracking-widest rounded-xl gap-2 flex-1 sm:flex-none"
+            className="bg-[#1528A1] hover:bg-[#0f1d75] text-white text-xs font-black uppercase tracking-widest rounded-xl gap-2 flex-1 sm:flex-none"
           >
             <ShieldCheck size={14} /> Accept All
           </Button>

@@ -199,7 +199,7 @@ const CheckoutPage = () => {
       ? Math.round(subtotal * (found.value / 100) * 100) / 100
       : found.value;
     setAppliedDiscount({ code: found.code, amount, type: found.type });
-    showSuccess(`Discount "${found.code}" applied! You save ${currency} ${amount.toFixed(2)}`);
+    showSuccess(`Discount "${found.code}" applied! You save {currency} {amount.toFixed(2)}`);
   };
 
   const placeOrder = (): string | null =>
@@ -540,7 +540,7 @@ const CheckoutPage = () => {
                   <p className="text-[10px] text-slate-400 text-center font-medium pt-3 px-2">
                     By placing your order you agree to our{" "}
                     <Link to="/terms" className="underline hover:text-slate-600 font-bold">Terms</Link>
-                    {" "}&amp;{" "}
+                    {" "}&{" "}
                     <Link to="/privacy-policy" className="underline hover:text-slate-600 font-bold">Privacy Policy</Link>
                   </p>
                 </div>

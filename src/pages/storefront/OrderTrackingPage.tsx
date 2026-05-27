@@ -74,7 +74,7 @@ const OrderCard = ({ order }: { order: Order }) => {
                     <div className={cn(
                       "w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all",
                       reached || current
-                        ? "bg-[#0033CC] text-white shadow-lg shadow-[#0033CC]/20"
+                        ? "bg-[#1528A1] text-white shadow-lg shadow-[#1528A1]/20"
                         : "bg-slate-100 text-slate-400"
                     )}>
                       {reached && !current ? <CheckCircle2 size={14} /> : i + 1}
@@ -87,7 +87,7 @@ const OrderCard = ({ order }: { order: Order }) => {
                   {i < STEPS.length - 1 && (
                     <div className={cn(
                       "flex-1 h-0.5 mx-1 mb-5 transition-all",
-                      status.step > i + 1 ? "bg-[#0033CC]" : "bg-slate-100"
+                      status.step > i + 1 ? "bg-[#1528A1]" : "bg-slate-100"
                     )} />
                   )}
                 </React.Fragment>
@@ -153,7 +153,7 @@ const OrderCard = ({ order }: { order: Order }) => {
               <div className="space-y-3">
                 {order.timeline.map((event, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-[#0033CC] mt-1.5 flex-shrink-0" />
+                    <div className="w-2 h-2 rounded-full bg-[#1528A1] mt-1.5 flex-shrink-0" />
                     <div>
                       <p className="text-xs font-bold text-slate-700">{event.note}</p>
                       <p className="text-[10px] text-slate-400 font-medium">
@@ -264,7 +264,7 @@ const OrderTrackingPage = () => {
           {!searched && (
             <div className="bg-slate-900 rounded-3xl p-8 text-white flex flex-col sm:flex-row items-start sm:items-center gap-6">
               <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center flex-shrink-0">
-                <Truck size={22} className="text-[#0033CC]" />
+                <Truck size={22} className="text-[#1528A1]" />
               </div>
               <div className="flex-1">
                 <h4 className="font-black text-lg uppercase tracking-tight mb-1">Need Help?</h4>
