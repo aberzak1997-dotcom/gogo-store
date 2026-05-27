@@ -94,7 +94,7 @@ const SectionHeader = ({
   <div className="flex items-end justify-between mb-10">
     <div className="space-y-2">
       {eyebrow && (
-        <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-primary">
+        <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/5 border border-primary/10 px-3 py-1 rounded-[50px]">
           {Icon && <Icon size={12} />}
           {eyebrow}
         </div>
@@ -365,7 +365,7 @@ const HomePage = () => {
             <div className="section-container relative z-10">
               <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-6">
                 <div className="space-y-2">
-                  <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-red-400">
+                  <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-red-400 bg-red-500/10 border border-red-500/20 px-3 py-1 rounded-[50px]">
                     <Flame size={12} /> Flash Deals
                   </div>
                   <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
@@ -504,7 +504,7 @@ const HomePage = () => {
           <section className="py-20 section-container">
             <div className="bg-gradient-to-br from-primary/5 via-primary/3 to-transparent border border-primary/10 rounded-3xl p-10 md:p-16 flex flex-col md:flex-row items-center gap-10">
               <div className="flex-1 space-y-4 text-center md:text-left">
-                <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-primary">
+                <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/5 border border-primary/10 px-3 py-1 rounded-[50px]">
                   <Zap size={11} /> Exclusive access
                 </div>
                 <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">
