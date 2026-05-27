@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "@/components/Logo";
 import {
@@ -39,10 +39,16 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { cart } = useStore();
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  
+  const { cart, products } = useStore();
   const { customer, customerLogout, wishlist } = useCustomerAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const desktopSearchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLFormElement>(null);
 
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -52,12 +58,55 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Handle click outside to close suggestions
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        desktopSearchRef.current &&
+        !desktopSearchRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Generate suggestions based on search query
+  useEffect(() => {
+    if (!searchQuery.trim() || !products) {
+      setSuggestions([]);
+      return;
+    }
+
+    const query = searchQuery.toLowerCase().trim();
+    const filtered = products
+      .filter(
+        (product) =>
+          product.status === "active" &&
+          (product.title.toLowerCase().includes(query) ||
+            product.brand.toLowerCase().includes(query) ||
+            product.category.toLowerCase().includes(query))
+      )
+      .slice(0, 5); // Limit to 5 suggestions
+
+    setSuggestions(filtered);
+  }, [searchQuery, products]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/products?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery("");
+      setShowSuggestions(false);
     }
+  };
+
+  const handleSuggestionClick = (productId: string) => {
+    navigate(`/product/${productId}`);
+    setSearchQuery("");
+    setShowSuggestions(false);
+    setIsMenuOpen(false);
   };
 
   const mainCategories = [
@@ -145,19 +194,65 @@ const Header = () => {
           {/* Right actions */}
           <div className="flex items-center gap-2">
             {/* Search — desktop */}
-            <form onSubmit={handleSearch} className="relative hidden md:flex w-[200px]">
-              <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#0C0D10]/30"
-                size={15}
-              />
-              <Input
-                type="text"
-                placeholder="Search products…"
-                className="w-full pl-9 pr-3 h-9 bg-[#F0F2F8] border border-[#F0F2F8] rounded-[8px] text-[13px] text-[#0C0D10] placeholder:text-[#0C0D10]/30 focus-visible:ring-1 focus-visible:ring-[#1160CB] focus-visible:border-[#1160CB]"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </form>
+            <div ref={desktopSearchRef} className="relative hidden md:block w-[240px]">
+              <form onSubmit={handleSearch} className="relative">
+                <Search
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-[#0C0D10]/30"
+                  size={15}
+                />
+                <Input
+                  type="text"
+                  placeholder="Search products…"
+                  className="w-full pl-9 pr-3 h-9 bg-[#F0F2F8] border border-[#F0F2F8] rounded-[8px] text-[13px] text-[#0C0D10] placeholder:text-[#0C0D10]/30 focus-visible:ring-1 focus-visible:ring-[#1160CB] focus-visible:border-[#1160CB]"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setShowSuggestions(true);
+                  }}
+                  onFocus={() => setShowSuggestions(true)}
+                />
+              </form>
+
+              {/* Suggestions Dropdown */}
+              {showSuggestions && searchQuery.trim() && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#F0F2F8] rounded-[8px] shadow-lg overflow-hidden z-50 max-h-[300px] overflow-y-auto">
+                  {suggestions.length > 0 ? (
+                    <div className="py-1">
+                      <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50">
+                        Suggested Products
+                      </div>
+                      {suggestions.map((product) => (
+                        <button
+                          key={product.id}
+                          onClick={() => handleSuggestionClick(product.id)}
+                          className="w-full text-left px-3 py-2 flex items-center gap-3 hover:bg-[#F0F2F8] transition-colors"
+                        >
+                          {product.imageUrl && (
+                            <img
+                              src={product.imageUrl}
+                              alt={product.title}
+                              className="w-8 h-8 object-contain rounded bg-slate-50 p-0.5 flex-shrink-0"
+                            />
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-semibold text-slate-800 truncate">
+                              {product.title}
+                            </p>
+                            <p className="text-[10px] text-slate-400">
+                              {product.brand} · ${product.price.toFixed(2)}
+                            </p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-4 text-center text-xs text-slate-400">
+                      No products found
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Cart */}
             <Link to="/checkout">
@@ -313,16 +408,59 @@ const Header = () => {
 
           <div className="flex-1 overflow-y-auto p-6 space-y-8">
             {/* Search */}
-            <form onSubmit={(e) => { handleSearch(e); setIsMenuOpen(false); }} className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#0C0D10]/30" size={16} />
-              <Input
-                type="text"
-                placeholder="Search products…"
-                className="w-full pl-10 h-12 bg-[#F0F2F8] border border-[#F0F2F8] rounded-[8px] text-[#0C0D10] placeholder:text-[#0C0D10]/30 text-[15px]"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </form>
+            <div className="relative">
+              <form onSubmit={(e) => { handleSearch(e); setIsMenuOpen(false); }} className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#0C0D10]/30" size={16} />
+                <Input
+                  type="text"
+                  placeholder="Search products…"
+                  className="w-full pl-10 h-12 bg-[#F0F2F8] border border-[#F0F2F8] rounded-[8px] text-[#0C0D10] placeholder:text-[#0C0D10]/30 text-[15px]"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setShowSuggestions(true);
+                  }}
+                  onFocus={() => setShowSuggestions(true)}
+                />
+              </form>
+
+              {/* Mobile Suggestions Dropdown */}
+              {showSuggestions && searchQuery.trim() && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#F0F2F8] rounded-[8px] shadow-lg overflow-hidden z-50 max-h-[250px] overflow-y-auto">
+                  {suggestions.length > 0 ? (
+                    <div className="py-1">
+                      {suggestions.map((product) => (
+                        <button
+                          key={product.id}
+                          onClick={() => handleSuggestionClick(product.id)}
+                          className="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-[#F0F2F8] transition-colors border-b border-slate-50 last:border-0"
+                        >
+                          {product.imageUrl && (
+                            <img
+                              src={product.imageUrl}
+                              alt={product.title}
+                              className="w-10 h-10 object-contain rounded bg-slate-50 p-0.5 flex-shrink-0"
+                            />
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-semibold text-slate-800 truncate">
+                              {product.title}
+                            </p>
+                            <p className="text-xs text-slate-400">
+                              {product.brand} · ${product.price.toFixed(2)}
+                            </p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-4 text-center text-xs text-slate-400">
+                      No products found
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Nav links */}
             <div className="space-y-1">
