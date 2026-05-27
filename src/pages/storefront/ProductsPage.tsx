@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
@@ -8,403 +8,555 @@ import ProductCard from "../../components/storefront/ProductCard";
 import { useStore } from "../../context/StoreContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Search, 
+  Filter, 
+  Laptop, 
+  Headphones, 
+  Gamepad2, 
+  HardDrive, 
+  X, 
+  Zap, 
+  Keyboard, 
+  MousePointer2, 
+  Video, 
+  Star, 
+  SlidersHorizontal, 
+  RotateCcw,
+  ChevronDown,
+  Check,
+  Menu
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const AdminIntegrationsPage = () => {
-  const { addProduct, products } = useStore();
+const ProductsPage = () => {
+  const { products } = useStore();
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Search & Category from URL
+  const categoryParam = searchParams.get("category") || "all";
+  const searchParam = searchParams.get("q") || "";
 
-  const [importOpen, setImportOpen] = useState(false);
-  const [category, setCategory] = useState("smartphones");
-  const [limit, setLimit] = useState("10");
-  const [previewing, setPreviewing] = useState(false);
-  const [importing, setImporting] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [previewItems, setPreviewItems] = useState<DummyProduct[]>([]);
-  const [totalImported, setTotalImported] = useState(() => 
-    parseInt(localStorage.getItem("integrations_imported") || "0")
-  );
+  // Sidebar Open/Closed State (Closed by default)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Fetch from DummyJSON
-  const handlePreview = async () => {
-    setPreviewing(true);
-    setPreviewItems([]);
-    try {
-      const res = await fetch(
-        `https://dummyjson.com/products/category/${category}?limit=${limit}`
+  // Advanced Filter States
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [minPrice, setMinPrice] = useState<string>("");
+  const [maxPrice, setMaxPrice] = useState<string>("");
+  const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
+  const [minRating, setMinRating] = useState<number | null>(null);
+  const [sortBy, setSortBy] = useState<string>("featured");
+
+  // Collapsible Section States
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(true);
+  const [isPriceOpen, setIsPriceOpen] = useState(true);
+  const [isBrandsOpen, setIsBrandsOpen] = useState(true);
+  const [isConditionOpen, setIsConditionOpen] = useState(true);
+  const [isRatingOpen, setIsRatingOpen] = useState(true);
+
+  // Reset filters when category changes
+  useEffect(() => {
+    setSelectedBrands([]);
+    setMinPrice("");
+    setMaxPrice("");
+    setSelectedConditions([]);
+    setMinRating(null);
+  }, [categoryParam]);
+
+  // Categories list with icons
+  const categories = [
+    { name: "Keyboards", icon: Keyboard, path: "Gaming Accessories" },
+    { name: "Mice", icon: MousePointer2, path: "PC Accessories" },
+    { name: "Audio", icon: Headphones, path: "Audio" },
+    { name: "Webcams", icon: Video, path: "PC Accessories" },
+    { name: "Chargers", icon: Zap, path: "Chargers & Cables" },
+    { name: "Storage", icon: HardDrive, path: "Storage Devices" },
+    { name: "Gaming", icon: Gamepad2, path: "Gaming Accessories" },
+    { name: "Laptops", icon: Laptop, path: "Laptop Accessories" },
+  ];
+
+  // Extract unique brands dynamically based on current category
+  const availableBrands = useMemo(() => {
+    const filteredByCategory = products.filter(p => 
+      p.status === "active" && (categoryParam === "all" || p.category === categoryParam)
+    );
+    const brands = filteredByCategory.map(p => p.brand);
+    return Array.from(new Set(brands)).filter(Boolean);
+  }, [products, categoryParam]);
+
+  // Filter & Sort Logic
+  const filteredProducts = useMemo(() => {
+    let result = products.filter(p => p.status === "active");
+    
+    // 1. Category Filter
+    if (categoryParam !== "all") {
+      result = result.filter(p => p.category === categoryParam);
+    }
+    
+    // 2. Search Filter
+    if (searchParam) {
+      const s = searchParam.toLowerCase();
+      result = result.filter(p => 
+        p.title.toLowerCase().includes(s) || 
+        p.brand.toLowerCase().includes(s) || 
+        p.description.toLowerCase().includes(s)
       );
-      if (!res.ok) throw new Error("Network error");
-      const data = await res.json();
-      setPreviewItems(data.products ?? []);
-    } catch {
-      showError("Failed to fetch products from DummyJSON API");
-    } finally {
-      setPreviewing(false);
-    }
-  };
-
-  const handleImport = async () => {
-    if (previewItems.length === 0) return;
-    setImporting(true);
-    setProgress(0);
-    let count = 0;
-
-    for (const p of previewItems) {
-      const sku = `DJSON-${p.id}-${Date.now()}`;
-      if (products.some(e => e.sku.startsWith(`DJSON-${p.id}-`))) {
-        count++;
-        setProgress(Math.round((count / previewItems.length) * 100));
-        continue;
-      }
-
-      const compareAtPrice = p.discountPercentage > 0
-        ? parseFloat((p.price / (1 - p.discountPercentage / 100)).toFixed(2))
-        : undefined;
-
-      const newProduct: Product = {
-        id: `PROD-${Date.now()}-${p.id}`,
-        title: p.title,
-        description: p.description,
-        sku: sku,
-        brand: p.brand ?? "Unknown",
-        category: p.category,
-        subcategory: "",
-        price: p.price,
-        compareAtPrice,
-        stockQuantity: p.stock,
-        imageUrl: p.thumbnail,
-        galleryImages: p.images ?? [],
-        rating: parseFloat(p.rating.toFixed(1)),
-        reviewCount: 0,
-        status: "active",
-        compatibility: [],
-        specs: {},
-        warranty: "1 Year",
-        condition: "new",
-        createdAt: new Date().toISOString(),
-        variants: [],
-      };
-
-      addProduct(newProduct);
-      count++;
-      setProgress(Math.round((count / previewItems.length) * 100));
-      await new Promise(r => setTimeout(r, 80));
     }
 
-    const newTotal = totalImported + count;
-    setTotalImported(newTotal);
-    localStorage.setItem("integrations_imported", String(newTotal));
-    setImporting(false);
-    setImportOpen(false);
-    setPreviewItems([]);
-    showSuccess(`${count} products imported to your store!`);
+    // 3. Brand Filter
+    if (selectedBrands.length > 0) {
+      result = result.filter(p => selectedBrands.includes(p.brand));
+    }
+
+    // 4. Price Filter
+    if (minPrice !== "") {
+      result = result.filter(p => p.price >= parseFloat(minPrice));
+    }
+    if (maxPrice !== "") {
+      result = result.filter(p => p.price <= parseFloat(maxPrice));
+    }
+
+    // 5. Condition Filter
+    if (selectedConditions.length > 0) {
+      result = result.filter(p => selectedConditions.includes(p.condition));
+    }
+
+    // 6. Rating Filter
+    if (minRating !== null) {
+      result = result.filter(p => p.rating >= minRating);
+    }
+
+    // 7. Sorting
+    if (sortBy === "price-asc") {
+      result.sort((a, b) => a.price - b.price);
+    } else if (sortBy === "price-desc") {
+      result.sort((a, b) => b.price - a.price);
+    } else if (sortBy === "rating") {
+      result.sort((a, b) => b.rating - a.rating);
+    } else if (sortBy === "newest") {
+      result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    
+    return result;
+  }, [products, categoryParam, searchParam, selectedBrands, minPrice, maxPrice, selectedConditions, minRating, sortBy]);
+
+  // Handle Search Input Change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value) {
+      searchParams.set("q", value);
+    } else {
+      searchParams.delete("q");
+    }
+    setSearchParams(searchParams);
   };
 
-  return (
-    <div className="p-6 space-y-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Integrations</h1>
-          <p className="text-slate-500 mt-2 font-medium">Connect suppliers, apps, and tools to grow your store</p>
-        </div>
-        <div className="flex gap-3">
-          <div className="flex items-center gap-2 px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-xl">
-            <CheckCircle2 size={16} className="text-emerald-600" />
-            <span className="text-sm font-bold text-emerald-700">1 Active</span>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl">
-            <Boxes size={16} className="text-slate-600" />
-            <span className="text-sm font-bold text-slate-700">{totalImported} Imported</span>
-          </div>
-        </div>
-      </div>
+  // Toggle Brand Selection
+  const handleBrandToggle = (brand: string) => {
+    setSelectedBrands(prev => 
+      prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
+    );
+  };
 
-      {/* Supplier Integrations */}
-      <section>
-        <div className="flex items-center gap-2 mb-4">
-          <Truck size={18} className="text-slate-700" />
-          <h2 className="text-lg font-black text-slate-800">Product Suppliers</h2>
-          <Badge variant="secondary" className="text-xs">Import products directly</Badge>
-        </div>
+  // Toggle Condition Selection
+  const handleConditionToggle = (condition: string) => {
+    setSelectedConditions(prev => 
+      prev.includes(condition) ? prev.filter(c => c !== condition) : [...prev, condition]
+    );
+  };
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            {
-              name: "AliExpress Supplier",
-              desc: "Connect your AliExpress supplier account and import dropshipping products directly.",
-              icon: "🛒",
-              tags: ["Dropshipping", "Global", "Auto-sync"],
-              gradient: "from-orange-500 to-red-500",
-              shadow: "shadow-orange-200",
-              bg: "from-orange-50/30",
-            },
-            {
-              name: "Amazon Product Feed",
-              desc: "Import and sync products from Amazon marketplace with automatic pricing updates.",
-              icon: "📦",
-              tags: ["Amazon", "Auto-price", "FBA"],
-              gradient: "from-yellow-500 to-orange-500",
-              shadow: "shadow-yellow-200",
-              bg: "from-yellow-50/30",
-            },
-            {
-              name: "Dropshipping Hub",
-              desc: "Access thousands of suppliers in one place. Auto-fulfill orders with one click.",
-              icon: "🚀",
-              tags: ["Multi-supplier", "Auto-fulfill", "Analytics"],
-              gradient: "from-blue-500 to-indigo-600",
-              shadow: "shadow-blue-200",
-              bg: "from-blue-50/30",
-            },
-            {
-              name: "Shopify Import",
-              desc: "Migrate your existing Shopify store products, customers, and orders seamlessly.",
-              icon: "🏪",
-              tags: ["Migration", "Products", "Customers"],
-              gradient: "from-green-500 to-teal-500",
-              shadow: "shadow-green-200",
-              bg: "from-green-50/30",
-            },
-            {
-              name: "WooCommerce Sync",
-              desc: "Sync products and orders from your WordPress WooCommerce store in real time.",
-              icon: "🔄",
-              tags: ["WordPress", "Real-time", "Orders"],
-              gradient: "from-purple-500 to-pink-500",
-              shadow: "shadow-purple-200",
-              bg: "from-purple-50/30",
-            },
-          ].
+  // Clear All Filters
+  const handleClearAll = () => {
+    setSelectedBrands([]);
+    setMinPrice("");
+    setMaxPrice("");
+    setSelectedConditions([]);
+    setMinRating(null);
+    setSortBy("featured");
+    setSearchParams({});
+  };
 
-          {/* Coming Soon cards */}
-          {[
-
-            {
-              name: "AliExpress Supplier",
-              desc: "Connect your AliExpress supplier account and import dropshipping products directly.",
-              icon: "🛒",
-              tags: ["Dropshipping", "Global", "Auto-sync"],
-              gradient: "from-orange-500 to-red-500",
-              shadow: "shadow-orange-200",
-              bg: "from-orange-50/30",
-            },
-            {
-              name: "Amazon Product Feed",
-              desc: "Import and sync products from Amazon marketplace with automatic pricing updates.",
-              icon: "📦",
-              tags: ["Amazon", "Auto-price", "FBA"],
-              gradient: "from-yellow-500 to-orange-500",
-              shadow: "shadow-yellow-200",
-              bg: "from-yellow-50/30",
-            },
-            {
-              name: "Dropshipping Hub",
-              desc: "Access thousands of suppliers in one place. Auto-fulfill orders with one click.",
-              icon: "🚀",
-              tags: ["Multi-supplier", "Auto-fulfill", "Analytics"],
-              gradient: "from-blue-500 to-indigo-600",
-              shadow: "shadow-blue-200",
-              bg: "from-blue-50/30",
-            },
-            {
-              name: "Shopify Sync",
-              desc: "Migrate your existing Shopify store products, customers, and orders seamlessly.",
-              icon: "🏪",
-              tags: ["Migration", "Products", "Customers"],
-              gradient: "from-green-500 to-teal-500",
-              bg: "from-green-50/30",
-            },
-            {
-              name: "WooCommerce Sync",
-              desc: "Sync products and orders from your WordPress WooCommerce store in real time.",
-              icon: "🔄",
-              tags: ["WordPress", "Real-time", "Orders"],
-              gradient: "from-purple-500 to-pink-500",
-              shadow: "shadow-purple-200",
-              bg: "from-purple-50/30",
-            },
-          ].map((int) => (
-            <Card
-              key={int.name}
+  // Sidebar Filter Content Component to avoid duplication
+  const SidebarContent = () => (
+    <div className="space-y-6">
+      {/* Categories Section */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+        <button 
+          onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+          className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 pb-3 border-b border-slate-50"
+        >
+          <span className="flex items-center gap-2.5">
+            <SlidersHorizontal size={14} className="text-primary" /> Categories
+          </span>
+          <ChevronDown size={14} className={cn("text-slate-400 transition-transform duration-200", isCategoriesOpen && "rotate-180")} />
+        </button>
+        {isCategoriesOpen && (
+          <div className="space-y-1 animate-in fade-in duration-200">
+            <button
+              onClick={() => {
+                searchParams.delete("category");
+                setSearchParams(searchParams);
+              }}
               className={cn(
-                "border border-slate-100 shadow-sm bg-gradient-to-br from-white",
-                int.bg,
-                isBrandsOpen && "opacity-80"
+                "w-full text-left px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between",
+                categoryParam === "all" ? "bg-primary/5 text-primary" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
               )}
             >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br {int.gradient} flex items-center justify-center shadow-lg shadow-{int.shadow}">
-                      <Icon size={22} />
-                    </div>
-                    <div>
-                      <CardTitle className="text-base font-black text-slate-900">{int.name}</CardTitle>
-                    </div>
-                  </div>
-                  <Badge variant="secondary" className="text-xs">
-                    <Clock size={11} className="mr-1" /> Soon
-                  </Badge>
-                </div>
-              </Card>
+              All Products
+              {categoryParam === "all" && <Check size={14} />}
+            </button>
+            {categories.map((cat) => (
+              <button
+                key={cat.name}
+                onClick={() => {
+                  searchParams.set("category", cat.path);
+                  setSearchParams(searchParams);
+                }}
+                className={cn(
+                  "w-full text-left px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between",
+                  categoryParam === cat.path ? "bg-primary/5 text-primary" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                )}
+              >
+                <span className="flex items-center gap-2">
+                  <cat.icon size={14} className="text-slate-400" />
+                  {cat.name}
+                </span>
+                {categoryParam === cat.path && <Check size={14} />}
+              </button>
             ))}
           </div>
-        </div>
+        )}
+      </div>
 
-        {/* Import Dialog */}
-        <Dialog open={importOpen} onOpenChange={setImportOpen}>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-black flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-emerald-600 flex items-center justify-center">
-                  <Download size={16} className="text-white" />
-                </div>
-                <span>Import from DummyJSON</span>
-              </DialogHeader>
-              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl p-0 border-none shadow-2xl">
-                <div className="space-y-5 pt-2">
-                  {/* Config */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Category</label>
-                      <Select value={category} onChange={setCategory} disabled={importing}>
-                        <SelectTrigger className="rounded-xl h-12">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="smartphones">Smartphones</SelectItem>
-                          <SelectItem value="laptops">Laptops</SelectItem>
-                          <SelectItem value="mens-watches">Men's Watches</SelectItem>
-                          <SelectItem value="womens-watches">Women's Watches</SelectItem>
-                          <SelectItem value="automotive">Automotive</SelectItem>
-                          <SelectItem value="lighting">Lighting</SelectItem>
-                          <SelectItem value="furniture">Furniture</SelectItem>
-                          <SelectItem value="home-decoration">Home Decoration</SelectItem>
-                          <SelectItem value="tops">Tops</SelectItem>
-                          <SelectItem value="sunglasses">Sunglasses</SelectItem>
-                        </Select>
-                      </Select>
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Number of Products</label>
-                      <Select value={limit} onChange={setLimit} disabled={importing}>
-                        <SelectTrigger className="rounded-xl h-12">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="5">5 products</SelectItem>
-                          <SelectItem value="10">10 products</SelectItem>
-                          <SelectItem value="20">20 products</SelectItem>
-                          <SelectItem value="30">30 products</SelectItem>
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Preview button */}
-                  {!importing && (
-                    <Button
-                      onClick={handlePreview}
-                      disabled={previewing}
-                      className="w-full rounded-xl font-bold gap-2 h-11"
-                    >
-                      {previewing ? (
-                        <>
-                          <RefreshCw size={16} className="animate-spin" />
-                          Fetching products...
-                        </> 
-                      ) : (
-                        <>
-                          <RefreshCw size={16} /> Preview Products
-                        </>
-                      )}
-                    </Button>
-                  </Button>
-                </div>
-
-                {/* Progress */}
-                {importing && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm font-medium">
-                      <span className="text-slate-600">Importing products...</span>
-                      <span className="text-slate-900 font-bold">{progress}%</span>
-                    </div>
-                    <Progress value={progress} className="h-3 rounded-full" />
-                  </div>
-                )}
-
-                {/* Product Preview Grid */}
-                {previewItems.length > 0 && !importing && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm font-bold text-slate-700">
-                        {previewItems.length} products ready to import
-                      </div>
-                      <Badge className="bg-emerald-100 text-emerald-700 font-bold">
-                        From dummyjson.com
-                      </Badge>
-                    </div>
-
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-64 overflow-y-auto pr-1">
-                      {previewItems.map((p) => (
-                        <div key={p.id} className="border border-slate-100 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
-                          <img
-                            src={p.thumbnail}
-                            alt={p.title}
-                            className="w-full h-24 object-cover bg-slate-100"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src =
-                                "https://placehold.co/200x200?text=No+Image";
-                            }}
-                          />
-                        </div>
-                        <div className="p-2">
-                          <p className="text-xs font-bold text-slate-800 truncate">{p.title}</p>
-                          <div className="flex items-center justify-between mt-1">
-                            <p className="text-xs font-black text-emerald-600">${p.price}</p>
-                            <p className="text-[10px] text-slate-400">Qty: {p.stock}</p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Import confirm */}
-                  {previewItems.length > 0 && !importing && (
-                    <div className="flex gap-3 pt-2">
-                      <Button
-                        variant="outline"
-                        className="flex-1 rounded-xl font-bold"
-                        onClick={() => setImportOpen(false)}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        className="flex-1 rounded-xl font-black gap-2 bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-200"
-                        onClick={handleImport}
-                      >
-                        <Download size={16} /> Import {previewItems.length} Products
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Empty state */}
-                {previewItems.length === 0 && !previewing && (
-                  <div className="text-center py-8 text-slate-400">
-                    <Globe size={40} className="mx-auto mb-3 opacity-30" />
-                    <p className="text-sm font-medium">Click "Preview Products" to fetch from the API</p>
-                  </div>
-                </div>
+      {/* Price Range Section */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+        <button 
+          onClick={() => setIsPriceOpen(!isPriceOpen)}
+          className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 pb-3 border-b border-slate-50"
+        >
+          <span>Price Range</span>
+          <ChevronDown size={14} className={cn("text-slate-400 transition-transform duration-200", isPriceOpen && "rotate-180")} />
+        </button>
+        {isPriceOpen && (
+          <div className="space-y-3 animate-in fade-in duration-200">
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">$</span>
+                <Input
+                  type="number"
+                  placeholder="Min"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  className="pl-7 h-10 rounded-xl text-xs font-bold border-slate-200"
+                />
               </div>
+              <span className="text-slate-300 text-xs font-bold">to</span>
+              <div className="relative flex-1">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">$</span>
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(e.target.value)}
+                  className="pl-7 h-10 rounded-xl text-xs font-bold border-slate-200"
+                />
+              </div>
+            </div>
+            
+            {/* Quick Price Presets */}
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              {[
+                { label: "Under $50", min: "", max: "50" },
+                { label: "$50 - $150", min: "50", max: "150" },
+                { label: "$150+", min: "150", max: "" }
+              ].map((preset, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => { setMinPrice(preset.min); setMaxPrice(preset.max); }}
+                  className="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-600 transition-colors"
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Brands Section */}
+      {availableBrands.length > 0 && (
+        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+          <button 
+            onClick={() => setIsBrandsOpen(!isBrandsOpen)}
+            className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 pb-3 border-b border-slate-50"
+          >
+            <span>Brands</span>
+            <ChevronDown size={14} className={cn("text-slate-400 transition-transform duration-200", isBrandsOpen && "rotate-180")} />
+          </button>
+          {isBrandsOpen && (
+            <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar pr-1 animate-in fade-in duration-200">
+              {availableBrands.map((brand) => (
+                <label key={brand} className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={selectedBrands.includes(brand)}
+                    onChange={() => handleBrandToggle(brand)}
+                    className="rounded border-slate-300 text-primary focus:ring-primary/20 h-4 w-4"
+                  />
+                  <span className="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition-colors">
+                    {brand}
+                  </span>
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Condition Section */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+        <button 
+          onClick={() => setIsConditionOpen(!isConditionOpen)}
+          className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 pb-3 border-b border-slate-50"
+        >
+          <span>Condition</span>
+          <ChevronDown size={14} className={cn("text-slate-400 transition-transform duration-200", isConditionOpen && "rotate-180")} />
+        </button>
+        {isConditionOpen && (
+          <div className="space-y-2 animate-in fade-in duration-200">
+            {["new", "refurbished", "used"].map((cond) => (
+              <label key={cond} className="flex items-center gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={selectedConditions.includes(cond)}
+                  onChange={() => handleConditionToggle(cond)}
+                  className="rounded border-slate-300 text-primary focus:ring-primary/20 h-4 w-4"
+                />
+                <span className="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition-colors capitalize">
+                  {cond}
+                </span>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Customer Rating Section */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+        <button 
+          onClick={() => setIsRatingOpen(!isRatingOpen)}
+          className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 pb-3 border-b border-slate-50"
+        >
+          <span>Customer Rating</span>
+          <ChevronDown size={14} className={cn("text-slate-400 transition-transform duration-200", isRatingOpen && "rotate-180")} />
+        </button>
+        {isRatingOpen && (
+          <div className="space-y-2 animate-in fade-in duration-200">
+            {[4, 3, 2].map((rating) => (
+              <button
+                key={rating}
+                onClick={() => setMinRating(rating)}
+                className={cn(
+                  "w-full flex items-center gap-2 text-xs font-bold py-1.5 px-2 rounded-lg transition-colors text-left",
+                  minRating === rating ? "bg-slate-50 text-slate-900" : "text-slate-500 hover:bg-slate-50/50"
+                )}
+              >
+                <div className="flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      size={12}
+                      fill={i < rating ? "#FBBF24" : "none"}
+                      className={i < rating ? "text-amber-400" : "text-slate-200"}
+                    />
+                  ))}
+                </div>
+                <span>& Up</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen flex flex-col bg-slate-50/30">
+      <Header />
+      
+      <main className="flex-grow section-container py-12">
+        {/* Top Header & Search */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+          <div className="space-y-1">
+            <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">
+              {categoryParam === "all" ? "All Products" : categoryParam}
+            </h1>
+            <p className="text-slate-500 text-sm font-medium">
+              Showing {filteredProducts.length} premium tech items
+            </p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto items-stretch sm:items-center">
+            {/* Toggle Filters Button (Desktop & Mobile) */}
+            <Button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="h-12 rounded-full px-6 font-semibold text-[13px] gap-2 border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+              variant="outline"
+            >
+              <SlidersHorizontal size={14} className="text-primary" />
+              {isSidebarOpen ? "Hide Filters" : "Show Filters"}
+            </Button>
+
+            {/* Search Input */}
+            <div className="relative flex-grow sm:w-80">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
+              <Input 
+                placeholder="Search within results..." 
+                className="pl-12 pr-4 h-12 rounded-full border-slate-200 bg-white focus:bg-white transition-all text-xs font-bold" 
+                value={searchParam}
+                onChange={handleSearchChange}
+              />
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="h-12 pl-6 pr-10 rounded-full border border-slate-200 bg-white text-[13px] font-semibold text-slate-700 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 w-full sm:w-auto"
+              >
+                <option value="featured">Featured</option>
+                <option value="newest">Newest Arrivals</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="rating">Top Rated</option>
+              </select>
+              <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} />
             </div>
           </div>
         </div>
-      </div>
+
+        {/* Active Filter Badges */}
+        {(selectedBrands.length > 0 || minPrice || maxPrice || selectedConditions.length > 0 || minRating !== null || searchParam) && (
+          <div className="flex flex-wrap items-center gap-2 mb-8 p-4 bg-white rounded-2xl border border-slate-100">
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 mr-2">Active Filters:</span>
+            
+            {searchParam && (
+              <Badge variant="secondary" className="rounded-full gap-1.5 px-3 py-1 text-xs font-bold bg-slate-100 text-slate-700">
+                Search: {searchParam}
+                <X size={12} className="cursor-pointer hover:text-red-500" onClick={() => {
+                  searchParams.delete("q");
+                  setSearchParams(searchParams);
+                }} />
+              </Badge>
+            )}
+
+            {selectedBrands.map(brand => (
+              <Badge key={brand} variant="secondary" className="rounded-full gap-1.5 px-3 py-1 text-xs font-bold bg-slate-100 text-slate-700">
+                {brand}
+                <X size={12} className="cursor-pointer hover:text-red-500" onClick={() => handleBrandToggle(brand)} />
+              </Badge>
+            ))}
+
+            {(minPrice || maxPrice) && (
+              <Badge variant="secondary" className="rounded-full gap-1.5 px-3 py-1 text-xs font-bold bg-slate-100 text-slate-700">
+                Price: ${minPrice || "0"} - ${maxPrice || "∞"}
+                <X size={12} className="cursor-pointer hover:text-red-500" onClick={() => { setMinPrice(""); setMaxPrice(""); }} />
+              </Badge>
+            )}
+
+            {selectedConditions.map(cond => (
+              <Badge key={cond} variant="secondary" className="rounded-full gap-1.5 px-3 py-1 text-xs font-bold bg-slate-100 text-slate-700 capitalize">
+                {cond}
+                <X size={12} className="cursor-pointer hover:text-red-500" onClick={() => handleConditionToggle(cond)} />
+              </Badge>
+            ))}
+
+            {minRating !== null && (
+              <Badge variant="secondary" className="rounded-full gap-1.5 px-3 py-1 text-xs font-bold bg-slate-100 text-slate-700">
+                {minRating}+ Stars
+                <X size={12} className="cursor-pointer hover:text-red-500" onClick={() => setMinRating(null)} />
+              </Badge>
+            )}
+
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleClearAll}
+              className="text-xs font-black uppercase tracking-widest text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-full ml-auto h-8"
+            >
+              <RotateCcw size={12} className="mr-1.5" /> Clear All
+            </Button>
+          </div>
+        )}
+
+        {/* Main Layout Grid */}
+        <div className="relative flex gap-10 items-start">
+          
+          {/* ── Mobile Slide-over Drawer (Overlay) ── */}
+          {isSidebarOpen && (
+            <div className="fixed inset-0 z-50 lg:hidden">
+              {/* Backdrop */}
+              <div 
+                className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
+                onClick={() => setIsSidebarOpen(false)}
+              />
+              {/* Drawer Panel */}
+              <div className="absolute inset-y-0 left-0 w-full max-w-xs bg-slate-50 p-6 shadow-2xl flex flex-col overflow-y-auto animate-in slide-in-from-left duration-300">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-lg font-black uppercase tracking-wider text-slate-900">Filters</h2>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => setIsSidebarOpen(false)}
+                    className="rounded-full"
+                  >
+                    <X size={20} />
+                  </Button>
+                </div>
+                <SidebarContent />
+              </div>
+            </div>
+          )}
+
+          {/* ── Desktop Collapsible Sidebar ── */}
+          <aside 
+            className={cn(
+              "hidden lg:block shrink-0 transition-all duration-300 ease-in-out overflow-hidden",
+              isSidebarOpen ? "w-80 opacity-100" : "w-0 opacity-0 pointer-events-none"
+            )}
+          >
+            <SidebarContent />
+          </aside>
+
+          {/* Product Grid */}
+          <div className="flex-grow">
+            {filteredProducts.length === 0 ? (
+              <div className="py-32 text-center bg-white rounded-2xl border border-dashed border-slate-200 p-8">
+                <SlidersHorizontal className="mx-auto h-16 w-16 text-slate-300 mb-4" />
+                <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">No products found</h3>
+                <p className="text-slate-500 mt-2 font-medium">Try adjusting your search or filters to find what you're looking for.</p>
+                <Button 
+                  variant="outline" 
+                  className="mt-8 rounded-full px-8 font-black uppercase tracking-widest text-[10px] border-slate-200"
+                  onClick={handleClearAll}
+                >
+                  Clear All Filters
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProducts.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 };
