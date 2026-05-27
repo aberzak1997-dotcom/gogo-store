@@ -191,91 +191,83 @@ const HomePage = () => {
 
         {/* ── Hero ──────────────────────────────────────────────────────────── */}
         {!isFiltered && (
-          <section className="bg-white relative overflow-hidden" style={{ minHeight: "88vh", display: "flex", alignItems: "center" }}>
-            {/* Subtle background shape */}
-            <div className="absolute top-0 right-0 w-1/2 h-full bg-[#F0F2F8] pointer-events-none" style={{ clipPath: "polygon(8% 0, 100% 0, 100% 100%, 0% 100%)" }} />
-            <div className="absolute top-1/2 right-[12%] -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#1160CB]/5 blur-[80px] pointer-events-none" />
+          <section className="px-4 md:px-6 pt-4 pb-2">
+            <div className="flex flex-col md:flex-row gap-3 max-w-[1400px] mx-auto">
 
-            <div className="section-container relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 py-20 items-center w-full">
-              {/* Left: text */}
-              <div className="space-y-8">
-                <p className="text-caption text-[#1160CB]">Technology. Elevated.</p>
-                <h1 className="font-bold leading-[1.05] text-[#0C0D10]" style={{ fontSize: "clamp(36px,5vw,60px)", letterSpacing: "-1px" }}>
-                  Premium Tech,<br />Delivered Fast
-                </h1>
-                <p className="text-[16px] text-[#0C0D10]/55 max-w-[460px] leading-relaxed">
-                  Morocco's premier destination for cutting-edge electronics and accessories. Shop the latest from top brands, delivered to your door.
-                </p>
-                <div className="flex items-center gap-4 flex-wrap">
-                  <Link to="/products">
-                    <Button className="bg-[#1160CB] hover:bg-[#1528A1] text-white rounded-[8px] h-12 px-8 text-[15px] font-semibold transition-all duration-200 gap-2 shadow-lg shadow-[#1160CB]/20">
-                      Shop Now <ArrowRight size={16} />
-                    </Button>
-                  </Link>
-                  <Link to="/about">
-                    <Button variant="outline" className="border-[#F0F2F8] text-[#0C0D10]/70 hover:bg-[#F0F2F8] hover:text-[#0C0D10] rounded-[8px] h-12 px-8 text-[15px] font-semibold transition-all">
-                      Learn More
-                    </Button>
-                  </Link>
+              {/* Left panel – dark navy */}
+              <div className="relative flex-[2] min-h-[294px] md:min-h-[380px] rounded-2xl overflow-hidden bg-[#0d1b2e] flex items-center">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#0d1b2e] via-[#0d1b2e] to-[#1528A1]/40 pointer-events-none" />
+                <div className="absolute right-0 bottom-0 w-3/5 h-full pointer-events-none select-none">
+                  <img
+                    src="https://images.unsplash.com/photo-1593640408182-31c228f9deee?q=80&w=1200"
+                    alt=""
+                    className="w-full h-full object-cover object-left opacity-30"
+                  />
                 </div>
-                <div className="flex items-center gap-10 pt-4 border-t border-[#F0F2F8]">
-                  {[
-                    { value: "10k+", label: "Happy customers" },
-                    { value: "500+", label: "Products" },
-                    { value: "1-Year", label: "Warranty" },
-                  ].map((stat, i) => (
-                    <div key={i}>
-                      <p className="text-[22px] font-bold text-[#1528A1]">{stat.value}</p>
-                      <p className="text-caption text-[#0C0D10]/40 mt-0.5">{stat.label}</p>
-                    </div>
-                  ))}
+                <div className="relative z-10 p-8 md:p-12 space-y-5 max-w-[520px]">
+                  <Badge className="bg-white/10 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
+                    Premium Collection
+                  </Badge>
+                  <h1 className="text-white font-bold leading-tight" style={{ fontSize: "clamp(28px,3.5vw,44px)" }}>
+                    Wide Range Of<br />Premium Electronics
+                  </h1>
+                  <p className="text-white/60 text-[14px] leading-relaxed max-w-[360px]">
+                    Morocco's premier destination for cutting-edge electronics and accessories from top brands.
+                  </p>
+                  <Link to="/products">
+                    <Button className="bg-[#1160CB] hover:bg-[#479BF7] text-white rounded-[8px] h-11 px-7 text-[14px] font-semibold transition-all gap-2 mt-2">
+                      Browse Collection <ArrowRight size={15} />
+                    </Button>
+                  </Link>
                 </div>
               </div>
 
-              {/* Right: featured product card */}
-              <div className="flex items-center justify-center">
-                <div className="relative w-full max-w-[380px]">
-                  <div
-                    className="relative bg-white rounded-[16px] p-7"
-                    style={{ border: "1px solid #F0F2F8", boxShadow: "0 16px 64px rgba(21,40,161,0.12)" }}
-                  >
-                    {(deals[0] || newArrivals[0]) ? (
-                      <>
-                        <p className="text-caption text-[#1160CB] mb-5">Featured Deal</p>
-                        <img
-                          src={deals[0]?.imageUrl || newArrivals[0]?.imageUrl}
-                          alt={deals[0]?.title || newArrivals[0]?.title}
-                          className="w-full h-52 object-contain mb-6"
-                        />
-                        <h3 className="text-[#0C0D10] font-semibold text-[16px] mb-3 line-clamp-1">
-                          {deals[0]?.title || newArrivals[0]?.title}
-                        </h3>
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-[#1528A1] font-bold text-[22px]">
-                              ${(deals[0]?.price || newArrivals[0]?.price || 0).toFixed(2)}
-                            </p>
-                            {(deals[0]?.compareAtPrice || newArrivals[0]?.compareAtPrice) && (
-                              <p className="text-[#0C0D10]/25 text-[12px] line-through mt-0.5">
-                                ${(deals[0]?.compareAtPrice || newArrivals[0]?.compareAtPrice || 0).toFixed(2)}
-                              </p>
-                            )}
-                          </div>
-                          <Link to={`/product/${deals[0]?.id || newArrivals[0]?.id}`}>
-                            <Button className="bg-[#1160CB] hover:bg-[#1528A1] text-white rounded-[8px] h-10 px-5 text-[13px] font-semibold transition-all">
-                              View Deal
-                            </Button>
-                          </Link>
-                        </div>
-                      </>
-                    ) : (
-                      <div className="h-64 flex items-center justify-center text-[#0C0D10]/20 text-[13px]">
-                        Loading products…
-                      </div>
+              {/* Right panel – blue */}
+              <div className="relative flex-[1] min-h-[294px] md:min-h-[380px] rounded-2xl overflow-hidden bg-[#0033CC] flex flex-col justify-between p-7">
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0033CC] to-[#1528A1]/80 pointer-events-none" />
+                <div className="relative z-10 space-y-2">
+                  <Badge className="bg-white/20 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
+                    Featured Deal
+                  </Badge>
+                  {(deals[0] || newArrivals[0]) && (
+                    <h2 className="text-white font-semibold text-[18px] leading-snug line-clamp-2 pt-1">
+                      {deals[0]?.title || newArrivals[0]?.title}
+                    </h2>
+                  )}
+                </div>
+                {(deals[0] || newArrivals[0]) && (
+                  <div className="relative z-10 flex flex-col items-center py-4">
+                    <img
+                      src={deals[0]?.imageUrl || newArrivals[0]?.imageUrl}
+                      alt={deals[0]?.title || newArrivals[0]?.title}
+                      className="w-full max-w-[200px] h-40 object-contain drop-shadow-2xl"
+                    />
+                  </div>
+                )}
+                <div className="relative z-10 flex items-center justify-between">
+                  <div>
+                    <p className="text-white font-bold text-[24px]">
+                      ${(deals[0]?.price || newArrivals[0]?.price || 0).toFixed(2)}
+                    </p>
+                    {(deals[0]?.compareAtPrice || newArrivals[0]?.compareAtPrice) && (
+                      <p className="text-white/50 text-[12px] line-through">
+                        ${(deals[0]?.compareAtPrice || newArrivals[0]?.compareAtPrice || 0).toFixed(2)}
+                      </p>
                     )}
                   </div>
+                  <Link to={`/product/${deals[0]?.id || newArrivals[0]?.id}`}>
+                    <Button className="bg-white text-[#0033CC] hover:bg-white/90 rounded-[8px] h-10 px-5 text-[13px] font-bold transition-all gap-1.5">
+                      View Deal <ArrowRight size={13} />
+                    </Button>
+                  </Link>
                 </div>
+                {!(deals[0] || newArrivals[0]) && (
+                  <div className="relative z-10 flex items-center justify-center h-40 text-white/30 text-[13px]">
+                    Loading products…
+                  </div>
+                )}
               </div>
+
             </div>
           </section>
         )}
