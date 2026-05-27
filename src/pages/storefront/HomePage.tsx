@@ -343,7 +343,7 @@ const HomePage = () => {
                 return (
                   <Link key={cat.name} to={cat.path} className="group flex flex-col items-center gap-3 p-4 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-primary/20 hover:shadow-md hover:shadow-primary/5 transition-all duration-200">
                     <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-white shadow-sm group-hover:bg-primary/5 transition-colors">
-                      <Icon size={20} className="text-slate-600 group-hover:text-primary transition-colors" />
+                      <Icon size={20} className="text-[#1528A1] transition-colors" />
                     </div>
                     <span className="text-[11px] font-semibold text-slate-500 group-hover:text-slate-900 text-center leading-tight transition-colors">
                       {cat.name}
