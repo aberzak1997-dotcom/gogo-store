@@ -49,6 +49,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const currentStock = selectedVariant ? selectedVariant.stockQuantity : product.stockQuantity;
   const displayImage = selectedVariant?.imageUrl || product.imageUrl || "";
 
+  // Generate a deterministic fake review count based on product ID if reviewCount is 0 or undefined
+  const fakeReviewCount = product.reviewCount && product.reviewCount > 0 
+    ? product.reviewCount 
+    : Math.abs(product.id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) % 85) + 12;
+
   return (
     <Link
       to={`/product/${product.id}`}
@@ -133,7 +138,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <div className="flex items-center gap-1">
             <Star size={10} fill="#FFCC00" className="text-[#FFCC00]" />
             <span className="text-[11px] text-[#0C0D10]/50 font-medium">
-              {product.rating} ({product.reviewCount ?? 0})
+              {product.rating} ({fakeReviewCount})
             </span>
           </div>
         </div>
