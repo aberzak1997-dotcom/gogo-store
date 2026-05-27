@@ -205,7 +205,7 @@ const HomePage = () => {
                   <Badge className="bg-white/10 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
                     Premium Collection
                   </Badge>
-                  <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-white leading-[1.15] w-full">
+                  <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-white leading-[1.15] w-full uppercase font-['Inter',sans-serif]">
                     Wide Range Of Premium Electronics
                   </h1>
                   <p className="text-slate-200 text-xs max-w-xs leading-relaxed">
