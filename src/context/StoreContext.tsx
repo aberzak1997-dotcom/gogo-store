@@ -139,14 +139,23 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     fn().catch(err => console.error("Supabase sync error:", err));
   };
 
-  // On mount: hydrate state from Supabase when configured
+  // On mount: hydrate state from Supabase when configured.
+  // MERGE strategy: Supabase is authoritative for IDs it knows about,
+  // but we keep any localStorage-only products (e.g. newly imported CJ
+  // products whose upsert hasn't succeeded yet).
   useEffect(() => {
     if (!isSupabaseConfigured) return;
     Promise.all([
       getProducts(), getOrders(), getCustomers(), getDiscounts(),
       getReviews(), getReturns(), getCampaigns(), getCollections(), getSettings(),
     ]).then(([prods, ords, custs, discs, revs, rets, camps, colls, stgs]) => {
-      if (prods.length) setProducts(prods);
+      if (prods.length) {
+        setProducts(prev => {
+          const remoteIds = new Set(prods.map((p: Product) => p.id));
+          const localOnly = prev.filter(p => !remoteIds.has(p.id));
+          return [...prods, ...localOnly];
+        });
+      }
       if (ords.length) setOrders(ords);
       if (custs.length) setCustomers(custs);
       if (discs.length) setDiscounts(discs);
@@ -173,9 +182,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // ─── Products ──────────────────────────────────────────────────────────────
 
   const addProduct = (product: Product) => {
-    setProducts([...products, product]);
+    // Save to localStorage first (optimistic) — this is the source of truth
+    // in localStorage-mode and the fallback when Supabase sync fails.
+    setProducts(prev => {
+      // Avoid duplicate IDs
+      const exists = prev.some(p => p.id === product.id);
+      return exists ? prev.map(p => p.id === product.id ? product : p) : [...prev, product];
+    });
     syncToSupabase(() => upsertProduct(product));
-    showSuccess("Product added successfully");
   };
 
   const updateProduct = (updatedProduct: Product) => {

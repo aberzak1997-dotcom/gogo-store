@@ -62,10 +62,14 @@ const AdminCJPage: React.FC = () => {
   const [markup, setMarkup] = useState(35);
   const [importCategory, setImportCategory] = useState(STORE_CATEGORIES[0]);
   const [importing, setImporting] = useState<string | null>(null);
-  const [importedPids, setImportedPids] = useState<Set<string>>(() => {
-    const skus = new Set(products.map(p => p.sku));
-    return skus as Set<string>;
-  });
+  // Keep importedPids in sync with the live products list (handles page reload
+  // and Supabase hydration that updates products after mount).
+  const [importedPids, setImportedPids] = useState<Set<string>>(
+    () => new Set(products.map(p => p.sku))
+  );
+  useEffect(() => {
+    setImportedPids(new Set(products.map(p => p.sku)));
+  }, [products]);
 
   // Auto-load products once when the import tab first becomes active
   const autoLoadedRef = useRef(false);
@@ -176,7 +180,6 @@ const AdminCJPage: React.FC = () => {
       };
 
       addProduct(newProduct);
-      setImportedPids(prev => new Set([...prev, cjProduct.pid]));
       showSuccess(`"${cjProduct.productNameEn}" imported to your store!`);
     } catch (e: any) {
       showError(e.message || "Import failed.");
