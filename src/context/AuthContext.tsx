@@ -28,15 +28,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (email: string, pass: string): Promise<{ success: boolean; error?: string }> => {
-    // ── Hardcoded test admin accounts (always work) ────────────────────────────
-    const testAdmins = [
-      { email: "admin@demo.com",           password: "admin123"   },
-      { email: "artswfx120@gmail.com",     password: "ADMIN1997"  },
-    ];
-    const matched = testAdmins.find(
-      (a) => a.email === email.trim().toLowerCase() && a.password === pass
-    );
-    if (matched) {
+    // ── Environment-variable fallback (credentials never in source code) ───────
+    const envEmail = import.meta.env.VITE_ADMIN_EMAIL as string | undefined;
+    const envPass  = import.meta.env.VITE_ADMIN_PASSWORD as string | undefined;
+    if (
+      envEmail && envPass &&
+      email.trim().toLowerCase() === envEmail.toLowerCase() &&
+      pass === envPass
+    ) {
       setIsAuthenticated(true);
       localStorage.setItem("admin_auth", "true");
       return { success: true };

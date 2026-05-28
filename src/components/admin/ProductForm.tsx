@@ -93,13 +93,29 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, imageUrl: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    // ── File type validation (whitelist safe image formats only) ──────────────
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (!allowedTypes.includes(file.type)) {
+      showError("Invalid file type. Only JPG, PNG, WebP and GIF are allowed.");
+      e.target.value = "";
+      return;
     }
+
+    // ── File size validation (max 5 MB) ───────────────────────────────────────
+    const maxSizeBytes = 5 * 1024 * 1024;
+    if (file.size > maxSizeBytes) {
+      showError("File is too large. Maximum size is 5 MB.");
+      e.target.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData(prev => ({ ...prev, imageUrl: reader.result as string }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const addSpec = () => {
