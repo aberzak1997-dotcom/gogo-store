@@ -25,7 +25,8 @@ import {
   Bell,
   Plug,
   Search,
-  BookOpen
+  BookOpen,
+  Link2
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useStore } from "../../context/StoreContext";
@@ -87,6 +88,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     {
       title: "Store",
       items: [
+        { label: "CJ Dropshipping", icon: Link2, path: "/admin/cj-dropshipping" },
         { label: "Integrations", icon: Plug, path: "/admin/integrations" },
         { label: "Payments", icon: CreditCard, path: "/admin/payments" },
         { label: "Shipping", icon: Truck, path: "/admin/shipping" },

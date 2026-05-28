@@ -48,6 +48,7 @@ import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
 import AdminShippingPage from "./pages/admin/AdminShippingPage";
 import AdminSeoPage from "./pages/admin/AdminSeoPage";
 import AdminArticlesPage from "./pages/admin/AdminArticlesPage";
+import AdminCJPage from "./pages/admin/AdminCJPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import BlogPage from "./pages/storefront/BlogPage";
 import ArticlePage from "./pages/storefront/ArticlePage";
@@ -126,6 +127,7 @@ const App = () => {
               <Route path="/admin/shipping" element={<AdminLayout><AdminShippingPage /></AdminLayout>} />
               <Route path="/admin/seo" element={<AdminLayout><AdminSeoPage /></AdminLayout>} />
               <Route path="/admin/articles" element={<AdminLayout><AdminArticlesPage /></AdminLayout>} />
+              <Route path="/admin/cj-dropshipping" element={<AdminLayout><AdminCJPage /></AdminLayout>} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>
