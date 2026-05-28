@@ -57,6 +57,7 @@ const AdminCJPage: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const [searchResults, setSearchResults] = useState<CJProduct[]>([]);
   const [searching, setSearching] = useState(false);
+  const [totalResults, setTotalResults] = useState(0);
   const [markup, setMarkup] = useState(35);
   const [importCategory, setImportCategory] = useState(STORE_CATEGORIES[0]);
   const [importing, setImporting] = useState<string | null>(null);
@@ -64,6 +65,14 @@ const AdminCJPage: React.FC = () => {
     const skus = new Set(products.map(p => p.sku));
     return skus as Set<string>;
   });
+
+  // Auto-load products when import tab opens and connected
+  useEffect(() => {
+    if (tab === "import" && conn && searchResults.length === 0 && !searching) {
+      handleBrowseAll();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, conn]);
 
   // ── Fulfill ─────────────────────────────────────────────────────────────────
   const [fulfillments, setFulfillments] = useState<Record<string, Fulfillment>>(getFulfillments);
@@ -98,14 +107,14 @@ const AdminCJPage: React.FC = () => {
     showSuccess("Disconnected from CJ Dropshipping.");
   };
 
-  // ── Search products ──────────────────────────────────────────────────────────
-  const handleSearch = async () => {
+  // ── Search / Browse products ─────────────────────────────────────────────────
+  const doSearch = async (kw: string) => {
     if (!conn) { showError("Connect to CJ Dropshipping first."); return; }
-    if (!keyword.trim()) { showError("Enter a search keyword."); return; }
     setSearching(true);
     try {
-      const data = await cjSearchProducts(conn.accessToken, keyword.trim());
+      const data = await cjSearchProducts(conn.accessToken, kw, 1, 40);
       setSearchResults(data.list || []);
+      setTotalResults(data.total || 0);
       if ((data.list || []).length === 0) showError("No products found. Try a different keyword.");
     } catch (e: any) {
       showError(e.message || "Search failed.");
@@ -113,6 +122,9 @@ const AdminCJPage: React.FC = () => {
       setSearching(false);
     }
   };
+
+  const handleSearch = () => doSearch(keyword.trim());
+  const handleBrowseAll = () => doSearch("");
 
   // ── Import product ────────────────────────────────────────────────────────
   const handleImport = async (cjProduct: CJProduct) => {
@@ -446,20 +458,37 @@ const AdminCJPage: React.FC = () => {
 
           {/* Results grid */}
           {searchResults.length === 0 && !searching && (
-            <div className="bg-white rounded-[14px] border border-[#F0F2F8] py-20 flex flex-col items-center gap-3">
+            <div className="bg-white rounded-[14px] border border-[#F0F2F8] py-20 flex flex-col items-center gap-4">
               <Package size={32} className="text-[#0C0D10]/10" />
-              <p className="text-[#0C0D10]/30 text-[14px]">Search the CJ catalog above to find products to import</p>
+              <p className="text-[#0C0D10]/30 text-[14px]">Type a keyword above, or browse all available products</p>
+              {conn && (
+                <Button onClick={handleBrowseAll}
+                  className="bg-[#1160CB] hover:bg-[#0e4fa8] text-white rounded-[10px] gap-2 font-semibold text-[13px]">
+                  <Package size={14} /> Browse All Products
+                </Button>
+              )}
             </div>
           )}
 
           {searching && (
-            <div className="bg-white rounded-[14px] border border-[#F0F2F8] py-20 flex items-center justify-center gap-3">
-              <Loader2 size={20} className="animate-spin text-[#1160CB]" />
-              <p className="text-[#0C0D10]/40 text-[14px]">Searching CJ catalog…</p>
+            <div className="bg-white rounded-[14px] border border-[#F0F2F8] py-20 flex flex-col items-center justify-center gap-3">
+              <Loader2 size={24} className="animate-spin text-[#1160CB]" />
+              <p className="text-[#0C0D10]/40 text-[14px]">Loading products from CJ catalog…</p>
             </div>
           )}
 
           {searchResults.length > 0 && (
+            <>
+              <div className="flex items-center justify-between">
+                <p className="text-caption text-[#0C0D10]/40">
+                  Showing <strong className="text-[#0C0D10]">{searchResults.length}</strong> products
+                  {totalResults > searchResults.length && <> of {totalResults.toLocaleString()} total</>}
+                </p>
+                <Button onClick={handleBrowseAll} variant="outline"
+                  className="rounded-[9px] border-[#F0F2F8] text-[12px] font-semibold gap-1.5 h-8">
+                  <RefreshCw size={11} /> Refresh
+                </Button>
+              </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {searchResults.map(p => {
                 const cjCost = parseFloat(p.sellPrice || "0");
@@ -512,6 +541,7 @@ const AdminCJPage: React.FC = () => {
                 );
               })}
             </div>
+            </>
           )}
         </div>
       )}
