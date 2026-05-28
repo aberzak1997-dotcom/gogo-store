@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import Navbar from "../../components/storefront/Navbar";
-import Footer from "../../components/storefront/Footer";
+import Header from "../../components/layout/Header";
+import Footer from "../../components/layout/Footer";
 import { Clock, Calendar, ArrowLeft, Tag, ChevronRight, BookOpen } from "lucide-react";
 
 interface Article {
@@ -129,7 +129,7 @@ const ArticlePage: React.FC = () => {
   if (notFound) {
     return (
       <div className="min-h-screen flex flex-col bg-[#F0F2F8]">
-        <Navbar />
+        <Header />
         <div className="flex-1 flex flex-col items-center justify-center gap-4 py-32">
           <BookOpen size={40} className="text-[#0C0D10]/20" />
           <p className="text-[18px] font-bold text-[#0C0D10]">Article not found</p>
@@ -151,7 +151,7 @@ const ArticlePage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F0F2F8]">
-      <Navbar />
+      <Header />
 
       {/* Hero Image */}
       <div className="relative h-72 md:h-96 overflow-hidden bg-[#0E121A]">

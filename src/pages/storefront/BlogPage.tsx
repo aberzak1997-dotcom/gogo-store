@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "../../components/storefront/Navbar";
-import Footer from "../../components/storefront/Footer";
+import Header from "../../components/layout/Header";
+import Footer from "../../components/layout/Footer";
 import { Clock, Calendar, ChevronRight, BookOpen } from "lucide-react";
 
 interface Article {
@@ -63,7 +63,7 @@ const BlogPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F0F2F8]">
-      <Navbar />
+      <Header />
 
       {/* Hero */}
       <section className="bg-[#0E121A] pt-20 pb-14 px-4">
