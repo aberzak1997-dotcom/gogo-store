@@ -318,10 +318,21 @@ const ProductDetailsPage = () => {
                 )}
               </div>
 
-              {/* Short description */}
-              <p className="text-slate-500 text-sm leading-relaxed mb-7">
-                {product.description}
-              </p>
+              {/* Short description — render HTML from CJ, or plain text */}
+              {product.description && /<[a-z][\s\S]*>/i.test(product.description) ? (
+                <div
+                  className="text-slate-500 text-sm leading-relaxed mb-7 prose prose-sm max-w-none prose-img:rounded-xl prose-img:w-full"
+                  dangerouslySetInnerHTML={{
+                    __html: product.description
+                      .replace(/contenteditable="false"/gi, "")
+                      .replace(/<img /gi, '<img style="max-width:100%;border-radius:12px;margin:8px 0;" ')
+                  }}
+                />
+              ) : (
+                <p className="text-slate-500 text-sm leading-relaxed mb-7">
+                  {product.description}
+                </p>
+              )}
 
               {/* Compatibility tags */}
               {product.compatibility?.length > 0 && (
@@ -454,27 +465,37 @@ const ProductDetailsPage = () => {
           {activeTab === "specs" && (
             <div className="grid lg:grid-cols-3 gap-10">
               <div className="lg:col-span-2">
-                {Object.keys(product.specs).length === 0 ? (
-                  <div className="py-16 text-center text-slate-400">
-                    <Cpu className="mx-auto mb-4 text-slate-200" size={40} />
-                    <p className="text-sm">No specifications listed for this product.</p>
-                  </div>
-                ) : (
-                  <div className="rounded-2xl border border-slate-100 overflow-hidden">
-                    <table className="w-full">
-                      <tbody>
-                        {Object.entries(product.specs).map(([key, value], i) => (
-                          <tr key={key} className={i % 2 === 0 ? "bg-slate-50/40" : "bg-white"}>
-                            <td className="px-8 py-5 font-semibold text-slate-700 w-2/5 border-r border-slate-100 text-sm">
-                              {key}
-                            </td>
-                            <td className="px-8 py-5 text-slate-500 text-sm">{value}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                {(() => {
+                  // Hide internal CJ/supplier fields from customers
+                  const HIDDEN_KEYS = new Set([
+                    "CJ Product ID", "CJ Cost Price", "Your Markup",
+                    "Source", "Default Variant ID", "CJ Variant ID",
+                  ]);
+                  const publicSpecs = Object.entries(product.specs).filter(
+                    ([key]) => !HIDDEN_KEYS.has(key)
+                  );
+                  return publicSpecs.length === 0 ? (
+                    <div className="py-16 text-center text-slate-400">
+                      <Cpu className="mx-auto mb-4 text-slate-200" size={40} />
+                      <p className="text-sm">No specifications listed for this product.</p>
+                    </div>
+                  ) : (
+                    <div className="rounded-2xl border border-slate-100 overflow-hidden">
+                      <table className="w-full">
+                        <tbody>
+                          {publicSpecs.map(([key, value], i) => (
+                            <tr key={key} className={i % 2 === 0 ? "bg-slate-50/40" : "bg-white"}>
+                              <td className="px-8 py-5 font-semibold text-slate-700 w-2/5 border-r border-slate-100 text-sm">
+                                {key}
+                              </td>
+                              <td className="px-8 py-5 text-slate-500 text-sm">{value}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* Key features sidebar */}
