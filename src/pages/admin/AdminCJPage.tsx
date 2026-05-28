@@ -907,6 +907,42 @@ const AdminCJPage: React.FC = () => {
             </p>
           </div>
 
+          {/* Payment options card */}
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="bg-white rounded-[14px] border-2 border-[#1160CB]/20 p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-7 h-7 bg-[#1160CB]/10 rounded-full flex items-center justify-center">
+                  <DollarSign size={14} className="text-[#1160CB]" />
+                </div>
+                <p className="text-[13px] font-bold text-[#0C0D10]">Option A — Pre-load wallet</p>
+              </div>
+              <p className="text-[12px] text-[#0C0D10]/55 leading-relaxed mb-3">
+                Add money to your CJ wallet in advance. When you fulfill, CJ deducts automatically. Fastest method — fulfillment completes instantly.
+              </p>
+              <p className="text-[11px] text-[#0C0D10]/40">Minimum recharge: ~$1. You only spend what you use.</p>
+              <a href="https://app.cjdropshipping.com/wallet.html" target="_blank" rel="noreferrer"
+                className="inline-flex items-center gap-1 text-[12px] text-[#1160CB] font-semibold hover:underline mt-3 block">
+                <ExternalLink size={11} /> Open CJ Wallet ↗
+              </a>
+            </div>
+            <div className="bg-white rounded-[14px] border-2 border-green-200 p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-7 h-7 bg-green-100 rounded-full flex items-center justify-center">
+                  <ShoppingBag size={14} className="text-green-600" />
+                </div>
+                <p className="text-[13px] font-bold text-[#0C0D10]">Option B — Pay per order manually</p>
+              </div>
+              <p className="text-[12px] text-[#0C0D10]/55 leading-relaxed mb-3">
+                No prepaid balance needed. When a customer orders, go to CJ's website, find the product, and place the order manually using the customer's address. Pay just for that one order.
+              </p>
+              <p className="text-[11px] text-[#0C0D10]/40">Best for beginners — zero upfront cost, pay only when you earn.</p>
+              <a href="https://app.cjdropshipping.com" target="_blank" rel="noreferrer"
+                className="inline-flex items-center gap-1 text-[12px] text-green-600 font-semibold hover:underline mt-3 block">
+                <ExternalLink size={11} /> Open CJ Dashboard ↗
+              </a>
+            </div>
+          </div>
+
           {/* Full workflow */}
           <div className="bg-white rounded-[16px] border border-[#F0F2F8] p-6">
             <h3 className="text-[14px] font-bold text-[#0C0D10] mb-5">Complete step-by-step workflow</h3>
@@ -915,43 +951,43 @@ const AdminCJPage: React.FC = () => {
                 {
                   step: "1",
                   color: "bg-[#1160CB]",
-                  title: "Add balance to your CJ account",
-                  detail: "Go to app.cjdropshipping.com → Wallet → Recharge. You need funds so CJ can charge you when you fulfill an order. Without balance, fulfillment will fail. Start with at least $50–$100 depending on your product costs.",
-                  link: { label: "Open CJ Wallet ↗", href: "https://app.cjdropshipping.com/wallet.html" },
+                  title: "Import products to your store",
+                  detail: "Go to the Import Products tab above. Search CJ's catalog, set your markup %, and click Import. The product appears in your WIVITEC storefront. CJ does NOT see this — you are just copying catalog data to your store.",
+                  link: null,
                 },
                 {
                   step: "2",
                   color: "bg-[#1160CB]",
-                  title: "Import products to your store",
-                  detail: "Go to the Import Products tab above. Search for products, set your markup (the % you add on top of CJ's price), and click Import. The product is added to your WIVITEC storefront. CJ does NOT see this — you are just copying catalog data.",
+                  title: "Customer orders & pays you",
+                  detail: "A customer buys the product on your site and pays you (via PayPal/Stripe). CJ still knows nothing. The order appears in Admin → Orders with status 'Unfulfilled'. You now have the customer's money.",
                   link: null,
                 },
                 {
                   step: "3",
                   color: "bg-[#7c3aed]",
-                  title: "A customer places an order on your store",
-                  detail: "The customer buys the product and pays YOU. CJ still knows nothing. The order appears in your Orders section with status 'Unfulfilled'.",
-                  link: null,
+                  title: "Fulfill the order — choose your method",
+                  detail: "Option A (wallet): Go to Fulfill Orders tab → click 'Fulfill with CJ' → CJ deducts from your wallet, packs & ships to customer.  Option B (manual): Log in to app.cjdropshipping.com → search the product → click 'Buy Now' → enter the customer's name & address → pay with card for just this order.",
+                  link: { label: "Open CJ to place manual order ↗", href: "https://app.cjdropshipping.com" },
                 },
                 {
                   step: "4",
                   color: "bg-[#7c3aed]",
-                  title: "Fulfill the order via CJ",
-                  detail: "Go to the Fulfill Orders tab above. You will see all unfulfilled orders. Click 'Fulfill with CJ'. This sends the order to CJ's API: they charge your CJ wallet (wholesale price + shipping), pack the product, and ship directly to your customer. The order now appears in your CJ account under 'My Orders'.",
-                  link: { label: "Open CJ My Orders ↗", href: "https://app.cjdropshipping.com/order.html" },
+                  title: "CJ ships directly to your customer",
+                  detail: "CJ packs and ships from their warehouse directly to your customer's address in Morocco. Your customer receives the package — they never know it came from CJ. The order appears in CJ's 'My Orders' with a tracking number.",
+                  link: { label: "CJ My Orders ↗", href: "https://app.cjdropshipping.com/order.html" },
                 },
                 {
                   step: "5",
                   color: "bg-green-600",
-                  title: "Track the shipment",
-                  detail: "Go to the Tracking tab above. Click 'Refresh Tracking' for any fulfilled order to get the latest shipping status directly from CJ. You can share the tracking number with your customer.",
+                  title: "Share tracking with your customer",
+                  detail: "Go to the Tracking tab above and click 'Refresh Tracking' to get the latest status. Copy the tracking number and send it to your customer so they can follow their package.",
                   link: null,
                 },
                 {
                   step: "6",
                   color: "bg-green-600",
-                  title: "Your profit",
-                  detail: "Your profit = what your customer paid YOU − what CJ charged your wallet. Example: customer pays $25, CJ charges $8 + $3 shipping = $11. Your profit = $14. You keep this money — CJ only takes their cut when you fulfill.",
+                  title: "Your profit — pure and simple",
+                  detail: "Profit = what the customer paid you − what you paid CJ. Example: customer pays $25, you pay CJ $8 + $3 shipping = $11 total. Your profit = $14 per order. You never need to invest money upfront — use the customer's payment to fund each CJ order.",
                   link: null,
                 },
               ].map((s, i, arr) => (
@@ -983,28 +1019,28 @@ const AdminCJPage: React.FC = () => {
 
             {[
               {
+                q: "Do I need to add balance before I start selling?",
+                a: "No. You can run this business with zero upfront investment. The safest approach for beginners: import products → wait for a customer to order → collect their payment → use that money to pay CJ for just that one order manually on their website. You're always spending customer money, never your own.",
+              },
+              {
+                q: "What's the difference between Option A (wallet) and Option B (manual)?",
+                a: "Option A (wallet): Add $10–$20 to your CJ wallet, then use the 'Fulfill with CJ' button here — it's instant and automated. Option B (manual): Go to app.cjdropshipping.com, search the product, click Buy Now, enter your customer's address, and pay with your card for just that order. Option B costs you nothing upfront but takes more time per order.",
+              },
+              {
                 q: "Why can't I find imported products in CJ's website search?",
-                a: "This is completely normal. When you import a product via the API, nothing is created in CJ's system — you just copied catalog data to your store. CJ's website search only shows products available in their public catalog. Your imported products only exist in WIVITEC's store until a customer orders and you fulfill via CJ.",
+                a: "Completely normal. Importing a product only adds it to YOUR store — nothing is created in CJ's system. CJ's website search shows their public catalog. The API gives access to a larger database that includes products not listed publicly. Your store just copied the product's data (name, image, price) from CJ's catalog.",
               },
               {
-                q: "Why does CJ's API show products that aren't on their website?",
-                a: "CJ's API catalog and their public website search are different. The API gives access to a much larger product database — including products from partner warehouses and suppliers not listed publicly. This is normal and a known difference.",
+                q: "How do I manually fulfill on CJ's website (Option B)?",
+                a: "1. Go to app.cjdropshipping.com and log in. 2. Search for the exact product name. 3. Click the product → click 'Buy Now' or 'Ship for Me'. 4. Enter your customer's full name, address, city, and country (Morocco). 5. Select the shipping method. 6. Pay with your card or PayPal. CJ then ships directly to your customer.",
               },
               {
-                q: "How do I know which shipping method to pick for Morocco?",
-                a: "For Morocco, the best options are: CJPacket Ordinary (cheapest, 15–25 days), CJPacket Tracked (recommended — tracking + 12–20 days), CJ ePacket (faster, 10–18 days). Avoid 'Air Express' for low-value items (expensive). Check the product's shipping info on app.cjdropshipping.com for exact rates.",
-              },
-              {
-                q: "Do I need to manually fulfill every single order?",
-                a: "Currently yes — you click 'Fulfill with CJ' for each order in the Fulfill Orders tab. This lets you review each order before sending it to CJ. Make sure your CJ wallet has enough balance before fulfilling.",
+                q: "Which shipping method for Morocco?",
+                a: "Recommended: CJPacket Tracked (12–20 days, has tracking). Budget: CJPacket Ordinary (15–25 days, cheapest but no tracking). Faster: CJ ePacket (10–18 days). Avoid Air Express for low-value items — it's expensive. Always verify Morocco availability on the product page before importing.",
               },
               {
                 q: "What happens if CJ is out of stock after a customer orders?",
-                a: "If a product goes out of stock at CJ after a customer orders, the fulfillment will fail. Best practice: check stock availability on CJ before setting a product as 'active' in your store. CJ provides stock information via their API.",
-              },
-              {
-                q: "When does CJ charge me?",
-                a: "CJ charges your wallet only when you fulfill an order (step 4). They do NOT charge you for importing products. The charge = product wholesale price + shipping cost from CJ to your customer's address in Morocco.",
+                a: "If a product sells out at CJ after you imported it, fulfillment will fail. Best practice: before making a product 'active' in your store, verify it's in stock on CJ's website. If an order comes in for an out-of-stock item, contact the customer, offer a refund or alternative, then cancel the order in your admin panel.",
               },
             ].map((item, i) => (
               <div key={i} className="border-b border-[#F0F2F8] last:border-0 pb-4 last:pb-0">
