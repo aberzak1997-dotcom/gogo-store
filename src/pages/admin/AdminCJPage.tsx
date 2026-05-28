@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import {
   Loader2, CheckCircle, XCircle, Search, Package, Truck,
   MapPin, RefreshCw, Download, ExternalLink, ShoppingBag,
-  Zap, AlertTriangle, Eye, ChevronRight, RotateCcw, Link2
+  Zap, AlertTriangle, Eye, ChevronRight, RotateCcw, Link2,
+  Trash2, Tag, DollarSign, BarChart2
 } from "lucide-react";
 import { useStore } from "../../context/StoreContext";
 import { Product, Order } from "../../types";
@@ -44,8 +45,8 @@ function saveFulfillment(f: Fulfillment) {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 const AdminCJPage: React.FC = () => {
-  const { products, orders, addProduct } = useStore();
-  const [tab, setTab] = useState<"connect" | "import" | "fulfill" | "tracking">("connect");
+  const { products, orders, addProduct, deleteProduct } = useStore();
+  const [tab, setTab] = useState<"connect" | "import" | "imported" | "fulfill" | "tracking">("connect");
 
   // ── Connection ──────────────────────────────────────────────────────────────
   const [conn, setConn] = useState<CJConnection | null>(() => getCJConnection());
@@ -66,10 +67,12 @@ const AdminCJPage: React.FC = () => {
     return skus as Set<string>;
   });
 
-  // Auto-load products when import tab opens and connected
+  // Auto-load products once when the import tab first becomes active
+  const autoLoadedRef = useRef(false);
   useEffect(() => {
-    if (tab === "import" && conn && searchResults.length === 0 && !searching) {
-      handleBrowseAll();
+    if (tab === "import" && conn && !autoLoadedRef.current) {
+      autoLoadedRef.current = true;
+      doSearch("");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, conn]);
@@ -255,11 +258,15 @@ const AdminCJPage: React.FC = () => {
 
   const fulfilled = Object.values(fulfillments);
 
+  // Products that were imported from CJ
+  const cjProducts = products.filter(p => p.specs?.["Source"] === "CJ Dropshipping");
+
   const tabs = [
-    { id: "connect",  label: "Connect",         count: null },
-    { id: "import",   label: "Import Products",  count: null },
-    { id: "fulfill",  label: "Fulfill Orders",   count: unfulfilled.length || null },
-    { id: "tracking", label: "Tracking",         count: fulfilled.length || null },
+    { id: "connect",  label: "Connect",          count: null },
+    { id: "import",   label: "Import Products",   count: null },
+    { id: "imported", label: "Imported Products", count: cjProducts.length || null },
+    { id: "fulfill",  label: "Fulfill Orders",    count: unfulfilled.length || null },
+    { id: "tracking", label: "Tracking",          count: fulfilled.length || null },
   ] as const;
 
   return (
@@ -617,6 +624,154 @@ const AdminCJPage: React.FC = () => {
                           : <><Truck size={13} /> Fulfill with CJ</>}
                       </Button>
                     </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── IMPORTED PRODUCTS TAB ────────────────────────────────────────────── */}
+      {tab === "imported" && (
+        <div className="space-y-5">
+          {/* Header row */}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[15px] font-bold text-[#0C0D10]">
+                {cjProducts.length} CJ Product{cjProducts.length !== 1 ? "s" : ""} in your store
+              </p>
+              <p className="text-caption text-[#0C0D10]/40 mt-0.5">
+                These are live in your storefront. Edit price or remove anytime.
+              </p>
+            </div>
+            <Button onClick={() => setTab("import")}
+              className="bg-[#1160CB] hover:bg-[#0e4fa8] text-white rounded-[10px] gap-2 text-[13px] font-semibold">
+              <Download size={13} /> Import More
+            </Button>
+          </div>
+
+          {cjProducts.length === 0 ? (
+            <div className="bg-white rounded-[14px] border border-[#F0F2F8] py-20 flex flex-col items-center gap-4">
+              <Package size={32} className="text-[#0C0D10]/10" />
+              <p className="font-semibold text-[#0C0D10]">No CJ products imported yet</p>
+              <p className="text-caption text-[#0C0D10]/30">Go to "Import Products" to add products from CJ catalog.</p>
+              <Button onClick={() => setTab("import")}
+                className="bg-[#1160CB] hover:bg-[#0e4fa8] text-white rounded-[10px] gap-2 font-semibold text-[13px] mt-1">
+                <Search size={13} /> Browse CJ Catalog
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {cjProducts.map(p => {
+                const cjCost = parseFloat(p.specs?.["CJ Cost Price"]?.replace("$", "") || "0");
+                const markup = parseFloat(p.specs?.["Your Markup"]?.replace("%", "") || "0");
+                const profit = p.price - cjCost;
+                const profitPct = cjCost > 0 ? ((profit / cjCost) * 100).toFixed(0) : "—";
+
+                return (
+                  <div key={p.id} className="bg-white rounded-[14px] border border-[#F0F2F8] p-4 flex items-center gap-4 hover:border-[#1160CB]/20 transition-colors">
+                    {/* Image */}
+                    <img src={p.imageUrl} alt={p.title}
+                      className="w-16 h-16 rounded-[10px] object-cover bg-[#F0F2F8] flex-shrink-0" />
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-semibold text-[#0C0D10] line-clamp-1">{p.title}</p>
+                      <div className="flex items-center gap-3 mt-1 flex-wrap">
+                        <span className="text-caption text-[#0C0D10]/40">{p.category}</span>
+                        <span className="text-caption text-[#0C0D10]/20">·</span>
+                        <span className="text-caption text-[#0C0D10]/40">SKU: {p.sku?.slice(0, 12)}…</span>
+                      </div>
+                    </div>
+
+                    {/* Price breakdown */}
+                    <div className="hidden sm:flex items-center gap-6 flex-shrink-0">
+                      <div className="text-center">
+                        <p className="text-[10px] text-[#0C0D10]/30 uppercase tracking-wider">CJ Cost</p>
+                        <p className="text-[13px] font-semibold text-[#0C0D10]/50">${cjCost.toFixed(2)}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-[10px] text-[#0C0D10]/30 uppercase tracking-wider">Your Price</p>
+                        <p className="text-[14px] font-bold text-[#1528A1]">${p.price.toFixed(2)}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-[10px] text-[#0C0D10]/30 uppercase tracking-wider">Profit</p>
+                        <p className={`text-[13px] font-bold ${profit >= 0 ? "text-green-600" : "text-rose-500"}`}>
+                          +${profit.toFixed(2)} <span className="text-[10px] font-normal">({profitPct}%)</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Status badge */}
+                    <div className={`hidden md:flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold flex-shrink-0 ${
+                      p.status === "active"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-[#F0F2F8] text-[#0C0D10]/40"
+                    }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${p.status === "active" ? "bg-green-500" : "bg-[#0C0D10]/20"}`} />
+                      {p.status}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <a href={`/product/${p.id}`} target="_blank" rel="noreferrer"
+                        className="p-2 rounded-[8px] hover:bg-[#F0F2F8] text-[#0C0D10]/30 hover:text-[#1160CB] transition-colors"
+                        title="View in store">
+                        <ExternalLink size={14} />
+                      </a>
+                      <button
+                        onClick={() => {
+                          if (window.confirm(`Remove "${p.title}" from your store?`)) {
+                            deleteProduct(p.id);
+                            showSuccess("Product removed from store.");
+                          }
+                        }}
+                        className="p-2 rounded-[8px] hover:bg-rose-50 text-[#0C0D10]/30 hover:text-rose-500 transition-colors"
+                        title="Remove from store">
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Summary stats */}
+          {cjProducts.length > 0 && (
+            <div className="grid grid-cols-3 gap-4 pt-2">
+              {[
+                {
+                  label: "Total Products",
+                  value: cjProducts.length,
+                  icon: Package,
+                  color: "#1160CB",
+                },
+                {
+                  label: "Avg. Markup",
+                  value: `${(cjProducts.reduce((s, p) => s + parseFloat(p.specs?.["Your Markup"]?.replace("%","") || "0"), 0) / cjProducts.length).toFixed(0)}%`,
+                  icon: Tag,
+                  color: "#7c3aed",
+                },
+                {
+                  label: "Est. Monthly Profit",
+                  value: `$${(cjProducts.reduce((s, p) => {
+                    const cost = parseFloat(p.specs?.["CJ Cost Price"]?.replace("$","") || "0");
+                    return s + (p.price - cost);
+                  }, 0)).toFixed(2)}`,
+                  icon: BarChart2,
+                  color: "#16a34a",
+                },
+              ].map(s => (
+                <div key={s.label} className="bg-white rounded-[14px] border border-[#F0F2F8] p-4 flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0"
+                    style={{ background: s.color + "18" }}>
+                    <s.icon size={15} style={{ color: s.color }} />
+                  </div>
+                  <div>
+                    <p className="text-caption text-[#0C0D10]/40">{s.label}</p>
+                    <p className="text-[16px] font-bold text-[#0C0D10] mt-0.5">{s.value}</p>
                   </div>
                 </div>
               ))}
