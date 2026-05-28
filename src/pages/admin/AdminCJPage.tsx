@@ -46,7 +46,7 @@ function saveFulfillment(f: Fulfillment) {
 // ── Component ─────────────────────────────────────────────────────────────────
 const AdminCJPage: React.FC = () => {
   const { products, orders, addProduct, deleteProduct } = useStore();
-  const [tab, setTab] = useState<"connect" | "import" | "imported" | "fulfill" | "tracking">("connect");
+  const [tab, setTab] = useState<"connect" | "import" | "imported" | "fulfill" | "tracking" | "guide">("guide");
 
   // ── Connection ──────────────────────────────────────────────────────────────
   const [conn, setConn] = useState<CJConnection | null>(() => getCJConnection());
@@ -281,11 +281,12 @@ const AdminCJPage: React.FC = () => {
   const cjProducts = products.filter(p => p.specs?.["Source"] === "CJ Dropshipping");
 
   const tabs = [
-    { id: "connect",  label: "Connect",          count: null },
-    { id: "import",   label: "Import Products",   count: null },
-    { id: "imported", label: "Imported Products", count: cjProducts.length || null },
-    { id: "fulfill",  label: "Fulfill Orders",    count: unfulfilled.length || null },
-    { id: "tracking", label: "Tracking",          count: fulfilled.length || null },
+    { id: "guide",    label: "📖 Guide",           count: null },
+    { id: "connect",  label: "Connect",            count: null },
+    { id: "import",   label: "Import Products",    count: null },
+    { id: "imported", label: "Imported Products",  count: cjProducts.length || null },
+    { id: "fulfill",  label: "Fulfill Orders",     count: unfulfilled.length || null },
+    { id: "tracking", label: "Tracking",           count: fulfilled.length || null },
   ] as const;
 
   return (
@@ -892,6 +893,143 @@ const AdminCJPage: React.FC = () => {
           )}
         </div>
       )}
+
+      {/* ── GUIDE TAB ────────────────────────────────────────────────────────── */}
+      {tab === "guide" && (
+        <div className="space-y-6 max-w-3xl">
+
+          {/* Intro banner */}
+          <div className="bg-gradient-to-br from-[#1528A1] to-[#1160CB] rounded-[16px] p-6 text-white">
+            <h2 className="text-[18px] font-bold mb-1">How CJ Dropshipping works with WIVITEC</h2>
+            <p className="text-[13px] text-white/70 leading-relaxed">
+              CJ Dropshipping is your supplier. You sell the products, they pack and ship to your customers.
+              You never hold any inventory — you only pay CJ when a customer orders.
+            </p>
+          </div>
+
+          {/* Full workflow */}
+          <div className="bg-white rounded-[16px] border border-[#F0F2F8] p-6">
+            <h3 className="text-[14px] font-bold text-[#0C0D10] mb-5">Complete step-by-step workflow</h3>
+            <div className="space-y-0">
+              {[
+                {
+                  step: "1",
+                  color: "bg-[#1160CB]",
+                  title: "Add balance to your CJ account",
+                  detail: "Go to app.cjdropshipping.com → Wallet → Recharge. You need funds so CJ can charge you when you fulfill an order. Without balance, fulfillment will fail. Start with at least $50–$100 depending on your product costs.",
+                  link: { label: "Open CJ Wallet ↗", href: "https://app.cjdropshipping.com/wallet.html" },
+                },
+                {
+                  step: "2",
+                  color: "bg-[#1160CB]",
+                  title: "Import products to your store",
+                  detail: "Go to the Import Products tab above. Search for products, set your markup (the % you add on top of CJ's price), and click Import. The product is added to your WIVITEC storefront. CJ does NOT see this — you are just copying catalog data.",
+                  link: null,
+                },
+                {
+                  step: "3",
+                  color: "bg-[#7c3aed]",
+                  title: "A customer places an order on your store",
+                  detail: "The customer buys the product and pays YOU. CJ still knows nothing. The order appears in your Orders section with status 'Unfulfilled'.",
+                  link: null,
+                },
+                {
+                  step: "4",
+                  color: "bg-[#7c3aed]",
+                  title: "Fulfill the order via CJ",
+                  detail: "Go to the Fulfill Orders tab above. You will see all unfulfilled orders. Click 'Fulfill with CJ'. This sends the order to CJ's API: they charge your CJ wallet (wholesale price + shipping), pack the product, and ship directly to your customer. The order now appears in your CJ account under 'My Orders'.",
+                  link: { label: "Open CJ My Orders ↗", href: "https://app.cjdropshipping.com/order.html" },
+                },
+                {
+                  step: "5",
+                  color: "bg-green-600",
+                  title: "Track the shipment",
+                  detail: "Go to the Tracking tab above. Click 'Refresh Tracking' for any fulfilled order to get the latest shipping status directly from CJ. You can share the tracking number with your customer.",
+                  link: null,
+                },
+                {
+                  step: "6",
+                  color: "bg-green-600",
+                  title: "Your profit",
+                  detail: "Your profit = what your customer paid YOU − what CJ charged your wallet. Example: customer pays $25, CJ charges $8 + $3 shipping = $11. Your profit = $14. You keep this money — CJ only takes their cut when you fulfill.",
+                  link: null,
+                },
+              ].map((s, i, arr) => (
+                <div key={s.step} className="flex gap-4">
+                  <div className="flex flex-col items-center">
+                    <div className={`w-8 h-8 ${s.color} rounded-full flex items-center justify-center text-white text-[12px] font-bold flex-shrink-0`}>
+                      {s.step}
+                    </div>
+                    {i < arr.length - 1 && <div className="w-0.5 bg-[#F0F2F8] flex-1 my-1" />}
+                  </div>
+                  <div className="pb-6 flex-1">
+                    <p className="text-[13px] font-bold text-[#0C0D10] mb-1">{s.title}</p>
+                    <p className="text-[12px] text-[#0C0D10]/55 leading-relaxed">{s.detail}</p>
+                    {s.link && (
+                      <a href={s.link.href} target="_blank" rel="noreferrer"
+                        className="inline-flex items-center gap-1 text-[12px] text-[#1160CB] font-semibold hover:underline mt-2">
+                        <ExternalLink size={11} /> {s.link.label}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* FAQ */}
+          <div className="bg-white rounded-[16px] border border-[#F0F2F8] p-6 space-y-5">
+            <h3 className="text-[14px] font-bold text-[#0C0D10]">Common questions</h3>
+
+            {[
+              {
+                q: "Why can't I find imported products in CJ's website search?",
+                a: "This is completely normal. When you import a product via the API, nothing is created in CJ's system — you just copied catalog data to your store. CJ's website search only shows products available in their public catalog. Your imported products only exist in WIVITEC's store until a customer orders and you fulfill via CJ.",
+              },
+              {
+                q: "Why does CJ's API show products that aren't on their website?",
+                a: "CJ's API catalog and their public website search are different. The API gives access to a much larger product database — including products from partner warehouses and suppliers not listed publicly. This is normal and a known difference.",
+              },
+              {
+                q: "How do I know which shipping method to pick for Morocco?",
+                a: "For Morocco, the best options are: CJPacket Ordinary (cheapest, 15–25 days), CJPacket Tracked (recommended — tracking + 12–20 days), CJ ePacket (faster, 10–18 days). Avoid 'Air Express' for low-value items (expensive). Check the product's shipping info on app.cjdropshipping.com for exact rates.",
+              },
+              {
+                q: "Do I need to manually fulfill every single order?",
+                a: "Currently yes — you click 'Fulfill with CJ' for each order in the Fulfill Orders tab. This lets you review each order before sending it to CJ. Make sure your CJ wallet has enough balance before fulfilling.",
+              },
+              {
+                q: "What happens if CJ is out of stock after a customer orders?",
+                a: "If a product goes out of stock at CJ after a customer orders, the fulfillment will fail. Best practice: check stock availability on CJ before setting a product as 'active' in your store. CJ provides stock information via their API.",
+              },
+              {
+                q: "When does CJ charge me?",
+                a: "CJ charges your wallet only when you fulfill an order (step 4). They do NOT charge you for importing products. The charge = product wholesale price + shipping cost from CJ to your customer's address in Morocco.",
+              },
+            ].map((item, i) => (
+              <div key={i} className="border-b border-[#F0F2F8] last:border-0 pb-4 last:pb-0">
+                <p className="text-[13px] font-bold text-[#0C0D10] mb-1.5">{item.q}</p>
+                <p className="text-[12px] text-[#0C0D10]/55 leading-relaxed">{item.a}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Quick actions */}
+          <div className="grid sm:grid-cols-3 gap-3">
+            {[
+              { label: "Connect your CJ account", action: () => setTab("connect"), color: "bg-[#1160CB]" },
+              { label: "Browse & Import Products", action: () => setTab("import"),  color: "bg-[#1528A1]" },
+              { label: "Fulfill pending orders",   action: () => setTab("fulfill"), color: "bg-green-600" },
+            ].map(b => (
+              <button key={b.label} onClick={b.action}
+                className={`${b.color} hover:opacity-90 text-white rounded-[12px] px-4 py-3 text-[13px] font-bold text-left transition-opacity`}>
+                {b.label} →
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
