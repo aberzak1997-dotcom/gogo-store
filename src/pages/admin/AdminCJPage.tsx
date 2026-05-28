@@ -322,6 +322,16 @@ const AdminCJPage: React.FC = () => {
               </div>
             ) : (
               <div className="space-y-4">
+                {/* How to get API key */}
+                <div className="bg-[#F0F2F8] rounded-[10px] p-3 space-y-1.5">
+                  <p className="text-[11px] font-bold text-[#0C0D10] uppercase tracking-wider">How to get your API Key</p>
+                  <ol className="text-[12px] text-[#0C0D10]/60 space-y-1">
+                    <li>1. Log in to <a href="https://app.cjdropshipping.com" target="_blank" rel="noreferrer" className="text-[#1160CB] font-semibold hover:underline">app.cjdropshipping.com ↗</a></li>
+                    <li>2. Go to <strong className="text-[#0C0D10]">Account → My Account</strong></li>
+                    <li>3. Find the <strong className="text-[#0C0D10]">API Key</strong> section and copy it</li>
+                    <li className="text-[11px] text-amber-600 font-semibold">⚠ This is NOT your login password</li>
+                  </ol>
+                </div>
                 <div>
                   <Label className="text-caption text-[#1160CB] mb-1.5 block">CJ Account Email</Label>
                   <Input value={cjEmail} onChange={e => setCjEmail(e.target.value)}
@@ -329,10 +339,12 @@ const AdminCJPage: React.FC = () => {
                     className="border-[#F0F2F8] rounded-[10px] text-[13px]" />
                 </div>
                 <div>
-                  <Label className="text-caption text-[#1160CB] mb-1.5 block">CJ Account Password</Label>
+                  <Label className="text-caption text-[#1160CB] mb-1.5 block">
+                    API Key <span className="text-[#0C0D10]/30 font-normal normal-case">(from CJ dashboard — not your password)</span>
+                  </Label>
                   <Input value={cjPass} onChange={e => setCjPass(e.target.value)}
-                    placeholder="••••••••" type="password"
-                    className="border-[#F0F2F8] rounded-[10px] text-[13px]"
+                    placeholder="Paste your CJ API Key here…"
+                    className="border-[#F0F2F8] rounded-[10px] text-[13px] font-mono"
                     onKeyDown={e => e.key === "Enter" && handleConnect()} />
                 </div>
                 <Button onClick={handleConnect} disabled={connecting}
