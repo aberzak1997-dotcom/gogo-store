@@ -326,12 +326,6 @@ const Header = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="bg-[#F0F2F8]" />
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/30 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
-                        <LayoutDashboard size={14} /> Admin Panel
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-[#F0F2F8]" />
                     <DropdownMenuItem
                       onClick={() => customerLogout().then(() => navigate("/"))}
                       className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-rose-500 hover:text-rose-600 hover:bg-rose-50 text-[13px] font-medium"
@@ -353,12 +347,6 @@ const Header = () => {
                     <DropdownMenuItem asChild>
                       <Link to="/track-order" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
                         <Package size={14} /> Track My Order
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-[#F0F2F8]" />
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/30 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
-                        <LayoutDashboard size={14} /> Admin Panel
                       </Link>
                     </DropdownMenuItem>
                   </>
