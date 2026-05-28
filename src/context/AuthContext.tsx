@@ -43,27 +43,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // ── Supabase path ──────────────────────────────────────────────────────────
     if (isSupabaseConfigured && supabase) {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: pass });
 
-      if (error || !data.user) {
-        return { success: false, error: "Invalid email or password." };
+        if (error || !data.user) {
+          return { success: false, error: "Invalid email or password." };
+        }
+
+        // Check role via security-definer RPC (bypasses RLS)
+        const { data: roleData, error: rpcError } = await supabase
+          .rpc("get_user_role", { user_id: data.user.id });
+
+        // Sign out of Supabase — admin session lives in localStorage only
+        await supabase.auth.signOut();
+
+        if (rpcError) {
+          return { success: false, error: "Could not verify admin role. Please try again." };
+        }
+
+        if (roleData !== "admin") {
+          return { success: false, error: "Access denied. This account does not have admin privileges." };
+        }
+
+        setIsAuthenticated(true);
+        localStorage.setItem("admin_auth", "true");
+        return { success: true };
+      } catch {
+        return { success: false, error: "Connection error. Please check your internet and try again." };
       }
-
-      // Check role via security-definer RPC (bypasses RLS, always works)
-      const { data: roleData } = await supabase
-        .rpc("get_user_role", { user_id: data.user.id });
-
-      // Immediately sign out of Supabase — admin session lives in localStorage only,
-      // so it won't interfere with any customer Supabase session.
-      await supabase.auth.signOut();
-
-      if (roleData !== "admin") {
-        return { success: false, error: "Access denied. This account does not have admin privileges." };
-      }
-
-      setIsAuthenticated(true);
-      localStorage.setItem("admin_auth", "true");
-      return { success: true };
     }
 
     // ── No match ──────────────────────────────────────────────────────────────
