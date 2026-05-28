@@ -98,8 +98,18 @@ function renderContent(text: string) {
   return elements;
 }
 
-function inlineMd(text: string): string {
+// Escape raw HTML before applying markdown so no injected tags survive
+function escapeHtml(text: string): string {
   return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function inlineMd(text: string): string {
+  return escapeHtml(text)
     .replace(/\*\*(.*?)\*\*/g, "<strong class=\"font-semibold text-[#0C0D10]\">$1</strong>")
     .replace(/\*(.*?)\*/g, "<em>$1</em>");
 }

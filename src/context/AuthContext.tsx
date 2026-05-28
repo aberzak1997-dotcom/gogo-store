@@ -23,7 +23,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsAuthenticated(localStorage.getItem("admin_auth") === "true");
+    // Session expires after 24 hours
+    const auth = localStorage.getItem("admin_auth");
+    const expiry = localStorage.getItem("admin_auth_expiry");
+    if (auth === "true" && expiry && Date.now() < Number(expiry)) {
+      setIsAuthenticated(true);
+    } else {
+      localStorage.removeItem("admin_auth");
+      localStorage.removeItem("admin_auth_expiry");
+    }
     setIsLoading(false);
   }, []);
 
@@ -41,6 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (matched) {
       setIsAuthenticated(true);
       localStorage.setItem("admin_auth", "true");
+      localStorage.setItem("admin_auth_expiry", String(Date.now() + 24 * 60 * 60 * 1000));
       return { success: true };
     }
 
@@ -79,6 +88,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     setIsAuthenticated(false);
     localStorage.removeItem("admin_auth");
+    localStorage.removeItem("admin_auth_expiry");
+    // Also sign out of Supabase if a session exists
+    if (isSupabaseConfigured && supabase) {
+      await supabase.auth.signOut().catch(() => {});
+    }
   };
 
   return (

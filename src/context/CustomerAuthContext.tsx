@@ -31,9 +31,18 @@ function getLocalSession(): CustomerUser | null {
   catch { return null; }
 }
 
-function getLocalAccounts(): Record<string, { name: string; password: string }> {
+function getLocalAccounts(): Record<string, { name: string; passwordHash: string }> {
   try { return JSON.parse(localStorage.getItem(LS_ACCOUNTS) || "{}"); }
   catch { return {}; }
+}
+
+// SHA-256 hash via Web Crypto API (no external deps, runs in all modern browsers)
+async function hashPassword(password: string): Promise<string> {
+  const encoded = new TextEncoder().encode(password);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", encoded);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 function wishlistKey(id: string) { return `wishlist_${id}`; }
@@ -113,10 +122,11 @@ export const CustomerAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       return { success: true };
     }
 
-    // localStorage fallback
+    // localStorage fallback — compare against stored SHA-256 hash
     const accounts = getLocalAccounts();
     const found = accounts[email.toLowerCase()];
-    if (!found || found.password !== password) {
+    const inputHash = await hashPassword(password);
+    if (!found || found.passwordHash !== inputHash) {
       return { success: false, error: "Invalid email or password." };
     }
     const cust: CustomerUser = { id: email.toLowerCase(), email, name: found.name };
@@ -143,12 +153,13 @@ export const CustomerAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       return { success: true };
     }
 
-    // localStorage fallback
+    // localStorage fallback — store SHA-256 hash, never plaintext
     const accounts = getLocalAccounts();
     if (accounts[email.toLowerCase()]) {
       return { success: false, error: "An account with this email already exists." };
     }
-    accounts[email.toLowerCase()] = { name, password };
+    const passwordHash = await hashPassword(password);
+    accounts[email.toLowerCase()] = { name, passwordHash };
     localStorage.setItem(LS_ACCOUNTS, JSON.stringify(accounts));
     const cust: CustomerUser = { id: email.toLowerCase(), email, name };
     setCustomer(cust);

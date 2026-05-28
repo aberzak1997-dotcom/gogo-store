@@ -199,7 +199,7 @@ const CheckoutPage = () => {
       ? Math.round(subtotal * (found.value / 100) * 100) / 100
       : found.value;
     setAppliedDiscount({ code: found.code, amount, type: found.type });
-    showSuccess(`Discount "${found.code}" applied! You save {currency} {amount.toFixed(2)}`);
+    showSuccess(`Discount "${found.code}" applied! You save ${currency} ${amount.toFixed(2)}`);
   };
 
   const placeOrder = (): string | null =>
@@ -208,6 +208,18 @@ const CheckoutPage = () => {
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) { showError("Please fill in all shipping fields."); return; }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) { showError("Please enter a valid email address."); return; }
+
+    // Validate quantity sanity (no product qty > 100)
+    const hasInvalidQty = enrichedCart.some(i => i.quantity < 1 || i.quantity > 100);
+    if (hasInvalidQty) { showError("Invalid product quantity detected."); return; }
+
+    // Prevent double-submit
+    if (isPlacing) return;
+
     setIsPlacing(true);
     await new Promise(res => setTimeout(res, 1200));
     const newOrderId = placeOrder();
