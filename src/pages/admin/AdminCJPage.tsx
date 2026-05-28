@@ -138,20 +138,36 @@ const AdminCJPage: React.FC = () => {
     if (!conn) return;
     setImporting(cjProduct.pid);
     try {
-      // Fetch full product to get variants
+      // Fetch full product details (variants + full image set)
       let fullProduct = cjProduct;
       try { fullProduct = await cjGetProduct(conn.accessToken, cjProduct.pid); }
-      catch { /* use basic product if detail fetch fails */ }
+      catch { /* fall back to list-level data */ }
 
       const basePrice = parseFloat(cjProduct.sellPrice || "0");
       const yourPrice = Number((basePrice * (1 + markup / 100)).toFixed(2));
 
-      const images = fullProduct.productImageSet?.map(i => i.imageUrl) || [cjProduct.productImage];
+      // ── Build a clean, deduplicated image list ────────────────────────────
+      const seen = new Set<string>();
+      const pushImg = (url?: string | null) => {
+        if (url && url.startsWith("http") && !seen.has(url)) {
+          seen.add(url);
+        }
+      };
+      // 1. Main image first
+      pushImg(cjProduct.productImage);
+      // 2. Gallery images from product detail
+      (fullProduct.productImageSet || []).forEach(i => pushImg(i.imageUrl));
+      // 3. Unique variant images as extra gallery shots
+      (fullProduct.variants || []).forEach(v => pushImg(v.variantImage));
+
+      const allImages = [...seen];
+      const mainImage  = allImages[0] || cjProduct.productImage;
+      const galleryImages = allImages.slice(1); // excludes main — no duplicates
 
       const newProduct: Product = {
         id: `cj_${cjProduct.pid}_${Date.now()}`,
         title: cjProduct.productNameEn,
-        description: cjProduct.remark || `${cjProduct.productNameEn} — sourced from CJ Dropshipping. Available at WIVITEC with 1-Year warranty.`,
+        description: cjProduct.remark || `${cjProduct.productNameEn} — Available at WIVITEC with 1-Year warranty and free shipping on orders over $50.`,
         sku: cjProduct.pid,
         brand: "CJ Sourced",
         category: importCategory,
@@ -159,8 +175,8 @@ const AdminCJPage: React.FC = () => {
         price: yourPrice,
         compareAtPrice: Number((basePrice * (1 + (markup + 20) / 100)).toFixed(2)),
         stockQuantity: 999,
-        imageUrl: cjProduct.productImage,
-        galleryImages: images,
+        imageUrl: mainImage,
+        galleryImages,
         rating: 0,
         reviewCount: 0,
         status: "active",
@@ -386,28 +402,53 @@ const AdminCJPage: React.FC = () => {
 
           {/* Info card */}
           <div className="space-y-4">
-            <div className="bg-gradient-to-br from-[#1528A1] to-[#1160CB] rounded-[16px] p-6 text-white">
-              <h3 className="font-bold text-[15px] mb-3">What you can do</h3>
+            {/* Workflow explanation */}
+            <div className="bg-white rounded-[16px] border border-[#F0F2F8] p-5">
+              <h3 className="font-bold text-[13px] text-[#0C0D10] mb-4 flex items-center gap-2">
+                <Zap size={14} className="text-[#1160CB]" /> How CJ Dropshipping works
+              </h3>
               <div className="space-y-3">
                 {[
-                  { icon: Search, text: "Search 400,000+ products" },
-                  { icon: Download, text: "Import products with your markup" },
-                  { icon: Truck, text: "Auto-fulfill orders with 1 click" },
-                  { icon: MapPin, text: "Real-time shipment tracking" },
-                ].map(f => (
-                  <div key={f.text} className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-white/10 rounded-[8px] flex items-center justify-center flex-shrink-0">
-                      <f.icon size={15} className="text-[#479BF7]" />
+                  {
+                    step: "1",
+                    color: "bg-[#1160CB]",
+                    title: "Import products",
+                    desc: "Browse CJ's catalog and add products to YOUR store with your markup. Nothing happens in CJ yet.",
+                  },
+                  {
+                    step: "2",
+                    color: "bg-[#1528A1]",
+                    title: "Customer buys",
+                    desc: "A customer places an order on your storefront and pays you. CJ still knows nothing.",
+                  },
+                  {
+                    step: "3",
+                    color: "bg-green-600",
+                    title: "You fulfill via CJ",
+                    desc: "Go to Fulfill Orders tab → click Fulfill with CJ. ONLY NOW does CJ receive the order and ship to your customer.",
+                  },
+                ].map(s => (
+                  <div key={s.step} className="flex items-start gap-3">
+                    <div className={`w-6 h-6 ${s.color} rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0 mt-0.5`}>
+                      {s.step}
                     </div>
-                    <p className="text-[13px] text-white/80">{f.text}</p>
+                    <div>
+                      <p className="text-[12px] font-bold text-[#0C0D10]">{s.title}</p>
+                      <p className="text-[11px] text-[#0C0D10]/50 mt-0.5 leading-relaxed">{s.desc}</p>
+                    </div>
                   </div>
                 ))}
+              </div>
+              <div className="mt-4 pt-4 border-t border-[#F0F2F8]">
+                <p className="text-[11px] text-[#0C0D10]/40 leading-relaxed">
+                  ⚠ Imported products will <strong className="text-[#0C0D10]/60">NOT appear in your CJ seller account</strong> — that's normal. CJ only records activity when you place a fulfillment order through their API.
+                </p>
               </div>
             </div>
             <div className="bg-amber-50 border border-amber-100 rounded-[14px] p-4 flex gap-3">
               <AlertTriangle size={16} className="text-amber-500 flex-shrink-0 mt-0.5" />
               <p className="text-[12px] text-amber-700">
-                <strong>Important:</strong> Only import products that ship to Morocco. Check CJ's product page for shipping availability before importing.
+                <strong>Tip:</strong> Only import products that ship to Morocco. Check CJ's product listing for shipping availability before importing.
               </p>
             </div>
           </div>
