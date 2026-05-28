@@ -152,13 +152,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </h3>
 
         {/* Price + CTA */}
-        <div className="mt-auto flex items-center justify-between pt-3 border-t border-[#F0F2F8]">
-          <div>
+        <div className="mt-auto pt-3 border-t border-[#F0F2F8] space-y-3">
+          <div className="flex items-baseline gap-2">
             <span className="font-bold text-[#1528A1]" style={{ fontSize: 18 }}>
               ${currentPrice.toFixed(2)}
             </span>
             {product.compareAtPrice && (
-              <span className="text-[12px] text-[#0C0D10]/25 line-through ml-2">
+              <span className="text-[12px] text-[#0C0D10]/25 line-through">
                 ${product.compareAtPrice.toFixed(2)}
               </span>
             )}
@@ -167,7 +167,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             onClick={handleAddToCart}
             disabled={currentStock === 0}
             size="sm"
-            className="bg-[#1160CB] hover:bg-[#479BF7] text-white rounded-[8px] px-4 h-8 text-[13px] font-semibold transition-all duration-200 disabled:opacity-40"
+            className="w-full bg-[#1160CB] hover:bg-[#479BF7] text-white rounded-[8px] h-9 text-[13px] font-semibold transition-all duration-200 disabled:opacity-40"
           >
             Add to Cart
           </Button>

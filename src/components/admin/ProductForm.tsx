@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Trash2, X, Upload } from "lucide-react";
+import { Plus, Trash2, X, Upload, Sparkles, RefreshCw, ChevronDown, ChevronUp, Globe } from "lucide-react";
 import { showError } from "../../utils/toast";
 import VariantManager from "./VariantManager";
 
@@ -41,6 +41,43 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
 
   const [newSpec, setNewSpec] = useState({ key: "", value: "" });
   const [newTag, setNewTag] = useState("");
+  const [seoOpen, setSeoOpen] = useState(false);
+  const [seoData, setSeoData] = useState(() => {
+    try {
+      const key = `product_seo_${product?.id || "new"}`;
+      return JSON.parse(localStorage.getItem(key) || "{}");
+    } catch { return {}; }
+  });
+  const [seoGenerating, setSeoGenerating] = useState<Record<string, boolean>>({});
+
+  const setSeo = (field: string, value: string) =>
+    setSeoData((p: Record<string, string>) => ({ ...p, [field]: value }));
+
+  const saveSeo = (id: string) => {
+    localStorage.setItem(`product_seo_${id}`, JSON.stringify(seoData));
+  };
+
+  const generateSeoField = async (field: string) => {
+    setSeoGenerating((p) => ({ ...p, [field]: true }));
+    await new Promise((r) => setTimeout(r, 800 + Math.random() * 500));
+    const title = formData.title || "Product";
+    const brand = formData.brand || "WIVITEC";
+    const cat   = formData.category || "Electronics";
+    const desc  = formData.description || "";
+    if (field === "seoTitle") {
+      setSeo("seoTitle", `${title} — ${brand} | WIVITEC Store`);
+    } else if (field === "seoDescription") {
+      const snippet = desc.slice(0, 80).trim();
+      setSeo("seoDescription", `Buy the ${title} by ${brand} at WIVITEC. ${snippet ? snippet + ". " : ""}Fast delivery across Morocco. 1-Year warranty included.`);
+    } else if (field === "focusKeyword") {
+      setSeo("focusKeyword", `${title.toLowerCase()}, buy ${brand.toLowerCase()} ${cat.toLowerCase()}, ${brand.toLowerCase()} Morocco`);
+    }
+    setSeoGenerating((p) => ({ ...p, [field]: false }));
+  };
+
+  const generateAllSeo = async () => {
+    for (const f of ["seoTitle", "seoDescription", "focusKeyword"]) await generateSeoField(f);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -123,9 +160,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
       return;
     }
 
+    const finalId = product?.id || Math.random().toString(36).substr(2, 9);
+    saveSeo(finalId);
+
     const finalData: Product = {
       ...(formData as Product),
-      id: product?.id || Math.random().toString(36).substr(2, 9),
+      id: finalId,
       imageUrl: formData.imageUrl || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
       createdAt: product?.createdAt || new Date().toISOString()
     };
@@ -315,6 +355,106 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
             </div>
           ))}
         </div>
+      </div>
+
+      {/* ── SEO Section ── */}
+      <div className="rounded-[10px] border border-[#F0F2F8] overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setSeoOpen(!seoOpen)}
+          className="w-full flex items-center justify-between px-4 py-3 bg-[#F0F2F8] hover:bg-[#e8ebf5] transition-colors text-left"
+        >
+          <div className="flex items-center gap-2.5">
+            <div style={{ width: 28, height: 28, borderRadius: 6, background: "rgba(17,96,203,0.12)", color: "#1160CB", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Globe size={13} />
+            </div>
+            <span className="text-[13px] font-semibold text-[#0C0D10]">SEO Settings</span>
+            <span className="text-[10px] font-medium text-[#1160CB] bg-[#1160CB]/10 px-2 py-0.5 rounded-full">Optional</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); setSeoOpen(true); generateAllSeo(); }}
+              className="flex items-center gap-1 text-[11px] font-semibold text-[#1160CB] hover:text-[#1528A1] transition-colors px-2 py-1 rounded"
+            >
+              <Sparkles size={11} /> AI Fill
+            </button>
+            {seoOpen ? <ChevronUp size={14} className="text-[#0C0D10]/30" /> : <ChevronDown size={14} className="text-[#0C0D10]/30" />}
+          </div>
+        </button>
+
+        {seoOpen && (
+          <div className="p-4 space-y-4 bg-white">
+            {/* Google preview */}
+            <div className="p-3 rounded-[8px] bg-[#F0F2F8] space-y-1">
+              <p className="text-[10px] font-bold text-[#0C0D10]/40 uppercase tracking-widest mb-2">Google Preview</p>
+              <p className="text-[#1a0dab] text-[14px] font-medium leading-snug line-clamp-1">
+                {seoData.seoTitle || formData.title || "Product Title — WIVITEC Store"}
+              </p>
+              <p className="text-[#4d5156] text-[12px] leading-relaxed line-clamp-2">
+                {seoData.seoDescription || "Your meta description will appear here."}
+              </p>
+            </div>
+
+            {/* SEO Title */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#1160CB]">SEO Title</label>
+                <button type="button" onClick={() => generateSeoField("seoTitle")} disabled={seoGenerating.seoTitle}
+                  className="flex items-center gap-1 text-[11px] font-semibold text-[#1160CB] hover:text-[#1528A1] disabled:opacity-50 transition-colors">
+                  {seoGenerating.seoTitle ? <><RefreshCw size={10} className="animate-spin" /> Generating…</> : <><Sparkles size={10} /> AI</>}
+                </button>
+              </div>
+              <input
+                className="w-full h-10 px-3 rounded-[8px] text-[13px] focus:outline-none focus:ring-1 focus:ring-[#1160CB]"
+                style={{ border: "1.5px solid #F0F2F8", fontSize: 13 }}
+                placeholder={`${formData.title || "Product"} — Brand | WIVITEC Store`}
+                value={seoData.seoTitle || ""}
+                onChange={(e) => setSeo("seoTitle", e.target.value)}
+              />
+              <p className="text-[11px] text-[#0C0D10]/35">{(seoData.seoTitle || "").length}/60 chars recommended</p>
+            </div>
+
+            {/* Meta Description */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#1160CB]">Meta Description</label>
+                <button type="button" onClick={() => generateSeoField("seoDescription")} disabled={seoGenerating.seoDescription}
+                  className="flex items-center gap-1 text-[11px] font-semibold text-[#1160CB] hover:text-[#1528A1] disabled:opacity-50 transition-colors">
+                  {seoGenerating.seoDescription ? <><RefreshCw size={10} className="animate-spin" /> Generating…</> : <><Sparkles size={10} /> AI</>}
+                </button>
+              </div>
+              <textarea
+                rows={3}
+                className="w-full px-3 py-2 rounded-[8px] text-[13px] resize-none focus:outline-none focus:ring-1 focus:ring-[#1160CB]"
+                style={{ border: "1.5px solid #F0F2F8", fontSize: 13 }}
+                placeholder="Brief description for Google search results…"
+                value={seoData.seoDescription || ""}
+                onChange={(e) => setSeo("seoDescription", e.target.value)}
+              />
+              <p className="text-[11px] text-[#0C0D10]/35">{(seoData.seoDescription || "").length}/160 chars recommended</p>
+            </div>
+
+            {/* Focus Keyword */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#1160CB]">Focus Keywords</label>
+                <button type="button" onClick={() => generateSeoField("focusKeyword")} disabled={seoGenerating.focusKeyword}
+                  className="flex items-center gap-1 text-[11px] font-semibold text-[#1160CB] hover:text-[#1528A1] disabled:opacity-50 transition-colors">
+                  {seoGenerating.focusKeyword ? <><RefreshCw size={10} className="animate-spin" /> Generating…</> : <><Sparkles size={10} /> AI</>}
+                </button>
+              </div>
+              <input
+                className="w-full h-10 px-3 rounded-[8px] text-[13px] focus:outline-none focus:ring-1 focus:ring-[#1160CB]"
+                style={{ border: "1.5px solid #F0F2F8", fontSize: 13 }}
+                placeholder="keyword one, keyword two, …"
+                value={seoData.focusKeyword || ""}
+                onChange={(e) => setSeo("focusKeyword", e.target.value)}
+              />
+              <p className="text-[11px] text-[#0C0D10]/35">Comma-separated keywords</p>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-end gap-3 pt-4 border-t">

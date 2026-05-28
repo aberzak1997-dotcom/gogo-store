@@ -46,6 +46,7 @@ import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
 import AdminIntegrationsPage from "./pages/admin/AdminIntegrationsPage";
 import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
 import AdminShippingPage from "./pages/admin/AdminShippingPage";
+import AdminSeoPage from "./pages/admin/AdminSeoPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import NotFound from "./pages/NotFound";
 import CookieConsent from "./components/storefront/CookieConsent";
@@ -118,6 +119,7 @@ const App = () => {
               <Route path="/admin/integrations" element={<AdminLayout><AdminIntegrationsPage /></AdminLayout>} />
               <Route path="/admin/payments" element={<AdminLayout><AdminPaymentsPage /></AdminLayout>} />
               <Route path="/admin/shipping" element={<AdminLayout><AdminShippingPage /></AdminLayout>} />
+              <Route path="/admin/seo" element={<AdminLayout><AdminSeoPage /></AdminLayout>} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>

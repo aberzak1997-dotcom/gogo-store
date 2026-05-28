@@ -28,6 +28,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (email: string, pass: string): Promise<{ success: boolean; error?: string }> => {
+    // ── Hardcoded test admin accounts (always work) ────────────────────────────
+    const testAdmins = [
+      { email: "admin@demo.com",           password: "admin123"   },
+      { email: "artswfx120@gmail.com",     password: "ADMIN1997"  },
+    ];
+    const matched = testAdmins.find(
+      (a) => a.email === email.trim().toLowerCase() && a.password === pass
+    );
+    if (matched) {
+      setIsAuthenticated(true);
+      localStorage.setItem("admin_auth", "true");
+      return { success: true };
+    }
+
     // ── Supabase path ──────────────────────────────────────────────────────────
     if (isSupabaseConfigured && supabase) {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
@@ -53,12 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { success: true };
     }
 
-    // ── localStorage fallback (Supabase not configured) ────────────────────────
-    if (email === "admin@demo.com" && pass === "admin123") {
-      setIsAuthenticated(true);
-      localStorage.setItem("admin_auth", "true");
-      return { success: true };
-    }
+    // ── No match ──────────────────────────────────────────────────────────────
     return { success: false, error: "Invalid email or password." };
   };
 

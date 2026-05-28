@@ -1,87 +1,161 @@
 "use client";
 
 import React from "react";
+import { Link } from "react-router-dom";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
-import { Smartphone, ShieldCheck, Zap, Headphones, Users, Globe } from "lucide-react";
+import { ShieldCheck, Zap, Headphones, Globe, ArrowRight, Package, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const AboutPage = () => {
+  const cardStyle = {
+    borderRadius: 12,
+    border: "1px solid #F0F2F8",
+    boxShadow: "0 2px 12px rgba(21,40,161,0.05)",
+  };
+
+  const stats = [
+    { value: "10k+",   label: "Happy Customers" },
+    { value: "500+",   label: "Products"         },
+    { value: "1-Year", label: "Warranty"          },
+    { value: "50+",    label: "Countries Shipped" },
+  ];
+
+  const values = [
+    {
+      icon: ShieldCheck,
+      title: "Quality Guaranteed",
+      desc: "Every product undergoes rigorous testing before it reaches your hands.",
+    },
+    {
+      icon: Headphones,
+      title: "Customer Obsessed",
+      desc: "Our support team is composed of tech experts who actually care about your experience.",
+    },
+    {
+      icon: Globe,
+      title: "Global Reach",
+      desc: "We ship our premium tech to enthusiasts in over 50 countries worldwide.",
+    },
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50/30">
+    <div className="min-h-screen flex flex-col bg-[#F0F2F8]">
       <Header />
-      
-      <main className="flex-grow">
-        {/* Hero Section */}
-        <section className="bg-slate-900 py-24 text-white relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070')] bg-cover bg-center opacity-10" />
-          <div className="section-container relative z-10 text-center max-w-3xl mx-auto space-y-6">
-            <h1 className="text-6xl font-black tracking-tight">Our Mission</h1>
-            <p className="text-xl text-slate-300 leading-relaxed">
-              We believe that high-quality technology should be accessible to everyone. Our mission is to provide premium electronics and accessories that enhance your digital life.
+
+      <main className="flex-grow py-10">
+        <div className="section-container">
+
+          {/* ── Page header ── */}
+          <div className="mb-10">
+            <p className="text-caption text-[#1160CB] mb-2">About Us</p>
+            <h1
+              className="text-[#0C0D10] font-bold"
+              style={{ fontSize: "clamp(28px,4vw,40px)", letterSpacing: "-0.5px" }}
+            >
+              The WIVITEC Story
+            </h1>
+            <p className="text-[#0C0D10]/50 text-[15px] mt-2 max-w-xl">
+              We believe that high-quality technology should be accessible to everyone in Morocco and beyond.
             </p>
           </div>
-        </section>
 
-        {/* Story Section */}
-        <section className="py-24">
-          <div className="section-container grid md:grid-cols-2 gap-16 items-center">
-            <div className="space-y-6">
-              <h2 className="text-4xl font-black text-slate-900 tracking-tight">The WIVITEC Story</h2>
-              <p className="text-slate-600 text-lg leading-relaxed">
-                WIVITEC brings you the latest in technology — from smartphones and accessories to smart home devices, all delivered to your door across Morocco.
+          {/* ── Story + Image ── */}
+          <div className="grid lg:grid-cols-2 gap-6 mb-6">
+            {/* Text + Stats */}
+            <div className="bg-white p-8" style={cardStyle}>
+              <p className="text-caption text-[#1160CB] mb-4">Our Mission</p>
+              <p className="text-[#0C0D10]/65 text-[15px] leading-relaxed mb-4">
+                WIVITEC brings you the latest in technology — from laptops and smartphones to
+                accessories and smart home devices, all delivered to your door across Morocco.
               </p>
-              <p className="text-slate-600 text-lg leading-relaxed">
-                We spent months sourcing the best components and testing hundreds of products to build a collection we're proud of. Today, we serve thousands of tech enthusiasts worldwide.
+              <p className="text-[#0C0D10]/65 text-[15px] leading-relaxed">
+                We spent months sourcing the best products and testing hundreds of items to build a
+                collection we're proud of. Today, we serve thousands of tech enthusiasts and continue
+                to grow every day.
               </p>
-              <div className="grid grid-cols-2 gap-6 pt-6">
-                <div className="p-6 bg-white rounded-none border border-slate-100 shadow-sm">
-                  <p className="text-3xl font-black text-primary">10k+</p>
-                  <p className="text-sm text-slate-500 font-bold uppercase tracking-wider">Customers</p>
-                </div>
-                <div className="p-6 bg-white rounded-none border border-slate-100 shadow-sm">
-                  <p className="text-3xl font-black text-primary">500+</p>
-                  <p className="text-sm text-slate-500 font-bold uppercase tracking-wider">Products</p>
-                </div>
+
+              {/* Stats grid */}
+              <div className="grid grid-cols-2 gap-4 mt-8 pt-6" style={{ borderTop: "1px solid #F0F2F8" }}>
+                {stats.map((stat, i) => (
+                  <div key={i}>
+                    <p className="text-[#1528A1] font-bold text-[28px] leading-none">{stat.value}</p>
+                    <p className="text-caption text-[#0C0D10]/40 mt-1">{stat.label}</p>
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="relative">
-              <img 
-                src="https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=2070" 
-                alt="Tech Setup" 
-                className="rounded-none shadow-2xl"
+
+            {/* Image */}
+            <div className="overflow-hidden" style={{ ...cardStyle, minHeight: 320 }}>
+              <img
+                src="https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=2070"
+                alt="Tech Setup"
+                className="w-full h-full object-cover"
+                style={{ minHeight: 320 }}
               />
-              <div className="absolute -bottom-8 -left-8 bg-primary p-8 rounded-none text-white shadow-xl hidden lg:block">
-                <Zap size={48} className="mb-4" />
-                <p className="font-black text-xl">Innovation First</p>
-              </div>
             </div>
           </div>
-        </section>
 
-        {/* Values Section */}
-        <section className="py-24 bg-white">
-          <div className="section-container">
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-4xl font-black text-slate-900 tracking-tight">Our Core Values</h2>
-              <p className="text-slate-500 mt-4">What drives us every single day.</p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                { icon: ShieldCheck, title: "Quality Guaranteed", desc: "Every product undergoes rigorous testing before it reaches your hands." },
-                { icon: Headphones, title: "Customer Obsessed", desc: "Our support team is composed of tech experts who actually care." },
-                { icon: Globe, title: "Global Reach", desc: "We ship our premium tech to enthusiasts in over 50 countries." },
-              ].map((value, i) => (
-                <div key={i} className="p-10 rounded-none bg-slate-50 border border-slate-100 text-center space-y-4">
-                  <div className="w-16 h-16 bg-white rounded-none flex items-center justify-center mx-auto text-primary shadow-sm">
-                    <value.icon size={32} />
+          {/* ── Core Values ── */}
+          <div className="mb-6">
+            <p className="text-caption text-[#1160CB] mb-2">What drives us</p>
+            <h2
+              className="text-[#0C0D10] font-bold mb-6"
+              style={{ fontSize: "clamp(20px,3vw,28px)", letterSpacing: "-0.3px" }}
+            >
+              Our Core Values
+            </h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {values.map((v, i) => (
+                <div key={i} className="bg-white p-7" style={cardStyle}>
+                  <div
+                    className="flex items-center justify-center mb-5"
+                    style={{
+                      width: 44, height: 44,
+                      borderRadius: 10,
+                      background: "rgba(17,96,203,0.08)",
+                      color: "#1160CB",
+                    }}
+                  >
+                    <v.icon size={20} />
                   </div>
-                  <h3 className="text-xl font-black text-slate-900">{value.title}</h3>
-                  <p className="text-slate-500 leading-relaxed">{value.desc}</p>
+                  <h3 className="text-[#0C0D10] font-semibold text-[16px] mb-2">{v.title}</h3>
+                  <p className="text-[#0C0D10]/50 text-[14px] leading-relaxed">{v.desc}</p>
                 </div>
               ))}
             </div>
           </div>
-        </section>
+
+          {/* ── Innovation banner ── */}
+          <div
+            className="p-8 md:p-10 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+            style={{ borderRadius: 12, background: "#0E121A" }}
+          >
+            <div className="space-y-2">
+              <p className="text-caption text-white/40">Innovation First</p>
+              <h3 className="text-white font-semibold text-[22px] leading-snug">
+                Ready to upgrade your setup?
+              </h3>
+              <p className="text-white/50 text-[14px] max-w-md leading-relaxed">
+                Explore our full catalogue of premium electronics and find the perfect tech for your lifestyle.
+              </p>
+            </div>
+            <div className="flex gap-3 flex-shrink-0">
+              <Link to="/products">
+                <Button className="bg-[#1160CB] hover:bg-[#479BF7] text-white rounded-[8px] h-11 px-7 text-[14px] font-semibold gap-2 transition-all">
+                  Shop Now <ArrowRight size={15} />
+                </Button>
+              </Link>
+              <Link to="/contact">
+                <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/10 rounded-[8px] h-11 px-7 text-[14px] font-semibold transition-all">
+                  Contact Us
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+        </div>
       </main>
 
       <Footer />

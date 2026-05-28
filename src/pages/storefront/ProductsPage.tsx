@@ -538,9 +538,8 @@ const ProductsPage = () => {
                 <SlidersHorizontal className="mx-auto h-16 w-16 text-slate-300 mb-4" />
                 <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">No products found</h3>
                 <p className="text-slate-500 mt-2 font-medium">Try adjusting your search or filters to find what you're looking for.</p>
-                <Button 
-                  variant="outline" 
-                  className="mt-8 rounded-full px-8 font-black uppercase tracking-widest text-[10px] border-slate-200"
+                <Button
+                  className="mt-8 rounded-full px-8 font-black uppercase tracking-widest text-[10px] bg-[#0C0D10] hover:bg-black text-white border-0"
                   onClick={handleClearAll}
                 >
                   Clear All Filters
