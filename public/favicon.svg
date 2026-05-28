@@ -1,9 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
-  <circle cx="50" cy="50" r="50" fill="#1A27CC"/>
-  <!-- W shape using paths for accurate bold geometric look -->
-  <path d="M8 22 L18 78 L32 48 L46 78 L56 22 L46 22 L38 52 L30 22 Z" fill="white"/>
-  <!-- i stem -->
-  <rect x="60" y="42" width="11" height="36" rx="2" fill="white"/>
-  <!-- i dot -->
-  <circle cx="65.5" cy="28" r="7" fill="white"/>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="256" cy="256" r="256" fill="#1528A1"/>
+<circle cx="405.143" cy="195.356" r="26.5802" fill="white"/>
+<path d="M189.287 287.641L192.334 287.698L241.016 122.406H295.131L347.37 294.732L348.929 294.612L366.01 227.364L420.859 241.877L377.572 389.594H321.186L269.076 214.905H266.938L214.962 389.594H158.576L80.2771 122.406H143.477L189.287 287.641Z" fill="white"/>
 </svg>
