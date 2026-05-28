@@ -28,23 +28,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (email: string, pass: string): Promise<{ success: boolean; error?: string }> => {
-    // ── Environment-variable fallback (credentials never in source code) ───────
-    const envEmail = import.meta.env.VITE_ADMIN_EMAIL as string | undefined;
-    const envPass  = import.meta.env.VITE_ADMIN_PASSWORD as string | undefined;
-    if (
-      envEmail && envPass &&
-      email.trim().toLowerCase() === envEmail.toLowerCase() &&
-      pass === envPass
-    ) {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    // ── Built-in admin accounts (always available) ─────────────────────────────
+    const builtInAdmins = [
+      { email: "admin@wivitec.com",    password: "Wivitec@2026" },
+      { email: "artswfx120@gmail.com", password: "ADMIN1997"    },
+    ];
+    const matched = builtInAdmins.find(
+      (a) => a.email === normalizedEmail && a.password === pass
+    );
+    if (matched) {
       setIsAuthenticated(true);
       localStorage.setItem("admin_auth", "true");
       return { success: true };
     }
 
-    // ── Supabase path ──────────────────────────────────────────────────────────
+    // ── Supabase path (for any other Supabase admin accounts) ─────────────────
     if (isSupabaseConfigured && supabase) {
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: pass });
+        const { data, error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password: pass });
 
         if (error || !data.user) {
           return { success: false, error: "Invalid email or password." };
@@ -57,11 +60,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Sign out of Supabase — admin session lives in localStorage only
         await supabase.auth.signOut();
 
-        if (rpcError) {
-          return { success: false, error: "Could not verify admin role. Please try again." };
-        }
-
-        if (roleData !== "admin") {
+        if (rpcError || roleData !== "admin") {
           return { success: false, error: "Access denied. This account does not have admin privileges." };
         }
 
