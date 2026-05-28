@@ -47,7 +47,10 @@ import AdminIntegrationsPage from "./pages/admin/AdminIntegrationsPage";
 import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
 import AdminShippingPage from "./pages/admin/AdminShippingPage";
 import AdminSeoPage from "./pages/admin/AdminSeoPage";
+import AdminArticlesPage from "./pages/admin/AdminArticlesPage";
 import AdminLayout from "./components/admin/AdminLayout";
+import BlogPage from "./pages/storefront/BlogPage";
+import ArticlePage from "./pages/storefront/ArticlePage";
 import NotFound from "./pages/NotFound";
 import CookieConsent from "./components/storefront/CookieConsent";
 import OrderTrackingPage from "./pages/storefront/OrderTrackingPage";
@@ -100,6 +103,8 @@ const App = () => {
               <Route path="/track-order" element={<OrderTrackingPage />} />
               <Route path="/account/login" element={<AccountLoginPage />} />
               <Route path="/account" element={<AccountPage />} />
+              <Route path="/blog" element={<BlogPage />} />
+              <Route path="/blog/:slug" element={<ArticlePage />} />
 
               {/* Admin Auth */}
               <Route path="/admin/login" element={<AdminLoginPage />} />
@@ -120,6 +125,7 @@ const App = () => {
               <Route path="/admin/payments" element={<AdminLayout><AdminPaymentsPage /></AdminLayout>} />
               <Route path="/admin/shipping" element={<AdminLayout><AdminShippingPage /></AdminLayout>} />
               <Route path="/admin/seo" element={<AdminLayout><AdminSeoPage /></AdminLayout>} />
+              <Route path="/admin/articles" element={<AdminLayout><AdminArticlesPage /></AdminLayout>} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>

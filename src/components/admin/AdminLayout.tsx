@@ -24,7 +24,8 @@ import {
   Truck,
   Bell,
   Plug,
-  Search
+  Search,
+  BookOpen
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useStore } from "../../context/StoreContext";
@@ -79,6 +80,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       items: [
         { label: "Marketing", icon: Megaphone, path: "/admin/marketing" },
         { label: "Analytics", icon: BarChart3, path: "/admin/analytics" },
+        { label: "Articles", icon: BookOpen, path: "/admin/articles" },
         { label: "SEO", icon: Search, path: "/admin/seo" },
       ]
     },
