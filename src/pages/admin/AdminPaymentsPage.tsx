@@ -25,9 +25,12 @@ interface PaymentConfig {
   codEnabled: boolean;
   bankEnabled: boolean;
   bankName: string;
-  bankAccount: string;
-  bankRouting: string;
   bankHolder: string;
+  bankRib: string;
+  bankIban: string;
+  bankSwift: string;
+  bankInstructions: string;
+  bankQrUrl: string;
 }
 
 const DEFAULT_CONFIG: PaymentConfig = JSON.parse(
@@ -36,7 +39,9 @@ const DEFAULT_CONFIG: PaymentConfig = JSON.parse(
     stripeEnabled: false, stripePublicKey: "", stripeSecretKey: "",
     paypalEnabled: false, paypalClientId: "",
     codEnabled: true,
-    bankEnabled: false, bankName: "", bankAccount: "", bankRouting: "", bankHolder: "",
+    bankEnabled: false,
+    bankName: "", bankHolder: "", bankRib: "", bankIban: "",
+    bankSwift: "", bankInstructions: "", bankQrUrl: "",
   })
 );
 
@@ -327,23 +332,47 @@ const AdminPaymentsPage = () => {
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Bank Name</Label>
-                        <Input value={config.bankName} onChange={e => set("bankName", e.target.value)} placeholder="e.g. Chase Bank" className="rounded-xl h-12" />
+                        <Input value={config.bankName} onChange={e => set("bankName", e.target.value)} placeholder="e.g. CIH Bank, Attijariwafa, BMCE…" className="rounded-xl h-12" />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Account Holder</Label>
-                        <Input value={config.bankHolder} onChange={e => set("bankHolder", e.target.value)} placeholder="Your business name" className="rounded-xl h-12" />
+                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Account Holder (Full Name)</Label>
+                        <Input value={config.bankHolder} onChange={e => set("bankHolder", e.target.value)} placeholder="Your full legal name" className="rounded-xl h-12" />
+                      </div>
+                      <div className="space-y-1.5 md:col-span-2">
+                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">RIB (Relevé d'Identité Bancaire)</Label>
+                        <Input value={config.bankRib} onChange={e => set("bankRib", e.target.value)} placeholder="e.g. 230 810 0012345678901234 45" className="rounded-xl h-12 font-mono" />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Account Number</Label>
-                        <Input value={config.bankAccount} onChange={e => set("bankAccount", e.target.value)} placeholder="••••••••••" className="rounded-xl h-12 font-mono" />
+                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">IBAN (optional)</Label>
+                        <Input value={config.bankIban} onChange={e => set("bankIban", e.target.value)} placeholder="MA64 XXXX XXXX XXXX XXXX XXXX XXXX" className="rounded-xl h-12 font-mono" />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Routing Number</Label>
-                        <Input value={config.bankRouting} onChange={e => set("bankRouting", e.target.value)} placeholder="••••••••" className="rounded-xl h-12 font-mono" />
+                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">SWIFT / BIC (optional)</Label>
+                        <Input value={config.bankSwift} onChange={e => set("bankSwift", e.target.value)} placeholder="e.g. CIHCMAMC" className="rounded-xl h-12 font-mono" />
+                      </div>
+                      <div className="space-y-1.5 md:col-span-2">
+                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Transfer Instructions (shown to customer)</Label>
+                        <textarea
+                          value={config.bankInstructions}
+                          onChange={e => set("bankInstructions", e.target.value)}
+                          placeholder="e.g. Transfer the exact order total. Use your Order # as the reference. Send proof of payment to support@wivitec.com"
+                          rows={3}
+                          className="w-full border border-input rounded-xl px-3 py-2.5 text-sm resize-none outline-none focus:ring-2 focus:ring-ring"
+                        />
+                      </div>
+                      <div className="space-y-1.5 md:col-span-2">
+                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">QR Code Image URL (optional — for mobile banking scan)</Label>
+                        <Input value={config.bankQrUrl} onChange={e => set("bankQrUrl", e.target.value)} placeholder="https://… (paste your bank's payment QR code image URL)" className="rounded-xl h-12" />
+                        <p className="text-[10px] text-slate-400 font-medium mt-1">Upload your bank QR code image somewhere (e.g. Imgur, your CJ account, Google Drive) and paste the direct image URL here.</p>
+                        {config.bankQrUrl && (
+                          <div className="mt-2 inline-block p-3 bg-white border border-slate-200 rounded-xl">
+                            <img src={config.bankQrUrl} alt="Bank QR" className="w-32 h-32 object-contain" onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="p-4 bg-emerald-50 rounded-xl text-xs text-emerald-700 font-medium">
-                      These details will be shown to customers on the order confirmation page so they can complete the transfer manually.
+                      ✓ All bank details are shown instantly to the customer as soon as they select "Bank Transfer" at checkout — including a scannable QR code if provided.
                     </div>
                   </div>
                 )}
