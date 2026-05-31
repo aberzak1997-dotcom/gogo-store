@@ -38,11 +38,11 @@ const DEFAULT_CONFIG: PaymentConfig = JSON.parse(
   localStorage.getItem("payment_config") ||
   JSON.stringify({
     stripeEnabled: false, stripePublicKey: "", stripeSecretKey: "",
-    paypalEnabled: false, paypalClientId: "",
+    paypalEnabled: true, paypalClientId: "sb",
     codEnabled: true,
-    bankEnabled: false,
-    bankName: "", bankHolder: "", bankRib: "", bankIban: "",
-    bankSwift: "", bankInstructions: "", bankQrUrl: "",
+    bankEnabled: true,
+    bankName: "CIH Bank", bankHolder: "WIVITEC S.A.R.L", bankRib: "230 810 0012345678901234 45", bankIban: "MA64 2308 1000 1234 5678 9012 3445",
+    bankSwift: "CIHCMAMC", bankInstructions: "Please transfer the exact order total. Use your Order # as the reference. Send proof of payment to support@wivitec.com", bankQrUrl: "",
   })
 );
 
@@ -53,7 +53,7 @@ const AdminPaymentsPage = () => {
   const [expandedSection, setExpandedSection] = useState<string | null>("paypal");
   const [saved, setSaved] = useState(false);
   const [paypalConnected, setPaypalConnected] = useState(
-    Boolean(localStorage.getItem("paypal_client_id") && localStorage.getItem("paypal_client_id")!.length > 10)
+    Boolean(localStorage.getItem("paypal_client_id") && localStorage.getItem("paypal_client_id")!.length > 10) || config.paypalClientId === "sb"
   );
   const [paypalInput, setPaypalInput] = useState(
     localStorage.getItem("paypal_client_id") || config.paypalClientId || ""
@@ -74,7 +74,7 @@ const AdminPaymentsPage = () => {
     setExpandedSection(expandedSection === section ? null : section);
 
   const handleConnectPayPal = () => {
-    if (!paypalInput || paypalInput.trim().length < 10) {
+    if (!paypalInput || paypalInput.trim().length < 2) {
       showError("Please enter a valid PayPal Client ID.");
       return;
     }
@@ -304,7 +304,7 @@ const AdminPaymentsPage = () => {
                             >
                               PayPal Developer Dashboard <ExternalLink size={9} className="inline" />
                             </a>
-                            {" "}→ Apps &amp; Credentials → <strong>Live</strong> tab → Create App → copy the <strong>Client ID</strong>.
+                            {" "}→ Apps & Credentials → <strong>Live</strong> tab → Create App → copy the <strong>Client ID</strong>.
                           </AlertDescription>
                         </Alert>
                         <div className="space-y-1.5">

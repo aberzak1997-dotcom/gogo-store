@@ -80,6 +80,19 @@ const DEFAULT_SETTINGS: StoreSettings = {
   taxRate: 0.07,
   freeShippingThreshold: 50,
   maintenanceMode: false,
+  paymentConfig: {
+    paypalEnabled: true,
+    paypalClientId: "sb",
+    codEnabled: true,
+    bankEnabled: true,
+    bankName: "CIH Bank",
+    bankHolder: "WIVITEC S.A.R.L",
+    bankRib: "230 810 0012345678901234 45",
+    bankIban: "MA64 2308 1000 1234 5678 9012 3445",
+    bankSwift: "CIHCMAMC",
+    bankInstructions: "Please transfer the exact order total. Use your Order # as the reference. Send proof of payment to support@wivitec.com",
+    bankQrUrl: "",
+  }
 };
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
