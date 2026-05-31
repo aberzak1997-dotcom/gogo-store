@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { showSuccess, showError } from "../../utils/toast";
+import { useStore } from "../../context/StoreContext";
 
 interface PaymentConfig {
   stripeEnabled: boolean;
@@ -46,6 +47,7 @@ const DEFAULT_CONFIG: PaymentConfig = JSON.parse(
 );
 
 const AdminPaymentsPage = () => {
+  const { settings, updateSettings } = useStore();
   const [config, setConfig] = useState<PaymentConfig>(DEFAULT_CONFIG);
   const [showStripeSecret, setShowStripeSecret] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>("paypal");
@@ -62,6 +64,8 @@ const AdminPaymentsPage = () => {
 
   const handleSave = () => {
     localStorage.setItem("payment_config", JSON.stringify(config));
+    // Sync to Supabase so all customer devices get the updated config
+    updateSettings({ ...settings, paymentConfig: config }, true);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
@@ -82,6 +86,7 @@ const AdminPaymentsPage = () => {
     setPaypalConnected(true);
     const updated = { ...config, paypalClientId: clientId, paypalEnabled: true };
     localStorage.setItem("payment_config", JSON.stringify(updated));
+    updateSettings({ ...settings, paymentConfig: updated }, true);
     showSuccess("PayPal connected! Customers can now pay with PayPal at checkout.");
   };
 
@@ -94,6 +99,7 @@ const AdminPaymentsPage = () => {
     setPaypalInput("");
     const updated = { ...config, paypalClientId: "", paypalEnabled: false };
     localStorage.setItem("payment_config", JSON.stringify(updated));
+    updateSettings({ ...settings, paymentConfig: updated }, true);
     showSuccess("PayPal disconnected.");
   };
 

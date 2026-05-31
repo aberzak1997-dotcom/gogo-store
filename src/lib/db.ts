@@ -8,7 +8,7 @@ import { supabase } from "./supabase";
 import type {
   Product, ProductVariant, Order, OrderItem, OrderTimelineEvent,
   Customer, Discount, Review, ReturnRequest, ReturnItem,
-  MarketingCampaign, Collection, StoreSettings,
+  MarketingCampaign, Collection, StoreSettings, PaymentConfig,
 } from "../types";
 
 // ─── Mappers (snake_case DB → camelCase TS) ───────────────────────────────
@@ -188,6 +188,7 @@ function mapSettings(r: Record<string, unknown>): StoreSettings {
     taxRate: r.tax_rate as number,
     freeShippingThreshold: r.free_shipping_threshold as number,
     maintenanceMode: r.maintenance_mode as boolean,
+    paymentConfig: ((r.payment_config as PaymentConfig | null) ?? {}) as PaymentConfig,
   };
 }
 
@@ -489,6 +490,7 @@ export async function updateSettingsDB(s: StoreSettings): Promise<void> {
     currency: s.currency, tax_rate: s.taxRate,
     free_shipping_threshold: s.freeShippingThreshold,
     maintenance_mode: s.maintenanceMode,
+    payment_config: s.paymentConfig ?? {},
   }).eq("id", 1);
   if (error) throw error;
 }

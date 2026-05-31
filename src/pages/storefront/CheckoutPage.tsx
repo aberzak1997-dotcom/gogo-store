@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import Header from "../../components/layout/Header";
@@ -69,44 +69,6 @@ const WepayLogo = () => (
 
 type PayMethod = "cod" | "card" | "paypal" | "bank";
 
-// ─── Helpers to read config reactively ────────────────────────────────────────
-function readPayPalConfigured(): boolean {
-  const stored = localStorage.getItem("paypal_client_id");
-  return Boolean(
-    (stored && stored.length > 10) ||
-    (import.meta.env.VITE_PAYPAL_CLIENT_ID &&
-      import.meta.env.VITE_PAYPAL_CLIENT_ID !== "test" &&
-      !import.meta.env.VITE_PAYPAL_CLIENT_ID.includes("YOUR"))
-  );
-}
-
-interface BankConfig {
-  bankEnabled: boolean;
-  bankName: string;
-  bankHolder: string;
-  bankRib: string;
-  bankIban: string;
-  bankSwift: string;
-  bankInstructions: string;
-  bankQrUrl: string;
-}
-
-function readBankConfig(): BankConfig {
-  try {
-    const cfg = JSON.parse(localStorage.getItem("payment_config") || "{}");
-    return {
-      bankEnabled:      Boolean(cfg.bankEnabled),
-      bankName:         cfg.bankName         || "",
-      bankHolder:       cfg.bankHolder       || "",
-      bankRib:          cfg.bankRib          || "",
-      bankIban:         cfg.bankIban         || "",
-      bankSwift:        cfg.bankSwift        || "",
-      bankInstructions: cfg.bankInstructions || "",
-      bankQrUrl:        cfg.bankQrUrl        || "",
-    };
-  } catch { return { bankEnabled: false, bankName: "", bankHolder: "", bankRib: "", bankIban: "", bankSwift: "", bankInstructions: "", bankQrUrl: "" }; }
-}
-
 const COMING_SOON_OPTIONS = [
   { id: "stripe", name: "Stripe",  desc: "Card payments via Stripe",        logo: <StripeLogo /> },
   { id: "cmi",    name: "CMI",     desc: "Carte Monétique Interbancaire",    logo: <CMILogo /> },
@@ -132,26 +94,22 @@ const CheckoutPage = () => {
   const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; amount: number; type: string } | null>(null);
   const [discountError, setDiscountError] = useState("");
 
-  // ── Reactive payment config ─────────────────────────────────────────────────
-  const [isPayPalReady, setIsPayPalReady] = useState(readPayPalConfigured);
-  const [bankCfg, setBankCfg] = useState<BankConfig>(readBankConfig);
+  // ── Payment config — derived directly from StoreContext (loaded from Supabase) ──
+  // settings.paymentConfig is set on all devices when Supabase is configured.
+  const paymentCfg = settings.paymentConfig;
+  const isPayPalReady = Boolean(paymentCfg?.paypalEnabled && paymentCfg?.paypalClientId);
+  const bankCfg = useMemo(() => ({
+    bankEnabled:      Boolean(paymentCfg?.bankEnabled),
+    bankName:         paymentCfg?.bankName         || "",
+    bankHolder:       paymentCfg?.bankHolder       || "",
+    bankRib:          paymentCfg?.bankRib          || "",
+    bankIban:         paymentCfg?.bankIban         || "",
+    bankSwift:        paymentCfg?.bankSwift        || "",
+    bankInstructions: paymentCfg?.bankInstructions || "",
+    bankQrUrl:        paymentCfg?.bankQrUrl        || "",
+  }), [paymentCfg]);
 
-  useEffect(() => {
-    const handler = () => {
-      setIsPayPalReady(readPayPalConfigured());
-      setBankCfg(readBankConfig());
-    };
-    // paypal-config-updated fires in the same tab (dispatched by AdminPaymentsPage)
-    window.addEventListener("paypal-config-updated", handler);
-    // storage fires when another tab changes localStorage
-    window.addEventListener("storage", handler);
-    return () => {
-      window.removeEventListener("paypal-config-updated", handler);
-      window.removeEventListener("storage", handler);
-    };
-  }, []);
-
-  // ── Dynamic payment options (recomputed when config changes) ────────────────
+  // ── Dynamic payment options (auto-updates when settings load from Supabase) ──
   const ACTIVE_OPTIONS = useMemo(() => [
     {
       id: "cod" as PayMethod,
@@ -315,50 +273,46 @@ const CheckoutPage = () => {
               </div>
 
               {/* Bank transfer reminder on success screen */}
-              {paidVia === "bank" && (() => {
-                const bc = readBankConfig();
-                if (!bc.bankName) return null;
-                return (
-                  <div className="rounded-[10px] p-5 space-y-2" style={{ background: "rgba(17,96,203,0.04)", border: "1px solid rgba(17,96,203,0.14)" }}>
-                    <p className="text-caption text-[#1160CB] mb-2">Complete your payment</p>
-                    <div className="space-y-0">
-                      {bc.bankName && (
-                        <div className="flex justify-between items-center py-2" style={{ borderBottom: "1px solid rgba(17,96,203,0.08)" }}>
-                          <span className="text-[12px] text-[#0C0D10]/50">Bank</span>
-                          <span className="text-[12px] font-semibold text-[#0C0D10]">{bc.bankName}</span>
+              {paidVia === "bank" && bankCfg.bankName && (
+                <div className="rounded-[10px] p-5 space-y-2" style={{ background: "rgba(17,96,203,0.04)", border: "1px solid rgba(17,96,203,0.14)" }}>
+                  <p className="text-caption text-[#1160CB] mb-2">Complete your payment</p>
+                  <div className="space-y-0">
+                    {bankCfg.bankName && (
+                      <div className="flex justify-between items-center py-2" style={{ borderBottom: "1px solid rgba(17,96,203,0.08)" }}>
+                        <span className="text-[12px] text-[#0C0D10]/50">Bank</span>
+                        <span className="text-[12px] font-semibold text-[#0C0D10]">{bankCfg.bankName}</span>
+                      </div>
+                    )}
+                    {bankCfg.bankHolder && (
+                      <div className="flex justify-between items-center py-2" style={{ borderBottom: "1px solid rgba(17,96,203,0.08)" }}>
+                        <span className="text-[12px] text-[#0C0D10]/50">Holder</span>
+                        <span className="text-[12px] font-semibold text-[#0C0D10]">{bankCfg.bankHolder}</span>
+                      </div>
+                    )}
+                    {bankCfg.bankRib && (
+                      <div className="flex justify-between items-center py-2" style={{ borderBottom: bankCfg.bankIban ? "1px solid rgba(17,96,203,0.08)" : "none" }}>
+                        <span className="text-[12px] text-[#0C0D10]/50">RIB</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[12px] font-mono font-bold text-[#0C0D10]">{bankCfg.bankRib}</span>
+                          <button type="button" onClick={() => { navigator.clipboard.writeText(bankCfg.bankRib); showSuccess("RIB copied!"); }} style={{ color: "#1160CB" }} title="Copy"><Copy size={11} /></button>
                         </div>
-                      )}
-                      {bc.bankHolder && (
-                        <div className="flex justify-between items-center py-2" style={{ borderBottom: "1px solid rgba(17,96,203,0.08)" }}>
-                          <span className="text-[12px] text-[#0C0D10]/50">Holder</span>
-                          <span className="text-[12px] font-semibold text-[#0C0D10]">{bc.bankHolder}</span>
+                      </div>
+                    )}
+                    {bankCfg.bankIban && (
+                      <div className="flex justify-between items-center py-2">
+                        <span className="text-[12px] text-[#0C0D10]/50">IBAN</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[12px] font-mono font-bold text-[#0C0D10]">{bankCfg.bankIban}</span>
+                          <button type="button" onClick={() => { navigator.clipboard.writeText(bankCfg.bankIban); showSuccess("IBAN copied!"); }} style={{ color: "#1160CB" }} title="Copy"><Copy size={11} /></button>
                         </div>
-                      )}
-                      {bc.bankRib && (
-                        <div className="flex justify-between items-center py-2" style={{ borderBottom: bc.bankIban ? "1px solid rgba(17,96,203,0.08)" : "none" }}>
-                          <span className="text-[12px] text-[#0C0D10]/50">RIB</span>
-                          <div className="flex items-center gap-2">
-                            <span className="text-[12px] font-mono font-bold text-[#0C0D10]">{bc.bankRib}</span>
-                            <button type="button" onClick={() => { navigator.clipboard.writeText(bc.bankRib); showSuccess("RIB copied!"); }} style={{ color: "#1160CB" }} title="Copy"><Copy size={11} /></button>
-                          </div>
-                        </div>
-                      )}
-                      {bc.bankIban && (
-                        <div className="flex justify-between items-center py-2">
-                          <span className="text-[12px] text-[#0C0D10]/50">IBAN</span>
-                          <div className="flex items-center gap-2">
-                            <span className="text-[12px] font-mono font-bold text-[#0C0D10]">{bc.bankIban}</span>
-                            <button type="button" onClick={() => { navigator.clipboard.writeText(bc.bankIban); showSuccess("IBAN copied!"); }} style={{ color: "#1160CB" }} title="Copy"><Copy size={11} /></button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    {bc.bankInstructions && (
-                      <p className="text-[11px] text-[#0C0D10]/50 leading-relaxed pt-2" style={{ borderTop: "1px solid rgba(17,96,203,0.08)" }}>{bc.bankInstructions}</p>
+                      </div>
                     )}
                   </div>
-                );
-              })()}
+                  {bankCfg.bankInstructions && (
+                    <p className="text-[11px] text-[#0C0D10]/50 leading-relaxed pt-2" style={{ borderTop: "1px solid rgba(17,96,203,0.08)" }}>{bankCfg.bankInstructions}</p>
+                  )}
+                </div>
+              )}
 
               <p className="text-center text-[13px] text-[#0C0D10]/40">
                 Confirmation sent to <span className="font-semibold text-[#0C0D10]/70">{email}</span>

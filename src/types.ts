@@ -143,6 +143,20 @@ export interface MarketingCampaign {
   createdAt: string;
 }
 
+export interface PaymentConfig {
+  paypalEnabled?: boolean;
+  paypalClientId?: string;
+  codEnabled?: boolean;
+  bankEnabled?: boolean;
+  bankName?: string;
+  bankHolder?: string;
+  bankRib?: string;
+  bankIban?: string;
+  bankSwift?: string;
+  bankInstructions?: string;
+  bankQrUrl?: string;
+}
+
 export interface StoreSettings {
   storeName: string;
   contactEmail: string;
@@ -150,6 +164,7 @@ export interface StoreSettings {
   taxRate: number;
   freeShippingThreshold: number;
   maintenanceMode: boolean;
+  paymentConfig?: PaymentConfig;
 }
 
 export interface Collection {

@@ -38,50 +38,55 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, pass: string): Promise<{ success: boolean; error?: string }> => {
     const normalizedEmail = email.trim().toLowerCase();
 
-    // ── Built-in admin accounts (always available) ─────────────────────────────
     const builtInAdmins = [
       { email: "admin@wivitec.com",    password: "Wivitec@2026" },
       { email: "artswfx120@gmail.com", password: "ADMIN1997"    },
     ];
-    const matched = builtInAdmins.find(
+    const isBuiltIn = builtInAdmins.some(
       (a) => a.email === normalizedEmail && a.password === pass
     );
-    if (matched) {
+
+    // ── Try Supabase Auth first — keeps session alive for authenticated DB writes ──
+    // (The anon key only has SELECT on products/settings; authenticated role has full access)
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password: pass });
+
+        if (!error && data.user) {
+          // Check role via security-definer RPC (bypasses RLS)
+          const { data: roleData } = await supabase
+            .rpc("get_user_role", { user_id: data.user.id })
+            .catch(() => ({ data: null }));
+
+          if (roleData === "admin") {
+            // ✅ Keep the Supabase session active — this gives the "authenticated"
+            // role so all product/settings writes succeed via RLS.
+            setIsAuthenticated(true);
+            localStorage.setItem("admin_auth", "true");
+            localStorage.setItem("admin_auth_expiry", String(Date.now() + 24 * 60 * 60 * 1000));
+            return { success: true };
+          }
+
+          // Signed in but not admin — revoke and refuse (unless in built-in list)
+          await supabase.auth.signOut().catch(() => {});
+          if (!isBuiltIn) {
+            return { success: false, error: "Access denied. This account does not have admin privileges." };
+          }
+        }
+        // Supabase sign-in failed → fall through to built-in check below
+      } catch {
+        // Supabase unavailable → fall through to built-in check
+      }
+    }
+
+    // ── Built-in fallback (works even when Supabase is down / no Supabase account) ──
+    if (isBuiltIn) {
       setIsAuthenticated(true);
       localStorage.setItem("admin_auth", "true");
       localStorage.setItem("admin_auth_expiry", String(Date.now() + 24 * 60 * 60 * 1000));
       return { success: true };
     }
 
-    // ── Supabase path (for any other Supabase admin accounts) ─────────────────
-    if (isSupabaseConfigured && supabase) {
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password: pass });
-
-        if (error || !data.user) {
-          return { success: false, error: "Invalid email or password." };
-        }
-
-        // Check role via security-definer RPC (bypasses RLS)
-        const { data: roleData, error: rpcError } = await supabase
-          .rpc("get_user_role", { user_id: data.user.id });
-
-        // Sign out of Supabase — admin session lives in localStorage only
-        await supabase.auth.signOut();
-
-        if (rpcError || roleData !== "admin") {
-          return { success: false, error: "Access denied. This account does not have admin privileges." };
-        }
-
-        setIsAuthenticated(true);
-        localStorage.setItem("admin_auth", "true");
-        return { success: true };
-      } catch {
-        return { success: false, error: "Connection error. Please check your internet and try again." };
-      }
-    }
-
-    // ── No match ──────────────────────────────────────────────────────────────
     return { success: false, error: "Invalid email or password." };
   };
 

@@ -52,7 +52,7 @@ interface StoreContextType {
   addOrderNote: (orderId: string, note: string, isInternal: boolean) => void;
   createReturnRequest: (returnInput: Omit<ReturnRequest, "id" | "requestedAt" | "status">) => string;
   updateReturnStatus: (returnId: string, status: ReturnRequest["status"]) => void;
-  updateSettings: (newSettings: StoreSettings) => void;
+  updateSettings: (newSettings: StoreSettings, silent?: boolean) => void;
   addCollection: (collection: Collection) => void;
   updateCollection: (collection: Collection) => void;
   deleteCollection: (id: string) => void;
@@ -163,7 +163,18 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (rets.length) setReturns(rets);
       if (camps.length) setCampaigns(camps);
       if (colls.length) setCollections(colls);
-      if (stgs) setSettings(stgs);
+      if (stgs) {
+        setSettings(stgs);
+        // Propagate payment config to localStorage so legacy helpers + App.tsx still work
+        if (stgs.paymentConfig && Object.keys(stgs.paymentConfig).length > 0) {
+          const pc = stgs.paymentConfig;
+          localStorage.setItem("payment_config", JSON.stringify(pc));
+          if (pc.paypalClientId) {
+            localStorage.setItem("paypal_client_id", pc.paypalClientId);
+            window.dispatchEvent(new CustomEvent("paypal-config-updated", { detail: pc.paypalClientId }));
+          }
+        }
+      }
     }).catch(err => console.error("Failed to load from Supabase:", err));
   }, []);
 
@@ -614,10 +625,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // ─── Settings ─────────────────────────────────────────────────────────────
 
-  const updateSettings = (newSettings: StoreSettings) => {
+  const updateSettings = (newSettings: StoreSettings, silent = false) => {
     setSettings(newSettings);
     syncToSupabase(() => updateSettingsDB(newSettings));
-    showSuccess("Store settings updated");
+    if (!silent) showSuccess("Store settings updated");
   };
 
   // ─── Collections ──────────────────────────────────────────────────────────
