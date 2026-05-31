@@ -59,6 +59,18 @@ const AdminPaymentsPage = () => {
     localStorage.getItem("paypal_client_id") || config.paypalClientId || ""
   );
 
+  // Sync with Supabase settings when loaded
+  React.useEffect(() => {
+    if (settings.paymentConfig && Object.keys(settings.paymentConfig).length > 0) {
+      const pc = settings.paymentConfig as PaymentConfig;
+      setConfig(pc);
+      if (pc.paypalClientId) {
+        setPaypalInput(pc.paypalClientId);
+        setPaypalConnected(Boolean(pc.paypalClientId && pc.paypalClientId.length > 10));
+      }
+    }
+  }, [settings.paymentConfig]);
+
   const set = (key: keyof PaymentConfig, value: string | boolean) =>
     setConfig(prev => ({ ...prev, [key]: value }));
 
@@ -304,7 +316,7 @@ const AdminPaymentsPage = () => {
                             >
                               PayPal Developer Dashboard <ExternalLink size={9} className="inline" />
                             </a>
-                            {" "}→ Apps &amp; Credentials → <strong>Live</strong> tab → Create App → copy the <strong>Client ID</strong>.
+                            {" "}→ Apps & Credentials → <strong>Live</strong> tab → Create App → copy the <strong>Client ID</strong>.
                           </AlertDescription>
                         </Alert>
                         <div className="space-y-1.5">
