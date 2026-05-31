@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Trash2, X, Upload, Sparkles, RefreshCw, ChevronDown, ChevronUp, Globe } from "lucide-react";
+import { Plus, Trash2, X, Upload, Sparkles, RefreshCw, ChevronDown, ChevronUp, Globe, Pencil } from "lucide-react";
 import { showError } from "../../utils/toast";
 import VariantManager from "./VariantManager";
+import ImageEditorModal from "./ImageEditorModal";
 
 interface ProductFormProps {
   product?: Product;
@@ -41,6 +42,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
 
   const [newSpec, setNewSpec] = useState({ key: "", value: "" });
   const [newTag, setNewTag] = useState("");
+  const [editorOpen, setEditorOpen] = useState(false);
   const [seoOpen, setSeoOpen] = useState(false);
   const [seoData, setSeoData] = useState(() => {
     try {
@@ -264,12 +266,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
         <div className="space-y-2">
           <Label htmlFor="imageUrl">Main Image</Label>
           <div className="flex gap-2">
-            <Input 
-              id="imageUrl" 
-              name="imageUrl" 
-              value={formData.imageUrl} 
-              onChange={handleChange} 
-              placeholder="https://..." 
+            <Input
+              id="imageUrl"
+              name="imageUrl"
+              value={formData.imageUrl}
+              onChange={handleChange}
+              placeholder="https://..."
               className="flex-grow"
             />
             <div className="relative">
@@ -290,8 +292,54 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, existingSkus, onSubm
                 <Upload size={18} />
               </Button>
             </div>
+            {formData.imageUrl && (
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setEditorOpen(true)}
+                title="Edit & Optimize Image"
+                className="border-[#1160CB]/30 text-[#1160CB] hover:bg-[#1160CB]/5"
+              >
+                <Pencil size={16} />
+              </Button>
+            )}
           </div>
+          {/* Image thumbnail preview */}
+          {formData.imageUrl && (
+            <div className="flex items-center gap-3 mt-2 p-2 rounded-lg bg-slate-50 border border-slate-100">
+              <img
+                src={formData.imageUrl}
+                alt="preview"
+                className="w-14 h-14 object-cover rounded-lg border"
+                onError={e => { (e.target as HTMLImageElement).style.display = "none"; }}
+              />
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] text-slate-500 truncate">{formData.imageUrl.startsWith("data:") ? "Uploaded image" : formData.imageUrl}</p>
+                <button
+                  type="button"
+                  onClick={() => setEditorOpen(true)}
+                  className="text-[11px] font-semibold text-[#1160CB] hover:underline mt-0.5"
+                >
+                  Edit · Crop · Optimize for web
+                </button>
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* Image editor modal */}
+        {editorOpen && formData.imageUrl && (
+          <ImageEditorModal
+            src={formData.imageUrl}
+            productTitle={formData.title || ""}
+            onSave={({ url, altText, filename }) => {
+              setFormData(prev => ({ ...prev, imageUrl: url }));
+              setEditorOpen(false);
+            }}
+            onClose={() => setEditorOpen(false)}
+          />
+        )}
         <div className="space-y-2">
           <Label htmlFor="status">Status</Label>
           <Select value={formData.status} onValueChange={(v) => handleSelectChange("status", v)}>
