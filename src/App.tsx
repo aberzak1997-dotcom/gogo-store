@@ -17,6 +17,7 @@ const getPaypalClientId = () =>
 import HomePage from "./pages/storefront/HomePage";
 import ProductDetailsPage from "./pages/storefront/ProductDetailsPage";
 import CheckoutPage from "./pages/storefront/CheckoutPage";
+import CartPage from "./pages/storefront/CartPage";
 import ProductsPage from "./pages/storefront/ProductsPage";
 import NewArrivalsPage from "./pages/storefront/NewArrivalsPage";
 import BestSellersPage from "./pages/storefront/BestSellersPage";
@@ -87,6 +88,7 @@ const App = () => {
               {/* Public Storefront */}
               <Route path="/" element={<HomePage />} />
               <Route path="/product/:id" element={<ProductDetailsPage />} />
+              <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/new-arrivals" element={<NewArrivalsPage />} />
