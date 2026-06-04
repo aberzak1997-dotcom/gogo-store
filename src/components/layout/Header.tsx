@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import CartDrawer from "../storefront/CartDrawer";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,6 +42,7 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   
   const { cart, products } = useStore();
   const { customer, customerLogout, wishlist } = useCustomerAuth();
@@ -255,20 +257,19 @@ const Header = () => {
             </div>
 
             {/* Cart */}
-            <Link to="/checkout">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] rounded-[8px]"
-              >
-                <ShoppingCart size={20} />
-                {cartCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 bg-[#1160CB] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </Button>
-            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] rounded-[8px]"
+              onClick={() => setCartOpen(true)}
+            >
+              <ShoppingCart size={20} />
+              {cartCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-[#1160CB] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Button>
 
             {/* User dropdown */}
             <DropdownMenu>
@@ -495,6 +496,9 @@ const Header = () => {
           </div>
         </div>
       )}
+
+      {/* Cart Drawer */}
+      <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
     </header>
   );
 };
