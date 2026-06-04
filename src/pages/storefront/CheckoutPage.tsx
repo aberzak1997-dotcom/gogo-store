@@ -77,7 +77,7 @@ const COMING_SOON_OPTIONS = [
 
 // ─── Main component ────────────────────────────────────────────────────────────
 const CheckoutPage = () => {
-  const { cart, products, settings, discounts, createOrder, updatePaymentStatus } = useStore();
+  const { cart, products, settings, settingsLoaded, discounts, createOrder, updatePaymentStatus } = useStore();
   const navigate = useNavigate();
 
   const [fullName, setFullName]   = useState("");
@@ -553,8 +553,17 @@ const CheckoutPage = () => {
 
                 <div className="p-6 space-y-2.5">
 
+                  {/* ── Loading skeleton while Supabase settings load ────── */}
+                  {!settingsLoaded && (
+                    <div className="space-y-2.5 animate-pulse">
+                      {[1, 2].map(i => (
+                        <div key={i} className="h-[66px] rounded-[10px] bg-[#F0F2F8]" />
+                      ))}
+                    </div>
+                  )}
+
                   {/* ── Active payment cards ─────────────────────────────── */}
-                  {ACTIVE_OPTIONS.filter(o => o.show).map(option => {
+                  {settingsLoaded && ACTIVE_OPTIONS.filter(o => o.show).map(option => {
                     const selected = paymentMethod === option.id;
                     return (
                       <button

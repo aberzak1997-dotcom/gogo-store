@@ -26,6 +26,7 @@ interface StoreContextType {
   campaigns: MarketingCampaign[];
   collections: Collection[];
   settings: StoreSettings;
+  settingsLoaded: boolean;
   addProduct: (product: Product) => void;
   updateProduct: (product: Product) => void;
   deleteProduct: (id: string) => void;
@@ -143,8 +144,21 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const [settings, setSettings] = useState<StoreSettings>(() => {
     const saved = localStorage.getItem("store_settings");
-    return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+    const base: StoreSettings = saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+    // Also merge the standalone payment_config key (updated every Supabase load)
+    // so payment methods are correct even if store_settings cache is stale
+    const pcRaw = localStorage.getItem("payment_config");
+    if (pcRaw) {
+      try {
+        const pc = JSON.parse(pcRaw);
+        return { ...base, paymentConfig: { ...(base.paymentConfig || {}), ...pc } };
+      } catch { /* ignore parse errors */ }
+    }
+    return base;
   });
+
+  // True once Supabase settings have been fetched (or immediately if not configured)
+  const [settingsLoaded, setSettingsLoaded] = useState(!isSupabaseConfigured);
 
   // Fire-and-forget Supabase sync — optimistic local update first
   const syncToSupabase = (fn: () => Promise<void>) => {
@@ -188,7 +202,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           }
         }
       }
-    }).catch(err => console.error("Failed to load from Supabase:", err));
+      setSettingsLoaded(true);
+    }).catch(err => {
+      console.error("Failed to load from Supabase:", err);
+      setSettingsLoaded(true); // unblock UI even on error
+    });
   }, []);
 
   // Persist to localStorage as fallback
@@ -840,7 +858,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     <StoreContext.Provider
       value={{
         products, orders, cart, customers, discounts, reviews, returns,
-        campaigns, collections, settings,
+        campaigns, collections, settings, settingsLoaded,
         addProduct, updateProduct, deleteProduct,
         addVariant, updateVariant, deleteVariant,
         updateProductStock, updateVariantStock,
