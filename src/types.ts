@@ -144,9 +144,15 @@ export interface MarketingCampaign {
 }
 
 export interface PaymentConfig {
+  // Stripe
+  stripeEnabled?: boolean;
+  stripePublishableKey?: string;
+  // PayPal
   paypalEnabled?: boolean;
   paypalClientId?: string;
+  // COD
   codEnabled?: boolean;
+  // Bank Transfer
   bankEnabled?: boolean;
   bankName?: string;
   bankHolder?: string;

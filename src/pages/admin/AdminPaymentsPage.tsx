@@ -10,7 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   CreditCard, Banknote, Smartphone, CheckCircle2, AlertTriangle,
-  Eye, EyeOff, ExternalLink, Info, Shield, ChevronDown, ChevronUp, Truck,
+  ExternalLink, Info, Shield, ChevronDown, ChevronUp, Truck,
   Link2, Unlink
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -19,8 +19,7 @@ import { useStore } from "../../context/StoreContext";
 
 interface PaymentConfig {
   stripeEnabled: boolean;
-  stripePublicKey: string;
-  stripeSecretKey: string;
+  stripePublishableKey: string;
   paypalEnabled: boolean;
   paypalClientId: string;
   codEnabled: boolean;
@@ -37,7 +36,7 @@ interface PaymentConfig {
 const DEFAULT_CONFIG: PaymentConfig = JSON.parse(
   localStorage.getItem("payment_config") ||
   JSON.stringify({
-    stripeEnabled: false, stripePublicKey: "", stripeSecretKey: "",
+    stripeEnabled: false, stripePublishableKey: "",
     paypalEnabled: true, paypalClientId: "sb",
     codEnabled: true,
     bankEnabled: true,
@@ -49,7 +48,10 @@ const DEFAULT_CONFIG: PaymentConfig = JSON.parse(
 const AdminPaymentsPage = () => {
   const { settings, updateSettings } = useStore();
   const [config, setConfig] = useState<PaymentConfig>(DEFAULT_CONFIG);
-  const [showStripeSecret, setShowStripeSecret] = useState(false);
+  const [stripeInput, setStripeInput] = useState(config.stripePublishableKey || "");
+  const [stripeConnected, setStripeConnected] = useState(
+    Boolean(config.stripeEnabled && config.stripePublishableKey?.startsWith("pk_"))
+  );
   const [expandedSection, setExpandedSection] = useState<string | null>("paypal");
   const [saved, setSaved] = useState(false);
   const [paypalConnected, setPaypalConnected] = useState(
@@ -103,7 +105,33 @@ const AdminPaymentsPage = () => {
     showSuccess("PayPal disconnected.");
   };
 
-  const isStripeConfigured = config.stripePublicKey.startsWith("pk_") && config.stripeSecretKey.startsWith("sk_");
+  const handleConnectStripe = () => {
+    if (!stripeInput.trim().startsWith("pk_")) {
+      showError("Please enter a valid Stripe Publishable Key (starts with pk_live_ or pk_test_).");
+      return;
+    }
+    const pk = stripeInput.trim();
+    set("stripePublishableKey", pk);
+    set("stripeEnabled", true);
+    setStripeConnected(true);
+    const updated = { ...config, stripePublishableKey: pk, stripeEnabled: true };
+    localStorage.setItem("payment_config", JSON.stringify(updated));
+    updateSettings({ ...settings, paymentConfig: updated }, true);
+    showSuccess("Stripe connected! Customers can now pay by card at checkout.");
+  };
+
+  const handleDisconnectStripe = () => {
+    set("stripePublishableKey", "");
+    set("stripeEnabled", false);
+    setStripeConnected(false);
+    setStripeInput("");
+    const updated = { ...config, stripePublishableKey: "", stripeEnabled: false };
+    localStorage.setItem("payment_config", JSON.stringify(updated));
+    updateSettings({ ...settings, paymentConfig: updated }, true);
+    showSuccess("Stripe disconnected.");
+  };
+
+  const isStripeConfigured = stripeConnected && Boolean(config.stripePublishableKey?.startsWith("pk_"));
 
   const methods = [
     {
@@ -115,7 +143,7 @@ const AdminPaymentsPage = () => {
       bg: "bg-indigo-50",
       enabled: config.stripeEnabled,
       configured: isStripeConfigured,
-      toggle: () => set("stripeEnabled", !config.stripeEnabled),
+      toggle: stripeConnected ? () => set("stripeEnabled", !config.stripeEnabled) : () => {},
       recommended: true,
     },
     {
@@ -219,43 +247,87 @@ const AdminPaymentsPage = () => {
                 {/* ── Stripe ── */}
                 {method.id === "stripe" && (
                   <div className="pt-5 space-y-4">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Shield size={14} className="text-slate-400" />
-                      <p className="text-[11px] text-slate-500 font-medium">Get your keys from the <a href="https://dashboard.stripe.com/apikeys" target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-black underline">Stripe Dashboard <ExternalLink size={10} className="inline" /></a></p>
-                    </div>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Publishable Key (pk_...)</Label>
-                        <Input
-                          value={config.stripePublicKey}
-                          onChange={e => set("stripePublicKey", e.target.value)}
-                          placeholder="pk_test_..."
-                          className="rounded-xl h-12 font-mono text-sm"
-                        />
+                    {stripeConnected ? (
+                      /* ✅ CONNECTED */
+                      <div className="p-5 bg-indigo-50 border border-indigo-100 rounded-2xl flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-11 h-11 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <CheckCircle2 size={22} className="text-indigo-600" />
+                          </div>
+                          <div>
+                            <p className="font-black text-indigo-900 text-sm">Stripe Connected</p>
+                            <p className="text-[11px] text-indigo-700 font-mono mt-0.5">
+                              {stripeInput.slice(0, 12)}••••••••{stripeInput.slice(-6)}
+                            </p>
+                            <p className="text-[10px] text-indigo-600 font-medium mt-1">
+                              Customers can pay by card at checkout
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleDisconnectStripe}
+                          className="border-indigo-200 text-indigo-700 hover:bg-indigo-100 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 flex-shrink-0"
+                        >
+                          <Unlink size={13} /> Disconnect
+                        </Button>
                       </div>
-                      <div className="space-y-1.5">
-                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Secret Key (sk_...)</Label>
-                        <div className="relative">
-                          <Input
-                            type={showStripeSecret ? "text" : "password"}
-                            value={config.stripeSecretKey}
-                            onChange={e => set("stripeSecretKey", e.target.value)}
-                            placeholder="sk_test_..."
-                            className="rounded-xl h-12 font-mono text-sm pr-12"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setShowStripeSecret(!showStripeSecret)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                          >
-                            {showStripeSecret ? <EyeOff size={16} /> : <Eye size={16} />}
-                          </button>
+                    ) : (
+                      /* 🔌 NOT CONNECTED */
+                      <div className="space-y-4">
+                        {/* Step 1 — Publishable key */}
+                        <Alert className="rounded-xl border-indigo-100 bg-indigo-50">
+                          <Info size={14} className="text-indigo-600" />
+                          <AlertDescription className="text-indigo-800 text-xs font-medium ml-1">
+                            <strong className="font-black">Step 1 — Publishable Key:</strong>{" "}
+                            Go to{" "}
+                            <a href="https://dashboard.stripe.com/apikeys" target="_blank" rel="noopener noreferrer" className="underline font-black text-indigo-700">
+                              Stripe Dashboard → API Keys <ExternalLink size={9} className="inline" />
+                            </a>{" "}
+                            and copy your <strong>Publishable key</strong> (starts with <code className="bg-indigo-100 px-1 rounded">pk_live_</code> or <code className="bg-indigo-100 px-1 rounded">pk_test_</code>).
+                          </AlertDescription>
+                        </Alert>
+                        <div className="space-y-1.5">
+                          <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                            Publishable Key (pk_live_… or pk_test_…)
+                          </Label>
+                          <div className="flex gap-3">
+                            <Input
+                              value={stripeInput}
+                              onChange={e => setStripeInput(e.target.value)}
+                              placeholder="pk_live_..."
+                              className="rounded-xl h-12 font-mono text-sm flex-1"
+                              onKeyDown={e => e.key === "Enter" && handleConnectStripe()}
+                            />
+                            <Button
+                              onClick={handleConnectStripe}
+                              className="h-12 px-6 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 whitespace-nowrap bg-indigo-600 hover:bg-indigo-700"
+                            >
+                              <Link2 size={14} /> Connect Stripe
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Step 2 — Secret key in Supabase */}
+                        <div className="p-4 rounded-xl space-y-3" style={{ background: "#1e1b4b0d", border: "1px solid #c7d2fe" }}>
+                          <div className="flex items-center gap-2">
+                            <Shield size={13} className="text-indigo-600 flex-shrink-0" />
+                            <p className="text-[11px] font-black text-indigo-800 uppercase tracking-wider">Step 2 — Secret Key (server-side only)</p>
+                          </div>
+                          <p className="text-[11px] text-indigo-700 font-medium leading-relaxed">
+                            For security your Secret Key (<code className="bg-indigo-100 px-1 rounded">sk_live_…</code>) must <strong>never</strong> go in browser code.
+                            Add it as a Supabase project secret so only the Edge Function can read it:
+                          </p>
+                          <ol className="text-[11px] text-indigo-700 font-medium space-y-1 list-decimal ml-4">
+                            <li>Open <a href="https://supabase.com/dashboard" target="_blank" rel="noopener noreferrer" className="underline font-black">supabase.com/dashboard <ExternalLink size={9} className="inline" /></a></li>
+                            <li>Go to <strong>Edge Functions → Manage Secrets</strong></li>
+                            <li>Add a secret named <code className="bg-indigo-100 px-1 rounded font-mono">STRIPE_SECRET_KEY</code></li>
+                            <li>Paste your <code className="bg-indigo-100 px-1 rounded font-mono">sk_live_…</code> value and save</li>
+                          </ol>
                         </div>
                       </div>
-                    </div>
-                    <div className="p-4 bg-indigo-50 rounded-xl text-xs text-indigo-700 font-medium leading-relaxed">
-                      <strong>Note:</strong> Stripe requires a backend server to create payment intents. Save your keys here, then wire them to your server before going live.
-                    </div>
+                    )}
                   </div>
                 )}
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import Header from "../../components/layout/Header";
@@ -18,6 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import { showError, showSuccess } from "../../utils/toast";
 import { Product, CartItem } from "../../types";
+import { supabase } from "../../lib/supabase";
 
 // ─── Brand card logos (card-chip style) ────────────────────────────────────────
 
@@ -70,9 +71,8 @@ const WepayLogo = () => (
 type PayMethod = "cod" | "card" | "paypal" | "bank";
 
 const COMING_SOON_OPTIONS = [
-  { id: "stripe", name: "Stripe",  desc: "Card payments via Stripe",        logo: <StripeLogo /> },
-  { id: "cmi",    name: "CMI",     desc: "Carte Monétique Interbancaire",    logo: <CMILogo /> },
-  { id: "wepay",  name: "WePay",   desc: "Simple & secure bank transfers",   logo: <WepayLogo /> },
+  { id: "cmi",   name: "CMI",   desc: "Carte Monétique Interbancaire",  logo: <CMILogo /> },
+  { id: "wepay", name: "WePay", desc: "Simple & secure bank transfers", logo: <WepayLogo /> },
 ];
 
 // ─── Main component ────────────────────────────────────────────────────────────
@@ -94,10 +94,32 @@ const CheckoutPage = () => {
   const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; amount: number; type: string } | null>(null);
   const [discountError, setDiscountError] = useState("");
 
+  // ── Stripe return redirect detection ─────────────────────────────────────────
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("stripe_success") === "1") {
+      const pendingId = localStorage.getItem("stripe_pending_order_id");
+      if (pendingId) {
+        updatePaymentStatus(pendingId, "paid");
+        localStorage.removeItem("stripe_pending_order_id");
+        setPaidVia("card");
+        setOrderId(pendingId);
+        // Clean URL so a refresh doesn't re-trigger
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    }
+    if (params.get("stripe_cancel") === "1") {
+      window.history.replaceState({}, "", window.location.pathname);
+      showError("Payment cancelled. Your order was not placed.");
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // ── Payment config — derived directly from StoreContext (loaded from Supabase) ──
   // settings.paymentConfig is set on all devices when Supabase is configured.
   const paymentCfg = settings.paymentConfig;
   const isPayPalReady = Boolean(paymentCfg?.paypalEnabled && paymentCfg?.paypalClientId);
+  const isStripeReady = Boolean(paymentCfg?.stripeEnabled && paymentCfg?.stripePublishableKey?.startsWith("pk_"));
   const bankCfg = useMemo(() => ({
     bankEnabled:      Boolean(paymentCfg?.bankEnabled),
     bankName:         paymentCfg?.bankName         || "",
@@ -123,6 +145,18 @@ const CheckoutPage = () => {
       ),
     },
     {
+      id: "card" as PayMethod,
+      name: "Credit / Debit Card",
+      desc: "Visa, Mastercard, Amex — secured by Stripe",
+      show: isStripeReady,
+      logos: (
+        <div className="flex items-center gap-1">
+          <VisaLogo />
+          <MastercardLogo />
+        </div>
+      ),
+    },
+    {
       id: "paypal" as PayMethod,
       name: "PayPal",
       desc: "Fast & secure checkout with PayPal",
@@ -140,7 +174,7 @@ const CheckoutPage = () => {
         </div>
       ),
     },
-  ], [isPayPalReady, bankCfg]);
+  ], [isPayPalReady, isStripeReady, bankCfg]);
 
   const isFormValid = Boolean(
     fullName.trim() && email.trim() && phone.trim() &&
@@ -216,8 +250,87 @@ const CheckoutPage = () => {
 
     // Prevent double-submit
     if (isPlacing) return;
-
     setIsPlacing(true);
+
+    // ── Stripe Checkout redirect ────────────────────────────────────────────
+    if (paymentMethod === "card") {
+      try {
+        // Create the order first (reserving stock etc.)
+        const newOrderId = placeOrder();
+        if (!newOrderId) { setIsPlacing(false); return; }
+
+        // Persist so the success-return handler can mark it paid
+        localStorage.setItem("stripe_pending_order_id", newOrderId);
+
+        // Build Stripe line items from cart
+        const lineItems = enrichedCart.map(item => ({
+          price_data: {
+            currency: currency.toLowerCase(),
+            product_data: {
+              name: item.product.title,
+              ...(item.product.imageUrl && !item.product.imageUrl.startsWith("data:")
+                ? { images: [item.product.imageUrl] }
+                : {}),
+            },
+            unit_amount: Math.round(item.product.price * 100),
+          },
+          quantity: item.quantity,
+        }));
+
+        // Shipping as a separate line item
+        if (shipping > 0) {
+          lineItems.push({
+            price_data: {
+              currency: currency.toLowerCase(),
+              product_data: { name: "Shipping" },
+              unit_amount: Math.round(shipping * 100),
+            },
+            quantity: 1,
+          });
+        }
+
+        // Tax as a separate line item
+        if (tax > 0) {
+          lineItems.push({
+            price_data: {
+              currency: currency.toLowerCase(),
+              product_data: { name: "Tax" },
+              unit_amount: Math.round(tax * 100),
+            },
+            quantity: 1,
+          });
+        }
+
+        const origin = window.location.origin;
+        const { data, error } = await supabase!.functions.invoke("create-stripe-session", {
+          body: {
+            lineItems,
+            orderId: newOrderId,
+            customerEmail: email.trim(),
+            successUrl: `${origin}/checkout?stripe_success=1&order_id=${newOrderId}`,
+            cancelUrl: `${origin}/checkout?stripe_cancel=1`,
+          },
+        });
+
+        if (error || !data?.url) {
+          showError(error?.message || "Stripe session creation failed. Please try another payment method.");
+          localStorage.removeItem("stripe_pending_order_id");
+          setIsPlacing(false);
+          return;
+        }
+
+        // Redirect to Stripe hosted checkout
+        window.location.href = data.url;
+        return;
+      } catch (err) {
+        showError("Could not connect to payment service. Please try again.");
+        localStorage.removeItem("stripe_pending_order_id");
+        setIsPlacing(false);
+        return;
+      }
+    }
+
+    // ── COD / Bank Transfer ─────────────────────────────────────────────────
     await new Promise(res => setTimeout(res, 1200));
     const newOrderId = placeOrder();
     if (newOrderId) { setPaidVia(paymentMethod); setOrderId(newOrderId); }
