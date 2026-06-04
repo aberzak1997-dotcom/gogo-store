@@ -142,7 +142,11 @@ export const CustomerAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { full_name: name } },
+        options: {
+          data: { full_name: name },
+          // After the user clicks the confirmation link, Supabase redirects here
+          emailRedirectTo: `${window.location.origin}/account/confirmed`,
+        },
       });
       if (error) return { success: false, error: error.message };
 

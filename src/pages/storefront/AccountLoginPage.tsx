@@ -8,7 +8,7 @@ import { useCustomerAuth } from "../../context/CustomerAuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Zap, Mail, Lock, User, Eye, EyeOff, ArrowRight, ShieldCheck, CheckCircle } from "lucide-react";
+import { Zap, Mail, Lock, User, Eye, EyeOff, ArrowRight, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { showSuccess, showError } from "../../utils/toast";
 
@@ -24,7 +24,6 @@ const AccountLoginPage = () => {
   const [showPw, setShowPw] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [confirmationSent, setConfirmationSent] = useState(false);
 
   // Redirect if already logged in (after loading is done)
   React.useEffect(() => {
@@ -35,7 +34,7 @@ const AccountLoginPage = () => {
 
   if (isCustomerLoading || customer) return null;
 
-  const reset = () => { setError(""); setConfirmationSent(false); setName(""); setEmail(""); setPassword(""); setConfirmPassword(""); };
+  const reset = () => { setError(""); setName(""); setEmail(""); setPassword(""); setConfirmPassword(""); };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,8 +55,8 @@ const AccountLoginPage = () => {
       const result = await customerRegister(name.trim(), email.trim(), password);
       if (result.success) {
         if (result.needsEmailConfirmation) {
-          // Supabase requires email confirmation — show info, don't navigate
-          setConfirmationSent(true);
+          // Navigate to the dedicated "check your inbox" page
+          navigate(`/account/confirm-email?email=${encodeURIComponent(email.trim())}`);
         } else {
           showSuccess(`Welcome, ${name.trim()}! Your account has been created.`);
           navigate("/account");
@@ -193,27 +192,6 @@ const AccountLoginPage = () => {
                       onChange={e => setConfirmPassword(e.target.value)}
                       required
                     />
-                  </div>
-                </div>
-              )}
-
-              {/* Email confirmation banner */}
-              {confirmationSent && (
-                <div className="bg-blue-50 border border-blue-100 rounded-2xl px-4 py-4 flex gap-3 items-start">
-                  <CheckCircle size={16} className="text-blue-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-blue-800 text-xs font-black mb-1">Check your inbox!</p>
-                    <p className="text-blue-700 text-xs font-medium leading-relaxed">
-                      We sent a confirmation link to <span className="font-black">{email}</span>.
-                      Click it to activate your account, then{" "}
-                      <button
-                        type="button"
-                        className="underline font-black hover:text-blue-900"
-                        onClick={() => { setConfirmationSent(false); setTab("login"); reset(); }}
-                      >
-                        sign in here
-                      </button>.
-                    </p>
                   </div>
                 </div>
               )}

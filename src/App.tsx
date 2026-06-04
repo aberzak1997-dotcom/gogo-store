@@ -58,6 +58,8 @@ import CookieConsent from "./components/storefront/CookieConsent";
 import OrderTrackingPage from "./pages/storefront/OrderTrackingPage";
 import AccountLoginPage from "./pages/storefront/AccountLoginPage";
 import AccountPage from "./pages/storefront/AccountPage";
+import ConfirmEmailPage from "./pages/storefront/ConfirmEmailPage";
+import EmailConfirmedPage from "./pages/storefront/EmailConfirmedPage";
 
 const queryClient = new QueryClient();
 
@@ -105,6 +107,8 @@ const App = () => {
               <Route path="/careers" element={<CareersPage />} />
               <Route path="/track-order" element={<OrderTrackingPage />} />
               <Route path="/account/login" element={<AccountLoginPage />} />
+              <Route path="/account/confirm-email" element={<ConfirmEmailPage />} />
+              <Route path="/account/confirmed" element={<EmailConfirmedPage />} />
               <Route path="/account" element={<AccountPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<ArticlePage />} />
