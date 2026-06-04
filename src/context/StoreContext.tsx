@@ -350,7 +350,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const removeFromCart = (productId: string, variantId?: string) => {
-    setCart(cart.filter(item =>
+    setCart(prev => prev.filter(item =>
       !(item.productId === productId && item.variantId === variantId)
     ));
     showSuccess("Item removed from cart");
@@ -358,7 +358,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const updateCartQuantity = (productId: string, quantity: number, variantId?: string) => {
     if (quantity <= 0) {
-      removeFromCart(productId, variantId);
+      setCart(prev => prev.filter(item =>
+        !(item.productId === productId && item.variantId === variantId)
+      ));
       return;
     }
 
@@ -378,7 +380,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     }
 
-    setCart(cart.map(item =>
+    setCart(prev => prev.map(item =>
       item.productId === productId && item.variantId === variantId
         ? { ...item, quantity }
         : item
