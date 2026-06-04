@@ -8,7 +8,7 @@ import { useCustomerAuth } from "../../context/CustomerAuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Zap, Mail, Lock, User, Eye, EyeOff, ArrowRight, ShieldCheck } from "lucide-react";
+import { Zap, Mail, Lock, User, Eye, EyeOff, ArrowRight, ShieldCheck, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { showSuccess, showError } from "../../utils/toast";
 
@@ -24,6 +24,7 @@ const AccountLoginPage = () => {
   const [showPw, setShowPw] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [confirmationSent, setConfirmationSent] = useState(false);
 
   // Redirect if already logged in (after loading is done)
   React.useEffect(() => {
@@ -34,7 +35,7 @@ const AccountLoginPage = () => {
 
   if (isCustomerLoading || customer) return null;
 
-  const reset = () => { setError(""); setName(""); setEmail(""); setPassword(""); setConfirmPassword(""); };
+  const reset = () => { setError(""); setConfirmationSent(false); setName(""); setEmail(""); setPassword(""); setConfirmPassword(""); };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,8 +55,13 @@ const AccountLoginPage = () => {
       }
       const result = await customerRegister(name.trim(), email.trim(), password);
       if (result.success) {
-        showSuccess(`Welcome, ${name.trim()}! Your account has been created.`);
-        navigate("/account");
+        if (result.needsEmailConfirmation) {
+          // Supabase requires email confirmation — show info, don't navigate
+          setConfirmationSent(true);
+        } else {
+          showSuccess(`Welcome, ${name.trim()}! Your account has been created.`);
+          navigate("/account");
+        }
       } else {
         setError(result.error || "Registration failed. Please try again.");
       }
@@ -65,7 +71,11 @@ const AccountLoginPage = () => {
         showSuccess("Welcome back! You're now logged in.");
         navigate("/account");
       } else {
-        setError(result.error || "Invalid email or password.");
+        // "Invalid login credentials" from Supabase often means unconfirmed email
+        const hint = result.error?.toLowerCase().includes("invalid") || result.error?.toLowerCase().includes("credentials")
+          ? "Invalid email or password. If you just registered, please check your email and click the confirmation link first."
+          : result.error || "Invalid email or password.";
+        setError(hint);
       }
     }
     setIsLoading(false);
@@ -183,6 +193,27 @@ const AccountLoginPage = () => {
                       onChange={e => setConfirmPassword(e.target.value)}
                       required
                     />
+                  </div>
+                </div>
+              )}
+
+              {/* Email confirmation banner */}
+              {confirmationSent && (
+                <div className="bg-blue-50 border border-blue-100 rounded-2xl px-4 py-4 flex gap-3 items-start">
+                  <CheckCircle size={16} className="text-blue-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-blue-800 text-xs font-black mb-1">Check your inbox!</p>
+                    <p className="text-blue-700 text-xs font-medium leading-relaxed">
+                      We sent a confirmation link to <span className="font-black">{email}</span>.
+                      Click it to activate your account, then{" "}
+                      <button
+                        type="button"
+                        className="underline font-black hover:text-blue-900"
+                        onClick={() => { setConfirmationSent(false); setTab("login"); reset(); }}
+                      >
+                        sign in here
+                      </button>.
+                    </p>
                   </div>
                 </div>
               )}

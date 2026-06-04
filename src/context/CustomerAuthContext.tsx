@@ -11,7 +11,7 @@ interface CustomerAuthContextType {
   customer: CustomerUser | null;
   isCustomerLoading: boolean;
   customerLogin: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  customerRegister: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  customerRegister: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string; needsEmailConfirmation?: boolean }>;
   customerLogout: () => Promise<void>;
   updateCustomerName: (name: string) => void;
   wishlist: string[];
@@ -137,7 +137,7 @@ export const CustomerAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   // ── Register ──────────────────────────────────────────────────────────────────
-  const customerRegister = async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const customerRegister = async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string; needsEmailConfirmation?: boolean }> => {
     if (isSupabaseConfigured && supabase) {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -145,7 +145,14 @@ export const CustomerAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         options: { data: { full_name: name } },
       });
       if (error) return { success: false, error: error.message };
-      if (data.user) {
+
+      // data.session is null when Supabase requires email confirmation.
+      // Don't fake-login the user — they need to verify first.
+      if (data.user && !data.session) {
+        return { success: true, needsEmailConfirmation: true };
+      }
+
+      if (data.user && data.session) {
         const cust: CustomerUser = { id: data.user.id, email: data.user.email!, name };
         setCustomer(cust);
         loadWishlist(cust);
