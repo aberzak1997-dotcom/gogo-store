@@ -166,12 +166,6 @@ const CartPage = () => {
                     </div>
                   </div>
                 )}
-                {toFreeShip === 0 && subtotal > 0 && (
-                  <div className="bg-emerald-50 border border-emerald-100 rounded-[14px] px-5 py-3 flex items-center gap-2">
-                    <Truck size={14} className="text-emerald-600" />
-                    <span className="text-[13px] font-bold text-emerald-700">🎉 You've unlocked FREE shipping!</span>
-                  </div>
-                )}
 
                 {/* Cart items header row */}
                 <div className="flex items-center justify-between px-1">
@@ -314,14 +308,6 @@ const CartPage = () => {
                         </Link>
                       </div>
 
-                      {savings > 0 && (
-                        <div className="bg-emerald-50 px-4 py-2 flex items-center gap-1.5">
-                          <Sparkles size={11} className="text-emerald-600" />
-                          <span className="text-[11px] font-bold text-emerald-700">
-                            You save {currency} {savings.toFixed(2)} on this item
-                          </span>
-                        </div>
-                      )}
                     </div>
                   );
                 })}
