@@ -8,12 +8,14 @@ import { useCustomerAuth } from "../../context/CustomerAuthContext";
 import { supabase, isSupabaseConfigured } from "../../lib/supabase";
 import { CheckCircle, Loader2, XCircle, ArrowRight, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from 'react-i18next';
 
 type Status = "verifying" | "success" | "error";
 
 const EmailConfirmedPage = () => {
   const { customer, isCustomerLoading } = useCustomerAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [status, setStatus] = useState<Status>("verifying");
   const [customerName, setCustomerName] = useState("");
   const [countdown, setCountdown] = useState(5);
@@ -90,8 +92,8 @@ const EmailConfirmedPage = () => {
               <div className="w-24 h-24 bg-[#EEF4FF] rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-[#1160CB]/10">
                 <Loader2 size={40} className="text-[#1160CB] animate-spin" />
               </div>
-              <h1 className="text-[26px] font-black text-slate-900 mb-3">Verifying your email…</h1>
-              <p className="text-slate-400 text-[14px] font-medium">Just a moment while we confirm your account.</p>
+              <h1 className="text-[26px] font-black text-slate-900 mb-3">{t('auth.confirmed.verifying')}</h1>
+              <p className="text-slate-400 text-[14px] font-medium">{t('auth.confirmed.verifyingDesc')}</p>
             </>
           )}
 
@@ -108,28 +110,28 @@ const EmailConfirmedPage = () => {
 
               <div className="mb-2">
                 <span className="inline-block text-[11px] font-black uppercase tracking-[3px] text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-full mb-4">
-                  ✓ Email Confirmed
+                  ✓ {t('auth.confirmed.confirmed')}
                 </span>
               </div>
 
               <h1 className="text-[30px] font-black text-slate-900 tracking-tight mb-3">
-                Welcome{customerName ? `, ${customerName.split(" ")[0]}` : ""}! 🎉
+                {t('auth.confirmed.welcome', { name: customerName ? `, ${customerName.split(" ")[0]}` : "" })}
               </h1>
               <p className="text-slate-500 text-[14px] font-medium leading-relaxed mb-10">
-                Your account is now active. You can start shopping, track orders, and save your favourite products.
+                {t('auth.confirmed.welcomeDesc')}
               </p>
 
               {/* Countdown CTA */}
               <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-6">
                 <p className="text-[13px] text-slate-400 font-medium mb-4">
-                  Redirecting to your account in{" "}
+                  {t('auth.confirmed.redirecting')}{" "}
                   <span className="font-black text-[#1160CB] text-[18px]">{countdown}</span>s…
                 </p>
                 <Button
                   className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[12px] bg-[#1160CB] hover:bg-[#1528A1] text-white gap-2 shadow-lg shadow-[#1160CB]/20"
                   onClick={() => navigate("/account")}
                 >
-                  Go to My Account <ArrowRight size={15} />
+                  {t('auth.confirmed.goToAccount')} <ArrowRight size={15} />
                 </Button>
               </div>
 
@@ -138,7 +140,7 @@ const EmailConfirmedPage = () => {
                 className="w-full h-11 rounded-2xl font-bold text-[13px] border-slate-200 text-slate-500 hover:text-[#1160CB] gap-2"
                 onClick={() => navigate("/products")}
               >
-                <ShoppingBag size={14} /> Start Shopping
+                <ShoppingBag size={14} /> {t('auth.confirmed.startShopping')}
               </Button>
             </>
           )}
@@ -149,17 +151,16 @@ const EmailConfirmedPage = () => {
               <div className="w-24 h-24 bg-rose-50 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-rose-500/10">
                 <XCircle size={44} className="text-rose-400" strokeWidth={1.5} />
               </div>
-              <h1 className="text-[26px] font-black text-slate-900 mb-3">Link expired or invalid</h1>
+              <h1 className="text-[26px] font-black text-slate-900 mb-3">{t('auth.confirmed.errorTitle')}</h1>
               <p className="text-slate-500 text-[14px] font-medium leading-relaxed mb-8">
-                This confirmation link may have expired or already been used.
-                Please register again or request a new confirmation email.
+                {t('auth.confirmed.errorDesc')}
               </p>
               <div className="space-y-3">
                 <Button
                   className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[12px] bg-[#1160CB] hover:bg-[#1528A1] text-white gap-2"
                   onClick={() => navigate("/account/login")}
                 >
-                  Back to Sign In <ArrowRight size={15} />
+                  {t('auth.confirmed.backToSignIn')} <ArrowRight size={15} />
                 </Button>
               </div>
             </>

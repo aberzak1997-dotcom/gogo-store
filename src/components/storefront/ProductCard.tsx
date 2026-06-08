@@ -8,6 +8,7 @@ import { useStore } from "../../context/StoreContext";
 import { useCustomerAuth } from "../../context/CustomerAuthContext";
 import { Product, ProductVariant } from "../../types";
 import { toast } from "sonner";
+import { useTranslation } from 'react-i18next';
 
 interface ProductCardProps {
   product: Product;
@@ -18,6 +19,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const { customer, isWishlisted, addToWishlist, removeFromWishlist } = useCustomerAuth();
   const navigate = useNavigate();
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
+  const { t } = useTranslation();
 
   const wishlisted = isWishlisted(product.id);
 
@@ -109,7 +111,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         )}
         {currentStock === 0 && (
           <span className="absolute top-3 left-3 bg-[#0C0D10] text-white text-[10px] font-medium px-2.5 py-1 rounded-full">
-            OUT OF STOCK
+            {t('product.outOfStock')}
           </span>
         )}
 
@@ -169,7 +171,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             size="sm"
             className="w-full bg-[#1160CB] hover:bg-[#479BF7] text-white rounded-[8px] h-9 text-[13px] font-semibold transition-all duration-200 disabled:opacity-40"
           >
-            Add to Cart
+            {currentStock === 0 ? t('product.outOfStock') : t('product.addToCart')}
           </Button>
         </div>
       </div>
