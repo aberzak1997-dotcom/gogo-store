@@ -33,7 +33,6 @@ import {
   Package,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTranslation } from 'react-i18next';
 
 // ─── Countdown Timer ───────────────────────────────────────────────────────────
 const useCountdown = (targetHours = 8) => {
@@ -123,7 +122,6 @@ const HomePage = () => {
   const { products } = useStore();
   const [searchParams] = useSearchParams();
   const countdown = useCountdown(8);
-  const { t } = useTranslation();
 
   const categoryParam = searchParams.get("category");
   const searchParam = searchParams.get("q");
@@ -171,14 +169,14 @@ const HomePage = () => {
   );
 
   const categories = [
-    { name: t('home.categories_list.keyboards'), icon: Keyboard, path: "/products?category=Gaming Accessories" },
-    { name: t('home.categories_list.mice'), icon: MousePointer2, path: "/products?category=PC Accessories" },
-    { name: t('home.categories_list.headsets'), icon: Headphones, path: "/products?category=Audio" },
-    { name: t('home.categories_list.webcams'), icon: Video, path: "/products?category=PC Accessories" },
-    { name: t('home.categories_list.chargers'), icon: BatteryCharging, path: "/products?category=Chargers & Cables" },
-    { name: t('home.categories_list.storage'), icon: HardDrive, path: "/products?category=Storage Devices" },
-    { name: t('home.categories_list.gaming'), icon: Gamepad2, path: "/products?category=Gaming Accessories" },
-    { name: t('home.categories_list.laptops'), icon: Laptop, path: "/products?category=Laptop Accessories" },
+    { name: "Keyboards", icon: Keyboard, path: "/products?category=Gaming Accessories" },
+    { name: "Mice", icon: MousePointer2, path: "/products?category=PC Accessories" },
+    { name: "Headsets", icon: Headphones, path: "/products?category=Audio" },
+    { name: "Webcams", icon: Video, path: "/products?category=PC Accessories" },
+    { name: "Chargers", icon: BatteryCharging, path: "/products?category=Chargers & Cables" },
+    { name: "Storage", icon: HardDrive, path: "/products?category=Storage Devices" },
+    { name: "Gaming", icon: Gamepad2, path: "/products?category=Gaming Accessories" },
+    { name: "Laptops", icon: Laptop, path: "/products?category=Laptop Accessories" },
   ];
 
   const isLoading = products.length === 0;
@@ -219,14 +217,14 @@ const HomePage = () => {
                 <div className="inline-flex items-center gap-2 bg-white/8 border border-white/12 backdrop-blur-sm rounded-full px-4 py-2">
                   <span className="w-2 h-2 rounded-full bg-[#1160CB] animate-pulse flex-shrink-0" />
                   <span className="text-[11px] font-black uppercase tracking-[3px] text-white/60">
-                    {t('home.largeHero.eyebrow')}
+                    Premium Tech Store
                   </span>
                 </div>
 
                 {/* Main headline */}
                 <div className="space-y-3">
                   <h1 className="text-[52px] md:text-[68px] xl:text-[80px] font-black leading-[0.95] tracking-tight text-white uppercase">
-                    {t('home.largeHero.headline1')}
+                    Power Your
                     <br />
                     <span
                       className="inline-block"
@@ -237,14 +235,14 @@ const HomePage = () => {
                         backgroundClip: "text",
                       }}
                     >
-                      {t('home.largeHero.headline2')}
+                      Digital World
                     </span>
                   </h1>
                 </div>
 
                 {/* Subtext */}
                 <p className="text-[16px] md:text-[18px] text-white/50 font-medium leading-relaxed max-w-[500px]">
-                  {t('home.largeHero.subtitle')}
+                  Discover premium electronics, peripherals, and accessories built for professionals, gamers, and creators.
                 </p>
 
                 {/* CTA row */}
@@ -254,7 +252,7 @@ const HomePage = () => {
                       className="h-14 px-10 rounded-full text-[14px] font-black uppercase tracking-widest gap-3 shadow-2xl shadow-[#1160CB]/30 transition-all duration-300 hover:scale-105"
                       style={{ background: "linear-gradient(135deg, #1160CB, #1528A1)" }}
                     >
-                      {t('home.largeHero.shopNow')} <ArrowRight size={16} />
+                      Shop Now <ArrowRight size={16} />
                     </Button>
                   </Link>
                   <Link to="/deals">
@@ -262,7 +260,7 @@ const HomePage = () => {
                       variant="outline"
                       className="h-14 px-10 rounded-full text-[14px] font-black uppercase tracking-widest gap-3 border-white/20 bg-white/6 text-white hover:bg-white/12 backdrop-blur-sm transition-all duration-300"
                     >
-                      <Flame size={15} className="text-amber-400" /> {t('home.largeHero.viewDeals')}
+                      <Flame size={15} className="text-amber-400" /> View Deals
                     </Button>
                   </Link>
                 </div>
@@ -270,10 +268,10 @@ const HomePage = () => {
                 {/* Stats row */}
                 <div className="flex flex-wrap gap-8 pt-4 border-t border-white/8">
                   {[
-                    { value: t('home.largeHero.stat1Value'), label: t('home.largeHero.stat1Label') },
-                    { value: t('home.largeHero.stat2Value'), label: t('home.largeHero.stat2Label') },
-                    { value: t('home.largeHero.stat3Value'), label: t('home.largeHero.stat3Label') },
-                    { value: t('home.largeHero.stat4Value'), label: t('home.largeHero.stat4Label') },
+                    { value: "500+", label: "Products" },
+                    { value: "12k+", label: "Customers" },
+                    { value: "4.9★", label: "Avg. Rating" },
+                    { value: "1-Year", label: "Warranty" },
                   ].map(({ value, label }) => (
                     <div key={label}>
                       <p className="text-[22px] font-black text-white leading-none">{value}</p>
@@ -293,7 +291,7 @@ const HomePage = () => {
                 {/* Top-left: tall card */}
                 <div className="relative row-span-2 rounded-2xl overflow-hidden bg-white/6 border border-white/10 flex flex-col justify-between p-5 min-h-[320px] group hover:border-[#1160CB]/40 transition-all duration-300">
                   <div className="space-y-1">
-                    <span className="text-[9px] font-black uppercase tracking-[3px] text-[#479BF7]">{t('common.bestSeller')}</span>
+                    <span className="text-[9px] font-black uppercase tracking-[3px] text-[#479BF7]">Best Seller</span>
                     <p className="text-[15px] font-bold text-white leading-snug line-clamp-2">
                       {bestSellers[0]?.title || "Top Rated Gear"}
                     </p>
@@ -388,10 +386,10 @@ const HomePage = () => {
             <div className="relative z-10 border-t border-white/8 bg-white/[0.03] backdrop-blur-sm">
               <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-5 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-0 md:divide-x md:divide-white/8">
                 {[
-                  { icon: Truck,       text: t('home.largeHero.strip1') },
-                  { icon: ShieldCheck, text: t('home.largeHero.strip2') },
-                  { icon: RotateCcw,   text: t('home.largeHero.strip3') },
-                  { icon: Zap,         text: t('home.largeHero.strip4') },
+                  { icon: Truck,       text: "Free shipping over $50" },
+                  { icon: ShieldCheck, text: "100% secure checkout" },
+                  { icon: RotateCcw,   text: "30-day easy returns" },
+                  { icon: Zap,         text: "Fast 24h dispatch" },
                 ].map(({ icon: Icon, text }, i) => (
                   <div key={i} className="flex items-center gap-3 md:justify-center md:px-6">
                     <div className="w-8 h-8 rounded-lg bg-[#1160CB]/20 flex items-center justify-center flex-shrink-0">
@@ -421,17 +419,17 @@ const HomePage = () => {
                 {/* Text — left */}
                 <div className="relative z-10 p-8 md:p-10 w-full md:max-w-[60%] space-y-3 flex-shrink-0 flex flex-col items-start">
                   <Badge className="bg-white/10 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
-                    {t('home.hero.badge')}
+                    Premium Collection
                   </Badge>
                   <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-white leading-[1.15] w-full uppercase font-['Inter',sans-serif]">
-                    {t('home.hero.title')}
+                    Wide Range Of Premium Electronics
                   </h1>
                   <p className="text-slate-200 text-xs max-w-xs leading-relaxed">
-                    {t('home.hero.subtitle')}
+                    Cutting-edge gadgets and accessories for professionals and enthusiasts alike. Quality gear for every setup.
                   </p>
                   <Link to="/products" className="inline-block pt-1">
                     <Button className="rounded-full h-8 px-5 text-[11px] font-semibold bg-[#1528A1] hover:bg-[#0f1d75] text-white border-0 shadow-lg shadow-blue-900/40 gap-1.5">
-                      {t('home.hero.cta')} <ArrowRight size={12} />
+                      Browse Collection <ArrowRight size={12} />
                     </Button>
                   </Link>
                 </div>
@@ -459,7 +457,7 @@ const HomePage = () => {
                 {/* Top: product info */}
                 <div className="relative z-10 space-y-2 flex flex-col items-start">
                   <Badge className="bg-white/20 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
-                    {t('home.hero.featuredDeal')}
+                    Featured Deal
                   </Badge>
                   <h2 className="text-white font-semibold tracking-tight text-xl md:text-2xl leading-tight line-clamp-1">
                     {deals[0]?.title || newArrivals[0]?.title || "Top Pick This Week"}
@@ -511,13 +509,13 @@ const HomePage = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                 <div className="relative z-10 p-10 space-y-3">
                   <Badge className="bg-white/20 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
-                    {t('home.promos.gaming.badge')}
+                    New Collection
                   </Badge>
-                  <h3 className="text-3xl font-semibold tracking-tight">{t('home.promos.gaming.title')}</h3>
-                  <p className="text-slate-200 text-sm max-w-xs">{t('home.promos.gaming.desc')}</p>
+                  <h3 className="text-3xl font-semibold tracking-tight">Gaming Essentials</h3>
+                  <p className="text-slate-200 text-sm max-w-xs">Pro-grade gear for ultimate performance.</p>
                   <Link to="/products?category=Gaming Accessories" className="inline-block pt-2">
                     <Button variant="secondary" className="rounded-full h-9 px-6 text-xs font-semibold gap-1.5">
-                      {t('home.promos.gaming.cta')} <ArrowRight size={13} />
+                      Explore <ArrowRight size={13} />
                     </Button>
                   </Link>
                 </div>
@@ -527,13 +525,13 @@ const HomePage = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                 <div className="relative z-10 p-10 space-y-3">
                   <Badge className="bg-white/20 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
-                    {t('home.promos.work.badge')}
+                    Work From Anywhere
                   </Badge>
-                  <h3 className="text-3xl font-semibold tracking-tight text-white">{t('home.promos.work.title')}</h3>
-                  <p className="text-slate-200 text-sm max-w-xs">{t('home.promos.work.desc')}</p>
+                  <h3 className="text-3xl font-semibold tracking-tight text-white">Work Setup</h3>
+                  <p className="text-slate-200 text-sm max-w-xs">Minimal accessories, maximum productivity.</p>
                   <Link to="/products?category=Laptop Accessories" className="inline-block pt-2">
                     <Button variant="outline" className="rounded-full h-9 px-6 text-xs font-semibold gap-1.5 border-white/30 bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm">
-                      {t('home.promos.work.cta')} <ArrowRight size={13} />
+                      Explore <ArrowRight size={13} />
                     </Button>
                   </Link>
                 </div>
@@ -549,9 +547,9 @@ const HomePage = () => {
         {!isFiltered && (
           <section className="py-20 section-container">
             <SectionHeader
-              eyebrow={t('home.categories.eyebrow')}
-              title={t('home.categories.title')}
-              subtitle={t('home.categories.subtitle')}
+              eyebrow="Browse by type"
+              title="Shop by Category"
+              subtitle="Find exactly what you're looking for"
               href="/products"
             />
             <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
@@ -583,18 +581,18 @@ const HomePage = () => {
               <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-6">
                 <div className="space-y-2">
                   <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-white bg-white/10 border border-white/20 px-3 py-1 rounded-[50px]">
-                    {t('home.flashDeals.eyebrow')}
+                    Flash Deals
                   </div>
                   <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
-                    {t('home.flashDeals.title')}
+                    Deals of the Week
                   </h2>
-                  <p className="text-slate-400 text-sm">{t('home.flashDeals.subtitle')}</p>
+                  <p className="text-slate-400 text-sm">Limited stock — grab them before they're gone.</p>
                 </div>
 
                 {/* Countdown */}
                 <div className="flex items-center gap-2">
                   <Clock size={14} className="text-slate-400" />
-                  <span className="text-slate-400 text-xs font-medium mr-2">{t('home.flashDeals.endsIn')}</span>
+                  <span className="text-slate-400 text-xs font-medium mr-2">Ends in</span>
                   {[countdown.h, countdown.m, countdown.s].map((val, i) => (
                     <React.Fragment key={i}>
                       <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center border border-white/10">
@@ -615,7 +613,7 @@ const HomePage = () => {
               <div className="mt-8 text-center">
                 <Link to="/deals">
                   <Button variant="outline" className="border-white/20 text-white bg-white/5 hover:bg-white/10 rounded-full px-8 h-11 text-xs font-semibold gap-2">
-                    {t('home.flashDeals.seeAll')} <ArrowRight size={14} />
+                    See All Deals <ArrowRight size={14} />
                   </Button>
                 </Link>
               </div>
@@ -627,9 +625,9 @@ const HomePage = () => {
         {!isFiltered && (
           <section className="py-20 section-container">
             <SectionHeader
-              eyebrow={t('home.newArrivals.eyebrow')}
-              title={t('home.newArrivals.title')}
-              subtitle={t('home.newArrivals.subtitle')}
+              eyebrow="Just landed"
+              title="New Arrivals"
+              subtitle="The latest additions to our catalog"
               href="/new-arrivals"
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -645,9 +643,9 @@ const HomePage = () => {
           <section className="py-20 bg-slate-50/60 border-y border-slate-100">
             <div className="section-container">
               <SectionHeader
-                eyebrow={t('home.reviews.eyebrow')}
-                title={t('home.reviews.title')}
-                subtitle={t('home.reviews.subtitle')}
+                eyebrow="Reviews"
+                title="Loved by thousands"
+                subtitle="What our customers say about us"
               />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
@@ -700,9 +698,9 @@ const HomePage = () => {
         {!isFiltered && (
           <section className="py-20 section-container">
             <SectionHeader
-              eyebrow={t('home.bestSellers.eyebrow')}
-              title={t('home.bestSellers.title')}
-              subtitle={t('home.bestSellers.subtitle')}
+              eyebrow="Top rated"
+              title="Best Sellers"
+              subtitle="Our most popular picks this month"
               href="/best-sellers"
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -719,23 +717,23 @@ const HomePage = () => {
             <div className="bg-gradient-to-br from-primary/5 via-primary/3 to-transparent border border-primary/10 rounded-3xl p-10 md:p-16 flex flex-col md:flex-row items-center gap-10">
               <div className="flex-1 space-y-4 text-center md:text-left">
                 <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/5 border border-primary/10 px-3 py-1 rounded-[50px]">
-                  <Zap size={11} /> {t('home.newsletter.eyebrow')}
+                  <Zap size={11} /> Exclusive access
                 </div>
                 <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">
-                  {t('home.newsletter.title')}
+                  Stay in the loop
                 </h2>
                 <p className="text-slate-500 text-sm max-w-sm">
-                  {t('home.newsletter.subtitle')}
+                  Get early access to new arrivals, exclusive deals, and tech tips — straight to your inbox.
                 </p>
               </div>
               <div className="w-full md:w-auto flex flex-col sm:flex-row gap-3">
                 <input
                   type="email"
-                  placeholder={t('home.newsletter.placeholder')}
+                  placeholder="your@email.com"
                   className="h-12 px-5 rounded-full border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all w-full sm:w-72"
                 />
                 <Button className="h-12 rounded-full px-7 text-sm font-semibold whitespace-nowrap shadow-md shadow-primary/20">
-                  {t('home.newsletter.cta')}
+                  Subscribe
                 </Button>
               </div>
             </div>
@@ -751,22 +749,22 @@ const HomePage = () => {
                   ? categoryParam
                   : searchParam
                   ? `Results for "${searchParam}"`
-                  : t('home.featured.title')}
+                  : "Featured Products"}
               </h2>
-              <p className="text-slate-400 text-sm">{filteredProducts.length} {t('common.items_other', { count: filteredProducts.length })}</p>
+              <p className="text-slate-400 text-sm">{filteredProducts.length} items</p>
             </div>
             <div className="flex items-center gap-4">
               {isFiltered && (
                 <Link to="/">
                   <Button variant="ghost" className="gap-2 text-xs font-medium text-slate-500 hover:text-slate-900">
-                    <X size={14} /> {t('home.featured.clearFilters')}
+                    <X size={14} /> Clear filters
                   </Button>
                 </Link>
               )}
               {!isFiltered && (
                 <Link to="/products">
                   <Button variant="outline" className="rounded-full px-6 h-9 text-xs font-semibold gap-1.5">
-                    {t('home.featured.viewAll')} <ArrowRight size={13} />
+                    View all <ArrowRight size={13} />
                   </Button>
                 </Link>
               )}
@@ -799,10 +797,10 @@ const HomePage = () => {
           <section className="py-16 bg-slate-50/50 border-t border-slate-100">
             <div className="section-container grid grid-cols-2 lg:grid-cols-4 gap-5">
               {[
-                { icon: Truck, title: t('home.trust.freeShipping'), desc: t('home.trust.freeShippingDesc'), color: "bg-primary/8 text-primary" },
-                { icon: ShieldCheck, title: t('home.trust.securePayment'), desc: t('home.trust.securePaymentDesc'), color: "bg-emerald-50 text-emerald-600" },
-                { icon: RotateCcw, title: t('home.trust.easyReturns'), desc: t('home.trust.easyReturnsDesc'), color: "bg-orange-50 text-orange-500" },
-                { icon: Star, title: t('home.trust.warranty'), desc: t('home.trust.warrantyDesc'), color: "bg-amber-50 text-amber-500" },
+                { icon: Truck, title: "Free Shipping", desc: "On orders over $50", color: "bg-primary/8 text-primary" },
+                { icon: ShieldCheck, title: "Secure Payment", desc: "100% encrypted", color: "bg-emerald-50 text-emerald-600" },
+                { icon: RotateCcw, title: "Easy Returns", desc: "30-day window", color: "bg-orange-50 text-orange-500" },
+                { icon: Star, title: "1-Year Warranty", desc: "On all products", color: "bg-amber-50 text-amber-500" },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${item.color}`}>

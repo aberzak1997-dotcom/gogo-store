@@ -19,7 +19,6 @@ import { cn } from "@/lib/utils";
 import { showError, showSuccess } from "../../utils/toast";
 import { Product, CartItem } from "../../types";
 import { supabase } from "../../lib/supabase";
-import { useTranslation } from 'react-i18next';
 
 // ─── Brand card logos (card-chip style) ────────────────────────────────────────
 
@@ -80,7 +79,6 @@ const COMING_SOON_OPTIONS = [
 const CheckoutPage = () => {
   const { cart, products, settings, settingsLoaded, discounts, createOrder, updatePaymentStatus } = useStore();
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   const [fullName, setFullName]   = useState("");
   const [email, setEmail]         = useState("");
@@ -137,8 +135,8 @@ const CheckoutPage = () => {
   const ACTIVE_OPTIONS = useMemo(() => [
     {
       id: "cod" as PayMethod,
-      name: t('checkout.cod'),
-      desc: t('checkout.codDesc'),
+      name: "Cash on Delivery",
+      desc: "Pay in cash when your package arrives",
       show: true,
       logos: (
         <div className="w-[46px] h-[30px] bg-amber-50 rounded-[4px] border border-amber-100 flex items-center justify-center">
@@ -148,8 +146,8 @@ const CheckoutPage = () => {
     },
     {
       id: "card" as PayMethod,
-      name: t('checkout.card'),
-      desc: t('checkout.cardDesc'),
+      name: "Credit / Debit Card",
+      desc: "Visa, Mastercard, Amex — secured by Stripe",
       show: isStripeReady,
       logos: (
         <div className="flex items-center gap-1">
@@ -160,15 +158,15 @@ const CheckoutPage = () => {
     },
     {
       id: "paypal" as PayMethod,
-      name: t('checkout.paypal'),
-      desc: t('checkout.paypalDesc'),
+      name: "PayPal",
+      desc: "Fast & secure checkout with PayPal",
       show: isPayPalReady,
       logos: <PayPalLogo />,
     },
     {
       id: "bank" as PayMethod,
-      name: t('checkout.bank'),
-      desc: bankCfg.bankName ? `Transfer to ${bankCfg.bankName}` : t('checkout.bankDesc'),
+      name: "Bank Transfer",
+      desc: bankCfg.bankName ? `Transfer to ${bankCfg.bankName}` : "Direct bank transfer",
       show: bankCfg.bankEnabled && Boolean(bankCfg.bankName),
       logos: (
         <div className="w-[46px] h-[30px] bg-[#EEF4FF] rounded-[4px] border border-[#C7D9F8] flex items-center justify-center">
@@ -176,7 +174,7 @@ const CheckoutPage = () => {
         </div>
       ),
     },
-  ], [isPayPalReady, isStripeReady, bankCfg, t]);
+  ], [isPayPalReady, isStripeReady, bankCfg]);
 
   const isFormValid = Boolean(
     fullName.trim() && email.trim() && phone.trim() &&
@@ -199,10 +197,10 @@ const CheckoutPage = () => {
             <div className="w-20 h-20 rounded-[12px] flex items-center justify-center mx-auto mb-8" style={{ background: "#F0F2F8" }}>
               <AlertTriangle className="h-10 w-10" style={{ color: "#0C0D10", opacity: 0.2 }} />
             </div>
-            <h2 className="text-[22px] font-bold mb-3 text-[#0C0D10]">{t('checkout.cartEmpty')}</h2>
-            <p className="mb-8 text-[14px]" style={{ color: "#0C0D10", opacity: 0.5 }}>{t('checkout.cartEmptyDesc')}</p>
+            <h2 className="text-[22px] font-bold mb-3 text-[#0C0D10]">Cart is Empty</h2>
+            <p className="mb-8 text-[14px]" style={{ color: "#0C0D10", opacity: 0.5 }}>Add products to your cart before checking out.</p>
             <Button className="rounded-[8px] h-11 px-8 text-[14px] font-semibold bg-[#1160CB] hover:bg-[#479BF7] text-white" onClick={() => navigate("/")}>
-              {t('checkout.browseProducts')}
+              Browse Products
             </Button>
           </div>
         </main>
@@ -354,17 +352,17 @@ const CheckoutPage = () => {
               <div className="w-16 h-16 flex items-center justify-center mx-auto mb-6" style={{ background: "rgba(5,177,105,0.15)", borderRadius: "50%" }}>
                 <CheckCircle className="h-9 w-9" style={{ color: "#05b169" }} />
               </div>
-              <h2 className="text-[28px] font-bold text-white mb-2 tracking-tight">{t('checkout.orderConfirmed')}</h2>
-              <p className="text-caption" style={{ color: "#479BF7" }}>{t('checkout.thankYou')}</p>
+              <h2 className="text-[28px] font-bold text-white mb-2 tracking-tight">Order Confirmed!</h2>
+              <p className="text-caption" style={{ color: "#479BF7" }}>Thank you for your purchase</p>
             </div>
             <div className="p-10 space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-5 rounded-[10px]" style={{ background: "#F0F2F8" }}>
-                  <p className="text-caption text-[#1160CB] mb-1.5">{t('checkout.orderNumber')}</p>
+                  <p className="text-caption text-[#1160CB] mb-1.5">Order #</p>
                   <p className="font-semibold text-[#0C0D10] text-[14px]">{orderId}</p>
                 </div>
                 <div className="p-5 rounded-[10px]" style={{ background: "#F0F2F8" }}>
-                  <p className="text-caption text-[#1160CB] mb-1.5">{t('checkout.total')}</p>
+                  <p className="text-caption text-[#1160CB] mb-1.5">Total</p>
                   <p className="font-semibold text-[#0C0D10] text-[14px]">{currency} {total.toFixed(2)}</p>
                 </div>
               </div>
@@ -373,8 +371,8 @@ const CheckoutPage = () => {
                   <Truck size={18} style={{ color: "#1160CB" }} />
                 </div>
                 <div>
-                  <p className="text-caption text-[#1160CB]">{t('checkout.estimatedDelivery')}</p>
-                  <p className="text-[14px] text-[#0C0D10]/70 font-medium mt-0.5">{t('checkout.deliveryTime')}</p>
+                  <p className="text-caption text-[#1160CB]">Estimated Delivery</p>
+                  <p className="text-[14px] text-[#0C0D10]/70 font-medium mt-0.5">3–5 Business Days</p>
                 </div>
               </div>
               <div className="p-5 rounded-[10px] flex items-center gap-4" style={{ background: "#F0F2F8" }}>
@@ -382,7 +380,7 @@ const CheckoutPage = () => {
                   <CreditCard size={18} style={{ color: "#1160CB" }} />
                 </div>
                 <div>
-                  <p className="text-caption text-[#1160CB]">{t('checkout.payment')}</p>
+                  <p className="text-caption text-[#1160CB]">Payment</p>
                   <p className="text-[14px] text-[#0C0D10]/70 font-medium mt-0.5">{methodLabel}</p>
                 </div>
               </div>
@@ -390,7 +388,7 @@ const CheckoutPage = () => {
               {/* Bank transfer reminder on success screen */}
               {paidVia === "bank" && bankCfg.bankName && (
                 <div className="rounded-[10px] p-5 space-y-2" style={{ background: "rgba(17,96,203,0.04)", border: "1px solid rgba(17,96,203,0.14)" }}>
-                  <p className="text-caption text-[#1160CB] mb-2">{t('checkout.completePayment')}</p>
+                  <p className="text-caption text-[#1160CB] mb-2">Complete your payment</p>
                   <div className="space-y-0">
                     {bankCfg.bankName && (
                       <div className="flex justify-between items-center py-2" style={{ borderBottom: "1px solid rgba(17,96,203,0.08)" }}>
@@ -433,7 +431,7 @@ const CheckoutPage = () => {
                 Confirmation sent to <span className="font-semibold text-[#0C0D10]/70">{email}</span>
               </p>
               <Button className="w-full h-12 rounded-[8px] font-semibold text-[14px] bg-[#1160CB] hover:bg-[#479BF7] text-white" onClick={() => navigate("/")}>
-                {t('checkout.continueShopping')}
+                Continue Shopping
               </Button>
             </div>
           </div>
@@ -453,14 +451,14 @@ const CheckoutPage = () => {
           {/* Page header */}
           <div className="flex items-center justify-between mb-8">
             <Link to="/" className="inline-flex items-center gap-2 text-caption text-[#0C0D10]/40 hover:text-[#1160CB] transition-colors group">
-              <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" /> {t('checkout.backLabel')}
+              <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" /> Back
             </Link>
             <div className="text-center">
-              <h1 className="text-[24px] font-bold text-[#0C0D10] tracking-tight">{t('checkout.title')}</h1>
-              <p className="text-caption text-[#0C0D10]/40 mt-0.5">{t('checkout.itemsInCart_other', { count: enrichedCart.length })}</p>
+              <h1 className="text-[24px] font-bold text-[#0C0D10] tracking-tight">Checkout</h1>
+              <p className="text-caption text-[#0C0D10]/40 mt-0.5">{enrichedCart.length} item{enrichedCart.length !== 1 ? "s" : ""} in your cart</p>
             </div>
             <div className="flex items-center gap-1.5 text-caption px-3 py-1.5 rounded-[6px]" style={{ background: "rgba(5,177,105,0.1)", color: "#05b169" }}>
-              <ShieldCheck size={12} /> {t('checkout.secure')}
+              <ShieldCheck size={12} /> Secure
             </div>
           </div>
 
@@ -476,14 +474,14 @@ const CheckoutPage = () => {
                     <Truck size={17} style={{ color: "#1160CB" }} />
                   </div>
                   <div>
-                    <p className="text-caption text-[#1160CB]">{t('checkout.shippingInfo')}</p>
-                    <p className="text-[12px] text-[#0C0D10]/40 mt-0.5">{t('checkout.shippingInfoDesc')}</p>
+                    <p className="text-caption text-[#1160CB]">Shipping Info</p>
+                    <p className="text-[12px] text-[#0C0D10]/40 mt-0.5">Where should we deliver?</p>
                   </div>
                 </div>
                 <form id="checkout-form" onSubmit={handlePlaceOrder} className="p-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2 space-y-1.5">
-                      <Label className="text-caption text-[#1160CB]">{t('checkout.fullName')}</Label>
+                      <Label className="text-caption text-[#1160CB]">Full Name *</Label>
                       <Input
                         className="h-11 rounded-[8px] text-[14px] font-medium focus-visible:ring-[#1160CB]/30 transition-colors"
                         style={{ border: "1.5px solid #F0F2F8" }}
@@ -492,7 +490,7 @@ const CheckoutPage = () => {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-caption text-[#1160CB]">{t('checkout.email')}</Label>
+                      <Label className="text-caption text-[#1160CB]">Email *</Label>
                       <Input
                         type="email"
                         className="h-11 rounded-[8px] text-[14px] font-medium focus-visible:ring-[#1160CB]/30 transition-colors"
@@ -502,7 +500,7 @@ const CheckoutPage = () => {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-caption text-[#1160CB]">{t('checkout.phone')}</Label>
+                      <Label className="text-caption text-[#1160CB]">Phone *</Label>
                       <Input
                         className="h-11 rounded-[8px] text-[14px] font-medium focus-visible:ring-[#1160CB]/30 transition-colors"
                         style={{ border: "1.5px solid #F0F2F8" }}
@@ -511,7 +509,7 @@ const CheckoutPage = () => {
                       />
                     </div>
                     <div className="md:col-span-2 space-y-1.5">
-                      <Label className="text-caption text-[#1160CB]">{t('checkout.streetAddress')}</Label>
+                      <Label className="text-caption text-[#1160CB]">Street Address *</Label>
                       <Input
                         className="h-11 rounded-[8px] text-[14px] font-medium focus-visible:ring-[#1160CB]/30 transition-colors"
                         style={{ border: "1.5px solid #F0F2F8" }}
@@ -520,7 +518,7 @@ const CheckoutPage = () => {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-caption text-[#1160CB]">{t('checkout.city')}</Label>
+                      <Label className="text-caption text-[#1160CB]">City *</Label>
                       <Input
                         className="h-11 rounded-[8px] text-[14px] font-medium focus-visible:ring-[#1160CB]/30 transition-colors"
                         style={{ border: "1.5px solid #F0F2F8" }}
@@ -529,7 +527,7 @@ const CheckoutPage = () => {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-caption text-[#1160CB]">{t('checkout.country')}</Label>
+                      <Label className="text-caption text-[#1160CB]">Country *</Label>
                       <Input
                         className="h-11 rounded-[8px] text-[14px] font-medium focus-visible:ring-[#1160CB]/30 transition-colors"
                         style={{ border: "1.5px solid #F0F2F8" }}
@@ -548,8 +546,8 @@ const CheckoutPage = () => {
                     <CreditCard size={17} style={{ color: "#1160CB" }} />
                   </div>
                   <div>
-                    <p className="text-caption text-[#1160CB]">{t('checkout.paymentMethod')}</p>
-                    <p className="text-[12px] text-[#0C0D10]/40 mt-0.5">{t('checkout.paymentMethodDesc')}</p>
+                    <p className="text-caption text-[#1160CB]">Payment Method</p>
+                    <p className="text-[12px] text-[#0C0D10]/40 mt-0.5">Choose how you'd like to pay</p>
                   </div>
                 </div>
 
@@ -611,8 +609,8 @@ const CheckoutPage = () => {
                         <Lock size={18} />
                       </div>
                       <div>
-                        <p className="font-black text-slate-800 text-xs uppercase tracking-wider">{t('checkout.secureCard')}</p>
-                        <p className="text-xs text-slate-500 font-medium mt-0.5">{t('checkout.secureCardDesc')}</p>
+                        <p className="font-black text-slate-800 text-xs uppercase tracking-wider">Secure Card Payment</p>
+                        <p className="text-xs text-slate-500 font-medium mt-0.5">Your card details are encrypted and never stored</p>
                       </div>
                       <div className="ml-auto flex-shrink-0">
                         <span className="text-[9px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full">SSL</span>
@@ -626,9 +624,9 @@ const CheckoutPage = () => {
                         <Truck size={18} />
                       </div>
                       <div>
-                        <p className="font-black text-amber-900 text-xs uppercase tracking-wider">{t('checkout.payOnDelivery')}</p>
+                        <p className="font-black text-amber-900 text-xs uppercase tracking-wider">Pay on Delivery</p>
                         <p className="text-xs text-amber-700 font-medium mt-0.5">
-                          {t('checkout.payOnDeliveryDesc', { amount: `${currency} ${total.toFixed(2)}` })}
+                          Have <span className="font-black">{currency} {total.toFixed(2)}</span> ready when your order arrives
                         </p>
                       </div>
                     </div>
@@ -640,7 +638,7 @@ const CheckoutPage = () => {
                         <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 flex items-start gap-3">
                           <Info size={16} className="text-blue-500 flex-shrink-0 mt-0.5" />
                           <p className="text-xs text-blue-700 font-medium">
-                            {t('checkout.paypalInfo')}
+                            Complete your shipping information above to unlock PayPal checkout.
                           </p>
                         </div>
                       ) : (
@@ -688,7 +686,7 @@ const CheckoutPage = () => {
                     <div className="mx-1 space-y-3">
                       {/* Bank account info */}
                       <div className="rounded-[12px] p-5 space-y-3" style={{ background: "rgba(17,96,203,0.04)", border: "1px solid rgba(17,96,203,0.14)" }}>
-                        <p className="text-caption text-[#1160CB] mb-1">{t('checkout.bankDetails')}</p>
+                        <p className="text-caption text-[#1160CB] mb-1">Bank Transfer Details</p>
                         <div className="space-y-0">
                           {bankCfg.bankName && (
                             <div className="flex justify-between items-center py-2.5" style={{ borderBottom: "1px solid rgba(17,96,203,0.08)" }}>
@@ -775,7 +773,7 @@ const CheckoutPage = () => {
                   <div className="flex items-center gap-3 pt-2 pb-1 px-1">
                     <div className="flex-1 h-px bg-slate-100" />
                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-300 flex items-center gap-1.5">
-                      <Clock size={9} /> {t('checkout.comingSoon')}
+                      <Clock size={9} /> Coming Soon
                     </span>
                     <div className="flex-1 h-px bg-slate-100" />
                   </div>
@@ -801,7 +799,7 @@ const CheckoutPage = () => {
                           {option.logo}
                         </div>
                         <span className="text-[9px] font-black uppercase tracking-widest bg-slate-200 text-slate-400 px-2.5 py-1 rounded-full whitespace-nowrap">
-                          {t('checkout.comingSoon')}
+                          Coming Soon
                         </span>
                       </div>
                     </div>
@@ -809,10 +807,10 @@ const CheckoutPage = () => {
 
                   {/* Terms */}
                   <p className="text-[10px] text-slate-400 text-center font-medium pt-3 px-2">
-                    {t('checkout.terms')}{" "}
-                    <Link to="/terms" className="underline hover:text-slate-600 font-bold">{t('checkout.termsLink')}</Link>
+                    By placing your order you agree to our{" "}
+                    <Link to="/terms" className="underline hover:text-slate-600 font-bold">Terms</Link>
                     {" "}&{" "}
-                    <Link to="/privacy-policy" className="underline hover:text-slate-600 font-bold">{t('checkout.privacyLink')}</Link>
+                    <Link to="/privacy-policy" className="underline hover:text-slate-600 font-bold">Privacy Policy</Link>
                   </p>
                 </div>
               </div>
@@ -824,7 +822,7 @@ const CheckoutPage = () => {
                 <div className="bg-white overflow-hidden" style={{ borderRadius: 12, border: "1px solid #F0F2F8", boxShadow: "0 2px 12px rgba(21,40,161,0.05)" }}>
                   {/* Header */}
                   <div className="px-7 pt-6 pb-5" style={{ borderBottom: "1px solid #F0F2F8" }}>
-                    <p className="text-caption text-[#1160CB] mb-5">{t('checkout.orderSummary')}</p>
+                    <p className="text-caption text-[#1160CB] mb-5">Order Summary</p>
                     <div className="space-y-1">
                       {enrichedCart.map((item, i) => (
                         <div key={i} className="flex items-center gap-3 py-3" style={{ borderBottom: "1px solid #F0F2F8" }}>
@@ -845,20 +843,20 @@ const CheckoutPage = () => {
 
                   {/* Discount Code */}
                   <div className="px-7 py-5" style={{ borderBottom: "1px solid #F0F2F8" }}>
-                    <p className="text-caption text-[#1160CB] mb-3">{t('checkout.discountCode')}</p>
+                    <p className="text-caption text-[#1160CB] mb-3">Discount Code</p>
                     {appliedDiscount ? (
                       <div className="flex items-center justify-between px-4 py-3 rounded-[8px]" style={{ background: "rgba(5,177,105,0.08)", border: "1px solid rgba(5,177,105,0.2)" }}>
                         <div>
                           <span className="text-caption" style={{ color: "#05b169" }}>{appliedDiscount.code}</span>
                           <p className="text-[12px] font-medium mt-0.5" style={{ color: "#05b169" }}>− {currency} {appliedDiscount.amount.toFixed(2)} saved</p>
                         </div>
-                        <button onClick={() => { setAppliedDiscount(null); setDiscountCode(""); }} className="text-caption" style={{ color: "#cf202f" }}>{t('checkout.remove')}</button>
+                        <button onClick={() => { setAppliedDiscount(null); setDiscountCode(""); }} className="text-caption" style={{ color: "#cf202f" }}>Remove</button>
                       </div>
                     ) : (
                       <div className="space-y-2">
                         <div className="flex gap-2">
                           <Input
-                            placeholder={t('checkout.discountPlaceholder')}
+                            placeholder="Enter code (e.g. SAVE10)"
                             className="h-10 rounded-[8px] text-[13px] font-medium uppercase focus-visible:ring-[#1160CB]/30"
                             style={{ border: "1.5px solid #F0F2F8" }}
                             value={discountCode}
@@ -866,7 +864,7 @@ const CheckoutPage = () => {
                             onKeyDown={e => e.key === "Enter" && handleApplyDiscount()}
                           />
                           <Button type="button" className="h-10 px-4 rounded-[8px] text-[13px] font-semibold flex-shrink-0 bg-[#1160CB] hover:bg-[#479BF7] text-white" onClick={handleApplyDiscount}>
-                            {t('checkout.apply')}
+                            Apply
                           </Button>
                         </div>
                         {discountError && <p className="text-[12px] mt-1" style={{ color: "#cf202f" }}>{discountError}</p>}
@@ -877,13 +875,13 @@ const CheckoutPage = () => {
                   {/* Totals */}
                   <div className="px-7 py-6 space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-caption text-[#0C0D10]/40">{t('checkout.subtotal')}</span>
+                      <span className="text-caption text-[#0C0D10]/40">Subtotal</span>
                       <span className="font-medium text-[#0C0D10] text-[14px]">{currency} {subtotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-caption text-[#0C0D10]/40">{t('checkout.shipping')}</span>
+                      <span className="text-caption text-[#0C0D10]/40">Shipping</span>
                       <span className="font-medium text-[14px]" style={{ color: shipping === 0 ? "#05b169" : "#0C0D10" }}>
-                        {shipping === 0 ? t('checkout.free') : `${currency} ${shipping.toFixed(2)}`}
+                        {shipping === 0 ? "FREE" : `${currency} ${shipping.toFixed(2)}`}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
@@ -894,7 +892,7 @@ const CheckoutPage = () => {
                     </div>
                     {appliedDiscount && (
                       <div className="flex justify-between items-center">
-                        <span className="text-caption" style={{ color: "#05b169" }}>{t('common.discount')}</span>
+                        <span className="text-caption" style={{ color: "#05b169" }}>Discount</span>
                         <span className="font-medium text-[14px]" style={{ color: "#05b169" }}>− {currency} {discountAmount.toFixed(2)}</span>
                       </div>
                     )}
@@ -902,7 +900,7 @@ const CheckoutPage = () => {
                     <div className="h-px my-2" style={{ background: "#F0F2F8" }} />
 
                     <div className="flex justify-between items-center pt-1">
-                      <span className="text-[16px] font-semibold text-[#0C0D10]">{t('checkout.total')}</span>
+                      <span className="text-[16px] font-semibold text-[#0C0D10]">Total</span>
                       <span className="text-[24px] font-bold text-[#1528A1]">
                         {currency} {total.toFixed(2)}
                       </span>
@@ -917,15 +915,15 @@ const CheckoutPage = () => {
                         disabled={isPlacing}
                       >
                         {isPlacing
-                          ? <><Loader2 className="h-4 w-4 animate-spin" /> {t('checkout.processing')}</>
-                          : <>{t('checkout.placeOrder')} <Zap size={16} /></>
+                          ? <><Loader2 className="h-4 w-4 animate-spin" /> Processing...</>
+                          : <>Place Order <Zap size={16} /></>
                         }
                       </Button>
                     )}
 
                     {paymentMethod === "paypal" && !isFormValid && (
                       <div className="mt-3 text-center text-caption text-[#0C0D10]/30 p-3 rounded-[8px]" style={{ background: "#F0F2F8" }}>
-                        {t('checkout.fillShippingForPaypal')}
+                        Fill in shipping info to unlock PayPal
                       </div>
                     )}
                   </div>

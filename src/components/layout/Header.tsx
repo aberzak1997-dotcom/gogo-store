@@ -34,8 +34,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useTranslation } from 'react-i18next';
-import LanguageSwitcher from "./LanguageSwitcher";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -44,7 +42,7 @@ const Header = () => {
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  const { t } = useTranslation();
+  
   const { cart, products } = useStore();
   const { customer, customerLogout, wishlist } = useCustomerAuth();
   const navigate = useNavigate();
@@ -113,19 +111,19 @@ const Header = () => {
   };
 
   const mainCategories = [
-    { name: t('home.categories_list.keyboards'), icon: Keyboard, path: "Gaming Accessories" },
-    { name: t('home.categories_list.mice'), icon: MousePointer2, path: "PC Accessories" },
-    { name: t('home.categories_list.headsets'), icon: Headphones, path: "Audio" },
-    { name: t('home.categories_list.laptops'), icon: Laptop, path: "Laptop Accessories" },
-    { name: t('home.categories_list.gaming'), icon: Gamepad2, path: "Gaming Accessories" },
-    { name: t('home.categories_list.storage'), icon: HardDrive, path: "Storage Devices" },
+    { name: "Keyboards", icon: Keyboard, path: "Gaming Accessories" },
+    { name: "Mice", icon: MousePointer2, path: "PC Accessories" },
+    { name: "Audio", icon: Headphones, path: "Audio" },
+    { name: "Laptops", icon: Laptop, path: "Laptop Accessories" },
+    { name: "Gaming", icon: Gamepad2, path: "Gaming Accessories" },
+    { name: "Storage", icon: HardDrive, path: "Storage Devices" },
   ];
 
   const navLinks = [
-    { name: t('nav.shop'), path: "/products" },
-    { name: t('nav.deals'), path: "/products?q=sale" },
-    { name: t('nav.about'), path: "/about" },
-    { name: t('nav.contact'), path: "/contact" },
+    { name: "Shop", path: "/products" },
+    { name: "Deals", path: "/products?q=sale" },
+    { name: "About", path: "/about" },
+    { name: "Contact", path: "/contact" },
   ];
 
   return (
@@ -158,7 +156,7 @@ const Header = () => {
                 (link.path.includes("?") && location.pathname + location.search === link.path);
               return (
                 <Link
-                  key={link.path}
+                  key={link.name}
                   to={link.path}
                   className={cn(
                     "text-[15px] font-medium transition-colors",
@@ -173,7 +171,7 @@ const Header = () => {
             {/* Categories dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center gap-1 text-[15px] font-medium text-[#0C0D10]/60 hover:text-[#1160CB] transition-colors outline-none">
-                {t('nav.categories')} <ChevronDown size={14} />
+                Categories <ChevronDown size={14} />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-52 bg-white border-[#F0F2F8] p-2 rounded-[8px] shadow-md">
                 {mainCategories.map((cat) => {
@@ -205,7 +203,7 @@ const Header = () => {
                 />
                 <Input
                   type="text"
-                  placeholder={t('common.search') + ' products…'}
+                  placeholder="Search products…"
                   className="w-full pl-9 pr-3 h-9 bg-[#F0F2F8] border border-[#F0F2F8] rounded-[8px] text-[13px] text-[#0C0D10] placeholder:text-[#0C0D10]/30 focus-visible:ring-1 focus-visible:ring-[#1160CB] focus-visible:border-[#1160CB]"
                   value={searchQuery}
                   onChange={(e) => {
@@ -310,17 +308,17 @@ const Header = () => {
                     <DropdownMenuSeparator className="bg-[#F0F2F8]" />
                     <DropdownMenuItem asChild>
                       <Link to="/account" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
-                        <User size={14} /> {t('nav.myAccount')}
+                        <User size={14} /> My Account
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/account?tab=orders" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
-                        <Package size={14} /> {t('nav.myOrders')}
+                        <Package size={14} /> My Orders
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/account?tab=wishlist" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
-                        <Settings size={14} /> {t('nav.wishlist')}
+                        <Settings size={14} /> Wishlist
                         {wishlist.length > 0 && (
                           <span className="ml-auto text-[10px] font-bold bg-[#1160CB]/10 text-[#1160CB] px-1.5 py-0.5 rounded-full">
                             {wishlist.length}
@@ -333,34 +331,29 @@ const Header = () => {
                       onClick={() => customerLogout().then(() => navigate("/"))}
                       className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-rose-500 hover:text-rose-600 hover:bg-rose-50 text-[13px] font-medium"
                     >
-                      <LogOut size={14} /> {t('nav.signOut')}
+                      <LogOut size={14} /> Sign Out
                     </DropdownMenuItem>
                   </>
                 ) : (
                   <>
                     <DropdownMenuLabel className="text-caption text-[#0C0D10]/30 px-3 py-2">
-                      {t('nav.account')}
+                      Account
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator className="bg-[#F0F2F8]" />
                     <DropdownMenuItem asChild>
                       <Link to="/account/login" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
-                        <User size={14} /> {t('account.signIn')}
+                        <User size={14} /> Sign In / Register
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/track-order" className="flex items-center gap-2.5 px-3 py-2.5 rounded-[6px] cursor-pointer text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] text-[13px] font-medium">
-                        <Package size={14} /> {t('nav.trackMyOrder')}
+                        <Package size={14} /> Track My Order
                       </Link>
                     </DropdownMenuItem>
                   </>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-
-            {/* Language Switcher — desktop */}
-            <div className="hidden md:flex">
-              <LanguageSwitcher />
-            </div>
 
             {/* Sign In CTA — desktop, logged out */}
             {!customer && (
@@ -369,7 +362,7 @@ const Header = () => {
                   size="sm"
                   className="bg-[#1160CB] hover:bg-[#1528A1] text-white rounded-[8px] px-5 h-9 text-[13px] font-semibold transition-all duration-200"
                 >
-                  {t('nav.getStarted')}
+                  Get Started
                 </Button>
               </Link>
             )}
@@ -409,7 +402,7 @@ const Header = () => {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#0C0D10]/30" size={16} />
                 <Input
                   type="text"
-                  placeholder={t('common.search') + ' products…'}
+                  placeholder="Search products…"
                   className="w-full pl-10 h-12 bg-[#F0F2F8] border border-[#F0F2F8] rounded-[8px] text-[#0C0D10] placeholder:text-[#0C0D10]/30 text-[15px]"
                   value={searchQuery}
                   onChange={(e) => {
@@ -460,10 +453,10 @@ const Header = () => {
 
             {/* Nav links */}
             <div className="space-y-1">
-              <p className="text-caption text-[#0C0D10]/30 px-2 mb-4">{t('nav.menu')}</p>
+              <p className="text-caption text-[#0C0D10]/30 px-2 mb-4">Navigation</p>
               {navLinks.map((link) => (
                 <Link
-                  key={link.path}
+                  key={link.name}
                   to={link.path}
                   className="flex items-center px-4 py-3 rounded-[8px] text-[15px] font-medium text-[#0C0D10]/60 hover:text-[#1160CB] hover:bg-[#F0F2F8] transition-colors"
                   onClick={() => setIsMenuOpen(false)}
@@ -475,7 +468,7 @@ const Header = () => {
 
             {/* Categories */}
             <div className="space-y-1">
-              <p className="text-caption text-[#0C0D10]/30 px-2 mb-4">{t('nav.categories')}</p>
+              <p className="text-caption text-[#0C0D10]/30 px-2 mb-4">Categories</p>
               <div className="grid grid-cols-2 gap-2">
                 {mainCategories.map((cat) => {
                   const Icon = cat.icon;
@@ -492,20 +485,12 @@ const Header = () => {
                 })}
               </div>
             </div>
-
-            {/* Language switcher — mobile */}
-            <div className="space-y-1">
-              <p className="text-caption text-[#0C0D10]/30 px-2 mb-4">{t('nav.language')}</p>
-              <div className="px-2">
-                <LanguageSwitcher />
-              </div>
-            </div>
           </div>
 
           <div className="p-6 border-t border-[#F0F2F8]">
             <Link to="/account/login" onClick={() => setIsMenuOpen(false)}>
               <Button className="w-full h-12 bg-[#1160CB] hover:bg-[#1528A1] text-white rounded-[8px] text-[15px] font-semibold transition-all">
-                {t('nav.getStarted')}
+                Get Started
               </Button>
             </Link>
           </div>

@@ -12,12 +12,10 @@ import {
   ShieldCheck, RotateCcw, Zap,
 } from "lucide-react";
 import { useStore } from "../../context/StoreContext";
-import { useTranslation } from 'react-i18next';
 
 const CartPage = () => {
   const { cart, products, discounts, updateCartQuantity, removeFromCart, clearCart, settings } = useStore();
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   // ── Promo code ───────────────────────────────────────────────────────────
   const [promoCode, setPromoCode] = useState("");
@@ -107,20 +105,20 @@ const CartPage = () => {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-[28px] font-black text-[#0C0D10]">
-                {t('cart.title')}
+                Shopping Cart
                 {totalQty > 0 && (
                   <span className="ml-3 text-[15px] font-bold text-[#0C0D10]/30">
-                    ({totalQty} {totalQty !== 1 ? t('cart.items_other', { count: totalQty }) : t('cart.items_one', { count: totalQty })})
+                    ({totalQty} item{totalQty !== 1 ? "s" : ""})
                   </span>
                 )}
               </h1>
-              <p className="text-[13px] text-[#0C0D10]/40 mt-1">{t('cart.itemsInCart')}</p>
+              <p className="text-[13px] text-[#0C0D10]/40 mt-1">Review your items before checkout</p>
             </div>
             <Link
               to="/products"
               className="hidden sm:flex items-center gap-1.5 text-[13px] font-semibold text-[#0C0D10]/40 hover:text-[#1160CB] transition-colors"
             >
-              <ChevronLeft size={15} /> {t('cart.continueShopping')}
+              <ChevronLeft size={15} /> Continue Shopping
             </Link>
           </div>
 
@@ -130,13 +128,13 @@ const CartPage = () => {
               <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-[#F0F2F8]">
                 <ShoppingBag className="h-11 w-11 text-[#0C0D10]/15" />
               </div>
-              <h2 className="text-[22px] font-black text-[#0C0D10] mb-2">{t('cart.empty')}</h2>
+              <h2 className="text-[22px] font-black text-[#0C0D10] mb-2">Your cart is empty</h2>
               <p className="text-[14px] text-[#0C0D10]/40 mb-8 max-w-[260px] leading-relaxed">
-                {t('cart.emptyDesc')}
+                Browse our tech collection and find something you'll love.
               </p>
               <Link to="/products">
                 <Button className="bg-[#1160CB] hover:bg-[#1528A1] text-white rounded-[10px] px-10 h-12 text-[14px] font-bold transition-all gap-2">
-                  {t('common.shopNow')} <ArrowRight size={15} />
+                  Shop Now <ArrowRight size={15} />
                 </Button>
               </Link>
             </div>
@@ -155,7 +153,7 @@ const CartPage = () => {
                       <div className="flex items-center gap-2">
                         <Truck size={14} className="text-[#1160CB]" />
                         <span className="text-[13px] font-bold text-[#1160CB]">
-                          {t('cart.toFreeShipping', { amount: `${currency} ${toFreeShip.toFixed(2)}` })}
+                          Add <span className="text-[#1528A1]">{currency} {toFreeShip.toFixed(2)}</span> more for FREE shipping
                         </span>
                       </div>
                       <span className="text-[11px] font-bold text-[#1160CB]/50">{Math.round(freeShipProgress)}%</span>
@@ -172,14 +170,14 @@ const CartPage = () => {
                 {/* Cart items header row */}
                 <div className="flex items-center justify-between px-1">
                   <span className="text-[11px] font-black uppercase tracking-widest text-[#0C0D10]/30">
-                    {t('cart.itemsInCart')}
+                    Items in your cart
                   </span>
                   {cartItems.length > 0 && (
                     <button
                       onClick={clearCart}
                       className="text-[11px] font-bold text-[#0C0D10]/30 hover:text-rose-500 transition-colors uppercase tracking-wider"
                     >
-                      {t('cart.clearAll')}
+                      Clear all
                     </button>
                   )}
                 </div>
@@ -294,19 +292,19 @@ const CartPage = () => {
                           onClick={() => saveForLater(item.productId)}
                           className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[11px] font-bold text-[#0C0D10]/40 hover:text-[#1160CB] hover:bg-[#F0F2F8]/60 transition-all"
                         >
-                          <Heart size={12} /> {t('cart.saveForLater')}
+                          <Heart size={12} /> Save for later
                         </button>
                         <button
                           onClick={() => removeFromCart(item.productId, item.variantId)}
                           className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[11px] font-bold text-[#0C0D10]/40 hover:text-rose-500 hover:bg-rose-50/50 transition-all"
                         >
-                          <Trash2 size={12} /> {t('cart.remove')}
+                          <Trash2 size={12} /> Remove
                         </button>
                         <Link
                           to={`/product/${item.productId}`}
                           className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[11px] font-bold text-[#0C0D10]/40 hover:text-[#1160CB] hover:bg-[#F0F2F8]/60 transition-all"
                         >
-                          <Package size={12} /> {t('cart.viewDetails')}
+                          <Package size={12} /> View details
                         </Link>
                       </div>
 
@@ -318,7 +316,7 @@ const CartPage = () => {
                 {savedItems.length > 0 && (
                   <div className="pt-2">
                     <p className="text-[11px] font-black uppercase tracking-widest text-[#0C0D10]/30 px-1 mb-3">
-                      {t('cart.savedForLater')} ({savedItems.length})
+                      Saved for later ({savedItems.length})
                     </p>
                     <div className="space-y-2">
                       {savedItems.map(p => p && (
@@ -336,7 +334,7 @@ const CartPage = () => {
                             onClick={() => moveToCart(p.id)}
                             className="text-[12px] font-black text-[#1160CB] border border-[#1160CB]/20 px-4 py-2 rounded-full hover:bg-[#1160CB] hover:text-white transition-all whitespace-nowrap"
                           >
-                            {t('cart.moveToCart')}
+                            Move to cart
                           </button>
                         </div>
                       ))}
@@ -347,7 +345,7 @@ const CartPage = () => {
                 {/* ── Gift / promo note ── */}
                 <div className="flex items-center gap-2 px-1">
                   <Gift size={13} className="text-[#1160CB]/40" />
-                  <span className="text-[12px] text-[#0C0D10]/30 font-medium">{t('cart.freeGift')}</span>
+                  <span className="text-[12px] text-[#0C0D10]/30 font-medium">Free gift wrapping available at checkout</span>
                 </div>
               </div>
 
@@ -361,7 +359,7 @@ const CartPage = () => {
                   style={{ boxShadow: "0 2px 12px rgba(21,40,161,0.05)" }}>
                   <div className="flex items-center gap-2 mb-4">
                     <Tag size={14} className="text-[#1160CB]" />
-                    <p className="text-[13px] font-bold text-[#0C0D10]">{t('cart.promoCode')}</p>
+                    <p className="text-[13px] font-bold text-[#0C0D10]">Promo / Discount Code</p>
                   </div>
                   {appliedPromo ? (
                     <div
@@ -385,7 +383,7 @@ const CartPage = () => {
                           value={promoCode}
                           onChange={e => { setPromoCode(e.target.value.toUpperCase()); setPromoError(""); }}
                           onKeyDown={e => e.key === "Enter" && applyPromo()}
-                          placeholder={t('cart.promoPlaceholder')}
+                          placeholder="e.g. SAVE10"
                           className="h-10 rounded-[8px] text-[13px] uppercase font-semibold flex-1"
                           style={{ border: "1.5px solid #F0F2F8" }}
                         />
@@ -395,7 +393,7 @@ const CartPage = () => {
                           disabled={promoLoading || !promoCode.trim()}
                           className="h-10 px-5 rounded-[8px] text-[12px] font-black bg-[#1160CB] hover:bg-[#1528A1] text-white flex-shrink-0"
                         >
-                          {promoLoading ? "..." : t('cart.applyCode')}
+                          {promoLoading ? "..." : "Apply"}
                         </Button>
                       </div>
                       {promoError && (
@@ -410,32 +408,32 @@ const CartPage = () => {
                   className="bg-white rounded-[16px] border border-[#F0F2F8] p-5 space-y-4"
                   style={{ boxShadow: "0 2px 12px rgba(21,40,161,0.05)" }}
                 >
-                  <p className="text-[13px] font-black text-[#0C0D10] uppercase tracking-widest">{t('cart.orderSummary')}</p>
+                  <p className="text-[13px] font-black text-[#0C0D10] uppercase tracking-widest">Order Summary</p>
 
                   <div className="space-y-3">
                     <div className="flex justify-between text-[13px]">
-                      <span className="text-[#0C0D10]/50">{t('cart.subtotal')} ({totalQty})</span>
+                      <span className="text-[#0C0D10]/50">Subtotal ({totalQty} items)</span>
                       <span className="font-semibold text-[#0C0D10]">{currency} {subtotal.toFixed(2)}</span>
                     </div>
 
                     {appliedPromo && (
                       <div className="flex justify-between text-[13px]">
-                        <span className="text-emerald-600 font-semibold">{t('cart.discount')} ({appliedPromo.code})</span>
+                        <span className="text-emerald-600 font-semibold">Promo ({appliedPromo.code})</span>
                         <span className="text-emerald-600 font-bold">− {currency} {promoDiscount.toFixed(2)}</span>
                       </div>
                     )}
 
                     <div className="flex justify-between text-[13px]">
-                      <span className="text-[#0C0D10]/50">{t('cart.shipping')}</span>
+                      <span className="text-[#0C0D10]/50">Shipping</span>
                       <span className={`font-semibold ${shipping === 0 ? "text-emerald-600" : "text-[#0C0D10]"}`}>
-                        {shipping === 0 ? t('cart.freeShipping') : `${currency} ${shipping.toFixed(2)}`}
+                        {shipping === 0 ? "FREE" : `${currency} ${shipping.toFixed(2)}`}
                       </span>
                     </div>
 
                     {savedAmount > 0 && (
                       <div className="flex justify-between text-[13px]">
                         <span className="text-emerald-600 font-semibold flex items-center gap-1">
-                          <Sparkles size={11} /> {t('cart.totalSavings')}
+                          <Sparkles size={11} /> Total savings
                         </span>
                         <span className="text-emerald-600 font-bold">{currency} {savedAmount.toFixed(2)}</span>
                       </div>
@@ -445,7 +443,7 @@ const CartPage = () => {
                   <div className="h-px bg-[#F0F2F8]" />
 
                   <div className="flex justify-between items-center">
-                    <span className="text-[16px] font-bold text-[#0C0D10]">{t('cart.total')}</span>
+                    <span className="text-[16px] font-bold text-[#0C0D10]">Total</span>
                     <span className="text-[26px] font-black text-[#1528A1]">
                       {currency} {total.toFixed(2)}
                     </span>
@@ -466,11 +464,11 @@ const CartPage = () => {
                       disabled={hasStockIssues || cartItems.length === 0}
                       onClick={() => navigate("/checkout")}
                     >
-                      {t('cart.checkout')} <ArrowRight size={17} />
+                      Proceed to Checkout <ArrowRight size={17} />
                     </Button>
                     <Link to="/products" className="block">
                       <button className="w-full h-11 text-[13px] font-bold rounded-[12px] border border-[#F0F2F8] text-[#0C0D10]/50 hover:text-[#1160CB] hover:border-[#1160CB]/20 transition-all flex items-center justify-center gap-1.5">
-                        <ChevronLeft size={14} /> {t('cart.continueShopping')}
+                        <ChevronLeft size={14} /> Continue Shopping
                       </button>
                     </Link>
                   </div>

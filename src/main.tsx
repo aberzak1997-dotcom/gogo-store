@@ -1,4 +1,3 @@
-import './i18n/index'
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./globals.css";

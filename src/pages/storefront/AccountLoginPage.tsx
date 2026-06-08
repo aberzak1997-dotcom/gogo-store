@@ -11,12 +11,10 @@ import { Label } from "@/components/ui/label";
 import { Zap, Mail, Lock, User, Eye, EyeOff, ArrowRight, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { showSuccess, showError } from "../../utils/toast";
-import { useTranslation } from 'react-i18next';
 
 const AccountLoginPage = () => {
   const { customerLogin, customerRegister, customer, isCustomerLoading } = useCustomerAuth();
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   const [tab, setTab] = useState<"login" | "register">("login");
   const [name, setName] = useState("");
@@ -45,12 +43,12 @@ const AccountLoginPage = () => {
 
     if (tab === "register") {
       if (password !== confirmPassword) {
-        setError(t('auth.passwordsDontMatch'));
+        setError("Passwords do not match.");
         setIsLoading(false);
         return;
       }
       if (password.length < 6) {
-        setError(t('auth.passwordTooShort'));
+        setError("Password must be at least 6 characters.");
         setIsLoading(false);
         return;
       }
@@ -64,7 +62,7 @@ const AccountLoginPage = () => {
           navigate("/account");
         }
       } else {
-        setError(result.error || t('auth.registrationFailed'));
+        setError(result.error || "Registration failed. Please try again.");
       }
     } else {
       const result = await customerLogin(email.trim(), password);
@@ -74,8 +72,8 @@ const AccountLoginPage = () => {
       } else {
         // "Invalid login credentials" from Supabase often means unconfirmed email
         const hint = result.error?.toLowerCase().includes("invalid") || result.error?.toLowerCase().includes("credentials")
-          ? t('auth.invalidCredentials')
-          : result.error || t('auth.invalidCredentials');
+          ? "Invalid email or password. If you just registered, please check your email and click the confirmation link first."
+          : result.error || "Invalid email or password.";
         setError(hint);
       }
     }
@@ -94,27 +92,27 @@ const AccountLoginPage = () => {
               <Zap size={28} fill="currentColor" className="text-[#0033CC]" />
             </div>
             <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tight">
-              {tab === "login" ? t('auth.welcomeBack') : t('auth.createAccount')}
+              {tab === "login" ? "Welcome Back" : "Create Account"}
             </h1>
             <p className="text-slate-500 text-sm font-medium mt-2">
               {tab === "login"
-                ? t('auth.signInDesc')
-                : t('auth.registerDesc')}
+                ? "Sign in to view your orders and wishlist"
+                : "Join WIVITEC for a better shopping experience"}
             </p>
           </div>
 
           {/* Tab Switcher */}
           <div className="flex bg-slate-100 p-1 rounded-2xl mb-8">
-            {(["login", "register"] as const).map(tabKey => (
+            {(["login", "register"] as const).map(t => (
               <button
-                key={tabKey}
-                onClick={() => { setTab(tabKey); reset(); }}
+                key={t}
+                onClick={() => { setTab(t); reset(); }}
                 className={cn(
                   "flex-1 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all",
-                  tab === tabKey ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                  tab === t ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
                 )}
               >
-                {tabKey === "login" ? t('auth.signIn') : t('auth.register')}
+                {t === "login" ? "Sign In" : "Register"}
               </button>
             ))}
           </div>
@@ -126,7 +124,7 @@ const AccountLoginPage = () => {
               {/* Name — Register only */}
               {tab === "register" && (
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t('auth.fullName')}</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Full Name</Label>
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                     <Input
@@ -143,7 +141,7 @@ const AccountLoginPage = () => {
 
               {/* Email */}
               <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t('auth.email')}</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Email Address</Label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                   <Input
@@ -159,12 +157,12 @@ const AccountLoginPage = () => {
 
               {/* Password */}
               <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t('auth.password')}</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Password</Label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                   <Input
                     type={showPw ? "text" : "password"}
-                    placeholder={tab === "register" ? t('auth.minPassword') : t('auth.yourPassword')}
+                    placeholder={tab === "register" ? "Min. 6 characters" : "Your password"}
                     className="pl-11 pr-11 h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white font-medium"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
@@ -183,7 +181,7 @@ const AccountLoginPage = () => {
               {/* Confirm Password — Register only */}
               {tab === "register" && (
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t('auth.confirmPassword')}</Label>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Confirm Password</Label>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                     <Input
@@ -212,9 +210,9 @@ const AccountLoginPage = () => {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <span className="flex items-center gap-2"><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> {t('auth.processing')}</span>
+                  <span className="flex items-center gap-2"><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Processing...</span>
                 ) : (
-                  <span className="flex items-center gap-2">{tab === "login" ? t('auth.signIn') : t('auth.createAccount')} <ArrowRight size={15} /></span>
+                  <span className="flex items-center gap-2">{tab === "login" ? "Sign In" : "Create Account"} <ArrowRight size={15} /></span>
                 )}
               </Button>
             </form>
@@ -229,12 +227,12 @@ const AccountLoginPage = () => {
             {/* Switch mode */}
             <p className="text-center text-xs text-slate-500 font-medium">
               {tab === "login" ? (
-                <>{t('auth.dontHaveAccount')}{" "}
-                  <button onClick={() => { setTab("register"); reset(); }} className="font-black text-primary hover:underline">{t('auth.createFree')}</button>
+                <>Don't have an account?{" "}
+                  <button onClick={() => { setTab("register"); reset(); }} className="font-black text-primary hover:underline">Create one free</button>
                 </>
               ) : (
-                <>{t('auth.alreadyHaveAccount')}{" "}
-                  <button onClick={() => { setTab("login"); reset(); }} className="font-black text-primary hover:underline">{t('auth.signIn')}</button>
+                <>Already have an account?{" "}
+                  <button onClick={() => { setTab("login"); reset(); }} className="font-black text-primary hover:underline">Sign in</button>
                 </>
               )}
             </p>
@@ -242,9 +240,9 @@ const AccountLoginPage = () => {
 
           {/* Trust badges */}
           <div className="flex items-center justify-center gap-6 mt-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
-            <div className="flex items-center gap-1.5"><ShieldCheck size={12} className="text-emerald-500" /> {t('auth.secure')}</div>
-            <div className="flex items-center gap-1.5"><ShieldCheck size={12} className="text-emerald-500" /> {t('auth.encrypted')}</div>
-            <div className="flex items-center gap-1.5"><ShieldCheck size={12} className="text-emerald-500" /> {t('auth.private')}</div>
+            <div className="flex items-center gap-1.5"><ShieldCheck size={12} className="text-emerald-500" /> Secure</div>
+            <div className="flex items-center gap-1.5"><ShieldCheck size={12} className="text-emerald-500" /> Encrypted</div>
+            <div className="flex items-center gap-1.5"><ShieldCheck size={12} className="text-emerald-500" /> Private</div>
           </div>
         </div>
       </main>

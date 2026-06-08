@@ -6,12 +6,9 @@ import { Mail, Instagram, Twitter, Facebook, Youtube, Send, ArrowRight } from "l
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
 import { showSuccess, showError } from "../../utils/toast";
-import { useTranslation } from 'react-i18next';
-import LanguageSwitcher from "./LanguageSwitcher";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
-  const { t } = useTranslation();
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,26 +25,26 @@ const Footer = () => {
   };
 
   const shopLinks = [
-    { label: t('footer.products'), path: "/products" },
-    { label: t('footer.newArrivals'), path: "/new-arrivals" },
-    { label: t('footer.bestSellers'), path: "/best-sellers" },
-    { label: t('footer.deals'), path: "/deals" },
+    { label: "All Products", path: "/products" },
+    { label: "New Arrivals", path: "/new-arrivals" },
+    { label: "Best Sellers", path: "/best-sellers" },
+    { label: "Deals", path: "/deals" },
   ];
 
   const supportLinks = [
-    { label: t('footer.contact'), path: "/contact" },
-    { label: t('nav.trackMyOrder'), path: "/track-order" },
-    { label: t('footer.shipping'), path: "/shipping" },
-    { label: t('footer.returns'), path: "/returns" },
-    { label: t('footer.warranty'), path: "/warranty" },
-    { label: t('footer.faq'), path: "/faq" },
+    { label: "Contact Us", path: "/contact" },
+    { label: "Track My Order", path: "/track-order" },
+    { label: "Shipping & Delivery", path: "/shipping" },
+    { label: "Returns & Refunds", path: "/returns" },
+    { label: "Warranty Policy", path: "/warranty" },
+    { label: "FAQ", path: "/faq" },
   ];
 
   const companyLinks = [
-    { label: t('footer.about'), path: "/about" },
-    { label: t('footer.careers'), path: "/careers" },
-    { label: t('footer.privacy'), path: "/privacy-policy" },
-    { label: t('footer.terms'), path: "/terms" },
+    { label: "About Us", path: "/about" },
+    { label: "Careers", path: "/careers" },
+    { label: "Privacy Policy", path: "/privacy-policy" },
+    { label: "Terms of Service", path: "/terms" },
   ];
 
   return (
@@ -64,12 +61,12 @@ const Footer = () => {
           <div className="flex items-center gap-3 flex-shrink-0">
             <Link to="/products">
               <Button className="bg-white text-[#1528A1] hover:bg-[#F0F2F8] rounded-[8px] px-7 h-12 text-[15px] font-semibold transition-all">
-                {t('common.shopNow')} <ArrowRight size={16} className="ml-2" />
+                Shop Now <ArrowRight size={16} className="ml-2" />
               </Button>
             </Link>
             <Link to="/about">
               <Button variant="ghost" className="border border-white/30 text-white hover:bg-white/10 rounded-[8px] px-7 h-12 text-[15px] font-semibold">
-                {t('common.learnMore')}
+                Learn More
               </Button>
             </Link>
           </div>
@@ -86,14 +83,14 @@ const Footer = () => {
               <Logo width={130} variant="dark" />
 
               <div className="space-y-4 max-w-sm">
-                <p className="text-caption text-white/30">{t('footer.newsletter')}</p>
+                <p className="text-caption text-white/30">Stay in the loop</p>
                 <p className="text-[15px] text-white/50 leading-relaxed">
-                  {t('footer.description')}
+                  Exclusive offers, tech news, and early access to new arrivals.
                 </p>
                 <form onSubmit={handleSubscribe} className="flex gap-2">
                   <input
                     type="email"
-                    placeholder={t('footer.newsletterPlaceholder')}
+                    placeholder="your@email.com"
                     className="flex-grow h-11 rounded-[8px] border border-white/10 bg-white/[0.04] px-4 text-[14px] text-white placeholder:text-white/30 outline-none focus:border-[#1160CB] transition-colors"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -130,7 +127,7 @@ const Footer = () => {
 
             {/* Shop */}
             <div>
-              <h4 className="text-caption text-white mb-6">{t('footer.shop')}</h4>
+              <h4 className="text-caption text-white mb-6">Shop</h4>
               <ul className="space-y-3">
                 {shopLinks.map((l) => (
                   <li key={l.path}>
@@ -144,7 +141,7 @@ const Footer = () => {
 
             {/* Support */}
             <div>
-              <h4 className="text-caption text-white mb-6">{t('footer.support')}</h4>
+              <h4 className="text-caption text-white mb-6">Support</h4>
               <ul className="space-y-3">
                 {supportLinks.map((l) => (
                   <li key={l.path}>
@@ -158,7 +155,7 @@ const Footer = () => {
 
             {/* Company */}
             <div>
-              <h4 className="text-caption text-white mb-6">{t('footer.company')}</h4>
+              <h4 className="text-caption text-white mb-6">Company</h4>
               <ul className="space-y-3">
                 {companyLinks.map((l) => (
                   <li key={l.path}>
@@ -174,19 +171,16 @@ const Footer = () => {
           {/* Bottom bar */}
           <div className="pt-8 border-t border-white/[0.06] flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex flex-wrap justify-center gap-6 text-[11px] text-white/30">
-              <span>{t('footer.copyright', { year: new Date().getFullYear() })}</span>
-              <Link to="/privacy-policy" className="hover:text-white/60 transition-colors">{t('footer.privacy')}</Link>
-              <Link to="/terms" className="hover:text-white/60 transition-colors">{t('footer.terms')}</Link>
+              <span>© 2025 WIVITEC. All rights reserved.</span>
+              <Link to="/privacy-policy" className="hover:text-white/60 transition-colors">Privacy</Link>
+              <Link to="/terms" className="hover:text-white/60 transition-colors">Terms</Link>
               <Link to="/faq" className="hover:text-white/60 transition-colors">Cookies</Link>
             </div>
-            <div className="flex items-center gap-4">
-              <LanguageSwitcher />
-              <div className="flex items-center gap-2 text-[11px] text-white/30">
-                <Mail size={13} />
-                <a href="mailto:support@wivitec.com" className="hover:text-[#479BF7] transition-colors">
-                  support@wivitec.com
-                </a>
-              </div>
+            <div className="flex items-center gap-2 text-[11px] text-white/30">
+              <Mail size={13} />
+              <a href="mailto:support@wivitec.com" className="hover:text-[#479BF7] transition-colors">
+                support@wivitec.com
+              </a>
             </div>
           </div>
         </div>
