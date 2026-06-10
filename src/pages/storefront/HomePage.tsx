@@ -241,18 +241,18 @@ const HomePage = () => {
                 <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
                   <Link to="/products">
                     <Button
-                      className="h-12 px-8 rounded-full text-[13px] font-bold uppercase tracking-widest gap-3 shadow-xl shadow-[#1160CB]/15 transition-all duration-300 hover:scale-105"
+                      className="h-10 px-6 rounded-full text-[11px] font-bold uppercase tracking-widest gap-2.5 shadow-xl shadow-[#1160CB]/15 transition-all duration-300 hover:scale-105"
                       style={{ background: "linear-gradient(135deg, #1160CB, #1528A1)" }}
                     >
-                      Shop Now <ArrowRight size={15} />
+                      Shop Now <ArrowRight size={13} />
                     </Button>
                   </Link>
                   <Link to="/deals">
                     <Button
                       variant="outline"
-                      className="h-12 px-8 rounded-full text-[13px] font-bold uppercase tracking-widest gap-3 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all duration-300"
+                      className="h-10 px-6 rounded-full text-[11px] font-bold uppercase tracking-widest gap-2.5 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all duration-300"
                     >
-                      <Flame size={14} className="text-amber-500" /> View Deals
+                      <Flame size={13} className="text-amber-500" /> View Deals
                     </Button>
                   </Link>
                 </div>
