@@ -241,10 +241,13 @@ const HomePage = () => {
                 <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
                   <Link to="/products">
                     <Button
-                      className="h-10 px-6 rounded-full text-[11px] font-bold uppercase tracking-widest gap-2.5 shadow-xl shadow-[#1160CB]/15 transition-all duration-300 hover:scale-105"
+                      className="h-10 pl-6 pr-4 rounded-full text-[11px] font-bold uppercase tracking-widest gap-2 shadow-xl shadow-[#1160CB]/15 transition-all duration-300 hover:scale-105"
                       style={{ background: "linear-gradient(135deg, #1160CB, #1528A1)" }}
                     >
-                      Shop Now <ArrowRight size={13} />
+                      Shop Now
+                      <span className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[#1160CB] ml-1">
+                        <ArrowRight size={11} />
+                      </span>
                     </Button>
                   </Link>
                   <Link to="/deals">
