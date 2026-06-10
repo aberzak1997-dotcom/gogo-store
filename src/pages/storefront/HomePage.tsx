@@ -191,7 +191,7 @@ const HomePage = () => {
             LARGE HERO SECTION (LIGHT THEME)
         ══════════════════════════════════════════════════════════════════════ */}
         {!isFiltered && (
-          <section className="relative min-h-[85vh] flex flex-col justify-center overflow-hidden bg-slate-50/60 border-b border-slate-100">
+          <section className="relative min-h-[70vh] flex flex-col justify-center overflow-hidden bg-slate-50/60 border-b border-slate-100">
 
             {/* ── Background layers ── */}
             {/* Radial glow — blue left */}
@@ -208,22 +208,14 @@ const HomePage = () => {
               style={{ background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.8) 80%, #ffffff)" }} />
 
             {/* ── Content ── */}
-            <div className="relative z-10 max-w-[1400px] mx-auto w-full px-6 md:px-12 py-16 grid lg:grid-cols-2 gap-16 items-center">
+            <div className="relative z-10 max-w-[800px] mx-auto w-full px-6 md:px-12 py-20 flex flex-col items-center text-center">
 
-              {/* Left: text */}
-              <div className="space-y-6">
-
-                {/* Eyebrow badge */}
-                <div className="inline-flex items-center gap-2 bg-slate-100 border border-slate-200/80 rounded-full px-4 py-2">
-                  <span className="w-2 h-2 rounded-full bg-[#1160CB] animate-pulse flex-shrink-0" />
-                  <span className="text-[11px] font-bold uppercase tracking-[3px] text-slate-600">
-                    Premium Tech Store
-                  </span>
-                </div>
+              {/* Center: text */}
+              <div className="space-y-6 flex flex-col items-center">
 
                 {/* Main headline */}
                 <div className="space-y-3">
-                  <h1 className="text-[40px] md:text-[52px] xl:text-[60px] font-bold leading-[1.05] tracking-tight text-slate-900 uppercase">
+                  <h1 className="text-[36px] md:text-[48px] xl:text-[54px] font-bold leading-[1.1] tracking-tight text-slate-900 uppercase">
                     Power Your
                     <br />
                     <span
@@ -241,12 +233,12 @@ const HomePage = () => {
                 </div>
 
                 {/* Subtext */}
-                <p className="text-[15px] md:text-[16px] text-slate-500 font-medium leading-relaxed max-w-[500px]">
+                <p className="text-[15px] md:text-[16px] text-slate-500 font-medium leading-relaxed max-w-[540px]">
                   Discover premium electronics, peripherals, and accessories built for professionals, gamers, and creators.
                 </p>
 
                 {/* CTA row */}
-                <div className="flex flex-wrap items-center gap-4 pt-2">
+                <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
                   <Link to="/products">
                     <Button
                       className="h-12 px-8 rounded-full text-[13px] font-bold uppercase tracking-widest gap-3 shadow-xl shadow-[#1160CB]/15 transition-all duration-300 hover:scale-105"
@@ -264,121 +256,8 @@ const HomePage = () => {
                     </Button>
                   </Link>
                 </div>
-
-                {/* Stats row */}
-                <div className="flex flex-wrap gap-8 pt-4 border-t border-slate-200/60">
-                  {[
-                    { value: "500+", label: "Products" },
-                    { value: "12k+", label: "Customers" },
-                    { value: "4.9★", label: "Avg. Rating" },
-                    { value: "1-Year", label: "Warranty" },
-                  ].map(({ value, label }) => (
-                    <div key={label}>
-                      <p className="text-[20px] font-bold text-slate-900 leading-none">{value}</p>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{label}</p>
-                    </div>
-                  ))}
-                </div>
               </div>
 
-              {/* Right: product showcase grid */}
-              <div className="hidden lg:grid grid-cols-2 gap-4 relative">
-
-                {/* Glow behind the grid */}
-                <div className="absolute inset-[-40px] rounded-3xl"
-                  style={{ background: "radial-gradient(ellipse at center, rgba(17,96,203,0.05) 0%, transparent 70%)" }} />
-
-                {/* Top-left: tall card */}
-                <div className="relative row-span-2 rounded-2xl overflow-hidden bg-white border border-slate-100 shadow-sm flex flex-col justify-between p-5 min-h-[320px] group hover:border-[#1160CB]/30 transition-all duration-300">
-                  <div className="space-y-1">
-                    <span className="text-[9px] font-bold uppercase tracking-[3px] text-[#1160CB]">Best Seller</span>
-                    <p className="text-[15px] font-bold text-slate-800 leading-snug line-clamp-2">
-                      {bestSellers[0]?.title || "Top Rated Gear"}
-                    </p>
-                  </div>
-                  <div className="flex-1 flex items-center justify-center py-4">
-                    {bestSellers[0]?.imageUrl ? (
-                      <img
-                        src={bestSellers[0].imageUrl}
-                        alt={bestSellers[0].title}
-                        className="max-h-[180px] w-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-24 h-24 rounded-2xl bg-slate-50 flex items-center justify-center">
-                        <Package size={32} className="text-slate-300" />
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[20px] font-bold text-slate-900">
-                      ${(bestSellers[0]?.price || 0).toFixed(0)}
-                    </span>
-                    <Link
-                      to={`/product/${bestSellers[0]?.id || ""}`}
-                      className="w-9 h-9 rounded-full bg-[#1160CB] flex items-center justify-center hover:bg-[#1528A1] transition-colors shadow-md"
-                    >
-                      <ArrowRight size={14} className="text-white" />
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Top-right: small card */}
-                <div className="relative rounded-2xl overflow-hidden bg-white border border-slate-100 shadow-sm flex flex-col justify-between p-5 group hover:border-[#1160CB]/30 transition-all duration-300">
-                  <span className="text-[9px] font-bold uppercase tracking-[3px] text-amber-500">New Arrival</span>
-                  <div className="flex items-center justify-center py-2">
-                    {newArrivals[0]?.imageUrl ? (
-                      <img
-                        src={newArrivals[0].imageUrl}
-                        alt={newArrivals[0].title}
-                        className="max-h-[90px] object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 rounded-xl bg-slate-50 flex items-center justify-center">
-                        <Package size={24} className="text-slate-300" />
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-[12px] font-semibold text-slate-600 line-clamp-1">{newArrivals[0]?.title || "New Drop"}</p>
-                    <p className="text-[16px] font-bold text-slate-900">${(newArrivals[0]?.price || 0).toFixed(0)}</p>
-                  </div>
-                </div>
-
-                {/* Bottom-right: deal card */}
-                <div className="relative rounded-2xl overflow-hidden border border-slate-100 bg-slate-50/80 flex flex-col justify-between p-5 group hover:border-amber-500/30 transition-all duration-300">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[9px] font-bold uppercase tracking-[3px] text-amber-500">Hot Deal</span>
-                    {deals[0]?.compareAtPrice && (
-                      <span className="text-[10px] font-bold text-white bg-red-500 px-2 py-0.5 rounded-full">
-                        -{Math.round(((deals[0].compareAtPrice - deals[0].price) / deals[0].compareAtPrice) * 100)}% OFF
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center justify-center py-2">
-                    {deals[0]?.imageUrl ? (
-                      <img
-                        src={deals[0].imageUrl}
-                        alt={deals[0].title}
-                        className="max-h-[80px] object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center">
-                        <Zap size={24} className="text-slate-400" />
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-end justify-between">
-                    <div>
-                      <p className="text-[12px] font-semibold text-slate-600 line-clamp-1">{deals[0]?.title || "Weekly Deal"}</p>
-                      <p className="text-[16px] font-bold text-slate-900">${(deals[0]?.price || 0).toFixed(0)}</p>
-                    </div>
-                    {deals[0]?.compareAtPrice && (
-                      <p className="text-[11px] text-slate-400 line-through">${deals[0].compareAtPrice.toFixed(0)}</p>
-                    )}
-                  </div>
-                </div>
-
-              </div>
             </div>
 
             {/* ── Bottom feature strip ── */}
