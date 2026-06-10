@@ -253,7 +253,7 @@ const HomePage = () => {
                   <Link to="/deals">
                     <Button
                       variant="outline"
-                      className="h-10 px-6 rounded-full text-[11px] font-bold uppercase tracking-widest gap-2.5 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all duration-300"
+                      className="h-10 px-6 rounded-full text-[11px] font-bold uppercase tracking-widest gap-2.5 border-[#1528A1] bg-white text-[#1528A1] hover:bg-blue-50/50 transition-all duration-300"
                     >
                       View Deals
                     </Button>
