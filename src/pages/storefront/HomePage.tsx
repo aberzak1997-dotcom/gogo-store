@@ -245,8 +245,8 @@ const HomePage = () => {
                       style={{ background: "linear-gradient(135deg, #1160CB, #1528A1)" }}
                     >
                       Shop Now
-                      <span className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[#1160CB]">
-                        <ArrowRight size={11} />
+                      <span className="w-[22px] h-[22px] rounded-full bg-white flex items-center justify-center text-[#1160CB]">
+                        <ArrowRight size={12} />
                       </span>
                     </Button>
                   </Link>
