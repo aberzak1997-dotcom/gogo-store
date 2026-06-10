@@ -241,7 +241,7 @@ const HomePage = () => {
                 <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
                   <Link to="/products">
                     <Button
-                      className="h-10 w-[300px] justify-center pl-[10px] pr-[10px] rounded-full text-[11px] font-bold uppercase tracking-widest gap-2 shadow-xl shadow-[#1160CB]/15 transition-all duration-300 hover:scale-105"
+                      className="h-10 w-[150px] justify-center pl-[10px] pr-[10px] rounded-full text-[11px] font-bold uppercase tracking-widest gap-2 shadow-xl shadow-[#1160CB]/15 transition-all duration-300 hover:scale-105"
                       style={{ background: "linear-gradient(135deg, #1160CB, #1528A1)" }}
                     >
                       Shop Now
