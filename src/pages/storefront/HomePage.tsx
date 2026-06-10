@@ -188,42 +188,42 @@ const HomePage = () => {
       <main className="flex-grow">
 
         {/* ══════════════════════════════════════════════════════════════════════
-            LARGE HERO SECTION
+            LARGE HERO SECTION (LIGHT THEME)
         ══════════════════════════════════════════════════════════════════════ */}
         {!isFiltered && (
-          <section className="relative min-h-[92vh] flex flex-col justify-center overflow-hidden bg-[#0E121A]">
+          <section className="relative min-h-[85vh] flex flex-col justify-center overflow-hidden bg-slate-50/60 border-b border-slate-100">
 
             {/* ── Background layers ── */}
             {/* Radial glow — blue left */}
             <div className="absolute -left-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full"
-              style={{ background: "radial-gradient(circle, rgba(17,96,203,0.18) 0%, transparent 70%)" }} />
+              style={{ background: "radial-gradient(circle, rgba(17,96,203,0.06) 0%, transparent 70%)" }} />
             {/* Radial glow — navy right */}
             <div className="absolute -right-60 top-1/3 w-[600px] h-[600px] rounded-full"
-              style={{ background: "radial-gradient(circle, rgba(21,40,161,0.22) 0%, transparent 70%)" }} />
+              style={{ background: "radial-gradient(circle, rgba(21,40,161,0.05) 0%, transparent 70%)" }} />
             {/* Subtle dot grid */}
-            <div className="absolute inset-0 opacity-[0.035]"
-              style={{ backgroundImage: "radial-gradient(circle, #ffffff 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+            <div className="absolute inset-0 opacity-[0.02]"
+              style={{ backgroundImage: "radial-gradient(circle, #000000 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
             {/* Bottom fade to white */}
             <div className="absolute bottom-0 left-0 right-0 h-32"
-              style={{ background: "linear-gradient(to bottom, transparent, #0E121A 80%, #ffffff)" }} />
+              style={{ background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.8) 80%, #ffffff)" }} />
 
             {/* ── Content ── */}
-            <div className="relative z-10 max-w-[1400px] mx-auto w-full px-6 md:px-12 py-20 grid lg:grid-cols-2 gap-16 items-center">
+            <div className="relative z-10 max-w-[1400px] mx-auto w-full px-6 md:px-12 py-16 grid lg:grid-cols-2 gap-16 items-center">
 
               {/* Left: text */}
-              <div className="space-y-8">
+              <div className="space-y-6">
 
                 {/* Eyebrow badge */}
-                <div className="inline-flex items-center gap-2 bg-white/8 border border-white/12 backdrop-blur-sm rounded-full px-4 py-2">
+                <div className="inline-flex items-center gap-2 bg-slate-100 border border-slate-200/80 rounded-full px-4 py-2">
                   <span className="w-2 h-2 rounded-full bg-[#1160CB] animate-pulse flex-shrink-0" />
-                  <span className="text-[11px] font-black uppercase tracking-[3px] text-white/60">
+                  <span className="text-[11px] font-bold uppercase tracking-[3px] text-slate-600">
                     Premium Tech Store
                   </span>
                 </div>
 
                 {/* Main headline */}
                 <div className="space-y-3">
-                  <h1 className="text-[52px] md:text-[68px] xl:text-[80px] font-black leading-[0.95] tracking-tight text-white uppercase">
+                  <h1 className="text-[40px] md:text-[52px] xl:text-[60px] font-bold leading-[1.05] tracking-tight text-slate-900 uppercase">
                     Power Your
                     <br />
                     <span
@@ -241,7 +241,7 @@ const HomePage = () => {
                 </div>
 
                 {/* Subtext */}
-                <p className="text-[16px] md:text-[18px] text-white/50 font-medium leading-relaxed max-w-[500px]">
+                <p className="text-[15px] md:text-[16px] text-slate-500 font-medium leading-relaxed max-w-[500px]">
                   Discover premium electronics, peripherals, and accessories built for professionals, gamers, and creators.
                 </p>
 
@@ -249,24 +249,24 @@ const HomePage = () => {
                 <div className="flex flex-wrap items-center gap-4 pt-2">
                   <Link to="/products">
                     <Button
-                      className="h-14 px-10 rounded-full text-[14px] font-black uppercase tracking-widest gap-3 shadow-2xl shadow-[#1160CB]/30 transition-all duration-300 hover:scale-105"
+                      className="h-12 px-8 rounded-full text-[13px] font-bold uppercase tracking-widest gap-3 shadow-xl shadow-[#1160CB]/15 transition-all duration-300 hover:scale-105"
                       style={{ background: "linear-gradient(135deg, #1160CB, #1528A1)" }}
                     >
-                      Shop Now <ArrowRight size={16} />
+                      Shop Now <ArrowRight size={15} />
                     </Button>
                   </Link>
                   <Link to="/deals">
                     <Button
                       variant="outline"
-                      className="h-14 px-10 rounded-full text-[14px] font-black uppercase tracking-widest gap-3 border-white/20 bg-white/6 text-white hover:bg-white/12 backdrop-blur-sm transition-all duration-300"
+                      className="h-12 px-8 rounded-full text-[13px] font-bold uppercase tracking-widest gap-3 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all duration-300"
                     >
-                      <Flame size={15} className="text-amber-400" /> View Deals
+                      <Flame size={14} className="text-amber-500" /> View Deals
                     </Button>
                   </Link>
                 </div>
 
                 {/* Stats row */}
-                <div className="flex flex-wrap gap-8 pt-4 border-t border-white/8">
+                <div className="flex flex-wrap gap-8 pt-4 border-t border-slate-200/60">
                   {[
                     { value: "500+", label: "Products" },
                     { value: "12k+", label: "Customers" },
@@ -274,8 +274,8 @@ const HomePage = () => {
                     { value: "1-Year", label: "Warranty" },
                   ].map(({ value, label }) => (
                     <div key={label}>
-                      <p className="text-[22px] font-black text-white leading-none">{value}</p>
-                      <p className="text-[11px] font-bold text-white/35 uppercase tracking-widest mt-1">{label}</p>
+                      <p className="text-[20px] font-bold text-slate-900 leading-none">{value}</p>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{label}</p>
                     </div>
                   ))}
                 </div>
@@ -286,13 +286,13 @@ const HomePage = () => {
 
                 {/* Glow behind the grid */}
                 <div className="absolute inset-[-40px] rounded-3xl"
-                  style={{ background: "radial-gradient(ellipse at center, rgba(17,96,203,0.12) 0%, transparent 70%)" }} />
+                  style={{ background: "radial-gradient(ellipse at center, rgba(17,96,203,0.05) 0%, transparent 70%)" }} />
 
                 {/* Top-left: tall card */}
-                <div className="relative row-span-2 rounded-2xl overflow-hidden bg-white/6 border border-white/10 flex flex-col justify-between p-5 min-h-[320px] group hover:border-[#1160CB]/40 transition-all duration-300">
+                <div className="relative row-span-2 rounded-2xl overflow-hidden bg-white border border-slate-100 shadow-sm flex flex-col justify-between p-5 min-h-[320px] group hover:border-[#1160CB]/30 transition-all duration-300">
                   <div className="space-y-1">
-                    <span className="text-[9px] font-black uppercase tracking-[3px] text-[#479BF7]">Best Seller</span>
-                    <p className="text-[15px] font-bold text-white leading-snug line-clamp-2">
+                    <span className="text-[9px] font-bold uppercase tracking-[3px] text-[#1160CB]">Best Seller</span>
+                    <p className="text-[15px] font-bold text-slate-800 leading-snug line-clamp-2">
                       {bestSellers[0]?.title || "Top Rated Gear"}
                     </p>
                   </div>
@@ -301,21 +301,21 @@ const HomePage = () => {
                       <img
                         src={bestSellers[0].imageUrl}
                         alt={bestSellers[0].title}
-                        className="max-h-[180px] w-full object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-500"
+                        className="max-h-[180px] w-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-24 h-24 rounded-2xl bg-white/10 flex items-center justify-center">
-                        <Package size={32} className="text-white/30" />
+                      <div className="w-24 h-24 rounded-2xl bg-slate-50 flex items-center justify-center">
+                        <Package size={32} className="text-slate-300" />
                       </div>
                     )}
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[20px] font-black text-white">
+                    <span className="text-[20px] font-bold text-slate-900">
                       ${(bestSellers[0]?.price || 0).toFixed(0)}
                     </span>
                     <Link
                       to={`/product/${bestSellers[0]?.id || ""}`}
-                      className="w-9 h-9 rounded-full bg-[#1160CB] flex items-center justify-center hover:bg-[#1528A1] transition-colors shadow-lg"
+                      className="w-9 h-9 rounded-full bg-[#1160CB] flex items-center justify-center hover:bg-[#1528A1] transition-colors shadow-md"
                     >
                       <ArrowRight size={14} className="text-white" />
                     </Link>
@@ -323,34 +323,33 @@ const HomePage = () => {
                 </div>
 
                 {/* Top-right: small card */}
-                <div className="relative rounded-2xl overflow-hidden bg-white/6 border border-white/10 flex flex-col justify-between p-5 group hover:border-[#1160CB]/40 transition-all duration-300">
-                  <span className="text-[9px] font-black uppercase tracking-[3px] text-amber-400">New Arrival</span>
+                <div className="relative rounded-2xl overflow-hidden bg-white border border-slate-100 shadow-sm flex flex-col justify-between p-5 group hover:border-[#1160CB]/30 transition-all duration-300">
+                  <span className="text-[9px] font-bold uppercase tracking-[3px] text-amber-500">New Arrival</span>
                   <div className="flex items-center justify-center py-2">
                     {newArrivals[0]?.imageUrl ? (
                       <img
                         src={newArrivals[0].imageUrl}
                         alt={newArrivals[0].title}
-                        className="max-h-[90px] object-contain drop-shadow-xl group-hover:scale-105 transition-transform duration-500"
+                        className="max-h-[90px] object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-16 h-16 rounded-xl bg-white/10 flex items-center justify-center">
-                        <Package size={24} className="text-white/30" />
+                      <div className="w-16 h-16 rounded-xl bg-slate-50 flex items-center justify-center">
+                        <Package size={24} className="text-slate-300" />
                       </div>
                     )}
                   </div>
                   <div>
-                    <p className="text-[12px] font-semibold text-white/70 line-clamp-1">{newArrivals[0]?.title || "New Drop"}</p>
-                    <p className="text-[16px] font-black text-white">${(newArrivals[0]?.price || 0).toFixed(0)}</p>
+                    <p className="text-[12px] font-semibold text-slate-600 line-clamp-1">{newArrivals[0]?.title || "New Drop"}</p>
+                    <p className="text-[16px] font-bold text-slate-900">${(newArrivals[0]?.price || 0).toFixed(0)}</p>
                   </div>
                 </div>
 
                 {/* Bottom-right: deal card */}
-                <div className="relative rounded-2xl overflow-hidden border border-white/10 flex flex-col justify-between p-5 group hover:border-amber-400/30 transition-all duration-300"
-                  style={{ background: "linear-gradient(135deg, rgba(21,40,161,0.6) 0%, rgba(17,96,203,0.3) 100%)" }}>
+                <div className="relative rounded-2xl overflow-hidden border border-slate-100 bg-slate-50/80 flex flex-col justify-between p-5 group hover:border-amber-500/30 transition-all duration-300">
                   <div className="flex items-center justify-between">
-                    <span className="text-[9px] font-black uppercase tracking-[3px] text-amber-400">Hot Deal</span>
+                    <span className="text-[9px] font-bold uppercase tracking-[3px] text-amber-500">Hot Deal</span>
                     {deals[0]?.compareAtPrice && (
-                      <span className="text-[10px] font-black text-white bg-red-500/80 px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-bold text-white bg-red-500 px-2 py-0.5 rounded-full">
                         -{Math.round(((deals[0].compareAtPrice - deals[0].price) / deals[0].compareAtPrice) * 100)}% OFF
                       </span>
                     )}
@@ -360,21 +359,21 @@ const HomePage = () => {
                       <img
                         src={deals[0].imageUrl}
                         alt={deals[0].title}
-                        className="max-h-[80px] object-contain drop-shadow-xl group-hover:scale-105 transition-transform duration-500"
+                        className="max-h-[80px] object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-16 h-16 rounded-xl bg-white/10 flex items-center justify-center">
-                        <Zap size={24} className="text-white/30" />
+                      <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center">
+                        <Zap size={24} className="text-slate-400" />
                       </div>
                     )}
                   </div>
                   <div className="flex items-end justify-between">
                     <div>
-                      <p className="text-[12px] font-semibold text-white/60 line-clamp-1">{deals[0]?.title || "Weekly Deal"}</p>
-                      <p className="text-[16px] font-black text-white">${(deals[0]?.price || 0).toFixed(0)}</p>
+                      <p className="text-[12px] font-semibold text-slate-600 line-clamp-1">{deals[0]?.title || "Weekly Deal"}</p>
+                      <p className="text-[16px] font-bold text-slate-900">${(deals[0]?.price || 0).toFixed(0)}</p>
                     </div>
                     {deals[0]?.compareAtPrice && (
-                      <p className="text-[11px] text-white/35 line-through">${deals[0].compareAtPrice.toFixed(0)}</p>
+                      <p className="text-[11px] text-slate-400 line-through">${deals[0].compareAtPrice.toFixed(0)}</p>
                     )}
                   </div>
                 </div>
@@ -383,8 +382,8 @@ const HomePage = () => {
             </div>
 
             {/* ── Bottom feature strip ── */}
-            <div className="relative z-10 border-t border-white/8 bg-white/[0.03] backdrop-blur-sm">
-              <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-5 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-0 md:divide-x md:divide-white/8">
+            <div className="relative z-10 border-t border-slate-100 bg-slate-50/50">
+              <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-5 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-0 md:divide-x md:divide-slate-100">
                 {[
                   { icon: Truck,       text: "Free shipping over $50" },
                   { icon: ShieldCheck, text: "100% secure checkout" },
@@ -392,10 +391,10 @@ const HomePage = () => {
                   { icon: Zap,         text: "Fast 24h dispatch" },
                 ].map(({ icon: Icon, text }, i) => (
                   <div key={i} className="flex items-center gap-3 md:justify-center md:px-6">
-                    <div className="w-8 h-8 rounded-lg bg-[#1160CB]/20 flex items-center justify-center flex-shrink-0">
-                      <Icon size={15} className="text-[#479BF7]" />
+                    <div className="w-8 h-8 rounded-lg bg-[#1160CB]/10 flex items-center justify-center flex-shrink-0">
+                      <Icon size={15} className="text-[#1160CB]" />
                     </div>
-                    <span className="text-[12px] font-bold text-white/50">{text}</span>
+                    <span className="text-[12px] font-bold text-slate-600">{text}</span>
                   </div>
                 ))}
               </div>
