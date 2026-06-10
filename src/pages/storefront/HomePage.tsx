@@ -252,7 +252,7 @@ const HomePage = () => {
                       variant="outline"
                       className="h-10 px-6 rounded-full text-[11px] font-bold uppercase tracking-widest gap-2.5 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all duration-300"
                     >
-                      <Flame size={13} className="text-amber-500" /> View Deals
+                      View Deals
                     </Button>
                   </Link>
                 </div>
