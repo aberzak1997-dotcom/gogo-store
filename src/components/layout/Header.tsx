@@ -129,7 +129,7 @@ const Header = () => {
   return (
     <header className="w-full z-50">
       {/* Announcement bar */}
-      <div className="bg-[#1528A1] text-white text-center py-2 text-[11px] font-medium tracking-[2px] uppercase hidden md:block">
+      <div className="bg-[#1528A1] text-white text-center py-2 text-[11px] font-normal tracking-[2px] uppercase hidden md:block">
         Free shipping on orders over $50 &nbsp;·&nbsp; 1-Year Warranty on all products
       </div>
 
@@ -159,8 +159,8 @@ const Header = () => {
                   key={link.name}
                   to={link.path}
                   className={cn(
-                    "text-[15px] font-medium transition-colors",
-                    isActive ? "text-[#1160CB]" : "text-[#0C0D10]/60 hover:text-[#1160CB]"
+                    "text-[15px] font-normal transition-colors",
+                    isActive ? "text-[#1160CB]" : "text-[#0C0D10] hover:text-[#1160CB]"
                   )}
                 >
                   {link.name}
@@ -170,7 +170,7 @@ const Header = () => {
 
             {/* Categories dropdown */}
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-[15px] font-medium text-[#0C0D10]/60 hover:text-[#1160CB] transition-colors outline-none">
+              <DropdownMenuTrigger className="flex items-center gap-1 text-[15px] font-normal text-[#0C0D10] hover:text-[#1160CB] transition-colors outline-none">
                 Categories <ChevronDown size={14} />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-52 bg-white border-[#F0F2F8] p-2 rounded-[8px] shadow-md">
