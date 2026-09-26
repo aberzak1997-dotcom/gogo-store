@@ -477,11 +477,11 @@ const HomePage = () => {
 
         {/* ── Hero ──────────────────────────────────────────────────────────── */}
         {!isFiltered && (
-          <section className="px-4 md:px-6 pt-4 pb-2">
+          <section className="px-[20px] pt-4 pb-2">
             <div className="flex flex-col md:flex-row gap-3 max-w-[1400px] mx-auto">
 
               {/* ── Left panel (dark navy) ── */}
-              <div className="relative flex-[2] min-h-[294px] md:min-h-[322px] rounded-none overflow-hidden bg-[#0d1b2e] flex items-center">
+              <div className="relative flex-[2] min-h-[294px] md:min-h-[322px] rounded-[15px] overflow-hidden bg-[#0d1b2e] flex items-center">
                 {/* subtle grid pattern */}
                 <div className="absolute inset-0 opacity-[0.04]"
                   style={{ backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
@@ -519,7 +519,7 @@ const HomePage = () => {
               </div>
 
               {/* ── Right panel (bright blue) ── */}
-              <div className="relative flex-[1] min-h-[210px] md:min-h-[322px] rounded-none overflow-hidden bg-[#1528A1] flex flex-col justify-between p-6">
+              <div className="relative flex-[1] min-h-[210px] md:min-h-[322px] rounded-[15px] overflow-hidden bg-[#1528A1] flex flex-col justify-between p-6">
                 {/* decorative circles */}
                 <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-white/5 translate-x-1/3 translate-y-1/3" />
                 <div className="absolute bottom-10 right-10 w-40 h-40 rounded-full bg-white/5" />
@@ -572,9 +572,9 @@ const HomePage = () => {
 
         {/* ── Promo Campaign Cards ───────────────────────────────────────────── */}
         {!isFiltered && (
-          <section className="px-4 md:px-6 py-2">
+          <section className="px-[20px] py-2">
             <div className="grid md:grid-cols-2 gap-3 max-w-[1400px] mx-auto">
-              <div className="group relative overflow-hidden bg-slate-900 text-white min-h-[340px] flex flex-col justify-end rounded-none">
+              <div className="group relative overflow-hidden bg-slate-900 text-white min-h-[340px] flex flex-col justify-end rounded-[15px]">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                 <div className="relative z-10 p-10 space-y-3">
@@ -590,7 +590,7 @@ const HomePage = () => {
                   </Link>
                 </div>
               </div>
-              <div className="group relative overflow-hidden min-h-[340px] flex flex-col justify-end rounded-none">
+              <div className="group relative overflow-hidden min-h-[340px] flex flex-col justify-end rounded-[15px]">
                 <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7279320/pexels-photo-7279320.jpeg')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                 <div className="relative z-10 p-10 space-y-3">
