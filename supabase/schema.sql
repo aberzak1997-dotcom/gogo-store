@@ -1,5 +1,5 @@
 -- ============================================================
--- GOGO STORE — SUPABASE SCHEMA
+-- WIVITEC — SUPABASE SCHEMA
 -- Paste this entire file into: Supabase Dashboard → SQL Editor → Run
 -- ============================================================
 

@@ -1,7 +1,7 @@
 # WIVITEC Store — Session Summary
 
 **Project:** React + TypeScript + Vite + Tailwind SPA
-**Path:** `C:\Users\hp\dyad-apps\GoGo Official Store`
+**Path:** `C:\Users\hp\dyad-apps\WIVITEC`
 **Backend:** Supabase project `epfawojrdncmmjcqafse` · Deployed on Vercel at wivitec.com
 **Brand palette:** `#0E121A` dark, `#1160CB` interactive blue, `#1528A1` navy, `#479BF7` accent, `#EEF4FF` light surface, `#FF7A30` orange, `#0C0D10` rich black, `#c5c5c5` light-grey border
 **Font:** Inter only (weights 300–800, Google Fonts)
