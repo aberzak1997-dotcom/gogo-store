@@ -15,7 +15,7 @@
 
 -- ── 1. Admin registry ────────────────────────────────────────────────────
 create table if not exists public.admin_users (
-  user_id    uuid primary key references auth.users(id) on delete cascade,
+  id         uuid primary key references auth.users(id) on delete cascade,
   created_at timestamptz not null default now()
 );
 alter table public.admin_users enable row level security;
@@ -24,7 +24,7 @@ revoke all on public.admin_users from anon, authenticated;
 
 -- Seed admins by email. Edit this list before running.
 -- Each email must already exist as a user in Authentication → Users.
-insert into public.admin_users (user_id)
+insert into public.admin_users (id)
 select id from auth.users
 where lower(email) in (
   'admin@wivitec.com',
@@ -38,7 +38,7 @@ returns boolean
 language sql stable security definer
 set search_path = public
 as $$
-  select exists (select 1 from public.admin_users where user_id = auth.uid());
+  select exists (select 1 from public.admin_users where id = auth.uid());
 $$;
 
 -- Admin AND (session is aal2, or the admin has no verified 2FA factor yet)
@@ -66,12 +66,12 @@ $$;
 
 -- Legacy RPC kept for older clients; now backed by admin_users.
 drop function if exists public.get_user_role(uuid);
-create function public.get_user_role(user_id uuid)
+create function public.get_user_role(id uuid)
 returns text
 language sql stable security definer
 set search_path = public
 as $$
-  select case when user_id = auth.uid() and public.is_admin() then 'admin' else 'customer' end;
+  select case when id = auth.uid() and public.is_admin() then 'admin' else 'customer' end;
 $$;
 
 revoke all on function public.is_admin(), public.is_admin_mfa(), public.get_user_role(uuid) from public;
