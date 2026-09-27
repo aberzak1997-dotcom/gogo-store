@@ -134,7 +134,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               <p className="px-3 text-caption text-white/25 mb-3">{section.title}</p>
             )}
             {section.items.map((item) => {
-              const isActive = location.pathname === item.path;
+              const isActive =
+                location.pathname === item.path ||
+                (item.path !== "/admin" && location.pathname.startsWith(`${item.path}/`));
               return (
                 <Link
                   key={item.path}

@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { KeyRound, Mail, ShieldCheck, Eye, EyeOff, Check, X, AlertTriangle } from "lucide-react";
+import { KeyRound, Mail, ShieldCheck, Smartphone, Eye, EyeOff, Check, X, AlertTriangle } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "../../lib/supabase";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { showError, showSuccess } from "../../utils/toast";
 import { cn } from "@/lib/utils";
+import { TwoFactorPanel } from "./TwoFactorSetupPage";
 
 export const passwordRules = [
   { label: "At least 8 characters", test: (p: string) => p.length >= 8 },
@@ -106,10 +107,8 @@ const primaryBtn =
 
 const SecurityPage = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [loadingUser, setLoadingUser] = useState(true);
 
   // Change password
-  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changing, setChanging] = useState(false);
@@ -120,13 +119,9 @@ const SecurityPage = () => {
   const [sending, setSending] = useState(false);
 
   useEffect(() => {
-    if (!supabase) {
-      setLoadingUser(false);
-      return;
-    }
+    if (!supabase) return;
     supabase.auth.getUser().then(({ data }) => {
       setUserEmail(data.user?.email ?? null);
-      setLoadingUser(false);
     });
   }, []);
 
@@ -145,23 +140,10 @@ const SecurityPage = () => {
       showError("Passwords do not match.");
       return;
     }
-    if (newPassword === currentPassword) {
-      showError("New password must be different from the current one.");
-      return;
-    }
-
     setChanging(true);
     try {
-      // Verify the current password by re-authenticating
-      const { error: verifyError } = await supabase.auth.signInWithPassword({
-        email: userEmail,
-        password: currentPassword,
-      });
-      if (verifyError) {
-        showError("Current password is incorrect.");
-        return;
-      }
-
+      // No re-login to check the current password: signing in again would
+      // replace this 2FA-verified session. The admin session itself is the proof.
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) {
         showError(error.message);
@@ -169,7 +151,6 @@ const SecurityPage = () => {
       }
 
       showSuccess("Password updated successfully.");
-      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } finally {
@@ -210,7 +191,7 @@ const SecurityPage = () => {
           <ShieldCheck className="text-[#1528A1]" size={24} /> Security
         </h1>
         <p className="text-[14px] text-[#0C0D10]/50 mt-1">
-          Manage your admin password and account recovery options.
+          Manage your admin password, account recovery and two-factor authentication.
         </p>
       </div>
 
@@ -221,16 +202,8 @@ const SecurityPage = () => {
         </div>
       )}
 
-      {isSupabaseConfigured && !loadingUser && !hasSession && (
-        <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-[10px] px-4 py-3 text-[13px]">
-          <AlertTriangle size={16} className="flex-shrink-0 mt-0.5" />
-          You are signed in with a built-in admin account that has no Supabase session. Password changes
-          are unavailable — sign in with a Supabase admin account, or use Email Recovery below.
-        </div>
-      )}
-
       <Tabs defaultValue="password" className="w-full">
-        <TabsList className="grid grid-cols-2 w-full h-11 bg-white border border-[#E4E7F0] rounded-[10px] p-1">
+        <TabsList className="grid grid-cols-3 w-full h-11 bg-white border border-[#E4E7F0] rounded-[10px] p-1">
           <TabsTrigger
             value="password"
             className="rounded-[7px] text-[13px] font-semibold gap-2 data-[state=active]:bg-[#1528A1] data-[state=active]:text-white"
@@ -243,6 +216,12 @@ const SecurityPage = () => {
           >
             <Mail size={15} /> Email Recovery
           </TabsTrigger>
+          <TabsTrigger
+            value="2fa"
+            className="rounded-[7px] text-[13px] font-semibold gap-2 data-[state=active]:bg-[#1528A1] data-[state=active]:text-white"
+          >
+            <Smartphone size={15} /> Two-Factor
+          </TabsTrigger>
         </TabsList>
 
         {/* ── Change Password ── */}
@@ -254,16 +233,6 @@ const SecurityPage = () => {
                   Signed in as <span className="font-semibold text-[#0C0D10]">{userEmail}</span>
                 </p>
               )}
-              <div className="space-y-2">
-                <Label htmlFor="current-password" className="text-[13px] font-semibold">Current password</Label>
-                <PasswordInput
-                  id="current-password"
-                  value={currentPassword}
-                  onChange={setCurrentPassword}
-                  autoComplete="current-password"
-                  placeholder="••••••••"
-                />
-              </div>
               <div className="space-y-2">
                 <Label htmlFor="new-password" className="text-[13px] font-semibold">New password</Label>
                 <PasswordInput
@@ -294,7 +263,7 @@ const SecurityPage = () => {
               <button
                 type="submit"
                 className={primaryBtn}
-                disabled={!hasSession || changing || !isPasswordStrong(newPassword) || !passwordsMatch || !currentPassword}
+                disabled={!hasSession || changing || !isPasswordStrong(newPassword) || !passwordsMatch}
               >
                 {changing ? "Updating..." : "Update Password"}
               </button>
@@ -373,6 +342,11 @@ const SecurityPage = () => {
               </button>
             </form>
           </div>
+        </TabsContent>
+
+        {/* ── Two-Factor ── */}
+        <TabsContent value="2fa" className="mt-4">
+          <TwoFactorPanel />
         </TabsContent>
       </Tabs>
     </div>

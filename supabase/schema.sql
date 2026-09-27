@@ -214,32 +214,8 @@ alter table collections       enable row level security;
 alter table collection_products enable row level security;
 alter table store_settings    enable row level security;
 
--- Authenticated (admin) can do everything
-create policy "admin_all_products"            on products            for all to authenticated using (true) with check (true);
-create policy "admin_all_variants"            on product_variants    for all to authenticated using (true) with check (true);
-create policy "admin_all_customers"           on customers           for all to authenticated using (true) with check (true);
-create policy "admin_all_orders"              on orders              for all to authenticated using (true) with check (true);
-create policy "admin_all_order_items"         on order_items         for all to authenticated using (true) with check (true);
-create policy "admin_all_order_timeline"      on order_timeline      for all to authenticated using (true) with check (true);
-create policy "admin_all_discounts"           on discounts           for all to authenticated using (true) with check (true);
-create policy "admin_all_reviews"             on reviews             for all to authenticated using (true) with check (true);
-create policy "admin_all_returns"             on return_requests     for all to authenticated using (true) with check (true);
-create policy "admin_all_return_items"        on return_items        for all to authenticated using (true) with check (true);
-create policy "admin_all_campaigns"           on campaigns           for all to authenticated using (true) with check (true);
-create policy "admin_all_collections"         on collections         for all to authenticated using (true) with check (true);
-create policy "admin_all_collection_products" on collection_products for all to authenticated using (true) with check (true);
-create policy "admin_all_settings"            on store_settings      for all to authenticated using (true) with check (true);
-
--- Public (anon) can read active products & approved reviews
-create policy "public_read_products" on products for select to anon using (status = 'active');
-create policy "public_read_variants" on product_variants for select to anon using (true);
-create policy "public_read_reviews"  on reviews  for select to anon using (status = 'approved');
-
--- Public can create orders & customers (storefront checkout)
-create policy "public_insert_orders"    on orders    for insert to anon with check (true);
-create policy "public_insert_items"     on order_items for insert to anon with check (true);
-create policy "public_insert_timeline"  on order_timeline for insert to anon with check (true);
-create policy "public_insert_customers" on customers for insert to anon with check (true);
-create policy "public_insert_returns"   on return_requests for insert to anon with check (true);
-create policy "public_insert_ret_items" on return_items for insert to anon with check (true);
-create policy "public_read_settings"    on store_settings for select to anon using (true);
+-- ── Policies ─────────────────────────────────────────────────────────────
+-- Row-level security policies, the admin_users table and the is_admin() /
+-- is_admin_mfa() helpers live in:
+--   supabase/migrations/20260927000000_admin_security.sql
+-- Run that file after this one.
