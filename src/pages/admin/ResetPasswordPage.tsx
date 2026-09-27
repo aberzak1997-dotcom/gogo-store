@@ -10,7 +10,7 @@ import { showError, showSuccess } from "../../utils/toast";
 import { cn } from "@/lib/utils";
 import { PasswordStrength, isPasswordStrong } from "./SecurityPage";
 
-type Status = "checking" | "ready" | "invalid";
+type Status = "checking" | "mfa" | "ready" | "invalid";
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
@@ -18,6 +18,7 @@ const ResetPasswordPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [saving, setSaving] = useState(false);
+  const [code, setCode] = useState("");
 
   useEffect(() => {
     if (!supabase) {
@@ -25,16 +26,23 @@ const ResetPasswordPage = () => {
       return;
     }
 
+    // Accounts with 2FA must enter a code before Supabase allows a password change
+    const onSession = async () => {
+      if (!supabase) return;
+      const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      setStatus(aal && aal.nextLevel === "aal2" && aal.currentLevel !== "aal2" ? "mfa" : "ready");
+    };
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) {
-        setStatus("ready");
+        setTimeout(onSession, 0);
       }
     });
 
     // The recovery token in the URL may already have been processed before this
     // component mounted, so also check for an existing session.
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) setStatus("ready");
+      if (data.session) onSession();
     });
 
     // If no session appears, the link is invalid or expired
@@ -49,6 +57,29 @@ const ResetPasswordPage = () => {
   }, []);
 
   const passwordsMatch = confirmPassword.length > 0 && password === confirmPassword;
+
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!supabase) return;
+    setSaving(true);
+    try {
+      const { data: factors } = await supabase.auth.mfa.listFactors();
+      const factor = factors?.totp[0];
+      if (!factor) {
+        setStatus("ready");
+        return;
+      }
+      const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId: factor.id, code });
+      if (error) {
+        showError("That code didn't work. Check your authenticator and try again.");
+        setCode("");
+        return;
+      }
+      setStatus("ready");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,6 +149,38 @@ const ResetPasswordPage = () => {
                 Go to Login
               </Link>
             </div>
+          )}
+
+          {status === "mfa" && (
+            <form onSubmit={handleVerify} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="totp" className="text-[13px] font-semibold text-white/80">
+                  Two-factor code
+                </Label>
+                <p className="text-[13px] text-white/50">
+                  This account uses two-factor authentication. Enter the 6-digit code from your authenticator app.
+                </p>
+                <Input
+                  id="totp"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={6}
+                  autoFocus
+                  className={`${inputClass} text-center text-[22px] font-semibold tracking-[0.5em] tabular-nums`}
+                  placeholder="000000"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={saving || code.length !== 6}
+                className="w-full h-12 rounded-[10px] bg-[#1528A1] hover:bg-[#1160CB] text-white text-[14px] font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {saving ? "Verifying..." : "Continue"}
+              </button>
+            </form>
           )}
 
           {status === "ready" && (

@@ -52,6 +52,7 @@ import AdminArticlesPage from "./pages/admin/AdminArticlesPage";
 import AdminCJPage from "./pages/admin/AdminCJPage";
 import SecurityPage from "./pages/admin/SecurityPage";
 import ResetPasswordPage from "./pages/admin/ResetPasswordPage";
+import TwoFactorSetupPage from "./pages/admin/TwoFactorSetupPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import BlogPage from "./pages/storefront/BlogPage";
 import ArticlePage from "./pages/storefront/ArticlePage";
@@ -138,6 +139,7 @@ const App = () => {
               <Route path="/admin/articles" element={<AdminLayout><AdminArticlesPage /></AdminLayout>} />
               <Route path="/admin/cj-dropshipping" element={<AdminLayout><AdminCJPage /></AdminLayout>} />
               <Route path="/admin/security" element={<AdminLayout><SecurityPage /></AdminLayout>} />
+              <Route path="/admin/security/2fa" element={<AdminLayout><TwoFactorSetupPage /></AdminLayout>} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>

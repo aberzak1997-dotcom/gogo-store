@@ -1,107 +1,143 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { supabase, isSupabaseConfigured } from "../lib/supabase";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
+import { supabase } from "../lib/supabase";
+
+/**
+ * Admin auth strategy:
+ *  - Admin access requires a live Supabase session whose user is listed in
+ *    public.admin_users (checked server-side via the is_admin() RPC).
+ *  - If the admin has a verified authenticator, the session must be upgraded
+ *    to aal2 with a TOTP code before the admin area unlocks. The database
+ *    enforces the same rule through RLS (public.is_admin_mfa()).
+ *  - Sign-in: email + password, or Google OAuth.
+ */
+export type AdminAuthStatus =
+  | "loading"
+  | "signed_out"
+  | "not_admin"
+  | "mfa_required"
+  | "authenticated";
+
+type Result = { success: boolean; error?: string; mfaRequired?: boolean };
 
 interface AuthContextType {
+  status: AdminAuthStatus;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, pass: string) => Promise<{ success: boolean; error?: string }>;
+  email: string | null;
+  login: (email: string, pass: string) => Promise<Result>;
+  loginWithGoogle: () => Promise<{ error?: string }>;
+  verifyMfa: (code: string) => Promise<Result>;
+  refresh: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-/**
- * Admin auth strategy:
- *  - Credentials are validated against Supabase (user must have user_metadata.role === "admin").
- *  - The admin session is stored in localStorage only ("admin_auth": "true") so it never
- *    conflicts with the customer's Supabase session in the same browser.
- *  - After validating the role we immediately sign out of Supabase to keep sessions clean.
- *  - Fallback: if Supabase is not configured, accepts hardcoded demo credentials.
- */
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+async function resolveStatus(session: Session | null): Promise<AdminAuthStatus> {
+  if (!supabase || !session) return "signed_out";
 
-  useEffect(() => {
-    // Session expires after 24 hours
-    const auth = localStorage.getItem("admin_auth");
-    const expiry = localStorage.getItem("admin_auth_expiry");
-    if (auth === "true" && expiry && Date.now() < Number(expiry)) {
-      setIsAuthenticated(true);
-    } else {
-      localStorage.removeItem("admin_auth");
-      localStorage.removeItem("admin_auth_expiry");
-    }
-    setIsLoading(false);
+  const { data: isAdmin, error } = await supabase.rpc("is_admin");
+  if (error || isAdmin !== true) return "not_admin";
+
+  const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (aal && aal.nextLevel === "aal2" && aal.currentLevel !== "aal2") return "mfa_required";
+
+  return "authenticated";
+}
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [status, setStatus] = useState<AdminAuthStatus>("loading");
+  const [email, setEmail] = useState<string | null>(null);
+
+  const evaluate = useCallback(async (session: Session | null) => {
+    setEmail(session?.user.email ?? null);
+    setStatus(await resolveStatus(session));
   }, []);
 
-  const login = async (email: string, pass: string): Promise<{ success: boolean; error?: string }> => {
-    const normalizedEmail = email.trim().toLowerCase();
+  const refresh = useCallback(async () => {
+    if (!supabase) return setStatus("signed_out");
+    const { data } = await supabase.auth.getSession();
+    await evaluate(data.session);
+  }, [evaluate]);
 
-    const builtInAdmins = [
-      { email: "admin@wivitec.com",    password: "Wivitec@2026" },
-      { email: "artswfx120@gmail.com", password: "ADMIN1997"    },
-    ];
-    const isBuiltIn = builtInAdmins.some(
-      (a) => a.email === normalizedEmail && a.password === pass
-    );
-
-    // ── Try Supabase Auth first — keeps session alive for authenticated DB writes ──
-    // (The anon key only has SELECT on products/settings; authenticated role has full access)
-    if (isSupabaseConfigured && supabase) {
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password: pass });
-
-        if (!error && data.user) {
-          // Check role via security-definer RPC (bypasses RLS)
-          const { data: roleData } = await supabase
-            .rpc("get_user_role", { user_id: data.user.id })
-            .catch(() => ({ data: null }));
-
-          if (roleData === "admin") {
-            // ✅ Keep the Supabase session active — this gives the "authenticated"
-            // role so all product/settings writes succeed via RLS.
-            setIsAuthenticated(true);
-            localStorage.setItem("admin_auth", "true");
-            localStorage.setItem("admin_auth_expiry", String(Date.now() + 24 * 60 * 60 * 1000));
-            return { success: true };
-          }
-
-          // Signed in but not admin — revoke and refuse (unless in built-in list)
-          await supabase.auth.signOut().catch(() => {});
-          if (!isBuiltIn) {
-            return { success: false, error: "Access denied. This account does not have admin privileges." };
-          }
-        }
-        // Supabase sign-in failed → fall through to built-in check below
-      } catch {
-        // Supabase unavailable → fall through to built-in check
-      }
+  useEffect(() => {
+    if (!supabase) {
+      setStatus("signed_out");
+      return;
     }
+    refresh();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      // Defer: calling other supabase methods inside this callback can deadlock
+      setTimeout(() => evaluate(session), 0);
+    });
+    return () => subscription.unsubscribe();
+  }, [evaluate, refresh]);
 
-    // ── Built-in fallback (works even when Supabase is down / no Supabase account) ──
-    if (isBuiltIn) {
-      setIsAuthenticated(true);
-      localStorage.setItem("admin_auth", "true");
-      localStorage.setItem("admin_auth_expiry", String(Date.now() + 24 * 60 * 60 * 1000));
-      return { success: true };
+  const login = async (rawEmail: string, pass: string): Promise<Result> => {
+    if (!supabase) return { success: false, error: "Supabase is not configured." };
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: rawEmail.trim().toLowerCase(),
+      password: pass,
+    });
+    if (error || !data.session) return { success: false, error: "Invalid email or password." };
+
+    const next = await resolveStatus(data.session);
+    setEmail(data.session.user.email ?? null);
+    setStatus(next);
+
+    if (next === "not_admin") {
+      await supabase.auth.signOut().catch(() => {});
+      return { success: false, error: "Access denied. This account does not have admin privileges." };
     }
+    if (next === "mfa_required") return { success: false, mfaRequired: true };
+    return { success: true };
+  };
 
-    return { success: false, error: "Invalid email or password." };
+  const loginWithGoogle = async () => {
+    if (!supabase) return { error: "Supabase is not configured." };
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/admin/login` },
+    });
+    return error ? { error: error.message } : {};
+  };
+
+  const verifyMfa = async (code: string): Promise<Result> => {
+    if (!supabase) return { success: false, error: "Supabase is not configured." };
+
+    const { data: factors, error: listError } = await supabase.auth.mfa.listFactors();
+    const factor = factors?.totp[0];
+    if (listError || !factor) return { success: false, error: "No authenticator is set up for this account." };
+
+    const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId: factor.id, code });
+    if (error) return { success: false, error: "That code didn't work. Check your authenticator and try again." };
+
+    await refresh();
+    return { success: true };
   };
 
   const logout = async () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem("admin_auth");
-    localStorage.removeItem("admin_auth_expiry");
-    // Also sign out of Supabase if a session exists
-    if (isSupabaseConfigured && supabase) {
-      await supabase.auth.signOut().catch(() => {});
-    }
+    if (supabase) await supabase.auth.signOut().catch(() => {});
+    setEmail(null);
+    setStatus("signed_out");
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        status,
+        isAuthenticated: status === "authenticated",
+        isLoading: status === "loading",
+        email,
+        login,
+        loginWithGoogle,
+        verifyMfa,
+        refresh,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
