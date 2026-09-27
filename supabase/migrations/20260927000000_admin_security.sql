@@ -27,8 +27,7 @@ revoke all on public.admin_users from anon, authenticated;
 insert into public.admin_users (id)
 select id from auth.users
 where lower(email) in (
-  'admin@wivitec.com',
-  'artswfx120@gmail.com'
+  'm.aberzak@wivitec.com'
 )
 on conflict do nothing;
 
