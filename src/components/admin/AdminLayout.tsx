@@ -26,7 +26,8 @@ import {
   Plug,
   Search,
   BookOpen,
-  Link2
+  Link2,
+  Lock
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useStore } from "../../context/StoreContext";
@@ -93,6 +94,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         { label: "Payments", icon: CreditCard, path: "/admin/payments" },
         { label: "Shipping", icon: Truck, path: "/admin/shipping" },
         { label: "Settings", icon: Settings, path: "/admin/settings" },
+        { label: "Security", icon: Lock, path: "/admin/security" },
       ]
     }
   ];

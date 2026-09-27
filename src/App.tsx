@@ -50,6 +50,8 @@ import AdminShippingPage from "./pages/admin/AdminShippingPage";
 import AdminSeoPage from "./pages/admin/AdminSeoPage";
 import AdminArticlesPage from "./pages/admin/AdminArticlesPage";
 import AdminCJPage from "./pages/admin/AdminCJPage";
+import SecurityPage from "./pages/admin/SecurityPage";
+import ResetPasswordPage from "./pages/admin/ResetPasswordPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import BlogPage from "./pages/storefront/BlogPage";
 import ArticlePage from "./pages/storefront/ArticlePage";
@@ -115,6 +117,7 @@ const App = () => {
 
               {/* Admin Auth */}
               <Route path="/admin/login" element={<AdminLoginPage />} />
+              <Route path="/admin/security/reset-password" element={<ResetPasswordPage />} />
 
               {/* Protected Admin Routes */}
               <Route path="/admin" element={<AdminLayout><AdminDashboardPage /></AdminLayout>} />
@@ -134,6 +137,7 @@ const App = () => {
               <Route path="/admin/seo" element={<AdminLayout><AdminSeoPage /></AdminLayout>} />
               <Route path="/admin/articles" element={<AdminLayout><AdminArticlesPage /></AdminLayout>} />
               <Route path="/admin/cj-dropshipping" element={<AdminLayout><AdminCJPage /></AdminLayout>} />
+              <Route path="/admin/security" element={<AdminLayout><SecurityPage /></AdminLayout>} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>
