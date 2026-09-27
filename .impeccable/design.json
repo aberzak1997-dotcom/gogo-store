@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-27T14:46:58Z",
+  "title": "Design System: WIVITEC",
+  "extensions": {
+    "colorMeta": {
+      "interactive-blue": { "role": "primary", "displayName": "Interactive Blue", "canonical": "#1160CB", "tonalRamp": ["#061F42", "#0A3269", "#0D4690", "#1160CB", "#3A7FDB", "#6FA2E6", "#A6C6F0", "#DDE9FA"] },
+      "deep-navy": { "role": "primary", "displayName": "Deep Navy", "canonical": "#1528A1", "tonalRamp": ["#070D36", "#0C1759", "#10207C", "#1528A1", "#3A4CC0", "#6D7CD3", "#A4AEE5", "#DCE0F7"] },
+      "sky-blue": { "role": "secondary", "displayName": "Sky Blue", "canonical": "#479BF7", "tonalRamp": ["#082C54", "#0C4584", "#1266C4", "#479BF7", "#6FB1F9", "#96C7FA", "#BEDCFC", "#E5F1FE"] },
+      "ember-orange": { "role": "tertiary", "displayName": "Ember Orange", "canonical": "#FF7A30", "tonalRamp": ["#4A1D04", "#7A3108", "#B3470C", "#FF7A30", "#FF9559", "#FFB185", "#FFCFB3", "#FFEDE2"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#0C0D10", "tonalRamp": ["#0C0D10", "#24262C", "#3D4049", "#5D616C", "#858994", "#AEB1BA", "#D6D8DE", "#F0F2F8"] },
+      "night": { "role": "neutral", "displayName": "Night", "canonical": "#0E121A" },
+      "night-card": { "role": "neutral", "displayName": "Night Card", "canonical": "#16181C" },
+      "canvas": { "role": "neutral", "displayName": "Canvas", "canonical": "#FFFFFF" },
+      "counter-grey": { "role": "neutral", "displayName": "Counter Grey", "canonical": "#F0F2F8" },
+      "mist-blue": { "role": "neutral", "displayName": "Mist Blue", "canonical": "#EEF4FF" },
+      "hover-lavender": { "role": "neutral", "displayName": "Hover Lavender", "canonical": "#E8EBFC" },
+      "success-green": { "role": "semantic", "displayName": "Success Green", "canonical": "#05B169" },
+      "error-red": { "role": "semantic", "displayName": "Error Red", "canonical": "#CF202F" },
+      "warning-amber": { "role": "semantic", "displayName": "Warning Amber", "canonical": "#CA8A04" },
+      "rating-gold": { "role": "semantic", "displayName": "Rating Gold", "canonical": "#FFCC00" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Homepage hero headline only." },
+      "headline": { "displayName": "Headline", "purpose": "Page titles." },
+      "title": { "displayName": "Title", "purpose": "Section headings." },
+      "card-title": { "displayName": "Card Title", "purpose": "Product names, one line." },
+      "body": { "displayName": "Body", "purpose": "Running text, max ~65ch." },
+      "body-sm": { "displayName": "Body Small", "purpose": "Buttons, menus, search, meta." },
+      "price": { "displayName": "Price", "purpose": "Every price, in Deep Navy with tabular figures." },
+      "label": { "displayName": "Label", "purpose": "Uppercase tracked eyebrows, brand tags, discount chips." }
+    },
+    "shadows": [
+      { "name": "rest-haze", "value": "0 4px 24px rgba(21,40,161,0.06)", "purpose": "Product cards at rest." },
+      { "name": "quiet-haze", "value": "0 2px 12px rgba(21,40,161,0.05)", "purpose": "Static content cards." },
+      { "name": "lift-haze", "value": "0 8px 32px rgba(21,40,161,0.14)", "purpose": "Hovered product cards." }
+    ],
+    "motion": [
+      { "name": "hover-standard", "value": "200ms ease", "purpose": "Color, border and shadow changes on hover." },
+      { "name": "card-lift", "value": "translateY(-4px) over 200ms", "purpose": "Interactive card hover." },
+      { "name": "image-zoom", "value": "scale(1.05) over 500–700ms", "purpose": "Product and promo imagery on hover." },
+      { "name": "panel-expand", "value": "500ms ease-in-out", "purpose": "Homepage hero side rails expanding from 72px to 280px." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single action voice: Interactive Blue pill, deepening to navy on hover.",
+      "html": "<button class=\"ds-btn-primary\">Add to Cart</button>",
+      "css": ".ds-btn-primary { background: #1160CB; color: #fff; height: 44px; padding: 0 24px; border: none; border-radius: 9999px; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 200ms ease; } .ds-btn-primary:hover { background: #1528A1; } .ds-btn-primary:focus-visible { outline: 2px solid #1160CB; outline-offset: 2px; } .ds-btn-primary:active { transform: scale(0.98); }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary pill for alternate paths like View Deals.",
+      "html": "<button class=\"ds-btn-outline\">View Deals</button>",
+      "css": ".ds-btn-outline { background: #fff; color: #1528A1; height: 44px; padding: 0 24px; border: 1px solid #1528A1; border-radius: 9999px; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 200ms ease; } .ds-btn-outline:hover { background: rgba(17,96,203,0.06); } .ds-btn-outline:focus-visible { outline: 2px solid #1160CB; outline-offset: 2px; }"
+    },
+    {
+      "name": "On-Dark Button",
+      "kind": "button",
+      "refersTo": "button-on-dark",
+      "description": "Translucent pill for night promo panels and photography.",
+      "html": "<div class=\"ds-dark-wrap\"><button class=\"ds-btn-on-dark\">Explore <svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></button></div>",
+      "css": ".ds-dark-wrap { background: #0E121A; padding: 24px; border-radius: 16px; } .ds-btn-on-dark { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.10); color: #fff; height: 44px; padding: 0 24px; border: 1px solid rgba(255,255,255,0.10); border-radius: 9999px; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 200ms ease; } .ds-btn-on-dark:hover { background: rgba(255,255,255,0.20); } .ds-btn-on-dark:focus-visible { outline: 2px solid #479BF7; outline-offset: 2px; }"
+    },
+    {
+      "name": "Search Pill",
+      "kind": "input",
+      "refersTo": "search-input",
+      "description": "Header search on a counter-grey fill with a leading icon.",
+      "html": "<label class=\"ds-search\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><input type=\"text\" placeholder=\"Search products…\" /></label>",
+      "css": ".ds-search { position: relative; display: flex; align-items: center; width: 260px; } .ds-search svg { position: absolute; left: 14px; color: rgba(12,13,16,0.30); pointer-events: none; } .ds-search input { width: 100%; height: 40px; padding: 0 16px 0 38px; background: #F0F2F8; border: 1px solid #F0F2F8; border-radius: 9999px; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; font-size: 13px; color: #0C0D10; outline: none; transition: border-color 200ms ease, box-shadow 200ms ease; } .ds-search input::placeholder { color: rgba(12,13,16,0.30); } .ds-search input:focus-visible { border-color: #1160CB; box-shadow: 0 0 0 1px #1160CB; }"
+    },
+    {
+      "name": "Eyebrow Chip",
+      "kind": "chip",
+      "refersTo": "eyebrow-chip",
+      "description": "Tracked uppercase label above section titles and as discount tags.",
+      "html": "<span class=\"ds-chip\">Just landed</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; padding: 4px 12px; background: rgba(17,96,203,0.06); border: 1px solid rgba(17,96,203,0.10); color: #1160CB; border-radius: 9999px; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; }"
+    },
+    {
+      "name": "Product Card",
+      "kind": "card",
+      "refersTo": "product-card",
+      "description": "Signature card: product contain-fitted on a counter-grey plate, navy price, full-width pill CTA.",
+      "html": "<a class=\"ds-product\" href=\"#\"><div class=\"ds-product-plate\"><span class=\"ds-product-off\">20% OFF</span><svg width=\"72\" height=\"72\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#1528A1\" stroke-width=\"1.25\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3\"/></svg></div><div class=\"ds-product-body\"><div class=\"ds-product-meta\"><span class=\"ds-product-brand\">Logitech</span><span class=\"ds-product-rating\">★ 4.8</span></div><h3 class=\"ds-product-title\">G435 Wireless Headset</h3><div class=\"ds-product-foot\"><div class=\"ds-product-price\">$79.00 <s>$99.00</s></div><button class=\"ds-product-cta\">Add to Cart</button></div></div></a>",
+      "css": ".ds-product { display: flex; flex-direction: column; width: 260px; background: #fff; border: 1px solid #F0F2F8; border-radius: 16px; box-shadow: 0 4px 24px rgba(21,40,161,0.06); text-decoration: none; color: #0C0D10; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; transition: box-shadow 200ms ease, border-color 200ms ease, transform 200ms ease; } .ds-product:hover { box-shadow: 0 8px 32px rgba(21,40,161,0.14); border-color: #479BF7; transform: translateY(-4px); } .ds-product:focus-visible { outline: 2px solid #1160CB; outline-offset: 2px; } .ds-product-plate { position: relative; margin: 12px; aspect-ratio: 5 / 4; background: #F0F2F8; border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 16px; } .ds-product-off { position: absolute; top: 12px; left: 12px; padding: 4px 10px; background: rgba(21,40,161,0.08); color: #1160CB; border-radius: 9999px; font-size: 11px; font-weight: 500; letter-spacing: 3px; } .ds-product-body { padding: 0 16px 16px; display: flex; flex-direction: column; } .ds-product-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; } .ds-product-brand { color: #1160CB; font-size: 11px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; } .ds-product-rating { font-size: 11px; color: rgba(12,13,16,0.5); } .ds-product-title { margin: 0 0 12px; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 200ms ease; } .ds-product:hover .ds-product-title { color: #1528A1; } .ds-product-foot { border-top: 1px solid #F0F2F8; padding-top: 12px; display: flex; flex-direction: column; gap: 12px; } .ds-product-price { color: #1528A1; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; } .ds-product-price s { color: rgba(12,13,16,0.25); font-size: 12px; font-weight: 400; margin-left: 6px; } .ds-product-cta { height: 40px; background: #1160CB; color: #fff; border: none; border-radius: 9999px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 200ms ease; } .ds-product-cta:hover { background: #1528A1; }"
+    },
+    {
+      "name": "Header Navigation",
+      "kind": "nav",
+      "refersTo": "announcement-bar",
+      "description": "Navy announcement bar over a 68px translucent white header.",
+      "html": "<div class=\"ds-nav-wrap\"><div class=\"ds-announce\">Free shipping on orders over $50</div><nav class=\"ds-nav\"><strong class=\"ds-nav-logo\">WIVITEC</strong><div class=\"ds-nav-links\"><a href=\"#\" class=\"is-active\">Shop</a><a href=\"#\">Deals</a><a href=\"#\">About</a><a href=\"#\">Contact</a></div><button class=\"ds-nav-cta\">Get Started</button></nav></div>",
+      "css": ".ds-nav-wrap { font-family: Inter, -apple-system, 'Segoe UI', sans-serif; border: 1px solid #F0F2F8; border-radius: 12px; overflow: hidden; } .ds-announce { background: #1528A1; color: #fff; text-align: center; padding: 8px 16px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; } .ds-nav { height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 0 24px; background: rgba(255,255,255,0.95); border-bottom: 1px solid #F0F2F8; } .ds-nav-logo { color: #1528A1; letter-spacing: 2px; } .ds-nav-links { display: flex; gap: 32px; } .ds-nav-links a { color: #0C0D10; text-decoration: none; font-size: 15px; transition: color 200ms ease; } .ds-nav-links a:hover, .ds-nav-links a.is-active { color: #1160CB; } .ds-nav-links a:focus-visible { outline: 2px solid #1160CB; outline-offset: 4px; border-radius: 4px; } .ds-nav-cta { height: 36px; padding: 0 20px; background: #1160CB; color: #fff; border: none; border-radius: 9999px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 200ms ease; } .ds-nav-cta:hover { background: #1528A1; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Clean Counter",
+    "overview": "WIVITEC should feel like a bright, well-lit tech shop where everything sits on a clean counter and the staff are easy to find. The page is white with a pale blue-grey counter surface (`counter-grey`). Products sit on soft plates of that grey, shown whole and uncropped, so the shopper sees exactly what they are buying. One confident blue (`interactive-blue`) marks every place you can act, and deep navy carries prices, emphasis and the occasional full-width band. Trust comes from clarity and calm, not spectacle.\n\nThe form language is soft and friendly: pill-shaped buttons, chips and search, generously rounded cards (16px), and circular icon plates. Depth is gentle and blue-tinted. Cards rest on a faint navy haze and rise slightly on hover, so the surface feels touchable without shouting. Density is moderate. Product grids are compact enough for a broad audience to scan quickly, and sections breathe at 80px.\n\nEnergy is carried by accents, not by the base. Ember orange appears only for \"new\" moments, and dark `night` promo panels with photography break up the white rhythm on the homepage. Everything else stays quiet so products and prices lead.",
+    "keyCharacteristics": [
+      "White canvas and `counter-grey` (#F0F2F8) surfaces. There is no beige or warm neutral.",
+      "One action blue (#1160CB). Hover deepens to navy (#1528A1). Sky blue (#479BF7) is for highlights, not actions.",
+      "Pill actions, 16px cards, circular icon plates.",
+      "Navy-tinted shadows (rgba(21,40,161,…)), never grey-black on light surfaces.",
+      "Inter throughout. Small uppercase labels are widely tracked (3px) for a precise, technical note."
+    ],
+    "rules": [
+      { "name": "The One Blue Voice Rule", "body": "Interactive Blue is the only color that says \"click me.\" Don't introduce another blue for actions (no stock Tailwind `blue-*` or shadcn defaults).", "section": "colors" },
+      { "name": "The Rare Ember Rule", "body": "Orange marks newness and nothing else. If more than one orange element is visible in a viewport, one of them is wrong.", "section": "colors" },
+      { "name": "The Tracked Label Rule", "body": "Every eyebrow and brand tag is 11px uppercase with 3px tracking in Interactive Blue (or ink at 30–40% when quiet). Don't substitute bold or larger type for a label.", "section": "typography" },
+      { "name": "The Readable Floor Rule", "body": "Nothing a shopper must read goes below 11px. The 9–10px sizes currently used for badges and panel copy are drift.", "section": "typography" },
+      { "name": "The Navy Haze Rule", "body": "On light surfaces, shadows are tinted rgba(21,40,161,…) and stay at or below 0.16 opacity. Grey-black shadows belong only on dark panels.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use Interactive Blue (#1160CB) for every primary action and Deep Navy (#1528A1) for its hover and for prices.",
+      "Do make pressable things pills (9999px) and containers 16px.",
+      "Do present products contain-fitted on a counter-grey (#F0F2F8) plate so the whole item is visible.",
+      "Do tint shadows navy (rgba(21,40,161,…)) and keep them soft.",
+      "Do set eyebrows and brand tags as 11px uppercase with 3px tracking.",
+      "Do reach for the `primary` Tailwind color and `.text-caption` in new code instead of repeating literal hex values."
+    ],
+    "donts": [
+      "Don't add a second action color. Sky blue is for highlights, and ember orange is only for \"new\".",
+      "Don't use semantic green, red or amber as large fills or button backgrounds.",
+      "Don't use sharp (0px) corners on customer-facing cards, skeletons or promo panels.",
+      "Don't set readable text below 11px.",
+      "Don't use grey-black drop shadows on light surfaces."
+    ]
+  }
+}

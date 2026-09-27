@@ -27,3 +27,7 @@ dist-ssr
 *.sln
 *.sw?
 .dyad/
+
+# Impeccable local state
+.impeccable/hook.cache.json
+.impeccable/config.local.json
