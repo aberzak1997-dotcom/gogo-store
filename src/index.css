@@ -34,7 +34,7 @@
     --input: 230 20% 92%;
     --ring: 215 84% 43%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     /* ── WIVITEC Brand Palette ── */
     --color-primary:        #1528A1;
@@ -83,13 +83,20 @@
     @apply border-border;
     box-sizing: border-box;
   }
+  html {
+    @apply overflow-x-hidden;
+  }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased overflow-x-hidden;
     font-family: var(--font-family);
     font-size: 15px;
     font-weight: 400;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight;
   }
 }
 
