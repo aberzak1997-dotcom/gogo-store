@@ -19,6 +19,9 @@ import { cn } from "@/lib/utils";
 import { showError, showSuccess } from "../../utils/toast";
 import { Product, CartItem } from "../../types";
 import { supabase } from "../../lib/supabase";
+import {
+  calculateTotals, discountError as getDiscountError, findDiscount, getSavedDiscountCode, saveDiscountCode, unitPrice,
+} from "../../lib/pricing";
 
 // ─── Brand card logos (card-chip style) ────────────────────────────────────────
 
@@ -91,8 +94,10 @@ const CheckoutPage = () => {
   const [orderId, setOrderId]     = useState<string | null>(null);
   const [paidVia, setPaidVia]     = useState<PayMethod>("cod");
   const [discountCode, setDiscountCode] = useState("");
-  const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; amount: number; type: string } | null>(null);
+  const [appliedCode, setAppliedCode] = useState(getSavedDiscountCode);
   const [discountError, setDiscountError] = useState("");
+  // Total of the placed order (the cart is cleared once it's placed)
+  const [placedTotal, setPlacedTotal] = useState<number | null>(null);
 
   // ── Stripe return redirect detection ─────────────────────────────────────────
   useEffect(() => {
@@ -184,8 +189,8 @@ const CheckoutPage = () => {
   const enrichedCart = useMemo(() => {
     return cart.map(item => {
       const product = products.find(p => p.id === item.productId);
-      return product ? { ...item, product } : null;
-    }).filter(Boolean) as (CartItem & { product: Product })[];
+      return product ? { ...item, product, unitPrice: unitPrice(product, item.variantId) } : null;
+    }).filter(Boolean) as (CartItem & { product: Product; unitPrice: number })[];
   }, [cart, products]);
 
   if (enrichedCart.length === 0 && !orderId) {
@@ -209,32 +214,37 @@ const CheckoutPage = () => {
     );
   }
 
-  const subtotal = enrichedCart.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
-  const shipping = subtotal > (settings.freeShippingThreshold || 100) ? 0 : 9.99;
-  const tax      = Math.round(subtotal * (settings.taxRate || 0.07) * 100) / 100;
-  const discountAmount = appliedDiscount ? Math.min(appliedDiscount.amount, subtotal) : 0;
-  const total    = Math.max(0, subtotal + shipping + tax - discountAmount);
+  // Prices include VAT — see lib/pricing.ts
+  const subtotal = enrichedCart.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
   const currency = settings.currency || "USD";
+  const candidate = findDiscount(discounts, appliedCode);
+  const appliedDiscount = candidate && !getDiscountError(candidate, subtotal, currency) ? candidate : null;
+  const totals = calculateTotals(subtotal, settings, appliedDiscount);
+  const { shipping, total } = totals;
+  const discountAmount = totals.discount;
 
   const handleApplyDiscount = () => {
     setDiscountError("");
-    const code = discountCode.trim().toUpperCase();
-    if (!code) return;
-    const found = discounts.find(d => d.code.toUpperCase() === code && d.isActive);
-    if (!found) {
-      setDiscountError("Invalid or expired discount code.");
-      setAppliedDiscount(null);
+    if (!discountCode.trim()) return;
+    const found = findDiscount(discounts, discountCode);
+    const error = getDiscountError(found, subtotal, currency);
+    if (error || !found) {
+      setDiscountError(error ?? "Invalid or expired discount code.");
       return;
     }
-    const amount = found.type === "percentage"
-      ? Math.round(subtotal * (found.value / 100) * 100) / 100
-      : found.value;
-    setAppliedDiscount({ code: found.code, amount, type: found.type });
+    setAppliedCode(found.code);
+    saveDiscountCode(found.code);
+    const amount = calculateTotals(subtotal, settings, found).discount;
     showSuccess(`Discount "${found.code}" applied! You save ${currency} ${amount.toFixed(2)}`);
   };
 
-  const placeOrder = (): string | null =>
-    createOrder({ customerName: fullName, email, phone, address, city, country });
+  const placeOrder = (): string | null => {
+    const placed = createOrder({ customerName: fullName, email, phone, address, city, country, discount: appliedDiscount });
+    if (!placed) return null;
+    setPlacedTotal(placed.total);
+    saveDiscountCode(null);
+    return placed.id;
+  };
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -262,44 +272,50 @@ const CheckoutPage = () => {
         // Persist so the success-return handler can mark it paid
         localStorage.setItem("stripe_pending_order_id", newOrderId);
 
-        // Build Stripe line items from cart
-        const lineItems = enrichedCart.map(item => ({
-          price_data: {
-            currency: currency.toLowerCase(),
-            product_data: {
-              name: item.product.title,
-              ...(item.product.imageUrl && !item.product.imageUrl.startsWith("data:")
-                ? { images: [item.product.imageUrl] }
-                : {}),
-            },
-            unit_amount: Math.round(item.product.price * 100),
-          },
-          quantity: item.quantity,
-        }));
-
-        // Shipping as a separate line item
-        if (shipping > 0) {
-          lineItems.push({
-            price_data: {
-              currency: currency.toLowerCase(),
-              product_data: { name: "Shipping" },
-              unit_amount: Math.round(shipping * 100),
-            },
-            quantity: 1,
-          });
-        }
-
-        // Tax as a separate line item
-        if (tax > 0) {
-          lineItems.push({
-            price_data: {
-              currency: currency.toLowerCase(),
-              product_data: { name: "Tax" },
-              unit_amount: Math.round(tax * 100),
-            },
-            quantity: 1,
-          });
-        }
+        // Build Stripe line items from the same totals shown on the page
+        const toCents = (n: number) => Math.round(n * 100);
+        const lineItems = discountAmount > 0
+          ? [{
+              // Stripe line items can't be negative, so a discounted order is charged as one line
+              price_data: {
+                currency: currency.toLowerCase(),
+                product_data: {
+                  name: `WIVITEC order ${newOrderId}`,
+                  description: [
+                    enrichedCart.map(i => `${i.quantity}× ${i.product.title}`).join(", ").slice(0, 300),
+                    `Discount ${appliedDiscount?.code}`,
+                    shipping > 0 ? "Shipping included" : "Free shipping",
+                  ].join(" · "),
+                },
+                unit_amount: toCents(total),
+              },
+              quantity: 1,
+            }]
+          : [
+              ...enrichedCart.map(item => ({
+                price_data: {
+                  currency: currency.toLowerCase(),
+                  product_data: {
+                    name: item.product.title,
+                    ...(item.product.imageUrl && !item.product.imageUrl.startsWith("data:")
+                      ? { images: [item.product.imageUrl] }
+                      : {}),
+                  },
+                  unit_amount: toCents(item.unitPrice),
+                },
+                quantity: item.quantity,
+              })),
+              ...(shipping > 0
+                ? [{
+                    price_data: {
+                      currency: currency.toLowerCase(),
+                      product_data: { name: "Shipping" },
+                      unit_amount: toCents(shipping),
+                    },
+                    quantity: 1,
+                  }]
+                : []),
+            ];
 
         const origin = window.location.origin;
         const { data, error } = await supabase!.functions.invoke("create-stripe-session", {
@@ -363,7 +379,7 @@ const CheckoutPage = () => {
                 </div>
                 <div className="p-5 rounded-[10px]" style={{ background: "#F0F2F8" }}>
                   <p className="text-caption text-[#1160CB] mb-1.5">Total</p>
-                  <p className="font-semibold text-[#0C0D10] text-[14px]">{currency} {total.toFixed(2)}</p>
+                  <p className="font-semibold text-[#0C0D10] text-[14px]">{currency} {(placedTotal ?? total).toFixed(2)}</p>
                 </div>
               </div>
               <div className="p-5 rounded-[10px] flex items-center gap-4" style={{ background: "#F0F2F8" }}>
@@ -657,7 +673,9 @@ const CheckoutPage = () => {
                                     breakdown: {
                                       item_total: { currency_code: currency, value: subtotal.toFixed(2) },
                                       shipping:   { currency_code: currency, value: shipping.toFixed(2) },
-                                      tax_total:  { currency_code: currency, value: tax.toFixed(2) },
+                                      ...(discountAmount > 0
+                                        ? { discount: { currency_code: currency, value: discountAmount.toFixed(2) } }
+                                        : {}),
                                     },
                                   },
                                 }],
@@ -834,7 +852,7 @@ const CheckoutPage = () => {
                             <p className="text-caption text-[#0C0D10]/30 mt-0.5">Qty {item.quantity}</p>
                           </div>
                           <p className="font-semibold text-[#1528A1] text-[14px] flex-shrink-0">
-                            ${(item.product.price * item.quantity).toFixed(2)}
+                            {currency} {(item.unitPrice * item.quantity).toFixed(2)}
                           </p>
                         </div>
                       ))}
@@ -848,9 +866,9 @@ const CheckoutPage = () => {
                       <div className="flex items-center justify-between px-4 py-3 rounded-[8px]" style={{ background: "rgba(5,177,105,0.08)", border: "1px solid rgba(5,177,105,0.2)" }}>
                         <div>
                           <span className="text-caption" style={{ color: "#05b169" }}>{appliedDiscount.code}</span>
-                          <p className="text-[12px] font-medium mt-0.5" style={{ color: "#05b169" }}>− {currency} {appliedDiscount.amount.toFixed(2)} saved</p>
+                          <p className="text-[12px] font-medium mt-0.5" style={{ color: "#05b169" }}>− {currency} {discountAmount.toFixed(2)} saved</p>
                         </div>
-                        <button onClick={() => { setAppliedDiscount(null); setDiscountCode(""); }} className="text-caption" style={{ color: "#cf202f" }}>Remove</button>
+                        <button onClick={() => { setAppliedCode(""); saveDiscountCode(null); setDiscountCode(""); }} className="text-caption" style={{ color: "#cf202f" }}>Remove</button>
                       </div>
                     ) : (
                       <div className="space-y-2">
@@ -884,12 +902,6 @@ const CheckoutPage = () => {
                         {shipping === 0 ? "FREE" : `${currency} ${shipping.toFixed(2)}`}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-caption text-[#0C0D10]/40">
-                        Tax ({Math.round((settings.taxRate || 0.07) * 100)}%)
-                      </span>
-                      <span className="font-medium text-[#0C0D10] text-[14px]">{currency} {tax.toFixed(2)}</span>
-                    </div>
                     {appliedDiscount && (
                       <div className="flex justify-between items-center">
                         <span className="text-caption" style={{ color: "#05b169" }}>Discount</span>
@@ -905,6 +917,7 @@ const CheckoutPage = () => {
                         {currency} {total.toFixed(2)}
                       </span>
                     </div>
+                    <p className="text-right text-[11px] text-[#0C0D10]/40 -mt-1">VAT included</p>
 
                     {/* CTA — hidden for PayPal (uses PayPal buttons) */}
                     {paymentMethod !== "paypal" && (

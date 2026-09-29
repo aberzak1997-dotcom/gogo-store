@@ -13,6 +13,9 @@ import {
   Tag, X, ChevronRight, Truck, Gift, Sparkles, Heart, Package,
 } from "lucide-react";
 import { useStore } from "../../context/StoreContext";
+import {
+  calculateTotals, discountError, findDiscount, getSavedDiscountCode, saveDiscountCode, unitPrice,
+} from "../../lib/pricing";
 
 interface CartDrawerProps {
   open: boolean;
@@ -25,7 +28,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
 
   // ── Promo code state ─────────────────────────────────────────────────
   const [promoCode, setPromoCode] = useState("");
-  const [appliedPromo, setAppliedPromo] = useState<{ code: string; amount: number; type: string } | null>(null);
+  const [appliedCode, setAppliedCode] = useState(getSavedDiscountCode);
   const [promoError, setPromoError] = useState("");
   const [promoLoading, setPromoLoading] = useState(false);
 
@@ -46,46 +49,44 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
   [savedForLater, products]);
 
   // ── Totals ───────────────────────────────────────────────────────────
-  const subtotal = cartItems.reduce((s, i) => s + i.product!.price * i.quantity, 0);
+  const priceOf = (i: (typeof cartItems)[number]) => unitPrice(i.product!, i.variantId);
+  const subtotal = cartItems.reduce((s, i) => s + priceOf(i) * i.quantity, 0);
   const savedAmount = cartItems.reduce((s, i) => {
     const cp = i.product!.compareAtPrice;
-    return cp && cp > i.product!.price ? s + (cp - i.product!.price) * i.quantity : s;
+    return cp && cp > priceOf(i) ? s + (cp - priceOf(i)) * i.quantity : s;
   }, 0);
-  const freeShipThreshold = settings.freeShippingThreshold || 50;
-  const shipping = subtotal >= freeShipThreshold ? 0 : 9.99;
-  const promoDiscount = appliedPromo ? Math.min(appliedPromo.amount, subtotal) : 0;
-  const total = Math.max(0, subtotal + shipping - promoDiscount);
-  const toFreeShip = Math.max(0, freeShipThreshold - subtotal);
-  const freeShipProgress = Math.min(100, (subtotal / freeShipThreshold) * 100);
+  const currency = settings.currency || "USD";
+  const candidate = findDiscount(discounts, appliedCode);
+  const appliedPromo = candidate && !discountError(candidate, subtotal, currency) ? candidate : null;
+  const totals = calculateTotals(subtotal, settings, appliedPromo);
+  const { shipping, total } = totals;
+  const promoDiscount = totals.discount;
+  const toFreeShip = totals.amountToFreeShipping;
+  const freeShipProgress = Math.min(100, (subtotal / totals.freeShippingThreshold) * 100);
 
   const hasStockIssues = cartItems.some(
     i => i.product!.stockQuantity < i.quantity || i.product!.status !== "active"
   );
-  const currency = settings.currency || "USD";
   const totalQty = cart.reduce((s, i) => s + i.quantity, 0);
 
   // ── Promo code ───────────────────────────────────────────────────────
   const applyPromo = async () => {
     setPromoError("");
-    const code = promoCode.trim().toUpperCase();
-    if (!code) return;
+    if (!promoCode.trim()) return;
     setPromoLoading(true);
-    await new Promise(r => setTimeout(r, 400));
-    const found = discounts.find(d => d.code.toUpperCase() === code && d.isActive);
-    if (!found) {
-      setPromoError("Invalid or expired code.");
-      setPromoLoading(false);
+    const found = findDiscount(discounts, promoCode);
+    const error = discountError(found, subtotal, currency);
+    setPromoLoading(false);
+    if (error || !found) {
+      setPromoError(error ?? "Invalid or expired code.");
       return;
     }
-    const amount = found.type === "percentage"
-      ? Math.round(subtotal * (found.value / 100) * 100) / 100
-      : found.value;
-    setAppliedPromo({ code: found.code, amount, type: found.type });
+    setAppliedCode(found.code);
+    saveDiscountCode(found.code);
     setPromoCode("");
-    setPromoLoading(false);
   };
 
-  const removePromo = () => { setAppliedPromo(null); setPromoCode(""); setPromoError(""); };
+  const removePromo = () => { setAppliedCode(""); saveDiscountCode(null); setPromoCode(""); setPromoError(""); };
 
   // ── Save for later ───────────────────────────────────────────────────
   const saveForLater = (productId: string) => {
@@ -189,8 +190,8 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
                 {cartItems.map((item) => {
                   const hasStockWarn = item.product!.stockQuantity < item.quantity;
                   const isUnavailable = item.product!.status !== "active";
-                  const savings = item.product!.compareAtPrice && item.product!.compareAtPrice > item.product!.price
-                    ? (item.product!.compareAtPrice - item.product!.price) * item.quantity
+                  const savings = item.product!.compareAtPrice && item.product!.compareAtPrice > priceOf(item)
+                    ? (item.product!.compareAtPrice - priceOf(item)) * item.quantity
                     : 0;
 
                   return (
@@ -251,7 +252,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onOpenChange }) => {
                           <div className="flex items-center justify-between mt-2">
                             <div>
                               <span className="font-black text-[#1528A1] text-[14px]">
-                                {currency} {(item.product!.price * item.quantity).toFixed(2)}
+                                {currency} {(priceOf(item) * item.quantity).toFixed(2)}
                               </span>
                               {item.product!.compareAtPrice && item.product!.compareAtPrice > item.product!.price && (
                                 <span className="ml-1.5 text-[11px] text-[#0C0D10]/30 line-through">

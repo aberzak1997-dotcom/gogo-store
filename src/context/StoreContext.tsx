@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Product, ProductVariant, Order, CartItem, Customer, Discount, Review, ReturnRequest, MarketingCampaign, StoreSettings, Collection } from "../types";
+import { calculateTotals, unitPrice } from "../lib/pricing";
 import { MOCK_PRODUCTS, MOCK_ORDERS, MOCK_RETURNS, MOCK_CUSTOMERS, MOCK_REVIEWS } from "../data/mockData";
 import { showSuccess, showError } from "../utils/toast";
 import { isSupabaseConfigured } from "../lib/supabase";
@@ -46,7 +47,8 @@ interface StoreContextType {
     address: string;
     city: string;
     country: string;
-  }) => string | null;
+    discount?: Discount | null;
+  }) => { id: string; total: number } | null;
   updateOrderStatus: (orderId: string, status: Order["status"], note?: string) => void;
   updatePaymentStatus: (orderId: string, status: Order["paymentStatus"]) => void;
   updateFulfillmentStatus: (orderId: string, status: Order["fulfillmentStatus"]) => void;
@@ -416,6 +418,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     address,
     city,
     country,
+    discount,
   }: {
     customerName: string;
     email: string;
@@ -423,7 +426,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     address: string;
     city: string;
     country: string;
-  }): string | null => {
+    discount?: Discount | null;
+  }): { id: string; total: number } | null => {
     if (cart.length === 0) {
       showError("Your cart is empty");
       return null;
@@ -458,17 +462,22 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         variantId: item.variantId,
         title: variant ? `${product.title} - ${variant.optionValue}` : product.title,
         quantity: item.quantity,
-        price: variant ? variant.price : product.price,
+        price: unitPrice(product, item.variantId),
       };
     });
 
+    // Prices include VAT; same calculation the shopper saw at checkout
     const subtotal = orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
-    const shipping = subtotal > settings.freeShippingThreshold ? 0 : 9.99;
-    const tax = Math.round(subtotal * settings.taxRate * 100) / 100;
-    const totalAmount = subtotal + shipping + tax;
+    const totals = calculateTotals(subtotal, settings, discount);
+    const breakdown = [
+      `Subtotal ${totals.subtotal.toFixed(2)}`,
+      discount ? `Discount ${discount.code} −${totals.discount.toFixed(2)}` : null,
+      `Shipping ${totals.shipping === 0 ? "free" : totals.shipping.toFixed(2)}`,
+    ].filter(Boolean).join(" · ");
 
     const newOrder: Order = {
-      id: `ORD-${Math.floor(Math.random() * 1000000)}`,
+      // Time-based prefix makes collisions practically impossible
+      id: `ORD-${Date.now().toString(36).toUpperCase()}${Math.floor(Math.random() * 1296).toString(36).toUpperCase().padStart(2, "0")}`,
       customerName,
       email,
       phone,
@@ -479,7 +488,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       status: "pending",
       paymentStatus: "unpaid",
       fulfillmentStatus: "unfulfilled",
-      totalAmount,
+      totalAmount: totals.total,
+      internalNotes: breakdown,
       items: orderItems,
       timeline: [{ status: "Order placed", date: new Date().toISOString() }],
     };
@@ -511,7 +521,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const updated: Customer = {
         ...existingCustomer,
         totalOrders: existingCustomer.totalOrders + 1,
-        totalSpent: existingCustomer.totalSpent + totalAmount,
+        totalSpent: existingCustomer.totalSpent + totals.total,
         lastOrderDate: newOrder.date,
       };
       customerToSync = updated;
@@ -523,7 +533,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         email,
         phone,
         totalOrders: 1,
-        totalSpent: totalAmount,
+        totalSpent: totals.total,
         lastOrderDate: newOrder.date,
         createdAt: new Date().toISOString(),
       };
@@ -541,7 +551,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
 
     showSuccess(`Order ${newOrder.id} placed successfully`);
-    return newOrder.id;
+    return { id: newOrder.id, total: newOrder.totalAmount };
   };
 
   const updateOrderStatus = (orderId: string, status: Order["status"], note?: string) => {

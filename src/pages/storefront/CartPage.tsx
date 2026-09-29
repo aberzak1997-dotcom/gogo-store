@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import { useStore } from "../../context/StoreContext";
+import { calculateTotals, discountError, findDiscount, getSavedDiscountCode, unitPrice } from "../../lib/pricing";
 import { Button } from "@/components/ui/button";
 import {
   Trash2,
@@ -19,7 +20,7 @@ import {
 } from "lucide-react";
 
 const CartPage = () => {
-  const { cart, products, updateCartQuantity, removeFromCart, settings } = useStore();
+  const { cart, products, discounts, updateCartQuantity, removeFromCart, settings } = useStore();
   const navigate = useNavigate();
 
   const cartItems = cart.map((item) => {
@@ -32,15 +33,15 @@ const CartPage = () => {
     };
   }).filter((item) => item.product !== undefined);
 
-  const subtotal = cartItems.reduce((sum, item) => {
-    const price = item.variant ? item.variant.price : (item.product?.price || 0);
-    return sum + price * item.quantity;
-  }, 0);
+  const subtotal = cartItems.reduce((sum, item) => sum + unitPrice(item.product!, item.variantId) * item.quantity, 0);
 
   const currency = settings.currency === "USD" ? "$" : settings.currency;
-  const freeShippingThreshold = settings.freeShippingThreshold;
-  const toFreeShip = Math.max(0, freeShippingThreshold - subtotal);
-  const progressPercent = Math.min(100, (subtotal / freeShippingThreshold) * 100);
+  // Code applied in the cart drawer, if it's still valid for this cart
+  const saved = findDiscount(discounts, getSavedDiscountCode());
+  const discount = saved && !discountError(saved, subtotal, settings.currency) ? saved : null;
+  const totals = calculateTotals(subtotal, settings, discount);
+  const toFreeShip = totals.amountToFreeShipping;
+  const progressPercent = Math.min(100, (subtotal / totals.freeShippingThreshold) * 100);
 
   return (
     <div className="min-h-screen flex flex-col bg-white font-sans">
@@ -93,9 +94,7 @@ const CartPage = () => {
                   {cartItems.map((item) => {
                     const product = item.product!;
                     const variant = item.variant;
-                    const price = variant ? variant.price : product.price;
-                    const compareAtPrice = variant ? variant.price : product.compareAtPrice;
-                    const savings = compareAtPrice && compareAtPrice > price ? compareAtPrice - price : 0;
+                    const price = unitPrice(product, item.variantId);
 
                     return (
                       <div key={`${item.productId}-${item.variantId || ""}`} className="p-6 md:p-8 bg-white flex flex-col sm:flex-row gap-6 items-start sm:items-center">
@@ -181,28 +180,24 @@ const CartPage = () => {
                   <div className="flex justify-between text-sm font-medium text-slate-500">
                     <span>Shipping</span>
                     <span className="text-slate-900 font-bold">
-                      {subtotal > freeShippingThreshold ? "FREE" : `${currency}9.99`}
+                      {totals.shipping === 0 ? "FREE" : `${currency}${totals.shipping.toFixed(2)}`}
                     </span>
                   </div>
-                  <div className="flex justify-between text-sm font-medium text-slate-500">
-                    <span>Estimated Tax</span>
-                    <span className="text-slate-900 font-bold">
-                      {currency}{(subtotal * settings.taxRate).toFixed(2)}
-                    </span>
-                  </div>
+                  {discount && (
+                    <div className="flex justify-between text-sm font-medium text-emerald-600">
+                      <span>Discount ({discount.code})</span>
+                      <span className="font-bold">− {currency}{totals.discount.toFixed(2)}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex justify-between items-end">
                   <div>
                     <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total</p>
                     <p className="text-2xl font-black text-slate-900 mt-0.5">
-                      {currency}
-                      {(
-                        subtotal +
-                        (subtotal > freeShippingThreshold ? 0 : 9.99) +
-                        subtotal * settings.taxRate
-                      ).toFixed(2)}
+                      {currency}{totals.total.toFixed(2)}
                     </p>
+                    <p className="text-[11px] text-slate-400 font-medium mt-1">VAT included</p>
                   </div>
                 </div>
 
