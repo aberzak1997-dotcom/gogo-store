@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
+import { ALL_PERMISSIONS, NO_PERMISSIONS, type StaffRole, type UserPermissions } from "../lib/permissions";
 
 /**
  * Admin auth strategy:
@@ -20,11 +21,18 @@ export type AdminAuthStatus =
 
 type Result = { success: boolean; error?: string; mfaRequired?: boolean };
 
+export interface AdminProfile {
+  role: StaffRole;
+  permissions: UserPermissions;
+}
+
 interface AuthContextType {
   status: AdminAuthStatus;
   isAuthenticated: boolean;
   isLoading: boolean;
   email: string | null;
+  /** Staff role & permissions; undefined while loading, null if none */
+  profile: AdminProfile | null | undefined;
   login: (email: string, pass: string) => Promise<Result>;
   loginWithGoogle: () => Promise<{ error?: string }>;
   verifyMfa: (code: string) => Promise<Result>;
@@ -49,6 +57,7 @@ async function resolveStatus(session: Session | null): Promise<AdminAuthStatus> 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [status, setStatus] = useState<AdminAuthStatus>("loading");
   const [email, setEmail] = useState<string | null>(null);
+  const [profile, setProfile] = useState<AdminProfile | null | undefined>(undefined);
 
   const evaluate = useCallback(async (session: Session | null) => {
     setEmail(session?.user.email ?? null);
@@ -73,6 +82,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
     return () => subscription.unsubscribe();
   }, [evaluate, refresh]);
+
+  // Role & permissions, loaded once the admin session is fully verified
+  useEffect(() => {
+    if (status !== "authenticated" || !supabase) {
+      setProfile(undefined);
+      return;
+    }
+    let cancelled = false;
+    supabase.rpc("get_my_admin_profile").maybeSingle().then(({ data, error }) => {
+      if (cancelled) return;
+      if (error?.code === "PGRST202") {
+        // Roles migration not applied yet: every admin still has full access
+        setProfile({ role: "super_admin", permissions: ALL_PERMISSIONS });
+        return;
+      }
+      const row = data as { role: StaffRole; permissions: Partial<UserPermissions> } | null;
+      setProfile(row ? { role: row.role, permissions: { ...NO_PERMISSIONS, ...row.permissions } } : null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [status, email]);
 
   const login = async (rawEmail: string, pass: string): Promise<Result> => {
     if (!supabase) return { success: false, error: "Supabase is not configured." };
@@ -131,6 +162,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated: status === "authenticated",
         isLoading: status === "loading",
         email,
+        profile,
         login,
         loginWithGoogle,
         verifyMfa,

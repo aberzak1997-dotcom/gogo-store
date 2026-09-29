@@ -51,6 +51,7 @@ import AdminSeoPage from "./pages/admin/AdminSeoPage";
 import AdminArticlesPage from "./pages/admin/AdminArticlesPage";
 import AdminCJPage from "./pages/admin/AdminCJPage";
 import SecurityPage from "./pages/admin/SecurityPage";
+import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import ResetPasswordPage from "./pages/admin/ResetPasswordPage";
 import TwoFactorSetupPage from "./pages/admin/TwoFactorSetupPage";
 import AdminLayout from "./components/admin/AdminLayout";
@@ -138,6 +139,7 @@ const App = () => {
               <Route path="/admin/seo" element={<AdminLayout><AdminSeoPage /></AdminLayout>} />
               <Route path="/admin/articles" element={<AdminLayout><AdminArticlesPage /></AdminLayout>} />
               <Route path="/admin/cj-dropshipping" element={<AdminLayout><AdminCJPage /></AdminLayout>} />
+              <Route path="/admin/users" element={<AdminLayout><AdminUsersPage /></AdminLayout>} />
               <Route path="/admin/security" element={<AdminLayout><SecurityPage /></AdminLayout>} />
               <Route path="/admin/security/2fa" element={<AdminLayout><TwoFactorSetupPage /></AdminLayout>} />
 

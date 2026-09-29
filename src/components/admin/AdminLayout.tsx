@@ -27,10 +27,14 @@ import {
   Search,
   BookOpen,
   Link2,
-  Lock
+  Lock,
+  UserCog
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useStore } from "../../context/StoreContext";
+import { usePermissions } from "../../hooks/usePermissions";
+import { permissionsForPath, roleLabel } from "../../lib/permissions";
+import PermissionGuard from "./PermissionGuard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -42,6 +46,7 @@ interface AdminLayoutProps {
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const { isAuthenticated, isLoading, logout } = useAuth();
   const { returns, reviews } = useStore();
+  const { email, role, canAny } = usePermissions();
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -94,10 +99,13 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         { label: "Payments", icon: CreditCard, path: "/admin/payments" },
         { label: "Shipping", icon: Truck, path: "/admin/shipping" },
         { label: "Settings", icon: Settings, path: "/admin/settings" },
+        { label: "Users & Roles", icon: UserCog, path: "/admin/users" },
         { label: "Security", icon: Lock, path: "/admin/security" },
       ]
     }
-  ];
+  ]
+    .map(section => ({ ...section, items: section.items.filter(item => canAny(permissionsForPath(item.path))) }))
+    .filter(section => section.items.length > 0);
 
   const handleLogout = () => {
     logout();
@@ -165,6 +173,19 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
       {/* Bottom actions */}
       <div className="p-3 border-t border-white/[0.06] space-y-1">
+        {email && (
+          <div className="flex items-center gap-3 px-3 py-2.5 mb-1" title={email}>
+            <div className="w-7 h-7 rounded-full bg-[#1528A1] flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0">
+              {email.charAt(0).toUpperCase()}
+            </div>
+            {!isSidebarCollapsed && (
+              <div className="min-w-0">
+                <p className="text-[12px] font-medium text-white truncate">{email}</p>
+                <p className="text-[11px] text-white/40">{role ? roleLabel(role) : " "}</p>
+              </div>
+            )}
+          </div>
+        )}
         <Link
           to="/"
           className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-white/50 hover:text-white hover:bg-white/[0.05] transition-all text-[13px] font-medium"
@@ -250,7 +271,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             </Link>
           </div>
         </div>
-        <div className="p-6 md:p-8 max-w-7xl mx-auto">{children}</div>
+        <div className="p-6 md:p-8 max-w-7xl mx-auto">
+          <PermissionGuard permissions={permissionsForPath(location.pathname)}>{children}</PermissionGuard>
+        </div>
       </main>
     </div>
   );
