@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useMemo, useState, useEffect, useRef } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import ProductCard from "../../components/storefront/ProductCard";
 import BrandLogos from "../../components/storefront/BrandLogos";
+import HomeHero from "../../components/storefront/HomeHero";
 import { useStore } from "../../context/StoreContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -181,280 +182,19 @@ const HomePage = () => {
 
   const isLoading = products.length === 0;
 
-  // ── Side panel open state (hides center hero image) ───────────────────────
-  const [sideOpen, setSideOpen] = useState(false);
-
-  // ── Right panel: mouse-position-driven auto-scroll ───────────────────────
-  const panelScrollRef = useRef<HTMLDivElement>(null);
-  const scrollSpeedRef = useRef(0);
-  const animFrameRef  = useRef<number | null>(null);
-
-  const startScrollLoop = () => {
-    const tick = () => {
-      if (panelScrollRef.current && scrollSpeedRef.current !== 0) {
-        panelScrollRef.current.scrollTop += scrollSpeedRef.current;
-      }
-      animFrameRef.current = requestAnimationFrame(tick);
-    };
-    animFrameRef.current = requestAnimationFrame(tick);
-  };
-
-  const stopScrollLoop = () => {
-    if (animFrameRef.current !== null) {
-      cancelAnimationFrame(animFrameRef.current);
-      animFrameRef.current = null;
-    }
-    scrollSpeedRef.current = 0;
-  };
-
-  const handlePanelMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const zone = (e.clientY - rect.top) / rect.height; // 0 = top, 1 = bottom
-    if (zone < 0.35)       scrollSpeedRef.current = -4;  // top zone → scroll up
-    else if (zone > 0.65)  scrollSpeedRef.current =  4;  // bottom zone → scroll down
-    else                   scrollSpeedRef.current =  0;  // middle → stop
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-white font-sans">
       <Header />
 
       <main className="flex-grow">
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            LARGE HERO SECTION (LIGHT THEME)
-        ══════════════════════════════════════════════════════════════════════ */}
         {!isFiltered && (
-          <section className="relative min-h-[70vh] flex flex-col justify-center overflow-hidden bg-slate-50/60 border-b border-slate-100 p-[10px]">
+          <>
+            <HomeHero newArrival={newArrivals[0]} bestSeller={bestSellers[0]} />
 
-            {/* ── Background layers ── */}
-            {/* Radial glow — blue left */}
-            <div className="absolute -left-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full"
-              style={{ background: "radial-gradient(circle, rgba(17,96,203,0.06) 0%, transparent 70%)" }} />
-            {/* Radial glow — navy right */}
-            <div className="absolute -right-60 top-1/3 w-[600px] h-[600px] rounded-full"
-              style={{ background: "radial-gradient(circle, rgba(21,40,161,0.05) 0%, transparent 70%)" }} />
-            {/* Subtle dot grid */}
-            <div className="absolute inset-0 opacity-[0.02]"
-              style={{ backgroundImage: "radial-gradient(circle, #000000 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-
-            {/* ── Three-panel horizontal layout ── */}
-            <div className="relative z-10 w-full flex items-stretch min-h-[480px] md:min-h-[520px]">
-
-              {/* ── LEFT panel — New Arrival ── */}
-              <div className="group hidden md:flex overflow-hidden transition-all duration-500 ease-in-out w-[72px] hover:w-[280px] flex-shrink-0 cursor-pointer relative mx-[5px] mb-[5px] rounded-[15px] border border-[#c5c5c5]" style={{ background: "#FF7A30" }} onMouseEnter={() => setSideOpen(true)} onMouseLeave={() => setSideOpen(false)}>
-                {/* Light blue overlay — fades in on hover */}
-                <div className="absolute inset-0 bg-[#EEF4FF] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-[1]" />
-                {/* Collapsed label */}
-                <div className="absolute inset-0 flex items-center justify-center group-hover:opacity-0 transition-opacity duration-300 z-10">
-                  <span className="text-[18px] font-semibold tracking-[4px] text-white -rotate-90 whitespace-nowrap">
-                    New Arrival
-                  </span>
-                </div>
-                {/* Expanded content */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 delay-100 flex flex-col w-[280px] overflow-hidden z-[2]">
-
-                  {/* ── Full-cover product image ── */}
-                  <div className="relative w-full h-[52%] flex-shrink-0 overflow-hidden">
-                    {newArrivals[0]?.imageUrl && (
-                      <img
-                        src={newArrivals[0].imageUrl}
-                        alt={newArrivals[0].title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                    )}
-                    {/* Gradient overlay for readability */}
-                    <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 50%, rgba(238,244,255,0.7) 100%)" }} />
-                    {/* Badge */}
-                    <span className="absolute top-3 left-3 text-[9px] font-black uppercase tracking-[2px] text-[#1160CB] bg-white px-2.5 py-1 rounded-full shadow-sm">
-                      New Arrival
-                    </span>
-                  </div>
-
-                  {/* ── Product info ── */}
-                  <div className="flex flex-col flex-1 px-4 py-3 gap-2">
-                    <div>
-                      <p className="text-[9px] font-black uppercase tracking-[3px] text-[#1160CB]">
-                        {newArrivals[0]?.brand}
-                      </p>
-                      <p className="text-[14px] font-bold text-[#0C0D10] leading-snug line-clamp-2 mt-0.5">
-                        {newArrivals[0]?.title || "Latest Drop"}
-                      </p>
-                      <p className="text-[11px] text-[#0C0D10]/50 leading-relaxed line-clamp-2 mt-1.5">
-                        {newArrivals[0]?.description || "Cutting-edge tech for modern professionals and enthusiasts."}
-                      </p>
-                    </div>
-
-                    {/* Price + Check Product link */}
-                    <div className="flex items-center justify-between mt-auto">
-                      <span className="text-[20px] font-black text-[#1528A1]">
-                        ${(newArrivals[0]?.price || 0).toFixed(0)}
-                      </span>
-                      <Link
-                        to={`/product/${newArrivals[0]?.id || ""}`}
-                        className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[1.5px] text-white px-3 py-1.5 rounded-full transition-all duration-200 hover:opacity-90"
-                        style={{ background: "#FF7A30" }}
-                      >
-                        Check Product <ArrowRight size={11} />
-                      </Link>
-                    </div>
-
-                    {/* CTA button — transparent */}
-                    <Link to="/new-arrivals" className="block mt-1">
-                      <button
-                        className="w-full py-2 rounded-[10px] text-[10px] font-black uppercase tracking-[1.5px] text-[#1160CB] border border-[#1160CB]/30 bg-transparent hover:bg-[#1160CB]/8 transition-all duration-200 active:scale-[0.98]"
-                      >
-                        Check Other New Arrivals
-                      </button>
-                    </Link>
-                  </div>
-
-                </div>
-              </div>
-
-              {/* ── CENTER — main hero (text left + image right) ── */}
-              <div
-                className="flex-1 flex items-center px-8 md:px-12 py-16 mx-[5px] mb-[5px] rounded-[15px] border border-[#c5c5c5] overflow-hidden relative gap-8"
-                style={{
-                  background: `
-                    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(17,96,203,0.10) 0%, transparent 60%),
-                    radial-gradient(ellipse 60% 50% at 80% 70%, rgba(21,40,161,0.08) 0%, transparent 55%),
-                    radial-gradient(ellipse 40% 35% at 55% 15%, rgba(71,155,247,0.09) 0%, transparent 50%),
-                    radial-gradient(circle at 50% 50%, rgba(238,244,255,1) 0%, #f4f7ff 100%)
-                  `,
-                }}
-              >
-                {/* Subtle dot grid overlay */}
-                <div className="absolute inset-0 opacity-[0.035] pointer-events-none"
-                  style={{ backgroundImage: "radial-gradient(circle, #1160CB 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
-
-                {/* Left: text content */}
-                <div className="relative z-10 space-y-6 flex flex-col items-start text-left flex-1 min-w-0">
-
-                  {/* Main headline */}
-                  <div className="space-y-3">
-                    <h1 className="text-[36px] md:text-[48px] xl:text-[54px] font-bold leading-[1.1] tracking-tight text-slate-900 uppercase">
-                      Power Your
-                      <br />
-                      <span
-                        className="inline-block"
-                        style={{
-                          background: "linear-gradient(135deg, #1160CB 0%, #479BF7 50%, #1528A1 100%)",
-                          WebkitBackgroundClip: "text",
-                          WebkitTextFillColor: "transparent",
-                          backgroundClip: "text",
-                        }}
-                      >
-                        Digital World
-                      </span>
-                    </h1>
-                  </div>
-
-                  {/* Subtext */}
-                  <p className="text-[15px] text-[#0C0D10] font-normal leading-relaxed max-w-[480px]">
-                    Discover premium electronics, peripherals, and accessories built for professionals, gamers, and creators.
-                  </p>
-
-                  {/* CTA row */}
-                  <div className="flex flex-wrap items-center gap-4 pt-2">
-                    <Link to="/products">
-                      <Button
-                        className="h-10 w-[150px] justify-between pl-5 pr-2 rounded-full text-[11px] font-bold uppercase tracking-widest shadow-xl shadow-[#1160CB]/15 transition-all duration-300 hover:scale-105"
-                        style={{ background: "linear-gradient(135deg, #1160CB, #1528A1)" }}
-                      >
-                        Shop Now
-                        <span className="w-[22px] h-[22px] rounded-full bg-white flex items-center justify-center text-[#1160CB]">
-                          <ArrowRight size={12} />
-                        </span>
-                      </Button>
-                    </Link>
-                    <Link to="/deals">
-                      <Button
-                        variant="outline"
-                        className="h-10 px-6 rounded-full text-[11px] font-bold uppercase tracking-widest gap-2.5 border-[#1528A1] bg-white text-[#1528A1] hover:bg-blue-50/50 transition-all duration-300"
-                      >
-                        View Deals
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Right: hero image — full panel height, hides when a side panel is open */}
-                <div
-                  className={cn(
-                    "absolute top-0 right-0 bottom-0 z-10 hidden lg:block w-[45%] transition-all duration-500 ease-in-out",
-                    sideOpen ? "opacity-0 scale-95 pointer-events-none" : "opacity-100 scale-100"
-                  )}
-                >
-                  <img
-                    src="/hero-product.png"
-                    alt="Premium electronics"
-                    className="w-full h-full object-cover object-center"
-                  />
-                </div>
-              </div>
-
-              {/* ── RIGHT panel — Best Seller ── */}
-              <div
-                className="group hidden md:flex overflow-hidden transition-all duration-500 ease-in-out w-[72px] hover:w-[280px] flex-shrink-0 cursor-pointer relative mx-[5px] mb-[5px] rounded-[15px] border-0"
-                style={{ background: "linear-gradient(135deg, #1160CB, #1528A1)" }}
-                onMouseEnter={() => { setSideOpen(true); startScrollLoop(); }}
-                onMouseLeave={() => { setSideOpen(false); stopScrollLoop(); }}
-                onMouseMove={handlePanelMouseMove}
-              >
-                {/* Collapsed label */}
-                <div className="absolute inset-0 flex items-center justify-center group-hover:opacity-0 transition-opacity duration-300 z-10">
-                  <span className="text-[18px] font-semibold tracking-[4px] text-white -rotate-90 whitespace-nowrap">
-                    Best Seller
-                  </span>
-                </div>
-                {/* Expanded content — scrollable 5-product list */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 delay-100 flex flex-col w-[280px] z-[2]">
-                  {/* Header */}
-                  <div className="px-4 pt-4 pb-2 flex-shrink-0">
-                    <span className="text-[9px] font-black uppercase tracking-[3px] text-white/70 bg-white/15 px-2 py-1 rounded-full">
-                      Best Sellers
-                    </span>
-                  </div>
-                  {/* Scrollable product list */}
-                  <div
-                    ref={panelScrollRef}
-                    className="flex-1 overflow-y-auto px-3 pb-4 space-y-2"
-                  >
-                    {bestSellers.slice(0, 5).map((product) => (
-                      <Link
-                        key={product.id}
-                        to={`/product/${product.id}`}
-                        className="flex flex-col rounded-[12px] bg-white/15 hover:bg-white/25 border border-white/20 overflow-hidden transition-all duration-200"
-                      >
-                        {/* Image — full width */}
-                        <div className="w-full h-[100px] overflow-hidden">
-                          <img
-                            src={product.imageUrl}
-                            alt={product.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        {/* Name + price */}
-                        <div className="px-3 py-2">
-                          <p className="text-[11px] font-semibold text-white leading-snug line-clamp-1">
-                            {product.title}
-                          </p>
-                          <p className="text-[12px] font-black text-white/80 mt-0.5">
-                            ${product.price.toFixed(0)}
-                          </p>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            {/* ── Bottom feature strip ── */}
-            <div className="relative z-10 border-t border-slate-100 bg-slate-50/50">
-              <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-5 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-0 md:divide-x md:divide-slate-100">
+            {/* ── Service strip ── */}
+            <section className="border-y border-[#F0F2F8] bg-[#F8F9FC]">
+              <div className="section-container py-5 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-0 md:divide-x md:divide-slate-100">
                 {[
                   { icon: Truck,       text: "Free shipping over $50" },
                   { icon: ShieldCheck, text: "100% secure checkout" },
@@ -469,11 +209,9 @@ const HomePage = () => {
                   </div>
                 ))}
               </div>
-            </div>
-
-          </section>
+            </section>
+          </>
         )}
-        {/* ═══════════════════════════════════════════════════════════════════ */}
 
         {/* ── Hero ──────────────────────────────────────────────────────────── */}
         {!isFiltered && (
@@ -491,9 +229,9 @@ const HomePage = () => {
                   <Badge className="bg-white/10 text-white border-transparent text-[10px] font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
                     Premium Collection
                   </Badge>
-                  <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-white leading-[1.15] w-full uppercase font-['Inter',sans-serif]">
+                  <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-white leading-[1.15] w-full uppercase font-['Inter',sans-serif]">
                     Wide Range Of Premium Electronics
-                  </h1>
+                  </h2>
                   <p className="text-slate-200 text-xs max-w-xs leading-relaxed">
                     Cutting-edge gadgets and accessories for professionals and enthusiasts alike. Quality gear for every setup.
                   </p>
